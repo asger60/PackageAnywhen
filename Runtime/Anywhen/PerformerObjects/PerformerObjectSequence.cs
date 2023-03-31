@@ -20,7 +20,12 @@ namespace Rytmos.AudioSystem
 
         public override void Play(int sequenceStep, AnywhenInstrument instrument)
         {
-            //DoPlayNote(audioController.sequenceStep);
+            if (instrument == null)
+            {
+                Debug.Log("No instrument selected for puzzle");
+                return;
+            }
+
             int note = 0;
             switch (noteSelectStyle)
             {
@@ -39,17 +44,9 @@ namespace Rytmos.AudioSystem
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (instrument == null)
-            {
-                Debug.Log("No instrument selected for puzzle");
-                return;
-            }
 
-            noteOnEvent = new NoteEvent(note, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate);
-            //noteOnEvent = new Recorder.Event(0, note,
-            //    AnywhenMetronome.Instance.GetScheduledPlaytime(playbackRate), GetTiming(), Vector2.zero,
-            //    GetVolume(),
-            //    Recorder.Event.EventTypes.NoteOn);
+            noteOnEvent = new NoteEvent(note, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate, GetTiming());
+
             EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
         }
 

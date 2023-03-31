@@ -47,6 +47,19 @@ public struct NoteEvent
         expression2 = 0;
         velocity = volume;
     }
+    
+    public NoteEvent(int note, EventTypes state, float volume, AnywhenMetronome.TickRate quantization, double drift)
+    {
+        this.state = state;
+        notes = new[] { note };
+        this.state = state;
+        this.drift = drift;
+        this.quantization = quantization;
+        chordStrum = new double[] { 0 };
+        expression1 = 0;
+        expression2 = 0;
+        velocity = volume;
+    }
 
 
 

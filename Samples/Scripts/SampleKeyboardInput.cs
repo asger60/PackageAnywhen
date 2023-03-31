@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class SampleKeyboardInput : MonoBehaviour
 {
-    [FormerlySerializedAs("instrument")] public AnywhenInstrument anywhenInstrument;
+    public AnywhenInstrument anywhenInstrument;
     public AnywhenMetronome.TickRate quantization;
     int _noteIndex = 0;
 

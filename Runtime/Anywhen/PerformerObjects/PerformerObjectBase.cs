@@ -2,6 +2,7 @@
 using Rytmos.AudioSystem.Attributes;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace Rytmos.AudioSystem
 {
@@ -21,31 +22,33 @@ namespace Rytmos.AudioSystem
         public Vector2 volumeRandom;
 
         [Header("TIMING")] public AnywhenMetronome.TickRate playbackRate = AnywhenMetronome.TickRate.Sub8;
-        [Range(0, 1f)] public float quantizeAmount = 1;
+
+        [Range(0, 1f)]
+        public float humanizeAmount = 0;
 
         [Range(0, 1f)] public float swingAmount = 0;
         [Header("CHOKE")] public bool chokeNotes;
 
-        protected float GetTiming()
+        protected double GetTiming()
         {
-            if (quantizeAmount >= 1) return 0;
+            if (humanizeAmount >= 1) return 0;
             float subLength = (float)AnywhenMetronome.Instance.GetLength(playbackRate) / 2f;
             float drift = Random.Range(subLength * -1, subLength);
             float swing = 0;
 
             if (swingAmount > 0)
             {
-                if (AnywhenMetronome.Instance.Sub16 % 4 == 0)
+                if (AnywhenMetronome.Instance.sub8 % 2 == 0)
                     swing = subLength * swingAmount;
             }
 
-            return Mathf.Lerp(drift, 0, quantizeAmount) + swing;
+            return Mathf.Lerp(0, drift, humanizeAmount) + swing;
         }
 
 
         public virtual void Play(int sequenceStep, AnywhenInstrument instrument)
         {
-            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, playbackRate);
+            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate, GetTiming());
             EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
         }
 
