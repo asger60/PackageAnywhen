@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PackageAnywhen.Runtime.Anywhen;
-using PackageAnywhen.Runtime.Anywhen.AudioSystem;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen
 {
     public class SamplePlayer : MonoBehaviour
     {

@@ -1,15 +1,13 @@
 ﻿using System;
-using PackageAnywhen.Runtime.Anywhen;
-using UnityEditor;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen
 {
     public class AnywhenMetronome : MonoBehaviour
     {
         public int Bpm;
-
         public bool Playing;
         public int sub2;
         public int sub4;
@@ -65,7 +63,7 @@ namespace Rytmos.AudioSystem
         public struct DebugSettings
         {
             public bool debugBar, debug2, debug4, debug8, debug16;
-            [FormerlySerializedAs("debugInstrument")] public AnywhenInstrument debugAnywhenInstrument;
+            public AnywhenInstrument debugAnywhenInstrument;
         }
 
         public DebugSettings debugSettings;
@@ -285,6 +283,20 @@ namespace Rytmos.AudioSystem
         public void Stop()
         {
             _isStopped = true;
+        }
+
+        public Action GetCallBackForTickRate(TickRate tickRate)
+        {
+            return (tickRate) switch
+            {
+                TickRate.None => null,
+                TickRate.Sub2 => OnTick2,
+                TickRate.Sub4 => OnTick4,
+                TickRate.Sub8 => OnTick8,
+                TickRate.Sub16 => OnTick16,
+                TickRate.Sub32 => OnTick32,
+                _ => throw new ArgumentOutOfRangeException(nameof(tickRate), tickRate, null)
+            };
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using PackageAnywhen.Runtime.Anywhen;
+using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 
-namespace Rytmos.AudioSystem.Editor
+namespace Anywhen.Editor
 {
     public class AudioInstrumentCreator : UnityEditor.Editor
     {

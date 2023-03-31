@@ -1,12 +1,10 @@
 ﻿using System;
-using PackageAnywhen.Runtime.Anywhen;
-using Rytmos.AudioSystem.Attributes;
+using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen.PerformerObjects
 {
     [CreateAssetMenu(fileName = "New ChordPlayer", menuName = "Anywhen/Performers/Chords", order = 51)]
     public class PerformerObjectChords : PerformerObjectBase
@@ -35,7 +33,7 @@ namespace Rytmos.AudioSystem
             if (chords.Length == 0) return;
             switch (chordSelectStyle)
             {
-                case SelectStyles.Sequence:
+                case SelectStyles.SequenceForward:
                     chord = chords[(int)Mathf.Repeat(sequenceStep, chords.Length)];
                     break;
                 case SelectStyles.Random:

@@ -1,7 +1,7 @@
 using System;
-using PackageAnywhen.Runtime.Anywhen.AudioSystem;
 using UnityEngine;
-namespace Rytmos.JamMode.JamModeObjectTypes
+
+namespace Anywhen
 {
     [CreateAssetMenu(fileName = "FaderJamObject", menuName = "Rytmos/JamMode/Fader")]
 

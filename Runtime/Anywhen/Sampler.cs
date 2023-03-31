@@ -1,9 +1,9 @@
-﻿using Farmand.Utilities;
-using Rytmos.AudioSystem;
+﻿using Anywhen.SettingsObjects;
+using Farmand.Utilities;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
+namespace Anywhen
 {
     [RequireComponent(typeof(AudioSource))]
     public class Sampler : MonoBehaviour
@@ -34,7 +34,6 @@ namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
         }
 
 
-
         private void Update()
         {
             if (_isArmed && !_audioSource.isPlaying)
@@ -45,9 +44,9 @@ namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
         }
 
 
-        public void NoteOn(int note, double playTime, float volume, AnywhenInstrument newSettings, AudioMixerGroup mixerChannel = null)
+        public void NoteOn(int note, double playTime, float volume, AnywhenInstrument newSettings,
+            AudioMixerGroup mixerChannel = null)
         {
-            
             _settings = newSettings;
             if (_settings == null)
             {
@@ -70,7 +69,7 @@ namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
             _audioSource.volume = volume;
             _audioSource.time = 0;
             _audioSource.outputAudioMixerGroup = mixerChannel;
-            
+
             _audioSource.PlayScheduled(playTime);
         }
 
@@ -82,7 +81,7 @@ namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
             if (stopTime != 0)
                 stopTime -= AudioSettings.dspTime;
 
-        
+
             Ticker.DelayedAction((float)stopTime, onDone: () =>
             {
                 float startVolume = _audioSource.volume;

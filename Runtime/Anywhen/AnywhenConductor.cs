@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using Anywhen.SettingsObjects;
+using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen
 {
     public class AnywhenConductor : MonoBehaviour
     {
         private int _rootNote = 0;
-        [FormerlySerializedAs("scale")] public AnywhenScaleObject anywhenScale;
+        public AnywhenScaleObject anywhenScale;
         private AnywhenScaleObject _currentAnywhenScale;
     
         private static AnywhenConductor _instance;

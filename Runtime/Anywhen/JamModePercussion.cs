@@ -1,9 +1,7 @@
-using PackageAnywhen.Runtime.Anywhen;
-using PackageAnywhen.Runtime.Anywhen.AudioSystem;
-using Rytmos.AudioSystem;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
-namespace Rytmos.JamMode.JamModeObjectTypes
+namespace Anywhen
 {
     [CreateAssetMenu(fileName = "PercussiveJamObject", menuName = "Anywhen/JamMode/Percussion")]
 

@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Rytmos.AudioSystem.Attributes
+namespace Anywhen.Attributes
 {
     public class MinMaxAttribute : PropertyAttribute
     {

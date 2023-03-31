@@ -1,8 +1,7 @@
-﻿using PackageAnywhen.Runtime.Anywhen;
+﻿using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen.PerformerObjects
 {
     [CreateAssetMenu(fileName = "New AudioPlayer", menuName = "Anywhen/Performers/AudioPlayer - Percussion", order = 51)]
     public class PerformerObjectPercussion : PerformerObjectBase

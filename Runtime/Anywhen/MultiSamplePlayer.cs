@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rytmos;
-using Rytmos.AudioSystem;
-using Rytmos.JamMode.JamModeObjectTypes;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
+namespace Anywhen
 {
     public class MultiSamplePlayer : MonoBehaviour
     {

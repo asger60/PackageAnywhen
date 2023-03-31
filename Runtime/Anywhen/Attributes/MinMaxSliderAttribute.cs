@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Rytmos.AudioSystem.Attributes
+namespace Anywhen.Attributes
 {
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public class MinMaxSliderAttribute : PropertyAttribute

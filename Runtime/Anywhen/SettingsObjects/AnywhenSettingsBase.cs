@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PackageAnywhen.Runtime.Anywhen
+namespace Anywhen.SettingsObjects
 {
     public class AnywhenSettingsBase : ScriptableObject
     {

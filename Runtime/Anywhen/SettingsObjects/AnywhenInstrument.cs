@@ -1,9 +1,8 @@
 ﻿using System;
-using Rytmos.AudioSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace PackageAnywhen.Runtime.Anywhen
+namespace Anywhen.SettingsObjects
 {
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenInstrument : AnywhenSettingsBase

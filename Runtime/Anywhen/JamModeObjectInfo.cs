@@ -1,7 +1,6 @@
-using PackageAnywhen.Runtime.Anywhen.AudioSystem;
 using UnityEngine;
 
-namespace Rytmos.JamMode
+namespace Anywhen
 {
     public class JamModeObjectInfo : MonoBehaviour
     {

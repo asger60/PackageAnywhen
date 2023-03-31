@@ -1,39 +1,65 @@
 using System;
-using PackageAnywhen.Runtime.Anywhen;
-using Rytmos.AudioSystem;
+using Anywhen;
+using Anywhen.PerformerObjects;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
-public class SamplePatternPlayer : MonoBehaviour
+namespace Samples.Scripts
 {
-    [Serializable]
-    public struct PatternTrack
+    public class SamplePatternPlayer : MonoBehaviour
     {
-        public AnywhenInstrument anywhenInstrument;
-        public PerformerObjectBase anywhenPerformerSettings;
-        internal int StepIndex;
-        internal int NoteIndex;
-        public bool[] steps;
-    }
-
-    public PatternTrack[] patternTracks;
-
-    private void Start()
-    {
-        AnywhenMetronome.Instance.OnTick16 += OnTick16;
-    }
-
-    private void OnTick16()
-    {
-        for (var i = 0; i < patternTracks.Length; i++)
+        [Serializable]
+        public class PatternTrack
         {
-            var track = patternTracks[i];
-            patternTracks[i].StepIndex++;
-            patternTracks[i].StepIndex = (int)Mathf.Repeat(patternTracks[i].StepIndex, patternTracks[i].steps.Length);
-            if (track.steps[(int)Mathf.Repeat(patternTracks[i].StepIndex , patternTracks[i].steps.Length)])
+            public AnywhenInstrument anywhenInstrument;
+            public PerformerObjectBase anywhenPerformerSettings;
+            private int _stepIndex;
+            private int _noteIndex;
+            public bool[] steps;
+
+            public void OnTick()
             {
-                track.anywhenPerformerSettings.Play(track.NoteIndex, track.anywhenInstrument);
-                patternTracks[i].NoteIndex++;
+                _stepIndex++;
+                _stepIndex = (int)Mathf.Repeat(_stepIndex, steps.Length);
+                if (steps[_stepIndex])
+                {
+                    anywhenPerformerSettings.Play(_noteIndex, anywhenInstrument);
+                    _noteIndex++;
+                }
             }
         }
+
+        public PatternTrack[] patternTracks;
+
+        private void Start()
+        {
+            foreach (var track in patternTracks)
+            {
+                switch (track.anywhenPerformerSettings.playbackRate)
+                {
+                    case AnywhenMetronome.TickRate.None:
+                        break;
+                    case AnywhenMetronome.TickRate.Sub2:
+                        AnywhenMetronome.Instance.OnTick2 += track.OnTick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub4:
+                        AnywhenMetronome.Instance.OnTick4 += track.OnTick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub8:
+                        AnywhenMetronome.Instance.OnTick8 += track.OnTick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub16:
+                        AnywhenMetronome.Instance.OnTick16 += track.OnTick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub32:
+                        AnywhenMetronome.Instance.OnTick32 += track.OnTick;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        
     }
 }

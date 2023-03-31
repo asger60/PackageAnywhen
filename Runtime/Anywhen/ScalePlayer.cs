@@ -1,6 +1,7 @@
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen
 {
     public class ScalePlayer : MonoBehaviour
     {

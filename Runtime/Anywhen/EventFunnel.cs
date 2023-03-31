@@ -1,8 +1,8 @@
-using Rytmos.AudioSystem;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace PackageAnywhen.Runtime.Anywhen
+namespace Anywhen
 {
     public class EventFunnel : MonoBehaviour
     {

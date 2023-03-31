@@ -1,14 +1,12 @@
-﻿using System;
-using PackageAnywhen.Runtime.Anywhen;
-using Rytmos.AudioSystem.Attributes;
-#if UNITY_EDITOR
-using UnityEditor;
+﻿#if UNITY_EDITOR
 #endif
+using System;
+using Anywhen.SettingsObjects;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen.PerformerObjects
 {
     [CreateAssetMenu(fileName = "New AudioPlayer", menuName = "Anywhen/Performers/AudioPlayer - Sequence", order = 51)]
     public class PerformerObjectSequence : PerformerObjectBase
@@ -29,7 +27,7 @@ namespace Rytmos.AudioSystem
             int note = 0;
             switch (noteSelectStyle)
             {
-                case SelectStyles.Sequence:
+                case SelectStyles.SequenceForward:
                     note = noteSequence.Length == 0
                         ? 0
                         : noteSequence[(int)Mathf.Repeat(sequenceStep, noteSequence.Length)];

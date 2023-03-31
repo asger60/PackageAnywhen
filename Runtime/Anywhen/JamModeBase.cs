@@ -1,8 +1,8 @@
-using Rytmos.AudioSystem;
-using Rytmos.AudioSystem.Attributes;
+using Anywhen.Attributes;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
-namespace PackageAnywhen.Runtime.Anywhen.AudioSystem
+namespace Anywhen
 {
     public class JamModeBase : AnywhenSettingsBase
     {

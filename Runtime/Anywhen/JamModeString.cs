@@ -1,10 +1,8 @@
-using PackageAnywhen.Runtime.Anywhen;
-using PackageAnywhen.Runtime.Anywhen.AudioSystem;
-using Rytmos.AudioSystem;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Rytmos.JamMode.JamModeObjectTypes
+namespace Anywhen
 {
     [CreateAssetMenu(fileName = "StringJamObject", menuName = "Rytmos/JamMode/String")]
 

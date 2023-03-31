@@ -1,65 +1,67 @@
 using System;
-using PackageAnywhen.Runtime.Anywhen;
-using Rytmos.AudioSystem;
+using Anywhen;
+using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class SampleKeyboardInput : MonoBehaviour
+namespace Samples.Scripts
 {
-    public AnywhenInstrument anywhenInstrument;
-    public AnywhenMetronome.TickRate quantization;
-    int _noteIndex = 0;
-
-    public enum PlayMode
+    public class SampleKeyboardInput : MonoBehaviour
     {
-        Random,
-        SequenceUp,
-        SequenceDown
-    }
+        public AnywhenInstrument anywhenInstrument;
+        public AnywhenMetronome.TickRate quantization;
+        int _noteIndex = 0;
 
-    public PlayMode playMode;
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
+        public enum PlayMode
         {
-            SetKeyState(0, true);
+            Random,
+            SequenceUp,
+            SequenceDown
         }
 
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            SetKeyState(0, false);
-        }
-    }
+        public PlayMode playMode;
 
-    void SetKeyState(int keyIndex, bool state)
-    {
-        if (state)
+        void Update()
         {
-            switch (playMode)
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                case PlayMode.Random:
-                    _noteIndex = Random.Range(0, 5);
-                    break;
-                case PlayMode.SequenceUp:
-                    _noteIndex++;
-                    _noteIndex = (int)Mathf.Repeat(_noteIndex, 5);
+                SetKeyState(0, true);
+            }
 
-                    break;
-                case PlayMode.SequenceDown:
-                    _noteIndex--;
-                    _noteIndex = (int)Mathf.Repeat(_noteIndex, 5);
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+            if (Input.GetKeyUp(KeyCode.A))
+            {
+                SetKeyState(0, false);
             }
         }
 
-        NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff,
-            quantization);
+        void SetKeyState(int keyIndex, bool state)
+        {
+            if (state)
+            {
+                switch (playMode)
+                {
+                    case PlayMode.Random:
+                        _noteIndex = Random.Range(0, 5);
+                        break;
+                    case PlayMode.SequenceUp:
+                        _noteIndex++;
+                        _noteIndex = (int)Mathf.Repeat(_noteIndex, 5);
+
+                        break;
+                    case PlayMode.SequenceDown:
+                        _noteIndex--;
+                        _noteIndex = (int)Mathf.Repeat(_noteIndex, 5);
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff,
+                quantization);
         
-        EventFunnel.HandleNoteEvent(e, anywhenInstrument);
+            EventFunnel.HandleNoteEvent(e, anywhenInstrument);
+        }
     }
 }

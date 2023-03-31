@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6525ae04b874ccf88a40f9e0409875, type: 3}
   m_Name: PercormerChords
   m_EditorClassIdentifier: 
-  volume: 1
-  volumeRandom: {x: 0, y: 0}
-  playbackRate: 160
-  quantizeAmount: 1
-  swingAmount: 0
+  volume: 0.503
+  volumeRandom: {x: 0.02, y: 0.19}
+  playbackRate: 16
+  humanizeAmount: 0.301
+  swingAmount: 0.469
   chokeNotes: 0
   chordSelectStyle: 0
   chords:
   - notes: 000000000200000004000000
-  strumDuration: 0
-  strumHumanize: 0
+  - notes: 020000000300000004000000
+  strumDuration: 0.266
+  strumHumanize: 0.112

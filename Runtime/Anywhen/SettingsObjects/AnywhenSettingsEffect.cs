@@ -1,7 +1,6 @@
-using PackageAnywhen.Runtime.Anywhen;
 using UnityEngine;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen.SettingsObjects
 {
     [CreateAssetMenu(fileName = "New effect object", menuName = "Anywhen/AudioObjects/EffectObject")]
     public class AnywhenSettingsEffect : AnywhenSettingsBase

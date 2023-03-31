@@ -1,10 +1,10 @@
 // https://frarees.github.io/default-gist-license
 
-using Rytmos.AudioSystem.Attributes;
+using Anywhen.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Rytmos.AudioSystem.Editor.PropertyDrawers
+namespace Anywhen.Editor.PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
     internal class MinMaxSliderDrawer : PropertyDrawer

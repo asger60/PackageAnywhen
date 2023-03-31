@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Anywhen.SettingsObjects;
+using UnityEngine;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen
 {
     [CreateAssetMenu(fileName = "New progression pattern", menuName = "Anywhen/Conductor/Note Progression")]
 

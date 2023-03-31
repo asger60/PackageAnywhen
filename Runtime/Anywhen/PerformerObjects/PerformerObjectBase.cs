@@ -1,10 +1,8 @@
-﻿using PackageAnywhen.Runtime.Anywhen;
-using Rytmos.AudioSystem.Attributes;
+﻿using Anywhen.Attributes;
+using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.Serialization;
 
-namespace Rytmos.AudioSystem
+namespace Anywhen.PerformerObjects
 {
     public class PerformerObjectBase : AnywhenSettingsBase
     {
@@ -14,17 +12,20 @@ namespace Rytmos.AudioSystem
 
         public enum SelectStyles
         {
-            Sequence,
+            SequenceForward,
+            SequenceBackwards,
+            SequencePingPong,
             Random
         }
 
         [MinMaxSlider(-0.5f, 0.5f, Round = true, FlexibleFields = true)]
         public Vector2 volumeRandom;
 
+        public int[] stepAccents;
+
         [Header("TIMING")] public AnywhenMetronome.TickRate playbackRate = AnywhenMetronome.TickRate.Sub8;
 
-        [Range(0, 1f)]
-        public float humanizeAmount = 0;
+        [Range(0, 1f)] public float humanizeAmount = 0;
 
         [Range(0, 1f)] public float swingAmount = 0;
         [Header("CHOKE")] public bool chokeNotes;
@@ -38,7 +39,7 @@ namespace Rytmos.AudioSystem
 
             if (swingAmount > 0)
             {
-                if (AnywhenMetronome.Instance.GetCountForTickRate(playbackRate) % 2 == 0)
+                if (AnywhenMetronome.Instance.GetCountForTickRate(playbackRate) % 2 != 0)
                     swing = subLength * swingAmount;
             }
 
@@ -56,6 +57,15 @@ namespace Rytmos.AudioSystem
         protected virtual float GetVolume()
         {
             return volume + Random.Range(volumeRandom.x, volumeRandom.y);
+        }
+
+        protected int GetSequenceStep(int currentNoteIndex)
+        {
+            //switch (se)
+            //{
+            //    
+            //}
+            return 0;
         }
     }
 }
