@@ -37,12 +37,12 @@ namespace Rytmos.AudioSystem
 
         public enum TickRate
         {
-            None = 10,
-            Sub2 = 20,
-            Sub4 = 40,
-            Sub8 = 80,
-            Sub16 = 160,
-            Sub32 = 320,
+            None = 0,
+            Sub2 = 2,
+            Sub4 = 4,
+            Sub8 = 8,
+            Sub16 = 16,
+            Sub32 = 32,
         }
 
         public Action OnTick2;
@@ -258,6 +258,20 @@ namespace Rytmos.AudioSystem
                 TickRate.Sub16 => _nextTime16 + _sub32Length,
                 TickRate.Sub32 => _nextTime32 + _sub32Length,
                 _ => throw new ArgumentOutOfRangeException(nameof(playbackRate), playbackRate, null)
+            };
+        }
+
+        public int GetCountForTickRate(TickRate tickRate)
+        {
+            return tickRate switch
+            {
+                TickRate.None => 0,
+                TickRate.Sub2 => sub2,
+                TickRate.Sub4 => sub4,
+                TickRate.Sub8 => sub8,
+                TickRate.Sub16 => Sub16,
+                TickRate.Sub32 => Sub32,
+                _ => throw new ArgumentOutOfRangeException(nameof(tickRate), tickRate, null)
             };
         }
 

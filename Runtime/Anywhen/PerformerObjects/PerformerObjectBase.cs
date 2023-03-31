@@ -38,7 +38,7 @@ namespace Rytmos.AudioSystem
 
             if (swingAmount > 0)
             {
-                if (AnywhenMetronome.Instance.sub8 % 2 == 0)
+                if (AnywhenMetronome.Instance.GetCountForTickRate(playbackRate) % 2 == 0)
                     swing = subLength * swingAmount;
             }
 
