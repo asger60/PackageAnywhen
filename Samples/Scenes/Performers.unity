@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenInstrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
-  quantization: 160
+  quantization: 16
   playMode: 1
 --- !u!1 &336908727
 GameObject:
@@ -495,9 +495,11 @@ MonoBehaviour:
   - anywhenInstrument: {fileID: 11400000, guid: 6340f9ee9b4a24bf682d55c9d54ef526, type: 2}
     anywhenPerformerSettings: {fileID: 11400000, guid: f9ddd132d83494f3b8e7ab37e838d313, type: 2}
     steps: 0101010101010101
+    tickRate: 8
   - anywhenInstrument: {fileID: 11400000, guid: 85615be01a1024611884947f7053deb6, type: 2}
     anywhenPerformerSettings: {fileID: 11400000, guid: d25089896a0a34d26ab6a23aad5b7098, type: 2}
     steps: 01010101
+    tickRate: 8
 --- !u!1 &1709344286
 GameObject:
   m_ObjectHideFlags: 0

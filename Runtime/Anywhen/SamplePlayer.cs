@@ -48,7 +48,6 @@ namespace Anywhen
 
             _isInit = true;
         }
-        
 
 
         private Sampler GetSampler()
@@ -77,7 +76,8 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenInstrument anywhenInstrumentSettings, AudioMixerGroup mixerChannel = null)
+        public void HandleEvent(NoteEvent e, AnywhenInstrument anywhenInstrumentSettings,
+            AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
             float drift = 0;
 
@@ -95,7 +95,7 @@ namespace Anywhen
                             return;
                         }
 
-                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(e.quantization) + e.drift +
+                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
                                         e.chordStrum[i];
                         sampler.NoteOn(note, timing, e.velocity, anywhenInstrumentSettings, mixerChannel);
                     }
@@ -109,7 +109,8 @@ namespace Anywhen
                         foreach (var thisSampler in _allSamplers)
                         {
                             if (!thisSampler.IsStopping && thisSampler.Settings == anywhenInstrumentSettings)
-                                thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(e.quantization) + drift);
+                                thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(rate) +
+                                                    drift);
                         }
                     }
 

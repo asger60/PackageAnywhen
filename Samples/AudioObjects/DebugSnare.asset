@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86d38956e7d4d484995f4a258aa4a407, type: 3}
-  m_Name: PerformancePercussion
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: DebugSnare
   m_EditorClassIdentifier: 
-  volume: 1
-  volumeRandom: {x: 0, y: 0}
-  stepAccents: 
-  stepAccentVolume: 1
-  playbackRate: 16
-  humanizeAmount: 0
-  swingAmount: 0.798
-  chokeNotes: 0
+  audioClips:
+  - {fileID: 8300000, guid: d6bb70c8fca4047c5ba66a566831956f, type: 3}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 0

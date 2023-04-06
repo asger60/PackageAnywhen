@@ -58,10 +58,9 @@ namespace Samples.Scripts
                 }
             }
 
-            NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff,
-                quantization);
+            NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
         
-            EventFunnel.HandleNoteEvent(e, anywhenInstrument);
+            EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
         }
     }
 }

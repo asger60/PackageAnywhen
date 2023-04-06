@@ -1,15 +1,11 @@
-﻿#if UNITY_EDITOR
-#endif
-using System;
-using Anywhen.SettingsObjects;
+﻿using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace Anywhen.PerformerObjects
 {
-    [CreateAssetMenu(fileName = "New AudioPlayer", menuName = "Anywhen/Performers/AudioPlayer - Sequence", order = 51)]
+    [CreateAssetMenu(fileName = "New Sequence Performer", menuName = "Anywhen/Performers/Sequence", order = 51)]
     public class PerformerObjectSequence : PerformerObjectBase
     {
         [FormerlySerializedAs("noteSelectStyle")] [Header("SEQUENCE SETTINGS")]
@@ -18,20 +14,17 @@ namespace Anywhen.PerformerObjects
         public int[] noteSequence;
         //private int _step;
 
-        public override void Play(int sequenceStep, AnywhenInstrument instrument)
+        public override NoteEvent MakeNote(int sequenceStep, AnywhenInstrument instrument)
         {
             if (instrument == null)
             {
                 Debug.Log("No instrument selected for puzzle");
-                return;
+                return default;
             }
 
-            int note = noteSequence[ GetSequenceStep(noteSequenceProgressionStyle, sequenceStep, noteSequence.Length)];
-
-
-            noteOnEvent = new NoteEvent(note, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate, GetTiming());
-
-            EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
+            int note = noteSequence[GetSequenceStep(noteSequenceProgressionStyle, noteSequence.Length)];
+            noteOnEvent = new NoteEvent(note, NoteEvent.EventTypes.NoteOn, GetVolume(), GetTiming());
+            return noteOnEvent;
         }
 
 

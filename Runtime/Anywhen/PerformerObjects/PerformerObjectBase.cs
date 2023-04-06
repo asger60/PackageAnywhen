@@ -25,9 +25,8 @@ namespace Anywhen.PerformerObjects
         public Vector2 volumeRandom;
 
         public bool[] stepAccents;
-        [Range(0,1f)]
-        public float stepAccentVolume = 1;
-        
+        [Range(0, 1f)] public float stepAccentVolume = 1;
+
         [Header("TIMING")] public AnywhenMetronome.TickRate playbackRate = AnywhenMetronome.TickRate.Sub8;
 
         [Range(0, 1f)] public float humanizeAmount = 0;
@@ -53,10 +52,10 @@ namespace Anywhen.PerformerObjects
         }
 
 
-        public virtual void Play(int sequenceStep, AnywhenInstrument instrument)
+        public virtual NoteEvent MakeNote(int sequenceStep, AnywhenInstrument instrument)
         {
-            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate, GetTiming());
-            EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
+            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, GetVolume(), GetTiming());
+            return noteOnEvent;
         }
 
 
@@ -66,15 +65,16 @@ namespace Anywhen.PerformerObjects
             if (stepAccents.Length > 0)
             {
                 acc = stepAccents[
-                    (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(playbackRate), stepAccents.Length-1)];
+                    (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(playbackRate),
+                        stepAccents.Length - 1)];
             }
 
             return volume + (acc ? stepAccentVolume : 0) + Random.Range(volumeRandom.x, volumeRandom.y);
         }
 
-        protected int GetSequenceStep(SequenceProgressionStyles currentProgressionStyle, int currentNoteIndex,
-            int progressionLenght)
+        protected int GetSequenceStep(SequenceProgressionStyles currentProgressionStyle, int progressionLenght)
         {
+            var currentNoteIndex = AnywhenMetronome.Instance.GetCountForTickRate(playbackRate);
             switch (currentProgressionStyle)
             {
                 case SequenceProgressionStyles.Forward:

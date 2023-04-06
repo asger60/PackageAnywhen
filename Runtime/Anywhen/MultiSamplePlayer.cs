@@ -66,7 +66,7 @@ namespace Anywhen
 
         
 
-        public void HandleEvent(NoteEvent e, JamModePercussion instrumentSettings, AudioMixerGroup mixerChannel)
+        public void HandleEvent(NoteEvent e, JamModePercussion instrumentSettings, AnywhenMetronome.TickRate tickRate, AudioMixerGroup mixerChannel)
         {
             switch (e.state)
             {
@@ -82,7 +82,7 @@ namespace Anywhen
                             return;
                         }
 
-                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(e.quantization)+ e.drift + e.chordStrum[i];
+                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate)+ e.drift + e.chordStrum[i];
                         
                         if (note < (instrumentSettings.instrumentObjects.Length) && note >= 0)
                         {
@@ -100,7 +100,7 @@ namespace Anywhen
                     foreach (var thisSampler in _allSamplers)
                     {
                         if (!thisSampler.IsStopping && thisSampler.Settings == instrumentSettings.instrumentObjects[0])
-                            thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(e.quantization));
+                            thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate));
                     }
                     break;
                 case NoteEvent.EventTypes.NoteDown:

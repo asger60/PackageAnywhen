@@ -3,23 +3,19 @@ using UnityEngine;
 
 namespace Anywhen.PerformerObjects
 {
-    [CreateAssetMenu(fileName = "New AudioPlayer", menuName = "Anywhen/Performers/AudioPlayer - Percussion", order = 51)]
+    [CreateAssetMenu(fileName = "New Percussion Performer", menuName = "Anywhen/Performers/Percussion", order = 51)]
     public class PerformerObjectPercussion : PerformerObjectBase
     {
-        public override void Play(int sequenceStep, AnywhenInstrument instrument)
+        public override NoteEvent MakeNote(int sequenceStep, AnywhenInstrument instrument)
         {
             if (instrument == null)
             {
-                //Debug.LogWarning("Puzzle " + audioController.transform.name + " is missing instrument");
-                return;
+                return default;
             }
 
-            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate);
-            //noteOnEvent = new Recorder.Event(0, 0, AnywhenMetronome.Instance.GetScheduledPlaytime(playbackRate), GetTiming(),
-            //    Vector2.zero, GetVolume(), Recorder.Event.EventTypes.NoteOn);
-            
-            
-            EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
+            noteOnEvent = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, GetVolume(), GetTiming());
+            return noteOnEvent;
+            //EventFunnel.HandleNoteEvent(noteOnEvent, instrument);
         }
     }
 }

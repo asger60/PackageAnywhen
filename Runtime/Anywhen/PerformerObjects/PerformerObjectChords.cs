@@ -25,23 +25,23 @@ namespace Anywhen.PerformerObjects
 
         private NoteEvent _currentEvent;
 
-        public override void Play(int sequenceStep, AnywhenInstrument instrument)
+        public override NoteEvent MakeNote(int sequenceStep, AnywhenInstrument instrument)
         {
-            if (chords.Length == 0) return;
-            var chord = chords[GetSequenceStep(chordSequenceProgressionStyle, sequenceStep, chords.Length)];
+            if (chords.Length == 0) return default;
+            var chord = chords[GetSequenceStep(chordSequenceProgressionStyle, chords.Length)];
 
 
-            if (chokeNotes)
-            {
-                _currentEvent.state = NoteEvent.EventTypes.NoteOff;
-                EventFunnel.HandleNoteEvent(_currentEvent, instrument);
-            }
+            //if (chokeNotes)
+            //{
+            //    _currentEvent.state = NoteEvent.EventTypes.NoteOff;
+            //    EventFunnel.HandleNoteEvent(_currentEvent, instrument);
+            //}
 
 
-            _currentEvent = new NoteEvent(0, GetTiming(), playbackRate, chord.notes, CreateStrum(chord), 0, 0, GetVolume());
+            _currentEvent = new NoteEvent(0, GetTiming(), chord.notes, CreateStrum(chord), 0, 0, GetVolume());
 
-
-            EventFunnel.HandleNoteEvent(_currentEvent, instrument);
+            return _currentEvent;
+            //EventFunnel.HandleNoteEvent(_currentEvent, instrument);
         }
 
         double[] CreateStrum(Chord chord)

@@ -136,8 +136,8 @@ namespace Anywhen
                 _nextTime16 = _nextTime32 + _sub16Length;
                 if (debugSettings.debug16)
                 {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, TickRate.Sub16);
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument);
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument,TickRate.Sub16);
                 }
             }
 
@@ -148,9 +148,9 @@ namespace Anywhen
                 sub8++;
                 if (debugSettings.debug8)
                 {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, TickRate.Sub8);
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument,TickRate.Sub8);
                 }
             }
 
@@ -161,9 +161,9 @@ namespace Anywhen
                 sub4++;
                 if (debugSettings.debug4)
                 {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, TickRate.Sub4);
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub4);
                 }
             }
 
@@ -174,9 +174,9 @@ namespace Anywhen
                 sub2++;
                 if (debugSettings.debug2)
                 {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, TickRate.Sub2);
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub2);
                 }
             }
 
@@ -195,9 +195,9 @@ namespace Anywhen
 
                 if (debugSettings.debugBar)
                 {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, TickRate.Sub32);
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub32);
                 }
             }
 
