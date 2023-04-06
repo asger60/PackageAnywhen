@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49587888a6ba43988b54b7e56d0b463, type: 3}
   m_Name: PerformerSequence
   m_EditorClassIdentifier: 
-  volume: 0.636
-  volumeRandom: {x: -0.48, y: -0.01}
+  volume: 0.353
+  volumeRandom: {x: -0.15, y: -0.01}
+  stepAccents: 00010001
+  stepAccentVolume: 0.769
   playbackRate: 8
   humanizeAmount: 0
-  swingAmount: 0.427
-  chokeNotes: 1
-  noteSelectStyle: 0
-  noteSequence: 04000000030000000200000000000000
+  swingAmount: 0.406
+  chokeNotes: 0
+  noteSequenceProgressionStyle: 2
+  noteSequence: 0000000001000000020000000300000004000000050000000600000007000000

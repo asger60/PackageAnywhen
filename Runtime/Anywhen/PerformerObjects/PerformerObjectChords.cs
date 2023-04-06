@@ -15,33 +15,20 @@ namespace Anywhen.PerformerObjects
             public int[] notes;
         }
 
-        [Header("CHORD SETTINGS")] public SelectStyles chordSelectStyle;
+        [Header("CHORD SETTINGS")] public SequenceProgressionStyles chordSequenceProgressionStyle;
         public Chord[] chords;
 
-        [FormerlySerializedAs("strumAmount")] [Header("STRUM SETTINGS")] [Range(0, 1f)]
+        [Header("STRUM SETTINGS")] [Range(0, 1f)]
         public float strumDuration = 0;
 
-        [FormerlySerializedAs("strumRandom")] [Range(0, 1f)]
-        public float strumHumanize = 0;
+        [Range(0, 1f)] public float strumHumanize = 0;
 
         private NoteEvent _currentEvent;
-//        private Recorder.Event _currentEvent;
 
         public override void Play(int sequenceStep, AnywhenInstrument instrument)
         {
-            Chord chord;
             if (chords.Length == 0) return;
-            switch (chordSelectStyle)
-            {
-                case SelectStyles.SequenceForward:
-                    chord = chords[(int)Mathf.Repeat(sequenceStep, chords.Length)];
-                    break;
-                case SelectStyles.Random:
-                    chord = chords[Random.Range(0, chords.Length)];
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var chord = chords[GetSequenceStep(chordSequenceProgressionStyle, sequenceStep, chords.Length)];
 
 
             if (chokeNotes)
@@ -50,14 +37,10 @@ namespace Anywhen.PerformerObjects
                 EventFunnel.HandleNoteEvent(_currentEvent, instrument);
             }
 
-            //var step = Metronome.Instance.GetQuantizedStep();
-            //_currentEvent = new Recorder.Event(0, chord.notes,
-            //    AnywhenMetronome.Instance.GetScheduledPlaytime(playbackRate), GetTiming(), CreateStrum(chord),
-            //    Vector2.zero, GetVolume(), Recorder.Event.EventTypes.NoteOn);
 
-            _currentEvent = new NoteEvent(0, 0, playbackRate, chord.notes, CreateStrum(chord), 0, 0, GetVolume());
-            
-            
+            _currentEvent = new NoteEvent(0, GetTiming(), playbackRate, chord.notes, CreateStrum(chord), 0, 0, GetVolume());
+
+
             EventFunnel.HandleNoteEvent(_currentEvent, instrument);
         }
 

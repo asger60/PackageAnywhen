@@ -261,6 +261,8 @@ namespace Anywhen
 
         public int GetCountForTickRate(TickRate tickRate)
         {
+            return (Sub32 / (32 / (int)tickRate));
+ 
             return tickRate switch
             {
                 TickRate.None => 0,

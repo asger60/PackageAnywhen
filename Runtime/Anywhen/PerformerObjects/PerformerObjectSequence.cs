@@ -4,6 +4,7 @@ using System;
 using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen.PerformerObjects
@@ -11,7 +12,8 @@ namespace Anywhen.PerformerObjects
     [CreateAssetMenu(fileName = "New AudioPlayer", menuName = "Anywhen/Performers/AudioPlayer - Sequence", order = 51)]
     public class PerformerObjectSequence : PerformerObjectBase
     {
-        [Header("SEQUENCE SETTINGS")] public SelectStyles noteSelectStyle;
+        [FormerlySerializedAs("noteSelectStyle")] [Header("SEQUENCE SETTINGS")]
+        public SequenceProgressionStyles noteSequenceProgressionStyle;
 
         public int[] noteSequence;
         //private int _step;
@@ -24,23 +26,7 @@ namespace Anywhen.PerformerObjects
                 return;
             }
 
-            int note = 0;
-            switch (noteSelectStyle)
-            {
-                case SelectStyles.SequenceForward:
-                    note = noteSequence.Length == 0
-                        ? 0
-                        : noteSequence[(int)Mathf.Repeat(sequenceStep, noteSequence.Length)];
-
-
-                    break;
-                case SelectStyles.Random:
-                    note = noteSequence.Length == 0 ? 0 : noteSequence[Random.Range(0, noteSequence.Length)];
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            int note = noteSequence[ GetSequenceStep(noteSequenceProgressionStyle, sequenceStep, noteSequence.Length)];
 
 
             noteOnEvent = new NoteEvent(note, NoteEvent.EventTypes.NoteOn, GetVolume(), playbackRate, GetTiming());
