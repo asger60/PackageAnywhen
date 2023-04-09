@@ -44,7 +44,7 @@ namespace Anywhen.PerformerObjects
             if (swingAmount > 0)
             {
                 int count = AnywhenMetronome.Instance.GetCountForTickRate(playbackRate);
-                if (count % 2 == 0)
+                if (count % 2 != 0)
                     swing = subLength * swingAmount;
             }
 

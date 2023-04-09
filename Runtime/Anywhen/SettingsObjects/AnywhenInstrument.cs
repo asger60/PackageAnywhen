@@ -8,7 +8,8 @@ namespace Anywhen.SettingsObjects
     public class AnywhenInstrument : AnywhenSettingsBase
     {
         public AudioClip[] audioClips;
-
+        [Range(0,1f)]
+        public float volume = 1;
         public float stopDuration = 0.1f;
 
         public enum InstrumentType

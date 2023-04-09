@@ -66,7 +66,7 @@ namespace Anywhen
             IsReady = false;
             _isArmed = true;
             _audioSource.clip = _queuedClip;
-            _audioSource.volume = volume;
+            _audioSource.volume = volume * _settings.volume;
             _audioSource.time = 0;
             _audioSource.outputAudioMixerGroup = mixerChannel;
 

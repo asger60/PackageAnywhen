@@ -1,49 +1,78 @@
 using System;
 using Anywhen;
-using Anywhen.PerformerObjects;
-using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
 {
     public class PatternMixer : MonoBehaviour
     {
+        public PatternCollection savePatternCollection;
+        [Range(0, 3f)] public float currentPatternMix;
+
+        public AnimationCurve mixCurve;
         [Serializable]
         public struct Pattern
         {
-            public float currentWeight;
-            public PerformerObjectBase performerObject;
-            public bool[] patternSteps;
+            [Range(0, 1f)] public float currentWeight;
 
-            public void OnTick(AnywhenInstrument instrument,
-                AnywhenMetronome.TickRate tickRate)
+            public StepPattern[] patternTracks;
+            [Range(0, 1f)] public float swing;
+            [Range(0, 1f)] public float humanize;
+
+            public void OnTick(AnywhenMetronome.TickRate tickRate)
             {
-                if (currentWeight < 0.5f) return;
-                int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate),
-                    patternSteps.Length);
-                if (patternSteps[stepIndex])
+                int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
+
+                foreach (var patternTrack in patternTracks)
                 {
-                    var n = performerObject.MakeNote(stepIndex, instrument);
-                    EventFunnel.HandleNoteEvent(n, instrument, tickRate);
+                    if (patternTrack.steps[stepIndex].noteOn)
+                    {
+                        if (Random.Range(0, 1f) > currentWeight) return;
+
+                        NoteEvent note = new NoteEvent(0, NoteEvent.EventTypes.NoteOn,
+                            patternTrack.steps[stepIndex].accent ? 1 : 0.5f,
+                            AnywhenMetronome.GetTiming(tickRate, swing, humanize));
+                        EventFunnel.HandleNoteEvent(note, patternTrack.instrument, tickRate);
+                    }
                 }
             }
         }
 
         public Pattern[] patterns;
         public AnywhenMetronome.TickRate tickRate;
-        public AnywhenInstrument instrument;
 
         private void Start()
         {
-            AnywhenMetronome.Instance.OnTick32 += OnTick32;
+            AnywhenMetronome.Instance.OnTick16 += OnTick32;
         }
 
         private void OnTick32()
         {
             foreach (var pattern in patterns)
             {
-                pattern.OnTick( instrument, tickRate);
+                pattern.OnTick(tickRate);
             }
+        }
+
+        private void Update()
+        {
+            for (int i = 0; i < patterns.Length; i++)
+            {
+                patterns[i].currentWeight = Mathf.Lerp(1, 0,   mixCurve.Evaluate(Mathf.Abs(i-currentPatternMix)));
+            }
+        }
+
+        [ContextMenu("SavePattern")]
+        void SavePattern()
+        {
+            savePatternCollection.patterns = patterns;
+        }
+        [ContextMenu("LoadPattern")]
+        void LoadPattern()
+        {
+            patterns = savePatternCollection.patterns;
         }
     }
 }

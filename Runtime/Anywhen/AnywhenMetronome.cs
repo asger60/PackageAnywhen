@@ -2,6 +2,7 @@
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
@@ -262,17 +263,7 @@ namespace Anywhen
         public int GetCountForTickRate(TickRate tickRate)
         {
             return (Sub32 / (32 / (int)tickRate));
- 
-            return tickRate switch
-            {
-                TickRate.None => 0,
-                TickRate.Sub2 => sub2,
-                TickRate.Sub4 => sub4,
-                TickRate.Sub8 => sub8,
-                TickRate.Sub16 => Sub16,
-                TickRate.Sub32 => Sub32,
-                _ => throw new ArgumentOutOfRangeException(nameof(tickRate), tickRate, null)
-            };
+            
         }
 
         public float GetTimeToNextPlay(TickRate playbackRate)
@@ -299,6 +290,23 @@ namespace Anywhen
                 TickRate.Sub32 => OnTick32,
                 _ => throw new ArgumentOutOfRangeException(nameof(tickRate), tickRate, null)
             };
+        }
+        
+        public static double GetTiming(TickRate playbackRate, float swingAmount, float humanizeAmount)
+        {
+            //if (humanizeAmount <= 0) return 0;
+            float subLength = (float)AnywhenMetronome.Instance.GetLength(playbackRate) / 2f;
+            float drift = Random.Range(subLength * -1, subLength);
+            float swing = 0;
+
+            if (swingAmount > 0)
+            {
+                int count = AnywhenMetronome.Instance.GetCountForTickRate(playbackRate);
+                if (count % 2 != 0)
+                    swing = subLength * swingAmount;
+            }
+
+            return Mathf.Lerp(0, drift, humanizeAmount) + swing;
         }
     }
 }
