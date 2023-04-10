@@ -1,5 +1,6 @@
 using System;
 using Anywhen;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -12,6 +13,7 @@ namespace Samples.Scripts
         [Range(0, 3f)] public float currentPatternMix;
 
         public AnimationCurve mixCurve;
+
         [Serializable]
         public struct Pattern
         {
@@ -60,19 +62,22 @@ namespace Samples.Scripts
         {
             for (int i = 0; i < patterns.Length; i++)
             {
-                patterns[i].currentWeight = Mathf.Lerp(1, 0,   mixCurve.Evaluate(Mathf.Abs(i-currentPatternMix)));
+                patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
             }
         }
-
+#if UNITY_EDITOR
         [ContextMenu("SavePattern")]
         void SavePattern()
         {
             savePatternCollection.patterns = patterns;
+            EditorUtility.SetDirty(savePatternCollection);
         }
+
         [ContextMenu("LoadPattern")]
         void LoadPattern()
         {
             patterns = savePatternCollection.patterns;
         }
+#endif
     }
 }
