@@ -41,6 +41,13 @@ namespace Samples.Scripts
                     }
                 }
             }
+
+            public bool ShouldTrigger(int trackIndex, int stepIndex)
+            {
+                if (currentWeight <= 0) return false;
+                //if (!patternTrack.steps[stepIndex].noteOn) continue;
+                return patternTracks[trackIndex].steps[stepIndex].noteOn && (currentWeight > patternTracks[trackIndex].steps[stepIndex].stepWeight) ;
+            }
         }
 
         public Pattern[] patterns;
@@ -65,6 +72,28 @@ namespace Samples.Scripts
             {
                 patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
             }
+        }
+
+        private readonly bool[] _currentPattern = new bool[16];
+        public bool[] GetCurrentPattern(int trackIndex)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                _currentPattern[i] = false;
+            }
+
+
+            foreach (var pattern in patterns)
+            {
+                for (int i = 0; i < 16; i++)
+                {
+                    if (pattern.ShouldTrigger(trackIndex, i))
+                        _currentPattern[i] = true;
+                }
+            }
+
+
+            return _currentPattern;
         }
 #if UNITY_EDITOR
         [ContextMenu("SavePattern")]
