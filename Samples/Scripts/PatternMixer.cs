@@ -1,5 +1,6 @@
 using System;
 using Anywhen;
+using PackageAnywhen.Runtime.Anywhen;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -31,7 +32,7 @@ namespace Samples.Scripts
                 {
                     if (patternTrack.steps[stepIndex].noteOn)
                     {
-                        if (Random.Range(0, 1f) > currentWeight) return;
+                        if (patternTrack.steps[stepIndex].stepWeight > currentWeight) return;
 
                         NoteEvent note = new NoteEvent(0, NoteEvent.EventTypes.NoteOn,
                             patternTrack.steps[stepIndex].accent ? 1 : 0.5f,
@@ -77,6 +78,21 @@ namespace Samples.Scripts
         void LoadPattern()
         {
             patterns = savePatternCollection.patterns;
+        }
+
+        [ContextMenu("Randomize step weights")]
+        void RandomizeStepWeights()
+        {
+            for (int i = 0; i < patterns.Length; i++)
+            {
+                foreach (var track in patterns[i].patternTracks)
+                {
+                    for (var index = 0; index < track.steps.Length; index++)
+                    {
+                        track.steps[index].stepWeight = Random.Range(0, 1f);
+                    }
+                }
+            }
         }
 #endif
     }

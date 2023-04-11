@@ -2,20 +2,25 @@ using System;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
-[Serializable]
-public class StepPattern
+namespace PackageAnywhen.Runtime.Anywhen
 {
     [Serializable]
-    public struct PatternStepEntry
+    public class StepPattern
     {
-        public int index;
-        public bool noteOn;
-        public bool accent;
-        [Range(-1f, 1f)]
-        public float nudge;
-    }
+        [Serializable]
+        public struct PatternStepEntry
+        {
+            public int index;
+            public bool noteOn;
+            public bool accent;
+            [Range(-1f, 1f)]
+            public float nudge;
 
-    public PatternStepEntry[] steps;
-    public AnywhenInstrument instrument;
+            public float stepWeight;
+        }
+
+        public PatternStepEntry[] steps;
+        public AnywhenInstrument instrument;
     
+    }
 }

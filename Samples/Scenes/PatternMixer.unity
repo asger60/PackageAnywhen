@@ -123,82 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &128955948
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 128955949}
-  - component: {fileID: 128955951}
-  - component: {fileID: 128955950}
-  m_Layer: 5
-  m_Name: Panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &128955949
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128955948}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 500411968}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &128955950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128955948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &128955951
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128955948}
-  m_CullTransparentMesh: 1
 --- !u!1 &336908727
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +167,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &500411967
+--- !u!1 &493711455
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,75 +175,61 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 500411968}
-  - component: {fileID: 500411970}
-  - component: {fileID: 500411969}
-  m_Layer: 5
-  m_Name: Panel
+  - component: {fileID: 493711456}
+  - component: {fileID: 493711457}
+  m_Layer: 0
+  m_Name: DanceParty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &500411968
-RectTransform:
+--- !u!4 &493711456
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500411967}
+  m_GameObject: {fileID: 493711455}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 128955949}
-  m_Father: {fileID: 1484970196}
-  m_RootOrder: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &500411969
+--- !u!114 &493711457
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500411967}
+  m_GameObject: {fileID: 493711455}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: c96b358c50cd8431dab657f0bd3ac5cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &500411970
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500411967}
-  m_CullTransparentMesh: 1
+  circlePositions:
+  - {x: 0.00000021855695, y: 0, z: 5}
+  - {x: 1.9134176, y: 0, z: 4.6193976}
+  - {x: 3.5355349, y: 0, z: 3.535533}
+  - {x: 4.619398, y: 0, z: 1.9134164}
+  - {x: 5, y: 0, z: -0.0000004371139}
+  - {x: 4.619397, y: 0, z: -1.9134183}
+  - {x: 3.5355332, y: 0, z: -3.5355344}
+  - {x: 1.9134157, y: 0, z: -4.6193986}
+  - {x: -0.0000024438102, y: 0, z: -5}
+  - {x: -1.913418, y: 0, z: -4.619397}
+  - {x: -3.535535, y: 0, z: -3.5355327}
+  - {x: -4.6193986, y: 0, z: -1.913415}
+  - {x: -5, y: 0, z: 0}
+  - {x: -4.6193976, y: 0, z: 1.9134173}
+  - {x: -3.535534, y: 0, z: 3.535534}
+  - {x: -1.9134165, y: 0, z: 4.6193976}
+  stepPrefab: {fileID: 4431123535542898058, guid: dc45d587406f847249236ed754c871f8, type: 3}
+  steps: []
 --- !u!1 &716641318
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,7 +386,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 20
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -501,115 +411,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 30, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1484970192
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1484970196}
-  - component: {fileID: 1484970195}
-  - component: {fileID: 1484970194}
-  - component: {fileID: 1484970193}
-  m_Layer: 5
-  m_Name: Canvas
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1484970193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484970192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &1484970194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484970192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
---- !u!223 &1484970195
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484970192}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
---- !u!224 &1484970196
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484970192}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 500411968}
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &1637504776
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,140 +543,336 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   patterns:
-  - currentWeight: 1
+  - currentWeight: 0
     patternTracks:
     - steps:
       - index: 0
         noteOn: 1
-        accent: 0
+        accent: 1
         nudge: 0
+        stepWeight: 0.8697635
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.18954432
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.33049375
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.02263403
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.27906126
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.15250242
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.9326713
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.2758929
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.7360003
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.55142254
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.18916702
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.54620093
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.46267444
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.43952233
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.33438903
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      instrument: {fileID: 11400000, guid: 1820bc9ce02ed41d29401a7c57f40ec5, type: 2}
+        stepWeight: 0.101239204
+      instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
     - steps:
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.253635
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.34923667
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.7594725
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.677647
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.82938254
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4760452
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.84109485
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.97831297
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.43377668
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.56461674
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.75188315
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6169383
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9030057
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8855287
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7177259
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7764367
+      instrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.46592242
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8967707
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.70053756
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.29724675
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.57311517
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.040999413
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.31368858
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.38362533
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.5969961
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6126184
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.81924796
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.26741403
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.1499834
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6007586
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.025449514
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5311647
+      instrument: {fileID: 11400000, guid: 851f3b3aa6cbf48e98fc531b83686b64, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.6608794
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.19823658
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.089230776
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.09395468
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7729356
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.50588614
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7361125
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.46244735
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.076092124
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42708844
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.8312057
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8411361
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.0037999153
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8207518
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.1149416
       - index: 0
         noteOn: 1
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      instrument: {fileID: 11400000, guid: 43d87a66235a84132906d915b168c23b, type: 2}
+        stepWeight: 0.26907498
+      instrument: {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
     swing: 0
     humanize: 0
   - currentWeight: 0
@@ -875,201 +880,831 @@ MonoBehaviour:
     - steps:
       - index: 0
         noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.034155726
+      - index: 0
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.23797154
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.41164976
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.95336115
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.12590456
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8011149
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6446483
       - index: 0
         noteOn: 1
-        accent: 0
+        accent: 1
         nudge: 0
+        stepWeight: 0.024706244
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.3701741
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.4777903
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.92069507
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.2944792
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.31728476
       - index: 0
-        noteOn: 1
-        accent: 0
+        noteOn: 0
+        accent: 1
         nudge: 0
+        stepWeight: 0.57423025
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.31486636
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      instrument: {fileID: 11400000, guid: 1820bc9ce02ed41d29401a7c57f40ec5, type: 2}
+        stepWeight: 0.53694814
+      instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
     - steps:
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.10647261
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.6673188
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.64946866
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.29421443
       - index: 0
         noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.05996692
+      - index: 0
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.96331716
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.331711
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.17319322
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13358068
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.94537425
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.05457127
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.1055392
       - index: 0
         noteOn: 1
-        accent: 0
+        accent: 1
         nudge: 0
+        stepWeight: 0.6221157
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.0069423914
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.56219095
       - index: 0
         noteOn: 0
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 0
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      instrument: {fileID: 11400000, guid: 43d87a66235a84132906d915b168c23b, type: 2}
+        stepWeight: 0.8047359
+      instrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
     - steps:
       - index: 0
         noteOn: 1
         accent: 1
         nudge: 0
+        stepWeight: 0.17976797
       - index: 0
-        noteOn: 1
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.7813188
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.979831
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.73958373
       - index: 0
         noteOn: 1
         accent: 1
         nudge: 0
+        stepWeight: 0.25123698
       - index: 0
-        noteOn: 1
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.70586705
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.5687236
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.27004796
       - index: 0
         noteOn: 1
         accent: 1
         nudge: 0
+        stepWeight: 0.36774606
       - index: 0
-        noteOn: 1
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.10169685
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.122241616
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.10081732
       - index: 0
         noteOn: 1
         accent: 1
         nudge: 0
+        stepWeight: 0.14219332
       - index: 0
-        noteOn: 1
+        noteOn: 0
         accent: 0
         nudge: 0
+        stepWeight: 0.44697696
       - index: 0
-        noteOn: 1
+        noteOn: 0
         accent: 1
         nudge: 0
+        stepWeight: 0.2450974
       - index: 0
         noteOn: 1
         accent: 0
         nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 1
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 1
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 1
-        nudge: 0
-      - index: 0
-        noteOn: 1
-        accent: 0
-        nudge: 0
+        stepWeight: 0.17355967
       instrument: {fileID: 11400000, guid: 851f3b3aa6cbf48e98fc531b83686b64, type: 2}
+    swing: 0
+    humanize: 0
+  - currentWeight: 0.36645812
+    patternTracks:
+    - steps:
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.9003247
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.623877
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.35335833
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.93437886
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.71522856
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3347978
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30286306
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.5917545
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8969419
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7990973
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.22770894
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.77239513
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8354368
+      - index: 0
+        noteOn: 0
+        accent: 1
+        nudge: 0
+        stepWeight: 0.06297827
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.72350967
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.08516216
+      instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.08376479
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.47409958
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4810379
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8129722
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7110411
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13394594
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4856364
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8550838
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.08247936
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5642672
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.45144683
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.12773359
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.31929582
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.060262203
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.66107
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.44944757
+      instrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.6757077
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.039985776
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.78232336
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7914697
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.13406563
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.64700925
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.5686206
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.41818804
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.8664999
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.22258544
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.116030335
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.19682348
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.9867728
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8799242
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7031771
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.24411035
+      instrument: {fileID: 11400000, guid: 851f3b3aa6cbf48e98fc531b83686b64, type: 2}
+    swing: 0
+    humanize: 0
+  - currentWeight: 0.6335418
+    patternTracks:
+    - steps:
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.47641772
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8119291
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.37897736
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.36582667
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.053250313
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.47216517
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.14766097
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.2527123
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.31890625
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.0016000271
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.4140703
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.64970887
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.43804067
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.96464324
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.17839956
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7669269
+      instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3174855
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.2194866
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.18066001
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.73678327
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.44692272
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13184929
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.79984343
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7874223
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.49194962
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6445948
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8333069
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42801052
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.43699282
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.1797359
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.53851396
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5328937
+      instrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.012631059
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.92740893
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.55323845
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6284183
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.80210304
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.43313748
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.99492764
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8472371
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.98090625
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.84931576
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.4381488
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.95014143
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.8413049
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.1117301
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7990167
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30893844
+      instrument: {fileID: 11400000, guid: 851f3b3aa6cbf48e98fc531b83686b64, type: 2}
+    - steps:
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.92706966
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5147304
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.96933603
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.34498447
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.8324343
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42087883
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7362312
+      - index: 0
+        noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.15624964
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.79911065
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.36008912
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.5006574
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42877954
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.7114314
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5797505
+      - index: 0
+        noteOn: 1
+        accent: 1
+        nudge: 0
+        stepWeight: 0.031589746
+      - index: 0
+        noteOn: 1
+        accent: 0
+        nudge: 0
+        stepWeight: 0.34930235
+      instrument: {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
     swing: 0
     humanize: 0
   tickRate: 16
@@ -1184,5 +1819,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

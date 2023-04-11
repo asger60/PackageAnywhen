@@ -1,4 +1,5 @@
 using Anywhen;
+using PackageAnywhen.Runtime.Anywhen;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,10 +25,14 @@ public class PatternStepEntryDrawer : PropertyDrawer
         // Calculate rects
         var isOnRect = new Rect(position.x, position.y, 80, 20);
         var accentRect = new Rect(position.x + 100, position.y, 60, 20);
+        var weightRect = new Rect(position.x + 200, position.y, 35, 20);
+        
 
         // Draw fields - pass GUIContent.none to each so they are drawn without labels
         EditorGUI.PropertyField(isOnRect, property.FindPropertyRelative("noteOn"));
         EditorGUI.PropertyField(accentRect, property.FindPropertyRelative("accent"), GUIContent.none);
+        
+        EditorGUI.PropertyField(weightRect, property.FindPropertyRelative("stepWeight"), GUIContent.none);
 
         //var isOnLabel = new GUIContent("x");
 
