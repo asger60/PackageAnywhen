@@ -373,11 +373,12 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   circleStepLength: 32
   circleDistance: 3
-  stepPrefab: {fileID: 4431123535542898058, guid: dc45d587406f847249236ed754c871f8, type: 3}
+  stepPrefab: {fileID: 5210422223288221570, guid: dc45d587406f847249236ed754c871f8, type: 3}
   steps: []
   patternMixer: {fileID: 1683473675}
   trackIndex: 0
   tickRate: 16
+  groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
 --- !u!1 &716641318
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,11 +581,12 @@ MonoBehaviour:
   color: {r: 0.9339623, g: 0.57684726, b: 0.14538093, a: 1}
   circleStepLength: 32
   circleDistance: 6
-  stepPrefab: {fileID: 4431123535542898058, guid: dc45d587406f847249236ed754c871f8, type: 3}
+  stepPrefab: {fileID: 5210422223288221570, guid: dc45d587406f847249236ed754c871f8, type: 3}
   steps: []
   patternMixer: {fileID: 1683473675}
   trackIndex: 3
   tickRate: 16
+  groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
 --- !u!4 &855540688
 Transform:
   m_ObjectHideFlags: 0
@@ -697,11 +699,12 @@ MonoBehaviour:
   color: {r: 0.9716981, g: 0.087086126, b: 0.087086126, a: 1}
   circleStepLength: 32
   circleDistance: 4
-  stepPrefab: {fileID: 4431123535542898058, guid: dc45d587406f847249236ed754c871f8, type: 3}
+  stepPrefab: {fileID: 5210422223288221570, guid: dc45d587406f847249236ed754c871f8, type: 3}
   steps: []
   patternMixer: {fileID: 1683473675}
   trackIndex: 1
   tickRate: 16
+  groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
 --- !u!4 &959621062
 Transform:
   m_ObjectHideFlags: 0
@@ -806,6 +809,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8614559402827057862, guid: d7c10d3df98554e4b9df2aaa4da74790, type: 3}
   m_PrefabInstance: {fileID: 1442714710}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1136631385 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8614559402827057861, guid: d7c10d3df98554e4b9df2aaa4da74790, type: 3}
+  m_PrefabInstance: {fileID: 1442714710}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1222999227
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,6 +929,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1222999231}
     m_Modifications:
+    - target: {fileID: 8614559402827057861, guid: d7c10d3df98554e4b9df2aaa4da74790, type: 3}
+      propertyPath: m_MaxValue
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8614559402827057862, guid: d7c10d3df98554e4b9df2aaa4da74790, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1155,13 +1173,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   patternInstruments:
   - instruments:
-    - instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
+    - instrument: {fileID: 11400000, guid: 1820bc9ce02ed41d29401a7c57f40ec5, type: 2}
       color: {r: 1, g: 0.9899089, b: 0.5990566, a: 1}
-    - instrument: {fileID: 11400000, guid: d9f7823bc9f174d88a8b18934a308648, type: 2}
+    - instrument: {fileID: 11400000, guid: 43d87a66235a84132906d915b168c23b, type: 2}
       color: {r: 0.33922213, g: 0.7264151, b: 0.48814398, a: 1}
-    - instrument: {fileID: 11400000, guid: 53a48e97af5384815ad3574e5df83e4e, type: 2}
+    - instrument: {fileID: 11400000, guid: 851f3b3aa6cbf48e98fc531b83686b64, type: 2}
       color: {r: 0.14150944, g: 0.4030801, b: 0.5660378, a: 1}
-    - instrument: {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
+    - instrument: {fileID: 11400000, guid: bd8a8e1f2b20741c2aac40e59448460d, type: 2}
       color: {r: 0.7924528, g: 0.21306513, b: 0.42358974, a: 1}
     currentWeight: 0
     patternTracks:
@@ -1169,269 +1187,1077 @@ MonoBehaviour:
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.1099025
+        stepWeight: 0.6958213
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.5982987
+        stepWeight: 0.67543244
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.24378538
+        stepWeight: 0.32482737
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.84976554
+        stepWeight: 0.33528632
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.63377094
+        stepWeight: 0.40195185
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.9298948
+        stepWeight: 0.6521174
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.6906524
+        stepWeight: 0.30331272
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.008429408
+        stepWeight: 0.28955406
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.75831616
+        stepWeight: 0.9534135
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.18773353
+        stepWeight: 0.0803498
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.33878797
+        stepWeight: 0.39604098
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.09999061
+        stepWeight: 0.97167146
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.28676134
+        stepWeight: 0.3389035
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.47054332
+        stepWeight: 0.7914455
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.08241856
+        stepWeight: 0.1329602
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.31452435
+        stepWeight: 0.5078592
     - steps:
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.84139204
+        stepWeight: 0.85409856
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.4684487
+        stepWeight: 0.036634445
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.3556735
+        stepWeight: 0.2515903
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.41607767
+        stepWeight: 0.36956042
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.41670328
+        stepWeight: 0.9113276
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.94695663
+        stepWeight: 0.85991776
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.8516861
+        stepWeight: 0.5338834
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.25505978
+        stepWeight: 0.17446148
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.43144244
+        stepWeight: 0.4036097
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.65022314
+        stepWeight: 0.9453378
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.0003823042
+        stepWeight: 0.73382473
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.16635811
+        stepWeight: 0.47284776
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.7431141
+        stepWeight: 0.6880604
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.95880425
+        stepWeight: 0.53892654
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.4645695
+        stepWeight: 0.7543572
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.77495503
+        stepWeight: 0.27069443
     - steps:
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.44902235
+        stepWeight: 0.21945381
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.8416904
+        stepWeight: 0.9075657
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.46370178
+        stepWeight: 0.30891007
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.62737525
+        stepWeight: 0.35814255
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.044952393
+        stepWeight: 0.13252544
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.53486747
+        stepWeight: 0.16018605
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.3861876
+        stepWeight: 0.1329155
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.5640717
+        stepWeight: 0.45823377
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.11699283
+        stepWeight: 0.66187215
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.9275092
+        stepWeight: 0.054176092
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.07266247
+        stepWeight: 0.1399777
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.8296915
+        stepWeight: 0.83578587
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.76952565
+        stepWeight: 0.49310738
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.6294954
+        stepWeight: 0.6554687
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.91165984
+        stepWeight: 0.27005297
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.8543829
+        stepWeight: 0.038453937
     - steps:
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.12636173
+        stepWeight: 0.38288146
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.3438354
+        stepWeight: 0.7396804
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.50378937
+        stepWeight: 0.553415
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.9564556
+        stepWeight: 0.43506926
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.38160723
+        stepWeight: 0.66471016
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.27350217
+        stepWeight: 0.6783601
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.7070335
+        stepWeight: 0.7540301
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.92096925
+        stepWeight: 0.07699633
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.6747296
+        stepWeight: 0.98423386
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.043366432
+        stepWeight: 0.3302521
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.33821076
+        stepWeight: 0.49991745
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.99428236
+        stepWeight: 0.35403687
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.4765206
+        stepWeight: 0.75328386
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.67837024
+        stepWeight: 0.16950977
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.33655828
+        stepWeight: 0.5849386
       - noteOn: 0
         accent: 0
         nudge: 0
-        stepWeight: 0.8095844
-  instruments:
-  - {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
-  - {fileID: 11400000, guid: d9f7823bc9f174d88a8b18934a308648, type: 2}
-  - {fileID: 11400000, guid: 53a48e97af5384815ad3574e5df83e4e, type: 2}
-  - {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
+        stepWeight: 0.39914507
+  - instruments:
+    - instrument: {fileID: 11400000, guid: f8a11c5e8540f478a8dd5830c30baaf4, type: 2}
+      color: {r: 0.9528302, g: 0.7903217, b: 0.0764062, a: 1}
+    - instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
+      color: {r: 0.16862747, g: 0.4627451, b: 0.3542378, a: 1}
+    - instrument: {fileID: 11400000, guid: 53a48e97af5384815ad3574e5df83e4e, type: 2}
+      color: {r: 0.12495552, g: 0.26921955, b: 0.6792453, a: 1}
+    - instrument: {fileID: 11400000, guid: 66822fb3e52694217a26351b1ff3b5d2, type: 2}
+      color: {r: 0.6603774, g: 0.09033466, b: 0.108574174, a: 1}
+    currentWeight: 0
+    patternTracks:
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6291218
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.67015934
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.18423283
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9795958
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42560726
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.686671
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.10802519
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42530113
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9102483
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.29075092
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.35359746
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.016848564
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5376672
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.72589743
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4680429
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.54936653
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.39384347
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.71674275
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.2936718
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.49710268
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.16086578
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5490621
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6374154
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8475028
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5258948
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.68114185
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.838624
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8617058
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8701602
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6232551
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6759944
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.985935
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8867146
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8463347
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13633513
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.08073008
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.82279503
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.51458544
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7480924
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.62389964
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.81372917
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30990487
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9282973
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6529745
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4313118
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.16277552
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3513978
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.19394565
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.37266427
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8787353
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.88826907
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8302518
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.67494965
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.79745173
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7906152
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.02517867
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.44419986
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13735831
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5535739
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4473527
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9853606
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9502996
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6054072
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.033528924
+  - instruments:
+    - instrument: {fileID: 11400000, guid: f035cbded1ef0482f8748dc557cb56ab, type: 2}
+      color: {r: 0.8867924, g: 0.85080755, b: 0.6901922, a: 1}
+    - instrument: {fileID: 11400000, guid: d9f7823bc9f174d88a8b18934a308648, type: 2}
+      color: {r: 0.08410467, g: 0.6603774, b: 0.22622843, a: 1}
+    - instrument: {fileID: 11400000, guid: a9d830d3799ef4cb595c877bb9344170, type: 2}
+      color: {r: 0.34100214, g: 0.54294443, b: 0.745283, a: 1}
+    - instrument: {fileID: 11400000, guid: ea18508f637254a5c83bb5c7485984f4, type: 2}
+      color: {r: 0.6698113, g: 0.375979, b: 0.5105779, a: 1}
+    currentWeight: 0
+    patternTracks:
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.049082875
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.18215263
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.61575085
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.59165734
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.41788226
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7895895
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.70672464
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.52848643
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.70576406
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3950997
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.60207933
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8153913
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5487023
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.80873275
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.72840905
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6841744
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8571683
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.047204375
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3950321
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.39777917
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7466655
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.55495816
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.18312073
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7118734
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8283148
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.22631967
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.2036761
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.87480736
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.22302389
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.31608623
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.81731474
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.91209614
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.04033959
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5295163
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.581147
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.14728057
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.06605649
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6745429
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7718549
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6516893
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.06575179
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5551353
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.28354698
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.47854143
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6253544
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.084371924
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.79929864
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.1987468
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.08288121
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5332007
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.11445439
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.94539726
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.55520815
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.52186924
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5222488
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.5553445
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.938959
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4855736
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8245492
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.21368253
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.10616565
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.57474154
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6772574
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.35296077
+  - instruments:
+    - instrument: {fileID: 11400000, guid: ffc2057dbb7134e1e8aaf913a6d1c59d, type: 2}
+      color: {r: 0.8490566, g: 0.4852283, b: 0.14017442, a: 1}
+    - instrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
+      color: {r: 0.1505874, g: 0.6792453, b: 0.6361561, a: 1}
+    - instrument: {fileID: 11400000, guid: 49fc783065ca8418ca693ddab86d4692, type: 2}
+      color: {r: 0.43504873, g: 0.3725525, b: 0.8679245, a: 1}
+    - instrument: {fileID: 11400000, guid: 558254b18058643d59dee0c57771980e, type: 2}
+      color: {r: 0.7830189, g: 0.24007656, b: 0.59579736, a: 1}
+    currentWeight: 0
+    patternTracks:
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.24747884
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42506975
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6444684
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6454098
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9439148
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.89567256
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30464572
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.49634737
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9311676
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.29602033
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.42433864
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.85751593
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.71842694
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.48724657
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.124153376
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.022796988
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.9463178
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.61301404
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.1652515
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3245129
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.78361535
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7783551
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.22727299
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30017072
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.34876364
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.089536786
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.56733614
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6399865
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.83602095
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.068547845
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.11885035
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13571107
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.21419132
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.12022495
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.2273575
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.38588005
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13471127
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.7506341
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.892506
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.13969553
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.8319236
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.71920216
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.98150873
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.4267494
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.36502796
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.67224324
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.70947516
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.99499404
+    - steps:
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.30027336
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.45192772
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.60530096
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.0091689825
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.553464
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.92834044
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.33773333
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.026809335
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.15659201
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.73040974
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.3314188
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.68843174
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.51867074
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.6462742
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.31473976
+      - noteOn: 0
+        accent: 0
+        nudge: 0
+        stepWeight: 0.20546424
   patterns:
-  - currentWeight: 0
+  - currentWeight: 1
     patternTracks:
     - steps:
       - noteOn: 1
@@ -1588,7 +2414,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.040999413
-      - noteOn: 1
+      - noteOn: 0
         accent: 1
         nudge: 0
         stepWeight: 0.31368858
@@ -1620,7 +2446,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.6007586
-      - noteOn: 1
+      - noteOn: 0
         accent: 1
         nudge: 0
         stepWeight: 0.025449514
@@ -1637,7 +2463,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.19823658
-      - noteOn: 0
+      - noteOn: 1
         accent: 1
         nudge: 0
         stepWeight: 0.089230776
@@ -1645,7 +2471,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.09395468
-      - noteOn: 1
+      - noteOn: 0
         accent: 1
         nudge: 0
         stepWeight: 0.7729356
@@ -1653,7 +2479,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.50588614
-      - noteOn: 1
+      - noteOn: 0
         accent: 1
         nudge: 0
         stepWeight: 0.7361125
@@ -1661,7 +2487,7 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.46244735
-      - noteOn: 0
+      - noteOn: 1
         accent: 1
         nudge: 0
         stepWeight: 0.076092124
@@ -1685,11 +2511,11 @@ MonoBehaviour:
         accent: 0
         nudge: 0
         stepWeight: 0.8207518
-      - noteOn: 0
+      - noteOn: 1
         accent: 1
         nudge: 0
         stepWeight: 0.1149416
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         nudge: 0
         stepWeight: 0.26907498
@@ -1894,7 +2720,7 @@ MonoBehaviour:
         stepWeight: 0.17355967
     swing: 0
     humanize: 0
-  - currentWeight: 0.36645812
+  - currentWeight: 0
     patternTracks:
     - steps:
       - noteOn: 1
@@ -2158,7 +2984,7 @@ MonoBehaviour:
         stepWeight: 0.24411035
     swing: 0
     humanize: 0
-  - currentWeight: 0.6335418
+  - currentWeight: 0
     patternTracks:
     - steps:
       - noteOn: 1
@@ -2423,7 +3249,8 @@ MonoBehaviour:
     swing: 0
     humanize: 0
   tickRate: 16
-  uiSlider: {fileID: 1680447462}
+  uiSliderPattern: {fileID: 1680447462}
+  uiSliderInstrument: {fileID: 1136631385}
 --- !u!1 &1709344286
 GameObject:
   m_ObjectHideFlags: 0
@@ -2664,11 +3491,12 @@ MonoBehaviour:
   color: {r: 0.09211465, g: 0.3736595, b: 0.8490566, a: 1}
   circleStepLength: 32
   circleDistance: 5
-  stepPrefab: {fileID: 4431123535542898058, guid: dc45d587406f847249236ed754c871f8, type: 3}
+  stepPrefab: {fileID: 5210422223288221570, guid: dc45d587406f847249236ed754c871f8, type: 3}
   steps: []
   patternMixer: {fileID: 1683473675}
   trackIndex: 2
   tickRate: 16
+  groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
 --- !u!4 &1782099247
 Transform:
   m_ObjectHideFlags: 0

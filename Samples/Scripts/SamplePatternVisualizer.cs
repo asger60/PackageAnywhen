@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Anywhen;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -35,8 +36,7 @@ namespace Samples.Scripts
                 _gameObject = stepObject;
                 _objectRenderer = _gameObject.GetComponent<Renderer>();
                 _materialPropertyBlock = new MaterialPropertyBlock();
-                _materialPropertyBlock.SetColor("_Color", color);
-                _objectRenderer.SetPropertyBlock(_materialPropertyBlock);
+                SetColor(color);
                 _samplePatternVisualizer = samplePatternVisualizer;
                 _connectedStepIndex = (int)Mathf.Repeat(connectedStep, 16);
 
@@ -76,7 +76,13 @@ namespace Samples.Scripts
             public void SetNoteOn(bool stepTrigger)
             {
                 noteOn = stepTrigger;
-                _idleScale = noteOn ? Vector3.one * 0.4f : Vector3.one * 0.05f;
+                _idleScale = noteOn ? Vector3.one * 0.4f : Vector3.one * 0.3f;
+            }
+
+            public void SetColor(Color color)
+            {
+                _materialPropertyBlock.SetColor("_Color", color);
+                _objectRenderer.SetPropertyBlock(_materialPropertyBlock);
             }
 
             public void Update()
@@ -87,35 +93,38 @@ namespace Samples.Scripts
                 Vector3 wobbleAdd = Vector3.up * (Mathf.Sin(Time.time * _wobbleSpeed) * _wobbleAmount);
                 if (!noteOn)
                     wobbleAdd = Vector3.zero;
-                _gameObject.transform.position =
-                    Vector3.Lerp(_gameObject.transform.position,
-                        _idlePosition + wobbleAdd,
-                        Time.deltaTime * 5);
-
                 //_gameObject.transform.position =
-                //    Vector3.Lerp(_currentPosition, _nextPosition, _stepTimer / _stepDuration);
+                //    Vector3.Lerp(_gameObject.transform.position,
+                //        _idlePosition + wobbleAdd,
+                //        Time.deltaTime * 5);
+
+                
             }
         }
 
         public Color color = Color.white;
         public int circleStepLength = 16;
         public float circleDistance = 5;
-        public GameObject stepPrefab;
+        public PartyType stepPrefab;
         public List<Steps> steps;
         public PatternMixer patternMixer;
         public int trackIndex;
         public AnywhenMetronome.TickRate tickRate;
-
+        private List<PartyType> _partyTypes = new List<PartyType>();
+        public GameObject groundTilePrefab;
         private void Start()
         {
-            circlePositions = new Vector3[circleStepLength];
             GeneratePositions();
-            for (var i = 0; i < circleStepLength; i++)
+            for (var i = 0; i < 16; i++)
             {
                 var step = new Steps();
                 var stepObject = Instantiate(stepPrefab, transform);
+                var groundObject = Instantiate(groundTilePrefab, transform);
+                groundObject.transform.position = circlePositions[i];
+                _partyTypes.Add(stepObject);
+                stepObject.Init(i, this);
                 stepObject.transform.localScale = Vector3.one * Random.Range(0, 1f);
-                step.Init(this, i, stepObject, color);
+                step.Init(this, i, stepObject.gameObject, color);
                 switch (tickRate)
                 {
                     case AnywhenMetronome.TickRate.None:
@@ -146,11 +155,14 @@ namespace Samples.Scripts
         private void Update()
         {
             var stepTriggers = patternMixer.GetCurrentPattern(trackIndex);
+            var instruments = patternMixer.GetInstruments(trackIndex);
             for (var i = 0; i < steps.Count; i++)
             {
                 var step = steps[i];
                 step.SetNoteOn(stepTriggers[(int)Mathf.Repeat(i, 16)]);
+                step.SetColor(instruments[(int)Mathf.Repeat(i, 16)].color);
                 step.Update();
+                _partyTypes[i].SetNoteOn(stepTriggers[(int)Mathf.Repeat(i, 16)]);
             }
         }
 

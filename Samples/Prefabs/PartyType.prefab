@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4431123535542898059}
   - component: {fileID: 4431123535542898061}
   - component: {fileID: 4431123535542898060}
+  - component: {fileID: 5210422223288221570}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: PartyType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,3 +84,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5210422223288221570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4431123535542898058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3728abc40ea55456695c8b4dc47e7c72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

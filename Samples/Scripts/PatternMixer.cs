@@ -2,8 +2,10 @@ using System;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -14,7 +16,7 @@ namespace Samples.Scripts
         public PatternCollection savePatternCollection;
         [Range(0, 3f)] public float currentPatternMix;
         [Range(0, 3f)] public float currentInstrumentMix;
-        
+
 
         public AnimationCurve mixCurve;
 
@@ -64,14 +66,14 @@ namespace Samples.Scripts
             public InstrumentObject[] instruments;
             public float currentWeight;
             public StepPattern[] patternTracks;
-            
-            public bool IsActive(int trackIndex, int stepIndex)
+
+            public float GetStepWeight(int trackIndex, int stepIndex)
             {
-                if (currentWeight <= 0) return false;
-                return (currentWeight > patternTracks[trackIndex].steps[stepIndex].stepWeight);
+                if (currentWeight <= 0) return 0;
+                return patternTracks[trackIndex].steps[stepIndex].stepWeight;
             }
         }
-        
+
         [Serializable]
         public struct InstrumentObject
         {
@@ -82,11 +84,11 @@ namespace Samples.Scripts
 
         public PatternInstrument[] patternInstruments;
 
-        public AnywhenInstrument[] instruments;
-
         public Pattern[] patterns;
         public AnywhenMetronome.TickRate tickRate;
-        public Slider uiSlider;
+        public Slider uiSliderPattern;
+        public Slider uiSliderInstrument;
+
 
         private void Start()
         {
@@ -95,6 +97,8 @@ namespace Samples.Scripts
 
         private void OnTick()
         {
+            int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
+
             for (var i = 0; i < patterns.Length; i++)
             {
                 for (var i1 = 0; i1 < patterns[i].patternTracks.Length; i1++)
@@ -102,15 +106,34 @@ namespace Samples.Scripts
                     var n = patterns[i].patternTracks[i1].OnTick(tickRate, patterns[i].currentWeight, 0, 0);
                     if (n.notes != null)
                     {
-                        EventFunnel.HandleNoteEvent(n, instruments[i1], tickRate);
+                        EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, i1).instrument, tickRate);
                     }
                 }
             }
         }
 
+        InstrumentObject GetInstrumentForTrack(int stepIndex, int trackIndex)
+        {
+            float bestStepWeight = 0;
+            InstrumentObject instrumentObject = patternInstruments[0].instruments[0];
+            foreach (var patternInstrument in patternInstruments)
+            {
+                float thisStepWeight = patternInstrument.currentWeight +
+                                       patternInstrument.GetStepWeight(trackIndex, stepIndex);
+                if (thisStepWeight > bestStepWeight)
+                {
+                    bestStepWeight = thisStepWeight;
+                    instrumentObject = patternInstrument.instruments[trackIndex];
+                }
+            }
+
+            return instrumentObject;
+        }
+
         private void Update()
         {
-            currentPatternMix = uiSlider.value;
+            currentPatternMix = uiSliderPattern.value;
+            currentInstrumentMix = uiSliderInstrument.value;
             for (int i = 0; i < patterns.Length; i++)
             {
                 patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
@@ -118,11 +141,13 @@ namespace Samples.Scripts
 
             for (var i = 0; i < patternInstruments.Length; i++)
             {
-                patternInstruments[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
+                patternInstruments[i].currentWeight =
+                    Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
             }
         }
 
         private readonly bool[] _currentPattern = new bool[16];
+
         public bool[] GetCurrentPattern(int trackIndex)
         {
             for (int i = 0; i < 16; i++)
@@ -143,6 +168,22 @@ namespace Samples.Scripts
 
             return _currentPattern;
         }
+
+        private readonly InstrumentObject[] _currentInstruments = new InstrumentObject[16];
+
+        public InstrumentObject[] GetInstruments(int trackIndex)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                //foreach (var patternInstrument in patternInstruments)
+                {
+                    _currentInstruments[i] = GetInstrumentForTrack(i, trackIndex);
+                }
+            }
+
+            return _currentInstruments;
+        }
+
 #if UNITY_EDITOR
         [ContextMenu("SavePattern")]
         void SavePattern()
@@ -171,7 +212,7 @@ namespace Samples.Scripts
                 }
             }
         }
-        
+
         [ContextMenu("Randomize instrument weights")]
         void RandomizeInstrumentWeights()
         {
