@@ -19,28 +19,55 @@ namespace Samples.Scripts
             public int _currentStepIndex;
             private SamplePatternVisualizer _samplePatternVisualizer;
             public bool noteOn;
+            private Vector3 _currentPosition, _nextPosition;
+            private float _stepTimer;
+            private float _stepDuration;
+            private MaterialPropertyBlock _materialPropertyBlock;
+            private Renderer _objectRenderer;
+            private Vector3 _idleScale;
+            private Vector3 _idlePosition;
+            private float _wobbleSpeed;
+            private float _wobbleAmount;
 
-            public void Init(SamplePatternVisualizer samplePatternVisualizer, int connectedStep, GameObject stepObject)
+            public void Init(SamplePatternVisualizer samplePatternVisualizer, int connectedStep, GameObject stepObject,
+                Color color)
             {
+                _gameObject = stepObject;
+                _objectRenderer = _gameObject.GetComponent<Renderer>();
+                _materialPropertyBlock = new MaterialPropertyBlock();
+                _materialPropertyBlock.SetColor("_Color", color);
+                _objectRenderer.SetPropertyBlock(_materialPropertyBlock);
                 _samplePatternVisualizer = samplePatternVisualizer;
                 _connectedStepIndex = (int)Mathf.Repeat(connectedStep, 16);
-                _gameObject = stepObject;
+
                 _currentStepIndex = _samplePatternVisualizer.circleStepLength - connectedStep;
+                _stepDuration = (float)AnywhenMetronome.Instance.GetLength(_samplePatternVisualizer.tickRate);
+                _gameObject.transform.position =
+                    _samplePatternVisualizer.circlePositions[
+                        (int)Mathf.Repeat(_currentStepIndex, (int)_samplePatternVisualizer.tickRate)];
+                _idleScale = noteOn ? Vector3.one * 0.4f : Vector3.one * 0.05f;
+                _idlePosition =
+                    _samplePatternVisualizer.circlePositions[
+                        (int)Mathf.Repeat(_currentStepIndex, (int)_samplePatternVisualizer.tickRate)];
+                _wobbleSpeed = Random.Range(1, 3f);
+                _wobbleAmount = Random.Range(0.05f, 0.2f);
             }
 
             public void Tick()
             {
-                _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, _samplePatternVisualizer.circleStepLength);
-                _gameObject.transform.position = _samplePatternVisualizer.circlePositions[_currentStepIndex];
+                _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, (int)_samplePatternVisualizer.tickRate);
+                
+                _currentPosition = _samplePatternVisualizer.circlePositions[_currentStepIndex];
+                _nextPosition =
+                    _samplePatternVisualizer.circlePositions[
+                        (int)Mathf.Repeat(_currentStepIndex + 1, (int)_samplePatternVisualizer.tickRate)];
+                _stepTimer = 0;
 
-                _gameObject.transform.localScale = noteOn ? Vector3.one * 0.4f : Vector3.one * 0.05f;
-
-                if (noteOn && (int)Mathf.Repeat(_currentStepIndex, 16) == 0)
+                if (noteOn && (int)Mathf.Repeat(_currentStepIndex, (int)_samplePatternVisualizer.tickRate) == 0)
                 {
                     _gameObject.transform.position += Vector3.up;
                     _gameObject.transform.localScale = Vector3.one * 0.7f;
-
-                }   
+                }
 
 
                 _currentStepIndex++;
@@ -49,15 +76,35 @@ namespace Samples.Scripts
             public void SetNoteOn(bool stepTrigger)
             {
                 noteOn = stepTrigger;
+                _idleScale = noteOn ? Vector3.one * 0.4f : Vector3.one * 0.05f;
+            }
+
+            public void Update()
+            {
+                _stepTimer += Time.deltaTime;
+                _gameObject.transform.localScale =
+                    Vector3.Lerp(_gameObject.transform.localScale, _idleScale, Time.deltaTime * 5);
+                Vector3 wobbleAdd = Vector3.up * (Mathf.Sin(Time.time * _wobbleSpeed) * _wobbleAmount);
+                if (!noteOn)
+                    wobbleAdd = Vector3.zero;
+                _gameObject.transform.position =
+                    Vector3.Lerp(_gameObject.transform.position,
+                        _idlePosition + wobbleAdd,
+                        Time.deltaTime * 5);
+
+                //_gameObject.transform.position =
+                //    Vector3.Lerp(_currentPosition, _nextPosition, _stepTimer / _stepDuration);
             }
         }
 
+        public Color color = Color.white;
         public int circleStepLength = 16;
         public float circleDistance = 5;
         public GameObject stepPrefab;
         public List<Steps> steps;
         public PatternMixer patternMixer;
         public int trackIndex;
+        public AnywhenMetronome.TickRate tickRate;
 
         private void Start()
         {
@@ -68,8 +115,30 @@ namespace Samples.Scripts
                 var step = new Steps();
                 var stepObject = Instantiate(stepPrefab, transform);
                 stepObject.transform.localScale = Vector3.one * Random.Range(0, 1f);
-                step.Init(this, i, stepObject);
-                AnywhenMetronome.Instance.OnTick16 += step.Tick;
+                step.Init(this, i, stepObject, color);
+                switch (tickRate)
+                {
+                    case AnywhenMetronome.TickRate.None:
+                        break;
+                    case AnywhenMetronome.TickRate.Sub2:
+                        AnywhenMetronome.Instance.OnTick2 += step.Tick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub4:
+                        AnywhenMetronome.Instance.OnTick4 += step.Tick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub8:
+                        AnywhenMetronome.Instance.OnTick8 += step.Tick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub16:
+                        AnywhenMetronome.Instance.OnTick16 += step.Tick;
+                        break;
+                    case AnywhenMetronome.TickRate.Sub32:
+                        AnywhenMetronome.Instance.OnTick32 += step.Tick;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
                 steps.Add(step);
             }
         }
@@ -81,19 +150,20 @@ namespace Samples.Scripts
             {
                 var step = steps[i];
                 step.SetNoteOn(stepTriggers[(int)Mathf.Repeat(i, 16)]);
+                step.Update();
             }
         }
 
         [ContextMenu("generate positions")]
         void GeneratePositions()
         {
-            circlePositions = new Vector3[circleStepLength];
+            circlePositions = new Vector3[(int)tickRate];
             for (int i = 0; i < circlePositions.Length; i++)
             {
-                var x = (circleDistance * Mathf.Cos((i / (float)circleStepLength * 360) / (180f / Mathf.PI)));
-                var z = (circleDistance * Mathf.Sin((i / (float)circleStepLength * 360) / (180f / Mathf.PI)));
+                var x = (circleDistance * Mathf.Cos((i / (float)(int)tickRate * 360) / (180f / Mathf.PI)));
+                var z = (circleDistance * Mathf.Sin((i / (float)(int)tickRate * 360) / (180f / Mathf.PI)));
 
-                circlePositions[i] = new Vector3(-x, 0, z);
+                circlePositions[i] = new Vector3(x, 0, z);
             }
         }
     }

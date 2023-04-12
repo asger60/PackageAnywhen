@@ -23,15 +23,14 @@ public class PatternStepEntryDrawer : PropertyDrawer
         var indent = EditorGUI.indentLevel;
         EditorGUI.indentLevel = 0;
         // Calculate rects
-        var isOnRect = new Rect(position.x, position.y, 80, 20);
+        var isOnRect = new Rect(position.x, position.y, 60, 20);
         var accentRect = new Rect(position.x + 100, position.y, 60, 20);
-        var weightRect = new Rect(position.x + 200, position.y, 35, 20);
+        var weightRect = new Rect(position.x + 200, position.y, 45, 20);
         
 
         // Draw fields - pass GUIContent.none to each so they are drawn without labels
-        EditorGUI.PropertyField(isOnRect, property.FindPropertyRelative("noteOn"));
+        EditorGUI.PropertyField(isOnRect, property.FindPropertyRelative("noteOn"), GUIContent.none);
         EditorGUI.PropertyField(accentRect, property.FindPropertyRelative("accent"), GUIContent.none);
-        
         EditorGUI.PropertyField(weightRect, property.FindPropertyRelative("stepWeight"), GUIContent.none);
 
         //var isOnLabel = new GUIContent("x");

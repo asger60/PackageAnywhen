@@ -1,5 +1,5 @@
 using System;
-using Anywhen.SettingsObjects;
+using Anywhen;
 using UnityEngine;
 
 namespace PackageAnywhen.Runtime.Anywhen
@@ -10,17 +10,32 @@ namespace PackageAnywhen.Runtime.Anywhen
         [Serializable]
         public struct PatternStepEntry
         {
-            public int index;
             public bool noteOn;
             public bool accent;
-            [Range(-1f, 1f)]
-            public float nudge;
+            [Range(-1f, 1f)] public float nudge;
 
             public float stepWeight;
         }
 
         public PatternStepEntry[] steps;
-        public AnywhenInstrument instrument;
-    
+        //public AnywhenInstrument instrument;
+
+        public NoteEvent OnTick(AnywhenMetronome.TickRate tickRate, float currentWeight, float swing, float humanize)
+        {
+            int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
+
+
+            if (steps[stepIndex].noteOn)
+            {
+                if (steps[stepIndex].stepWeight > currentWeight) return default;
+
+                NoteEvent note = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, steps[stepIndex].accent ? 1 : 0.5f,
+                    AnywhenMetronome.GetTiming(tickRate, swing, humanize));
+                return note;
+            }
+
+
+            return default;
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace Anywhen
         public float expression2;
         public float velocity;
 
+       
 
         public NoteEvent(int note, EventTypes state)
         {
@@ -75,7 +76,6 @@ namespace Anywhen
             this.velocity = 1;
             this.velocity = velocity;
         }
-
 
     }
 }
