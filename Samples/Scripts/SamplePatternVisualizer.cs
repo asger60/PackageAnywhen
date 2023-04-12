@@ -110,7 +110,7 @@ namespace Samples.Scripts
         public PatternMixer patternMixer;
         public int trackIndex;
         public AnywhenMetronome.TickRate tickRate;
-        private List<PartyType> _partyTypes = new List<PartyType>();
+        private List<PartyType> _partyTypes = new();
         public GameObject groundTilePrefab;
         private void Start()
         {
