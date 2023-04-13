@@ -25,7 +25,6 @@ namespace PackageAnywhen.Runtime.Anywhen
         {
             int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
 
-
             if (steps[stepIndex].noteOn)
             {
                 if (steps[stepIndex].stepWeight > currentWeight) return default;

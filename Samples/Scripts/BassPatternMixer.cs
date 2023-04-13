@@ -18,7 +18,7 @@ namespace Samples.Scripts
         [FormerlySerializedAs("currentInstrumentMix")] [Range(0, 3f)]
         public float currentMelodyMix;
 
-
+        public int patternLength;
         public AnimationCurve mixCurve;
 
         [Serializable]
@@ -30,9 +30,6 @@ namespace Samples.Scripts
             public bool ShouldTrigger(int stepIndex)
             {
                 if (currentWeight <= 0) return false;
-
-                //if (patternTracks.Length <= trackIndex) return false;
-
                 return pattern.steps[stepIndex].noteOn && (currentWeight > pattern.steps[stepIndex].stepWeight);
             }
         }
@@ -73,21 +70,23 @@ namespace Samples.Scripts
             AnywhenMetronome.Instance.OnTick16 += OnTick;
         }
 
+        private int _barsCounter;
+
         private void OnTick()
         {
             int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
-
+            if (stepIndex == 0)
+                _barsCounter++;
+            
+            _barsCounter = (int)Mathf.Repeat(_barsCounter, 2);
+            int currentStep = stepIndex + (_barsCounter * 16);
             for (var i = 0; i < triggerPatterns.Length; i++)
             {
-                //for (var i1 = 0; i1 < patterns[i].patternTracks.Length; i1++)
+                var n = triggerPatterns[i].pattern.OnTick(tickRate, triggerPatterns[i].currentWeight, 0, 0);
+                if (n.notes != null)
                 {
-                    var n = triggerPatterns[i].pattern.OnTick(tickRate, triggerPatterns[i].currentWeight, 0, 0);
-                    if (n.notes != null)
-                    {
-                        n.notes[0] = GetNoteForStep(stepIndex);
-
-                        EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, 0).instrument, tickRate);
-                    }
+                    n.notes[0] = GetNoteForStep(currentStep);
+                    EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, 0).instrument, tickRate);
                 }
             }
         }
@@ -236,17 +235,16 @@ namespace Samples.Scripts
                     switch (rnd)
                     {
                         case 0:
-                            melodyPatterns[i].pattern.steps[index1].note = 0;
+                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(1);
                             break;
                         case 1:
-                            melodyPatterns[i].pattern.steps[index1].note = 1;
+                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(2);
                             break;
                         case 2:
-                            melodyPatterns[i].pattern.steps[index1].note = 2;
+                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(5);
                             break;
                         case 3:
-                            int rnd1 = Random.Range(0, 1);
-                            melodyPatterns[i].pattern.steps[index1].note = rnd1 == 0 ? 7 : 4;
+                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(7);
                             break;
                         case 4:
 
@@ -259,6 +257,18 @@ namespace Samples.Scripts
                 }
             }
         }
+
+        private readonly int[] _goodNotes = new[] { 1, 2, 4, 6, -1, -2 };
+
+        int GetRandomNote(int width)
+        {
+            int rnd = Random.Range(0, 5);
+            if (rnd == 0) return 0;
+
+            width = Mathf.Min(width, _goodNotes.Length);
+            return _goodNotes[Random.Range(0, width)];
+        }
+
 #endif
     }
 }
