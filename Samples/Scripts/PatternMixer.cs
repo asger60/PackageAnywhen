@@ -175,10 +175,7 @@ namespace Samples.Scripts
         {
             for (int i = 0; i < 16; i++)
             {
-                //foreach (var patternInstrument in patternInstruments)
-                {
-                    _currentInstruments[i] = GetInstrumentForTrack(i, trackIndex);
-                }
+                _currentInstruments[i] = GetInstrumentForTrack(i, trackIndex);
             }
 
             return _currentInstruments;
