@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Anywhen;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Samples.Scripts
 {
@@ -16,7 +17,7 @@ namespace Samples.Scripts
 
         public PartyType stepPrefab;
 
-        public PatternMixer patternMixer;
+        [FormerlySerializedAs("patternMixer")] public DrumPatternMixer drumPatternMixer;
         public int trackIndex;
         public AnywhenMetronome.TickRate tickRate;
         private List<PartyType> _partyTypes = new();
@@ -37,7 +38,7 @@ namespace Samples.Scripts
                 for (int j = 0; j < 4; j++)
                 {
                     var stepObject = Instantiate(stepPrefab, transform);
-                    stepObject.Init(i, this, patternMixer.patternInstruments[j].instruments[trackIndex]);
+                    stepObject.Init(i, this, drumPatternMixer.patternInstruments[j].instruments[trackIndex]);
                     _partyTypes.Add(stepObject);
 
                     switch (tickRate)
@@ -69,8 +70,8 @@ namespace Samples.Scripts
 
         private void Update()
         {
-            var stepTriggers = patternMixer.GetCurrentPattern(trackIndex);
-            var instruments = patternMixer.GetInstruments(trackIndex);
+            var stepTriggers = drumPatternMixer.GetCurrentPattern(trackIndex);
+            var instruments = drumPatternMixer.GetInstruments(trackIndex);
             
             for (var i = 0; i < _partyTypes.Count; i++)
             {
@@ -87,7 +88,7 @@ namespace Samples.Scripts
             }
         }
 
-        PartyType GetPartyTypeForInstrument(int step, PatternMixer.InstrumentObject instrumentObject)
+        PartyType GetPartyTypeForInstrument(int step, DrumPatternMixer.InstrumentObject instrumentObject)
         {
             foreach (var partyType in _partyTypes)
             {

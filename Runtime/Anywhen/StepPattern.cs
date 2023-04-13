@@ -12,6 +12,7 @@ namespace PackageAnywhen.Runtime.Anywhen
         {
             public bool noteOn;
             public bool accent;
+            public int note;
             [Range(-1f, 1f)] public float nudge;
 
             public float stepWeight;
@@ -29,7 +30,7 @@ namespace PackageAnywhen.Runtime.Anywhen
             {
                 if (steps[stepIndex].stepWeight > currentWeight) return default;
 
-                NoteEvent note = new NoteEvent(0, NoteEvent.EventTypes.NoteOn, steps[stepIndex].accent ? 1 : 0.5f,
+                NoteEvent note = new NoteEvent(steps[stepIndex].note, NoteEvent.EventTypes.NoteOn, steps[stepIndex].accent ? 1 : 0.5f,
                     AnywhenMetronome.GetTiming(tickRate, swing, humanize));
                 return note;
             }

@@ -17,11 +17,11 @@ public class PartyType : MonoBehaviour
     private int _connectedStepIndex;
     public int ConnectedStepIndex => _connectedStepIndex;
     private Vector3 _currentScaleTarget;
-    private PatternMixer.InstrumentObject _instrumentObject;
-    public PatternMixer.InstrumentObject InstrumentObject => _instrumentObject;
+    private DrumPatternMixer.InstrumentObject _instrumentObject;
+    public DrumPatternMixer.InstrumentObject InstrumentObject => _instrumentObject;
 
     public void Init(int connectedStep, SamplePatternVisualizer visualizer,
-        PatternMixer.InstrumentObject connectedInstrument)
+        DrumPatternMixer.InstrumentObject connectedInstrument)
     {
         _connectedStepIndex = connectedStep;
         _patternVisualizer = visualizer;

@@ -9,6 +9,6 @@ using UnityEngine;
 
 public class PatternCollection : ScriptableObject
 {
-    public PatternMixer.Pattern[] patterns;
+    public DrumPatternMixer.Pattern[] patterns;
     public AnywhenMetronome.TickRate tickRate;
 }

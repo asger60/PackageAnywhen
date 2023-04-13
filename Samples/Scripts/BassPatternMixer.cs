@@ -2,16 +2,14 @@ using System;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
 {
-    public class PatternMixer : MonoBehaviour
+    public class BassPatternMixer : MonoBehaviour
     {
         public PatternCollection savePatternCollection;
         [Range(0, 3f)] public float currentPatternMix;
@@ -21,42 +19,18 @@ namespace Samples.Scripts
         public AnimationCurve mixCurve;
 
         [Serializable]
-        public struct Pattern
+        public struct BassPattern
         {
-            [Range(0, 1f)] public float currentWeight;
-            public StepPattern[] patternTracks;
-            [Range(0, 1f)] public float swing;
-            [Range(0, 1f)] public float humanize;
+            [HideInInspector] [Range(0, 1f)] public float currentWeight;
+            public StepPattern pattern;
 
-            public NoteEvent OnTick(AnywhenMetronome.TickRate tickRate)
-            {
-                int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
-
-                for (var i = 0; i < patternTracks.Length; i++)
-                {
-                    var patternTrack = patternTracks[i];
-                    if (patternTrack.steps[stepIndex].noteOn)
-                    {
-                        if (patternTrack.steps[stepIndex].stepWeight > currentWeight) return default;
-
-                        NoteEvent note = new NoteEvent(0, NoteEvent.EventTypes.NoteOn,
-                            patternTrack.steps[stepIndex].accent ? 1 : 0.5f,
-                            AnywhenMetronome.GetTiming(tickRate, swing, humanize));
-                        return note;
-                    }
-                }
-
-                return default;
-            }
-
-            public bool ShouldTrigger(int trackIndex, int stepIndex)
+            public bool ShouldTrigger(int stepIndex)
             {
                 if (currentWeight <= 0) return false;
 
-                if (patternTracks.Length <= trackIndex) return false;
+                //if (patternTracks.Length <= trackIndex) return false;
 
-                return patternTracks[trackIndex].steps[stepIndex].noteOn &&
-                       (currentWeight > patternTracks[trackIndex].steps[stepIndex].stepWeight);
+                return pattern.steps[stepIndex].noteOn && (currentWeight > pattern.steps[stepIndex].stepWeight);
             }
         }
 
@@ -84,7 +58,7 @@ namespace Samples.Scripts
 
         public PatternInstrument[] patternInstruments;
 
-        public Pattern[] patterns;
+        public BassPattern[] patterns;
         public AnywhenMetronome.TickRate tickRate;
         public Slider uiSliderPattern;
         public Slider uiSliderInstrument;
@@ -101,12 +75,13 @@ namespace Samples.Scripts
 
             for (var i = 0; i < patterns.Length; i++)
             {
-                for (var i1 = 0; i1 < patterns[i].patternTracks.Length; i1++)
+                //for (var i1 = 0; i1 < patterns[i].patternTracks.Length; i1++)
                 {
-                    var n = patterns[i].patternTracks[i1].OnTick(tickRate, patterns[i].currentWeight, 0, 0);
+                    var n = patterns[i].pattern.OnTick(tickRate, patterns[i].currentWeight, 0, 0);
                     if (n.notes != null)
                     {
-                        EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, i1).instrument, tickRate);
+                        n.notes[0] = Random.Range(0, 6);
+                        EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, 0).instrument, tickRate);
                     }
                 }
             }
@@ -132,8 +107,10 @@ namespace Samples.Scripts
 
         private void Update()
         {
-            currentPatternMix = uiSliderPattern.value;
-            currentInstrumentMix = uiSliderInstrument.value;
+            if (uiSliderPattern)
+                currentPatternMix = uiSliderPattern.value;
+            if (uiSliderInstrument)
+                currentInstrumentMix = uiSliderInstrument.value;
             for (int i = 0; i < patterns.Length; i++)
             {
                 patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
@@ -160,7 +137,7 @@ namespace Samples.Scripts
             {
                 for (int i = 0; i < 16; i++)
                 {
-                    if (pattern.ShouldTrigger(trackIndex, i))
+                    if (pattern.ShouldTrigger( i))
                         _currentPattern[i] = true;
                 }
             }
@@ -185,14 +162,14 @@ namespace Samples.Scripts
         [ContextMenu("SavePattern")]
         void SavePattern()
         {
-            savePatternCollection.patterns = patterns;
+            //savePatternCollection.patterns = patterns;
             EditorUtility.SetDirty(savePatternCollection);
         }
 
         [ContextMenu("LoadPattern")]
         void LoadPattern()
         {
-            patterns = savePatternCollection.patterns;
+            //patterns = savePatternCollection.patterns;
         }
 
         [ContextMenu("Randomize step weights")]
@@ -200,11 +177,11 @@ namespace Samples.Scripts
         {
             for (int i = 0; i < patterns.Length; i++)
             {
-                foreach (var track in patterns[i].patternTracks)
+                //foreach (var track in patterns[i].patternTracks)
                 {
-                    for (var index = 0; index < track.steps.Length; index++)
+                    for (var index = 0; index < patterns[i].pattern.steps.Length; index++)
                     {
-                        track.steps[index].stepWeight = Random.Range(0, 1f);
+                        patterns[i].pattern.steps[index].stepWeight = Random.Range(0, 1f);
                     }
                 }
             }
