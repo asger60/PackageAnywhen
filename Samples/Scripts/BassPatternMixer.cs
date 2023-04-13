@@ -4,6 +4,7 @@ using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -13,7 +14,9 @@ namespace Samples.Scripts
     {
         public PatternCollection savePatternCollection;
         [Range(0, 3f)] public float currentPatternMix;
-        [Range(0, 3f)] public float currentInstrumentMix;
+
+        [FormerlySerializedAs("currentInstrumentMix")] [Range(0, 3f)]
+        public float currentMelodyMix;
 
 
         public AnimationCurve mixCurve;
@@ -21,7 +24,7 @@ namespace Samples.Scripts
         [Serializable]
         public struct BassPattern
         {
-            [HideInInspector] [Range(0, 1f)] public float currentWeight;
+            [Range(0, 1f)] public float currentWeight;
             public StepPattern pattern;
 
             public bool ShouldTrigger(int stepIndex)
@@ -58,7 +61,8 @@ namespace Samples.Scripts
 
         public PatternInstrument[] patternInstruments;
 
-        public BassPattern[] patterns;
+        [FormerlySerializedAs("patterns")] public BassPattern[] triggerPatterns;
+        public BassPattern[] melodyPatterns;
         public AnywhenMetronome.TickRate tickRate;
         public Slider uiSliderPattern;
         public Slider uiSliderInstrument;
@@ -73,14 +77,15 @@ namespace Samples.Scripts
         {
             int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
 
-            for (var i = 0; i < patterns.Length; i++)
+            for (var i = 0; i < triggerPatterns.Length; i++)
             {
                 //for (var i1 = 0; i1 < patterns[i].patternTracks.Length; i1++)
                 {
-                    var n = patterns[i].pattern.OnTick(tickRate, patterns[i].currentWeight, 0, 0);
+                    var n = triggerPatterns[i].pattern.OnTick(tickRate, triggerPatterns[i].currentWeight, 0, 0);
                     if (n.notes != null)
                     {
-                        n.notes[0] = Random.Range(0, 6);
+                        n.notes[0] = GetNoteForStep(stepIndex);
+
                         EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, 0).instrument, tickRate);
                     }
                 }
@@ -110,17 +115,35 @@ namespace Samples.Scripts
             if (uiSliderPattern)
                 currentPatternMix = uiSliderPattern.value;
             if (uiSliderInstrument)
-                currentInstrumentMix = uiSliderInstrument.value;
-            for (int i = 0; i < patterns.Length; i++)
+                currentMelodyMix = uiSliderInstrument.value;
+            for (int i = 0; i < triggerPatterns.Length; i++)
             {
-                patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
+                triggerPatterns[i].currentWeight =
+                    Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
             }
 
-            for (var i = 0; i < patternInstruments.Length; i++)
+            for (var i = 0; i < melodyPatterns.Length; i++)
             {
-                patternInstruments[i].currentWeight =
-                    Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
+                melodyPatterns[i].currentWeight =
+                    Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentMelodyMix)));
             }
+        }
+
+        int GetNoteForStep(int stepIndex)
+        {
+            int note = 0;
+            float bestWeight = 0;
+            foreach (var melodyPattern in melodyPatterns)
+            {
+                float thisWeight = melodyPattern.currentWeight * melodyPattern.pattern.steps[stepIndex].stepWeight;
+                if (thisWeight > bestWeight)
+                {
+                    note = melodyPattern.pattern.steps[stepIndex].note;
+                    bestWeight = thisWeight;
+                }
+            }
+
+            return note;
         }
 
         private readonly bool[] _currentPattern = new bool[16];
@@ -133,11 +156,11 @@ namespace Samples.Scripts
             }
 
 
-            foreach (var pattern in patterns)
+            foreach (var pattern in triggerPatterns)
             {
                 for (int i = 0; i < 16; i++)
                 {
-                    if (pattern.ShouldTrigger( i))
+                    if (pattern.ShouldTrigger(i))
                         _currentPattern[i] = true;
                 }
             }
@@ -175,13 +198,13 @@ namespace Samples.Scripts
         [ContextMenu("Randomize step weights")]
         void RandomizeStepWeights()
         {
-            for (int i = 0; i < patterns.Length; i++)
+            for (int i = 0; i < triggerPatterns.Length; i++)
             {
                 //foreach (var track in patterns[i].patternTracks)
                 {
-                    for (var index = 0; index < patterns[i].pattern.steps.Length; index++)
+                    for (var index = 0; index < triggerPatterns[i].pattern.steps.Length; index++)
                     {
-                        patterns[i].pattern.steps[index].stepWeight = Random.Range(0, 1f);
+                        triggerPatterns[i].pattern.steps[index].stepWeight = Random.Range(0, 1f);
                     }
                 }
             }
@@ -198,6 +221,41 @@ namespace Samples.Scripts
                     {
                         track.steps[index].stepWeight = Random.Range(0, 1f);
                     }
+                }
+            }
+        }
+
+        [ContextMenu("Randomize notes")]
+        void RandomizeMelodyNotes()
+        {
+            for (int i = 0; i < melodyPatterns.Length; i++)
+            {
+                for (var index1 = 0; index1 < melodyPatterns[i].pattern.steps.Length; index1++)
+                {
+                    int rnd = Random.Range(0, i + 1);
+                    switch (rnd)
+                    {
+                        case 0:
+                            melodyPatterns[i].pattern.steps[index1].note = 0;
+                            break;
+                        case 1:
+                            melodyPatterns[i].pattern.steps[index1].note = 1;
+                            break;
+                        case 2:
+                            melodyPatterns[i].pattern.steps[index1].note = 2;
+                            break;
+                        case 3:
+                            int rnd1 = Random.Range(0, 1);
+                            melodyPatterns[i].pattern.steps[index1].note = rnd1 == 0 ? 7 : 4;
+                            break;
+                        case 4:
+
+
+                            break;
+                    }
+
+
+                    melodyPatterns[i].pattern.steps[index1].stepWeight = Random.Range(0, 1f);
                 }
             }
         }

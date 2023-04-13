@@ -6,7 +6,7 @@ namespace Anywhen
 {
     public class AnywhenConductor : MonoBehaviour
     {
-        private int _rootNote = 0;
+        public int _rootNote = 0;
         public AnywhenScaleObject anywhenScale;
         private AnywhenScaleObject _currentAnywhenScale;
     
