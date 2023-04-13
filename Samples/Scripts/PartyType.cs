@@ -8,7 +8,6 @@ public class PartyType : MonoBehaviour
 {
     private SamplePatternVisualizer _patternVisualizer;
     private Vector3 _onLookPosition, _inCirclePosition, _currentPositionTarget;
-    private float _currentMoveSpeed;
     private bool _noteOn;
     private int _currentStepIndex;
     private Renderer _objectRenderer;
@@ -24,15 +23,12 @@ public class PartyType : MonoBehaviour
     public void Init(int connectedStep, SamplePatternVisualizer visualizer,
         PatternMixer.InstrumentObject connectedInstrument)
     {
-        _currentMoveSpeed = Random.Range(3, 6f);
         _connectedStepIndex = connectedStep;
         _patternVisualizer = visualizer;
 
         _inCirclePosition = visualizer.circlePositions[_connectedStepIndex];
 
 
-        var rndPos = Random.onUnitSphere;
-        rndPos.y = 0;
         float offset = 0.3f;
         Vector3 rndDir = new Vector3(Random.Range(-offset, offset), 0, Random.Range(-offset, offset));
         _onLookPosition = Vector3.Slerp(_inCirclePosition.normalized, rndDir, 0.25f) * 12;
@@ -60,9 +56,6 @@ public class PartyType : MonoBehaviour
 
     private void Update()
     {
-        //transform.position =
-        //    Vector3.Lerp(transform.position, _currentPositionTarget, Time.deltaTime * _currentMoveSpeed);
-
         transform.localScale = Vector3.Lerp(transform.localScale, _currentScaleTarget, Time.deltaTime * 5);
 
         Vector3 wobbleAdd = Vector3.up * (Mathf.Sin(Time.time * _wobbleSpeed) * _wobbleAmount);

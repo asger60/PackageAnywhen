@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Anywhen;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
 {
@@ -17,7 +16,6 @@ namespace Samples.Scripts
 
         public PartyType stepPrefab;
 
-        //public List<Steps> steps;
         public PatternMixer patternMixer;
         public int trackIndex;
         public AnywhenMetronome.TickRate tickRate;
@@ -36,8 +34,6 @@ namespace Samples.Scripts
             for (var i = 0; i < 16; i++)
             {
                 
-                //var step = new Steps();
-
                 for (int j = 0; j < 4; j++)
                 {
                     var stepObject = Instantiate(stepPrefab, transform);
@@ -68,8 +64,6 @@ namespace Samples.Scripts
                     }
                 }
 
-
-                //steps.Add(step);
             }
         }
 
