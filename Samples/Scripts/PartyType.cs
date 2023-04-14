@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 
 public class PartyType : MonoBehaviour
 {
-    private SamplePatternVisualizer _patternVisualizer;
     private Vector3 _onLookPosition, _inCirclePosition, _currentPositionTarget;
     private bool _noteOn;
     private int _currentStepIndex;
@@ -19,14 +18,16 @@ public class PartyType : MonoBehaviour
     private Vector3 _currentScaleTarget;
     private DrumPatternMixer.InstrumentObject _instrumentObject;
     public DrumPatternMixer.InstrumentObject InstrumentObject => _instrumentObject;
+    private int _patternStepLength;
+    private bool _isTrackActive;
 
-    public void Init(int connectedStep, SamplePatternVisualizer visualizer,
+    public void Init(int connectedStep, int patternStepLength, Vector3 circlePosition,
         DrumPatternMixer.InstrumentObject connectedInstrument)
     {
         _connectedStepIndex = connectedStep;
-        _patternVisualizer = visualizer;
 
-        _inCirclePosition = visualizer.circlePositions[_connectedStepIndex];
+        _patternStepLength = patternStepLength;
+        _inCirclePosition = circlePosition;
 
 
         float offset = 0.3f;
@@ -41,12 +42,13 @@ public class PartyType : MonoBehaviour
 
         _connectedStepIndex = (int)Mathf.Repeat(connectedStep, 16);
 
-        _currentStepIndex = _patternVisualizer.circleStepLength - connectedStep;
+        _currentStepIndex = _patternStepLength - connectedStep;
         _currentScaleTarget = Vector3.one * 0.4f;
         _currentPositionTarget = _onLookPosition;
         _wobbleSpeed = Random.Range(1, 3f);
         _wobbleAmount = Random.Range(0.05f, 0.2f);
     }
+
 
     private void SetColor(Color color)
     {
@@ -57,30 +59,46 @@ public class PartyType : MonoBehaviour
     private void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, _currentScaleTarget, Time.deltaTime * 5);
-
         Vector3 wobbleAdd = Vector3.up * (Mathf.Sin(Time.time * _wobbleSpeed) * _wobbleAmount);
         transform.position = Vector3.Lerp(transform.position, _currentPositionTarget + wobbleAdd, Time.deltaTime * 5);
     }
 
-    public void SetNoteOn(bool stepTrigger)
+    public void SetNoteOn(bool stepTrigger, int note)
     {
+        if (!_isTrackActive) return;
         _noteOn = stepTrigger;
-        _currentPositionTarget = stepTrigger ? _inCirclePosition : _onLookPosition;
+        _currentPositionTarget =
+            stepTrigger ? _inCirclePosition + _inCirclePosition.normalized * (note) : _onLookPosition;
         _currentScaleTarget = _noteOn ? Vector3.one * 0.4f : Vector3.one * 0.3f;
         _wobbleAmount = _noteOn ? Random.Range(0.1f, 0.2f) : 0.1f;
     }
 
     public void Tick()
     {
-        _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, (int)_patternVisualizer.tickRate);
+        
+        _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, _patternStepLength);
 
-        if (_noteOn && (int)Mathf.Repeat(_currentStepIndex, (int)_patternVisualizer.tickRate) == 0)
+
+        if (!_isTrackActive)
+        {
+            _currentStepIndex++;
+            return;
+        }
+        if (_noteOn && (int)Mathf.Repeat(_currentStepIndex, _patternStepLength) == 0)
         {
             transform.position += Vector3.up;
             transform.localScale = Vector3.one * 0.7f;
         }
 
-
         _currentStepIndex++;
+       
+    }
+
+
+    public void SetIsTrackActive(bool state)
+    {
+        _isTrackActive = state;
+        if (!state)
+            _currentPositionTarget = _onLookPosition;
     }
 }

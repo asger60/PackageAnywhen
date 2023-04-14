@@ -2,6 +2,7 @@ using System;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
+using PackageAnywhen.Samples.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -34,19 +35,6 @@ namespace Samples.Scripts
             }
         }
 
-        [Serializable]
-        public struct PatternInstrument
-        {
-            public InstrumentObject[] instruments;
-            public float currentWeight;
-            public StepPattern[] patternTracks;
-
-            public float GetStepWeight(int trackIndex, int stepIndex)
-            {
-                if (currentWeight <= 0) return 0;
-                return patternTracks[trackIndex].steps[stepIndex].stepWeight;
-            }
-        }
 
         [Serializable]
         public struct InstrumentObject
@@ -56,7 +44,7 @@ namespace Samples.Scripts
         }
 
 
-        public PatternInstrument[] patternInstruments;
+        public DrumPatternMixer.PatternInstrument[] patternInstruments;
 
         [FormerlySerializedAs("patterns")] public BassPattern[] triggerPatterns;
         public BassPattern[] melodyPatterns;
@@ -68,6 +56,7 @@ namespace Samples.Scripts
         private void Start()
         {
             AnywhenMetronome.Instance.OnTick16 += OnTick;
+            _bassPatternVisualizer = GetComponent<BassPatternVisualizer>();
         }
 
         private int _barsCounter;
@@ -77,37 +66,21 @@ namespace Samples.Scripts
             int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
             if (stepIndex == 0)
                 _barsCounter++;
-            
+
             _barsCounter = (int)Mathf.Repeat(_barsCounter, 2);
             int currentStep = stepIndex + (_barsCounter * 16);
-            for (var i = 0; i < triggerPatterns.Length; i++)
+
+
+            if (GetCurrentPattern(0)[currentStep])
             {
-                var n = triggerPatterns[i].pattern.OnTick(tickRate, triggerPatterns[i].currentWeight, 0, 0);
-                if (n.notes != null)
-                {
-                    n.notes[0] = GetNoteForStep(currentStep);
-                    EventFunnel.HandleNoteEvent(n, GetInstrumentForTrack(stepIndex, 0).instrument, tickRate);
-                }
+                var n = GetNoteForStep(currentStep);
+                NoteEvent note = new NoteEvent(n, NoteEvent.EventTypes.NoteOn, 1,
+                    AnywhenMetronome.GetTiming(tickRate, 0, 0));
+
+                EventFunnel.HandleNoteEvent(note, patternInstruments[0].instruments[0].instrument, tickRate);
             }
         }
 
-        InstrumentObject GetInstrumentForTrack(int stepIndex, int trackIndex)
-        {
-            float bestStepWeight = 0;
-            InstrumentObject instrumentObject = patternInstruments[0].instruments[0];
-            foreach (var patternInstrument in patternInstruments)
-            {
-                float thisStepWeight = patternInstrument.currentWeight +
-                                       patternInstrument.GetStepWeight(trackIndex, stepIndex);
-                if (thisStepWeight > bestStepWeight)
-                {
-                    bestStepWeight = thisStepWeight;
-                    instrumentObject = patternInstrument.instruments[trackIndex];
-                }
-            }
-
-            return instrumentObject;
-        }
 
         private void Update()
         {
@@ -145,11 +118,11 @@ namespace Samples.Scripts
             return note;
         }
 
-        private readonly bool[] _currentPattern = new bool[16];
+        private readonly bool[] _currentPattern = new bool[32];
 
         public bool[] GetCurrentPattern(int trackIndex)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 32; i++)
             {
                 _currentPattern[i] = false;
             }
@@ -157,7 +130,7 @@ namespace Samples.Scripts
 
             foreach (var pattern in triggerPatterns)
             {
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < 32; i++)
                 {
                     if (pattern.ShouldTrigger(i))
                         _currentPattern[i] = true;
@@ -168,17 +141,22 @@ namespace Samples.Scripts
             return _currentPattern;
         }
 
-        private readonly InstrumentObject[] _currentInstruments = new InstrumentObject[16];
+        private readonly int[] _currentNotePattern = new int[32];
 
-        public InstrumentObject[] GetInstruments(int trackIndex)
+        public int[] GetCurrentNotePattern(int trackIndex)
         {
-            for (int i = 0; i < 16; i++)
+            foreach (var pattern in melodyPatterns)
             {
-                _currentInstruments[i] = GetInstrumentForTrack(i, trackIndex);
+                for (int i = 0; i < 32; i++)
+                {
+                    _currentNotePattern[i] = GetNoteForStep(i);
+                }
             }
 
-            return _currentInstruments;
+
+            return _currentNotePattern;
         }
+
 
 #if UNITY_EDITOR
         [ContextMenu("SavePattern")]
@@ -270,5 +248,11 @@ namespace Samples.Scripts
         }
 
 #endif
+
+        private BassPatternVisualizer _bassPatternVisualizer;
+        public void SetPartyDudesActive(bool state)
+        {
+            _bassPatternVisualizer.SetIsTrackActive(state);
+        }
     }
 }

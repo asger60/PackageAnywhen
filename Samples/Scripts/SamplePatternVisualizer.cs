@@ -11,7 +11,6 @@ namespace Samples.Scripts
         public Vector3[] circlePositions = new Vector3[16];
 
 
-        
         public int circleStepLength = 16;
         public float circleDistance = 5;
 
@@ -34,11 +33,11 @@ namespace Samples.Scripts
 
             for (var i = 0; i < 16; i++)
             {
-                
                 for (int j = 0; j < 4; j++)
                 {
                     var stepObject = Instantiate(stepPrefab, transform);
-                    stepObject.Init(i, this, drumPatternMixer.patternInstruments[j].instruments[trackIndex]);
+                    stepObject.Init(i, 16, circlePositions[i],
+                        drumPatternMixer.patternInstruments[j].instruments[trackIndex]);
                     _partyTypes.Add(stepObject);
 
                     switch (tickRate)
@@ -64,7 +63,6 @@ namespace Samples.Scripts
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
             }
         }
 
@@ -72,18 +70,18 @@ namespace Samples.Scripts
         {
             var stepTriggers = drumPatternMixer.GetCurrentPattern(trackIndex);
             var instruments = drumPatternMixer.GetInstruments(trackIndex);
-            
+
             for (var i = 0; i < _partyTypes.Count; i++)
             {
-                _partyTypes[i].SetNoteOn(false);
+                _partyTypes[i].SetNoteOn(false, 0);
             }
-            
+
             for (var i = 0; i < 16; i++)
             {
                 if (stepTriggers[i])
                 {
                     var p = GetPartyTypeForInstrument(i, instruments[i]);
-                    p.SetNoteOn(stepTriggers[(int)Mathf.Repeat(i, 16)]);
+                    p.SetNoteOn(stepTriggers[(int)Mathf.Repeat(i, 16)], 0);
                 }
             }
         }
@@ -109,6 +107,14 @@ namespace Samples.Scripts
                 var z = (circleDistance * Mathf.Sin((i / (float)(int)tickRate * 360) / (180f / Mathf.PI)));
 
                 circlePositions[i] = new Vector3(-x, 0, z);
+            }
+        }
+
+        public void SetIsTrackActive(bool state)
+        {
+            foreach (var partyType in _partyTypes)
+            {
+                partyType.SetIsTrackActive(state);
             }
         }
     }

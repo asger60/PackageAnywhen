@@ -61,13 +61,12 @@ namespace Samples.Scripts
 
         public Pattern[] patterns;
         public AnywhenMetronome.TickRate tickRate;
-        public Slider uiSliderPattern;
-        public Slider uiSliderInstrument;
 
 
         private void Start()
         {
             AnywhenMetronome.Instance.OnTick16 += OnTick;
+            _patternVisualizers = GetComponentsInChildren<SamplePatternVisualizer>();
         }
 
         private void OnTick()
@@ -107,10 +106,7 @@ namespace Samples.Scripts
 
         private void Update()
         {
-            if (uiSliderPattern)
-                currentPatternMix = uiSliderPattern.value;
-            if (uiSliderInstrument)
-                currentInstrumentMix = uiSliderInstrument.value;
+
             for (int i = 0; i < patterns.Length; i++)
             {
                 patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
@@ -156,6 +152,15 @@ namespace Samples.Scripts
             }
 
             return _currentInstruments;
+        }
+
+        private SamplePatternVisualizer[] _patternVisualizers;
+        public void SetPartyDudesActive(bool state)
+        {
+            foreach (var samplePatternVisualizer in _patternVisualizers)
+            {
+                samplePatternVisualizer.SetIsTrackActive(state);
+            }
         }
 
 #if UNITY_EDITOR
