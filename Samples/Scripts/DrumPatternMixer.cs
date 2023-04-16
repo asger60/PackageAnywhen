@@ -21,7 +21,10 @@ namespace Samples.Scripts
         [Serializable]
         public struct Pattern
         {
-            [HideInInspector] [Range(0, 1f)] public float currentWeight;
+            public float currentPoints;
+            [Range(0, 1f)] public float currentWeight;
+
+
             public StepPattern[] patternTracks;
 
             public bool ShouldTrigger(int trackIndex, int stepIndex)
@@ -67,6 +70,15 @@ namespace Samples.Scripts
         {
             AnywhenMetronome.Instance.OnTick16 += OnTick;
             _patternVisualizers = GetComponentsInChildren<SamplePatternVisualizer>();
+            for (var i = 0; i < pointsButtons.Length; i++)
+            {
+                var pointsButton = pointsButtons[i];
+                var i1 = i;
+                pointsButton.onClick.AddListener(() =>
+                {
+                    patterns[i1].currentPoints += 10;
+                });
+            }
         }
 
         private void OnTick()
@@ -104,13 +116,27 @@ namespace Samples.Scripts
             return instrumentObject;
         }
 
+        public Button[] pointsButtons;
+
         private void Update()
         {
+            float allPoints = 0;
+            for (int i = 0; i < patterns.Length; i++)
+            {
+                allPoints += patterns[i].currentPoints;
+                //patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
+            }
 
             for (int i = 0; i < patterns.Length; i++)
             {
-                patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
+                patterns[i].currentWeight = patterns[i].currentPoints / allPoints;
             }
+
+
+            //for (int i = 0; i < patterns.Length; i++)
+            //{
+            //    patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
+            //}
 
             for (var i = 0; i < patternInstruments.Length; i++)
             {
@@ -155,6 +181,7 @@ namespace Samples.Scripts
         }
 
         private SamplePatternVisualizer[] _patternVisualizers;
+
         public void SetPartyDudesActive(bool state)
         {
             foreach (var samplePatternVisualizer in _patternVisualizers)
