@@ -27,12 +27,15 @@ public class PartyType : MonoBehaviour
         _connectedStepIndex = connectedStep;
 
         _patternStepLength = patternStepLength;
-        _inCirclePosition = circlePosition;
+        _inCirclePosition = circlePosition + Vector3.up * 0.5f;
 
 
         float offset = 0.3f;
         Vector3 rndDir = new Vector3(Random.Range(-offset, offset), 0, Random.Range(-offset, offset));
-        _onLookPosition = Vector3.Slerp(_inCirclePosition.normalized, rndDir, 0.25f) * 12;
+        var circlePos = _inCirclePosition;
+        circlePos.y = 0;
+        _onLookPosition = Vector3.Slerp(circlePos.normalized, rndDir, 0.25f) * 12;
+        _onLookPosition.y = 0.5f;
 
 
         _objectRenderer = GetComponent<Renderer>();
@@ -75,7 +78,6 @@ public class PartyType : MonoBehaviour
 
     public void Tick()
     {
-        
         _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, _patternStepLength);
 
 
@@ -84,6 +86,7 @@ public class PartyType : MonoBehaviour
             _currentStepIndex++;
             return;
         }
+
         if (_noteOn && (int)Mathf.Repeat(_currentStepIndex, _patternStepLength) == 0)
         {
             transform.position += Vector3.up;
@@ -91,7 +94,6 @@ public class PartyType : MonoBehaviour
         }
 
         _currentStepIndex++;
-       
     }
 
 
