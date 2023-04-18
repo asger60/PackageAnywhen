@@ -17,14 +17,12 @@ namespace Samples.Scripts
 
 
         public AnimationCurve mixCurve;
-
+        public MixView mixView;
         [Serializable]
         public struct Pattern
         {
-            public float currentPoints;
             [Range(0, 1f)] public float currentWeight;
-
-
+            
             public StepPattern[] patternTracks;
 
             public bool ShouldTrigger(int trackIndex, int stepIndex)
@@ -70,15 +68,36 @@ namespace Samples.Scripts
         {
             AnywhenMetronome.Instance.OnTick16 += OnTick;
             _patternVisualizers = GetComponentsInChildren<SamplePatternVisualizer>();
-            for (var i = 0; i < pointsButtons.Length; i++)
+        }
+
+        public void Mix(int patternIndex)
+        {
+            float combinedWeight = 0;
+            patterns[patternIndex].currentWeight += 0.05f;
+            float[] values = new float[4];
+            for (int i = 0; i < patterns.Length; i++)
             {
-                var pointsButton = pointsButtons[i];
-                var i1 = i;
-                pointsButton.onClick.AddListener(() =>
-                {
-                    patterns[i1].currentPoints += 10;
-                });
+                combinedWeight += patterns[i].currentWeight;
             }
+
+            if (combinedWeight > 1)
+            {
+                float subtract = (combinedWeight - 1)/3f;
+                for (int i = 0; i < patterns.Length; i++)
+                {
+                    if (i != patternIndex)
+                        patterns[i].currentWeight -= subtract;
+                }
+            }
+
+            for (int i = 0; i < patterns.Length; i++)
+            {
+                patterns[i].currentWeight = Mathf.Clamp01(patterns[i].currentWeight);
+                patternInstruments[i].currentWeight = patterns[i].currentWeight;
+                values[i] = patterns[i].currentWeight;
+            }
+
+            mixView.UpdateValues(values);
         }
 
         private void OnTick()
@@ -116,21 +135,20 @@ namespace Samples.Scripts
             return instrumentObject;
         }
 
-        public Button[] pointsButtons;
-
+      
         private void Update()
         {
-            float allPoints = 0;
-            for (int i = 0; i < patterns.Length; i++)
-            {
-                allPoints += patterns[i].currentPoints;
-                //patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
-            }
-
-            for (int i = 0; i < patterns.Length; i++)
-            {
-                patterns[i].currentWeight = patterns[i].currentPoints / allPoints;
-            }
+            //float allPoints = 0;
+            //for (int i = 0; i < patterns.Length; i++)
+            //{
+            //    allPoints += patterns[i].currentPoints;
+            //    //patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
+            //}
+//
+            //for (int i = 0; i < patterns.Length; i++)
+            //{
+            //    patterns[i].currentWeight = patterns[i].currentPoints / allPoints;
+            //}
 
 
             //for (int i = 0; i < patterns.Length; i++)
@@ -138,11 +156,11 @@ namespace Samples.Scripts
             //    patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
             //}
 
-            for (var i = 0; i < patternInstruments.Length; i++)
-            {
-                patternInstruments[i].currentWeight =
-                    Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
-            }
+            //for (var i = 0; i < patternInstruments.Length; i++)
+            //{
+            //    patternInstruments[i].currentWeight =
+            //        Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
+            //}
         }
 
         private readonly bool[] _currentPattern = new bool[16];
