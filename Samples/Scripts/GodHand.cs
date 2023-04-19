@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PackageAnywhen.Samples.Scripts;
 using Samples.Scripts;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GodHand : MonoBehaviour
@@ -13,47 +15,59 @@ public class GodHand : MonoBehaviour
     RaycastHit _hit;
     public int currentPattern;
 
-    public DrumPatternMixer drumPatternMixer;
+
     private float _lastMixTime;
 
-    public Button[] fillButtons;
     public Renderer thisRenderer;
     private MaterialPropertyBlock _materialPropertyBlock;
     public RainDrop rainPrefab;
     private Color _currentColor;
-    private void Start()
+    public GameObject gfxObject;
+
+    private static GodHand _instance;
+    public static GodHand Instance => _instance;
+
+    private void Awake()
     {
+        _instance = this;
         _materialPropertyBlock = new MaterialPropertyBlock();
-        for (int i = 0; i < fillButtons.Length; i++)
-        {
-            var i1 = i;
-            fillButtons[i].onClick.AddListener(() =>
-            {
-                currentPattern = i1;
-                _materialPropertyBlock.SetColor("_Color", fillButtons[i1].image.color);
-                thisRenderer.SetPropertyBlock(_materialPropertyBlock);
-                _currentColor = fillButtons[i1].image.color;
-            });
-        }
+    }
+
+
+    public void SetFillIndex(int index, Color color)
+    {
+        currentPattern = index;
+        _materialPropertyBlock.SetColor("_Color", color);
+        thisRenderer.SetPropertyBlock(_materialPropertyBlock);
+        _currentColor = color;
     }
 
     void Update()
     {
-        //Cursor.visible = false;
+        gfxObject.transform.localScale =
+            Vector3.Lerp(gfxObject.transform.localScale, Vector3.one * 0.7f, Time.deltaTime * 10);
 
-        Ray ray = thisCamera.ScreenPointToRay(Input.mousePosition - Vector3.up * 150);
+        bool cursorHidden = Input.mousePosition.y > 100;
+   
+        
+        Cursor.visible = Input.mousePosition.y < 100 || Input.mousePosition.y > Screen.height - 100;
+        
+
+        Ray ray = thisCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out _hit, 100, layerMask))
         {
-            transform.position = _hit.point + Vector3.up * 6;
+            transform.position = _hit.point;
         }
 
-        if (Input.mousePosition.y > 100 && Input.GetMouseButton(0) && _lastMixTime + 0.1f < Time.time)
+        if (Input.mousePosition.y > 100 && Input.mousePosition.y < Screen.height - 100 && Input.GetMouseButton(0) &&
+            _lastMixTime + 0.1f < Time.time)
         {
-            drumPatternMixer.Mix(currentPattern);
+            TrackHandler.Instance.Mix(currentPattern);
             _lastMixTime = Time.time;
             var rainDrop = Instantiate(rainPrefab, transform.position, Quaternion.identity);
             rainDrop.Init(_currentColor);
+            gfxObject.transform.localScale = Vector3.one;
         }
     }
 }

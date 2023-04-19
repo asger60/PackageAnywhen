@@ -2,6 +2,7 @@ using System;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
+using PackageAnywhen.Samples.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
 {
-    public class DrumPatternMixer : MonoBehaviour
+    public class DrumPatternMixer : MonoBehaviour, IMixableObject
     {
         public PatternCollection savePatternCollection;
         [Range(0, 3f)] public float currentPatternMix;
@@ -18,11 +19,12 @@ namespace Samples.Scripts
 
         public AnimationCurve mixCurve;
         public MixView mixView;
+
         [Serializable]
         public struct Pattern
         {
             [Range(0, 1f)] public float currentWeight;
-            
+
             public StepPattern[] patternTracks;
 
             public bool ShouldTrigger(int trackIndex, int stepIndex)
@@ -66,6 +68,7 @@ namespace Samples.Scripts
 
         private void Start()
         {
+            TrackHandler.Instance.AttachMixInterface(this, 0);
             AnywhenMetronome.Instance.OnTick16 += OnTick;
             _patternVisualizers = GetComponentsInChildren<SamplePatternVisualizer>();
         }
@@ -82,7 +85,7 @@ namespace Samples.Scripts
 
             if (combinedWeight > 1)
             {
-                float subtract = (combinedWeight - 1)/3f;
+                float subtract = (combinedWeight - 1) / 3f;
                 for (int i = 0; i < patterns.Length; i++)
                 {
                     if (i != patternIndex)
@@ -98,6 +101,14 @@ namespace Samples.Scripts
             }
 
             mixView.UpdateValues(values);
+        }
+
+        public void SetIsActive(bool state)
+        {
+            foreach (var samplePatternVisualizer in _patternVisualizers)
+            {
+                samplePatternVisualizer.SetIsTrackActive(state);
+            }
         }
 
         private void OnTick()
@@ -135,7 +146,7 @@ namespace Samples.Scripts
             return instrumentObject;
         }
 
-      
+
         private void Update()
         {
             //float allPoints = 0;
@@ -252,5 +263,11 @@ namespace Samples.Scripts
             }
         }
 #endif
+    }
+
+    public interface IMixableObject
+    {
+        public void Mix(int currentPattern);
+        public void SetIsActive(bool state);
     }
 }

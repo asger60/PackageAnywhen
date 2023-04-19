@@ -1,4 +1,5 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using Samples.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,44 +10,57 @@ namespace PackageAnywhen.Samples.Scripts
     {
         public int activeTrack;
 
-
-        public DrumPatternMixer drumPatternMixer;
-        public BassPatternMixer bassPatternMixer;
-
         public Button buttonDrums, buttonBass;
-        public Slider uiSlider1, uiSlider2;
+        public UISet[] uiSets;
+        private List<IMixableObject> _mixTargets = new List<IMixableObject>();
+
+        public static TrackHandler Instance => _instance;
+        private static TrackHandler _instance;
+
+        private void Awake()
+        {
+            _instance = this;
+        }
 
         private void Start()
         {
-            buttonDrums.onClick.AddListener(() =>
+            _mixTargets = new List<IMixableObject>(4);
+            for (int i = 0; i < 4; i++)
             {
-                uiSlider1.value = drumPatternMixer.currentPatternMix;
-                uiSlider2.value = drumPatternMixer.currentInstrumentMix;
-                activeTrack = 0;
-            });
-            buttonBass.onClick.AddListener(() =>
-            {
-                uiSlider1.value = bassPatternMixer.currentPatternMix;
-                uiSlider2.value = bassPatternMixer.currentMelodyMix;
-                activeTrack = 1;
-            });
+                _mixTargets.Add(null);
+            }
+
+            buttonDrums.onClick.AddListener(() => { SetActiveTrack(0); });
+            buttonBass.onClick.AddListener(() => { SetActiveTrack(1); });
+            StartCoroutine(WaitAndActivate());
         }
 
-        private void Update()
+        IEnumerator WaitAndActivate()
         {
-            drumPatternMixer.SetPartyDudesActive(activeTrack == 0);
-            bassPatternMixer.SetPartyDudesActive(activeTrack == 1);
-            switch (activeTrack)
+            yield return new WaitForSeconds(1);
+            SetActiveTrack(1);
+        }
+
+        public void AttachMixInterface(IMixableObject mixableObject, int index)
+        {
+            _mixTargets[index] = (mixableObject);
+        }
+
+
+        void SetActiveTrack(int trackIndex)
+        {
+            for (int i = 0; i < uiSets.Length; i++)
             {
-                case 0:
-                    drumPatternMixer.currentPatternMix = uiSlider1.value;
-                    drumPatternMixer.currentInstrumentMix = uiSlider2.value;
-                    break;
-                case 1:
-                    bassPatternMixer.currentPatternMix = uiSlider1.value;
-                    bassPatternMixer.currentMelodyMix = uiSlider2.value;
-                    break;
+                uiSets[i].SetIsActive(i == trackIndex);
+                _mixTargets[i].SetIsActive(i == trackIndex);
             }
+
+            activeTrack = trackIndex;
+        }
+
+        public void Mix(int pattern)
+        {
+            _mixTargets[activeTrack].Mix(pattern);
         }
     }
 }
