@@ -44,7 +44,7 @@ public class PartyTypeLegHandler : MonoBehaviour
 
         public void Step(Vector3 direction)
         {
-            var nextFootPos = _transform.position + direction * 0.5f;
+            var nextFootPos = _transform.TransformPoint(attachLocalPosition) + direction * 0.5f;
             nextFootPos.y = 0;
             footTransform.position = nextFootPos;
         }
