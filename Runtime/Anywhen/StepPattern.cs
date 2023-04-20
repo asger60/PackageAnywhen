@@ -13,8 +13,7 @@ namespace PackageAnywhen.Runtime.Anywhen
             public bool noteOn;
             public bool accent;
             public int note;
-            [Range(-1f, 1f)] public float nudge;
-
+            public string chord;
             public float stepWeight;
         }
 

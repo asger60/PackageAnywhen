@@ -68,7 +68,6 @@ namespace Anywhen
         {
             this.state = state;
             this.drift = drift;
-            //this.quantization = quantization;
             this.notes = notes;
             this.chordStrum = chordStrum;
             this.expression1 = expression1;

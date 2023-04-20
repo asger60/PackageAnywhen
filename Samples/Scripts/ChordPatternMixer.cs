@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
@@ -6,6 +7,7 @@ using PackageAnywhen.Samples.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
@@ -32,15 +34,16 @@ namespace Samples.Scripts
         public DrumPatternMixer.PatternInstrument[] patternInstruments;
 
         public BassPattern[] triggerPatterns;
-        public BassPattern[] melodyPatterns;
+        public BassPattern[] chordPatterns;
         public AnywhenMetronome.TickRate tickRate;
         private BassPatternVisualizer _bassPatternVisualizer;
         [SerializeField] private MixView mixView;
         private readonly int[] _goodNotes = new[] { 1, 2, 4, 6, -1, -2 };
 
         private readonly bool[] _currentPattern = new bool[32];
-        private readonly int[] _currentNotePattern = new int[32];
+        private readonly int[][] _currentNotePattern = new int[32][];
         private int _barsCounter;
+        public AnywhenInstrument instrument;
 
 
         private void Start()
@@ -63,29 +66,39 @@ namespace Samples.Scripts
 
             if (GetCurrentPattern(0)[currentStep])
             {
-                var n = GetNoteForStep(currentStep);
-                NoteEvent note = new NoteEvent(n, NoteEvent.EventTypes.NoteOn, 1,
-                    AnywhenMetronome.GetTiming(tickRate, 0, 0));
+                var n = GetChordForStep(currentStep);
 
-                EventFunnel.HandleNoteEvent(note, patternInstruments[0].instruments[0].instrument, tickRate);
+                if (n.Length > 0)
+                {
+                    NoteEvent note = new NoteEvent(NoteEvent.EventTypes.NoteOn,
+                        AnywhenMetronome.GetTiming(tickRate, 0, 0),
+                        n, new double[] { 0, 0, 0, 0 }, 0, 0, 1);
+
+                    EventFunnel.HandleNoteEvent(note, instrument, tickRate);
+                }
             }
         }
 
-        int GetNoteForStep(int stepIndex)
+        int[] GetChordForStep(int stepIndex)
         {
-            int note = 0;
+            int[] note = new[] { 0 };
             float bestWeight = 0;
-            foreach (var melodyPattern in melodyPatterns)
+            foreach (var melodyPattern in chordPatterns)
             {
                 float thisWeight = melodyPattern.currentWeight * melodyPattern.pattern.steps[stepIndex].stepWeight;
                 if (thisWeight > bestWeight)
                 {
-                    note = melodyPattern.pattern.steps[stepIndex].note;
+                    note = GetChordFromString(melodyPattern.pattern.steps[stepIndex].chord);
                     bestWeight = thisWeight;
                 }
             }
 
             return note;
+        }
+
+        int[] GetChordFromString(string s)
+        {
+            return Array.ConvertAll(s.Split(','), int.Parse);
         }
 
 
@@ -95,7 +108,6 @@ namespace Samples.Scripts
             {
                 _currentPattern[i] = false;
             }
-
 
             foreach (var pattern in triggerPatterns)
             {
@@ -111,13 +123,13 @@ namespace Samples.Scripts
         }
 
 
-        public int[] GetCurrentNotePattern(int trackIndex)
+        public int[][] GetCurrentNotePattern(int trackIndex)
         {
             //foreach (var pattern in melodyPatterns)
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    _currentNotePattern[i] = GetNoteForStep(i);
+                    _currentNotePattern[i] = GetChordForStep(i);
                 }
             }
 
@@ -170,27 +182,27 @@ namespace Samples.Scripts
             }
         }
 
-        [ContextMenu("Randomize notes")]
-        void RandomizeMelodyNotes()
+        [ContextMenu("create chords")]
+        void CreateChords()
         {
-            for (int i = 0; i < melodyPatterns.Length; i++)
+            for (int i = 0; i < chordPatterns.Length; i++)
             {
-                for (var index1 = 0; index1 < melodyPatterns[i].pattern.steps.Length; index1++)
+                for (var index1 = 0; index1 < chordPatterns[i].pattern.steps.Length; index1++)
                 {
                     int rnd = Random.Range(0, i + 1);
                     switch (rnd)
                     {
                         case 0:
-                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(1);
+                            chordPatterns[i].pattern.steps[index1].chord = CreateChord();
                             break;
                         case 1:
-                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(2);
+                            chordPatterns[i].pattern.steps[index1].chord = CreateChord();
                             break;
                         case 2:
-                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(5);
+                            chordPatterns[i].pattern.steps[index1].chord = CreateChord();
                             break;
                         case 3:
-                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(7);
+                            chordPatterns[i].pattern.steps[index1].chord = CreateChord();
                             break;
                         case 4:
 
@@ -199,16 +211,35 @@ namespace Samples.Scripts
                     }
 
 
-                    melodyPatterns[i].pattern.steps[index1].stepWeight = Random.Range(0, 1f);
+                    chordPatterns[i].pattern.steps[index1].stepWeight = Random.Range(0, 1f);
                 }
             }
+        }
+
+        string CreateChord()
+        {
+            int[] chord = new int[Random.Range(2, 6)];
+            chord[0] = 0;
+            for (var index = 1; index < chord.Length; index++)
+            {
+                chord[index] = GetRandomNote(index * 2);
+            }
+
+            string s = "";
+            foreach (var c in chord)
+            {
+                s += c + ",";
+            }
+
+            s = s.Remove(s.Length - 1, 1);
+            return s;
         }
 
 
         int GetRandomNote(int width)
         {
-            int rnd = Random.Range(0, 5);
-            if (rnd == 0) return 0;
+            //int rnd = Random.Range(0, 5);
+            //if (rnd == 0) return 0;
 
             width = Mathf.Min(width, _goodNotes.Length);
             return _goodNotes[Random.Range(0, width)];
@@ -247,25 +278,25 @@ namespace Samples.Scripts
             mixIndex -= 2;
             float combinedWeight = 0;
 
-            melodyPatterns[mixIndex].currentWeight += 0.05f;
-            for (int i = 0; i < melodyPatterns.Length; i++)
+            chordPatterns[mixIndex].currentWeight += 0.05f;
+            for (int i = 0; i < chordPatterns.Length; i++)
             {
-                combinedWeight += melodyPatterns[i].currentWeight;
+                combinedWeight += chordPatterns[i].currentWeight;
             }
 
             if (combinedWeight > 1)
             {
                 float subtract = (combinedWeight - 1);
-                for (int i = 0; i < melodyPatterns.Length; i++)
+                for (int i = 0; i < chordPatterns.Length; i++)
                 {
                     if (i != mixIndex)
-                        melodyPatterns[i].currentWeight -= subtract;
+                        chordPatterns[i].currentWeight -= subtract;
                 }
             }
 
-            for (int i = 0; i < melodyPatterns.Length; i++)
+            for (int i = 0; i < chordPatterns.Length; i++)
             {
-                melodyPatterns[i].currentWeight = Mathf.Clamp01(melodyPatterns[i].currentWeight);
+                chordPatterns[i].currentWeight = Mathf.Clamp01(chordPatterns[i].currentWeight);
             }
         }
 
@@ -283,8 +314,8 @@ namespace Samples.Scripts
 
             values[0] = triggerPatterns[0].currentWeight / 2f;
             values[1] = triggerPatterns[1].currentWeight / 2f;
-            values[2] = melodyPatterns[0].currentWeight / 2f;
-            values[3] = melodyPatterns[1].currentWeight / 2f;
+            values[2] = chordPatterns[0].currentWeight / 2f;
+            values[3] = chordPatterns[1].currentWeight / 2f;
 
             mixView.UpdateValues(values);
         }

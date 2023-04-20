@@ -1,8 +1,6 @@
-using Anywhen;
 using PackageAnywhen.Runtime.Anywhen;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 // IngredientDrawer
 [CustomPropertyDrawer(typeof(StepPattern.PatternStepEntry))]
@@ -23,45 +21,29 @@ public class PatternStepEntryDrawer : PropertyDrawer
         var indent = EditorGUI.indentLevel;
         EditorGUI.indentLevel = 0;
         // Calculate rects
+        position.x -= 60;
         var isOnRect = new Rect(position.x, position.y, 60, 20);
-        var accentRect = new Rect(position.x + 100, position.y, 60, 20);
-        var noteRect = new Rect(position.x + 140, position.y, 30, 20);
-        var weightRect = new Rect(position.x + 200, position.y, 45, 20);
+        var accentRect = new Rect(position.x + 20, position.y, 60, 20);
+        var noteRect = new Rect(position.x + 60, position.y, 30, 20);
+
+        var chordRect = new Rect(position.x + 120, position.y, 60, 20);
+        
+        var weightRect = new Rect(position.x + 260, position.y, 45, 20);
         
 
         // Draw fields - pass GUIContent.none to each so they are drawn without labels
         EditorGUI.PropertyField(isOnRect, property.FindPropertyRelative("noteOn"), GUIContent.none);
         EditorGUI.PropertyField(accentRect, property.FindPropertyRelative("accent"), GUIContent.none);
         EditorGUI.PropertyField(noteRect, property.FindPropertyRelative("note"), GUIContent.none);
+        
         EditorGUI.PropertyField(weightRect, property.FindPropertyRelative("stepWeight"), GUIContent.none);
+        
+        
+        
+        EditorGUI.PropertyField(chordRect, property.FindPropertyRelative("chord"), GUIContent.none);
+        
+        
 
-        //var isOnLabel = new GUIContent("x");
-
-        //if (isOnArray.arraySize == 0)
-        //{
-        //    isOnArray.arraySize = 16;
-        //}
-//
-        //if (accentOnArray.arraySize == 0)
-        //{
-        //    accentOnArray.arraySize = 16;
-        //}
-
-        //EditorGUI.LabelField(isOnRect, "NoteOn");
-        //EditorGUI.LabelField(accentRect, "Accent");
-        //for (int i = 0; i < 16; i++)
-        //{
-        //    isOnRect.y += 20;
-        //    accentRect.y += 20;
-        //    stepIndexRect.y += 20;
-        //    
-        //    EditorGUI.LabelField(stepIndexRect, i.ToString());
-        //    isOnLabel = new GUIContent(i.ToString());
-        //    EditorGUI.PropertyField(isOnRect, isOnArray.GetArrayElementAtIndex(i), GUIContent.none);
-//
-        //    EditorGUI.PropertyField(accentRect, accentOnArray.GetArrayElementAtIndex(i), GUIContent.none);
-//
-        //}
 
 
         // Set indent back to what it was
@@ -70,8 +52,4 @@ public class PatternStepEntryDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    //public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-    //{
-    //    return 370f;
-    //}
 }

@@ -149,14 +149,15 @@ namespace Samples.Scripts
             {
                 for (var index = 0; index < triggerPatterns[i].pattern.steps.Length; index++)
                 {
-                    triggerPatterns[i].pattern.steps[index].stepWeight = i;
+                    triggerPatterns[i].pattern.steps[index].stepWeight = Random.Range(0.5f, 0.8f) * i;
                 }
             }
+
             for (int i = 0; i < melodyPatterns.Length; i++)
             {
                 for (var index = 0; index < melodyPatterns[i].pattern.steps.Length; index++)
                 {
-                    melodyPatterns[i].pattern.steps[index].stepWeight = 1-i;
+                    melodyPatterns[i].pattern.steps[index].stepWeight = 1 - Random.Range(0.5f, 0.8f) * i;
                 }
             }
         }
@@ -244,7 +245,7 @@ namespace Samples.Scripts
 
                     if (b)
                     {
-                        float add = patternIndex == i ? Random.Range(-.1f, -.5f) : Random.Range(.1f, .05f);
+                        float add = patternIndex == i ? Random.Range(-.1f, -.05f) : Random.Range(.1f, .05f);
 
                         triggerPatterns[i].pattern.steps[step].stepWeight += add;
                         triggerPatterns[i].pattern.steps[step].stepWeight =
