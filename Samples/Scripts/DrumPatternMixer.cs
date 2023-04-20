@@ -73,7 +73,7 @@ namespace Samples.Scripts
             _patternVisualizers = GetComponentsInChildren<SamplePatternVisualizer>();
         }
 
-        public void Mix(int patternIndex)
+        public void Mix(int patternIndex, int stepIndex)
         {
             float combinedWeight = 0;
             patterns[patternIndex].currentWeight += 0.05f;
@@ -146,33 +146,7 @@ namespace Samples.Scripts
             return instrumentObject;
         }
 
-
-        private void Update()
-        {
-            //float allPoints = 0;
-            //for (int i = 0; i < patterns.Length; i++)
-            //{
-            //    allPoints += patterns[i].currentPoints;
-            //    //patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
-            //}
-//
-            //for (int i = 0; i < patterns.Length; i++)
-            //{
-            //    patterns[i].currentWeight = patterns[i].currentPoints / allPoints;
-            //}
-
-
-            //for (int i = 0; i < patterns.Length; i++)
-            //{
-            //    patterns[i].currentWeight = Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentPatternMix)));
-            //}
-
-            //for (var i = 0; i < patternInstruments.Length; i++)
-            //{
-            //    patternInstruments[i].currentWeight =
-            //        Mathf.Lerp(1, 0, mixCurve.Evaluate(Mathf.Abs(i - currentInstrumentMix)));
-            //}
-        }
+        
 
         private readonly bool[] _currentPattern = new bool[16];
 
@@ -267,7 +241,7 @@ namespace Samples.Scripts
 
     public interface IMixableObject
     {
-        public void Mix(int currentPattern);
+        public void Mix(int currentPattern, int stepIndex);
         public void SetIsActive(bool state);
     }
 }

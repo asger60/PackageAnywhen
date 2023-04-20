@@ -20,7 +20,7 @@ namespace PackageAnywhen.Samples.Scripts
             for (int i = 0; i < 32; i++)
             {
                 var newPartyType = Instantiate(partyTypePrefab, transform);
-                newPartyType.Init(i, 32, _circlePositions[i], bassPatternMixer.patternInstruments[0].instruments[0]);
+                newPartyType.Init(i, 32, _circlePositions[i]);
                 AnywhenMetronome.Instance.OnTick16 += newPartyType.Tick;
                 _partyTypes.Add(newPartyType);
             }
@@ -35,6 +35,7 @@ namespace PackageAnywhen.Samples.Scripts
             {
                 _partyTypes[i].SetNoteOn(false, 0);
             }
+            
             for (var i = 0; i < _partyTypes.Count; i++)
             {
                 if (stepTriggers[i])

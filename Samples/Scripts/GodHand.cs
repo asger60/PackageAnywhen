@@ -47,11 +47,10 @@ public class GodHand : MonoBehaviour
         gfxObject.transform.localScale =
             Vector3.Lerp(gfxObject.transform.localScale, Vector3.one * 0.7f, Time.deltaTime * 10);
 
-        bool cursorHidden = Input.mousePosition.y > 100;
-   
-        
-        Cursor.visible = Input.mousePosition.y < 100 || Input.mousePosition.y > Screen.height - 100;
-        
+        bool isHidden = Input.mousePosition.y < 100 || Input.mousePosition.y > Screen.height - 100 ||
+                        Input.mousePosition.x < 200;
+        Cursor.visible = isHidden;
+        gfxObject.SetActive(!isHidden);
 
         Ray ray = thisCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -60,10 +59,11 @@ public class GodHand : MonoBehaviour
             transform.position = _hit.point;
         }
 
-        if (Input.mousePosition.y > 100 && Input.mousePosition.y < Screen.height - 100 && Input.GetMouseButton(0) &&
-            _lastMixTime + 0.1f < Time.time)
+        if (!isHidden && Input.GetMouseButton(0) && _lastMixTime + 0.1f < Time.time)
         {
-            TrackHandler.Instance.Mix(currentPattern);
+            Vector2 direction = new Vector2(transform.position.x, transform.position.z).normalized;
+            float angle = Mathf.Repeat(Vector2.SignedAngle(Vector2.left, direction) * -1, 360);
+            TrackHandler.Instance.Mix(currentPattern, (int)(angle / 360 * 32));
             _lastMixTime = Time.time;
             var rainDrop = Instantiate(rainPrefab, transform.position, Quaternion.identity);
             rainDrop.Init(_currentColor);

@@ -10,9 +10,9 @@ namespace PackageAnywhen.Samples.Scripts
     {
         public int activeTrack;
 
-        public Button buttonDrums, buttonBass;
+        public Button buttonDrums, buttonBass, buttonChords;
         public UISet[] uiSets;
-        private List<IMixableObject> _mixTargets = new List<IMixableObject>();
+        private List<IMixableObject> _mixTargets = new();
 
         public static TrackHandler Instance => _instance;
         private static TrackHandler _instance;
@@ -20,10 +20,7 @@ namespace PackageAnywhen.Samples.Scripts
         private void Awake()
         {
             _instance = this;
-        }
-
-        private void Start()
-        {
+        
             _mixTargets = new List<IMixableObject>(4);
             for (int i = 0; i < 4; i++)
             {
@@ -32,13 +29,14 @@ namespace PackageAnywhen.Samples.Scripts
 
             buttonDrums.onClick.AddListener(() => { SetActiveTrack(0); });
             buttonBass.onClick.AddListener(() => { SetActiveTrack(1); });
+            buttonChords.onClick.AddListener(() => { SetActiveTrack(2); });
             StartCoroutine(WaitAndActivate());
         }
 
         IEnumerator WaitAndActivate()
         {
             yield return new WaitForSeconds(1);
-            SetActiveTrack(1);
+            SetActiveTrack(2);
         }
 
         public void AttachMixInterface(IMixableObject mixableObject, int index)
@@ -58,9 +56,9 @@ namespace PackageAnywhen.Samples.Scripts
             activeTrack = trackIndex;
         }
 
-        public void Mix(int pattern)
+        public void Mix(int pattern, int stepIndex)
         {
-            _mixTargets[activeTrack].Mix(pattern);
+            _mixTargets[activeTrack].Mix(pattern, stepIndex);
         }
     }
 }

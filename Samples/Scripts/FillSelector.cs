@@ -12,7 +12,7 @@ public class FillSelector : MonoBehaviour
     {
         TryGetComponent(out _rectTransform);
         _shownPosition = _rectTransform.anchoredPosition;
-        _hiddenPosition = _shownPosition + Vector2.down * 200;
+        _hiddenPosition = _shownPosition + Vector2.left * 200;
         _rectTransform.anchoredPosition = _hiddenPosition;
         _currentPositionTarget = _hiddenPosition;
     }

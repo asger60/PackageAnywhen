@@ -22,7 +22,7 @@ public class PartyType : MonoBehaviour
     private bool _isTrackActive;
 
     public void Init(int connectedStep, int patternStepLength, Vector3 circlePosition,
-        DrumPatternMixer.InstrumentObject connectedInstrument)
+        DrumPatternMixer.InstrumentObject connectedInstrument = new DrumPatternMixer.InstrumentObject())
     {
         _connectedStepIndex = connectedStep;
 

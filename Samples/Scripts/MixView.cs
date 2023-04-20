@@ -1,14 +1,10 @@
-using System;
-using Samples.Scripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MixView : MonoBehaviour
 {
     public Image[] fillImages;
 
-    [FormerlySerializedAs("fillAmounts")] [Range(0, 1f)]
     public float[] fillAmountTargets;
 
     private float[] _currentFillAmounts = new float[4];
