@@ -38,7 +38,7 @@ namespace Samples.Scripts
         public AnywhenMetronome.TickRate tickRate;
         private BassPatternVisualizer _bassPatternVisualizer;
         [SerializeField] private MixView mixView;
-        private readonly int[] _goodNotes = new[] { 1, 2, 4, 6, -1, -2 };
+        private readonly int[] _goodNotes = new[] { 2, 4, 5, 6, -2 };
 
         private readonly bool[] _currentPattern = new bool[32];
         private readonly int[][] _currentNotePattern = new int[32][];
@@ -72,7 +72,7 @@ namespace Samples.Scripts
                 {
                     NoteEvent note = new NoteEvent(NoteEvent.EventTypes.NoteOn,
                         AnywhenMetronome.GetTiming(tickRate, 0, 0),
-                        n, new double[] { 0, 0, 0, 0 }, 0, 0, 1);
+                        n, new double[] { 0, 0, 0, 0,0 }, 0, 0, 1);
 
                     EventFunnel.HandleNoteEvent(note, instrument, tickRate);
                 }
