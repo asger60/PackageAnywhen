@@ -29,7 +29,7 @@ namespace PackageAnywhen.Samples.Scripts
         private void Update()
         {
             var stepTriggers = bassPatternMixer.CurrentTriggerPattern;
-            var stepNotes = bassPatternMixer.GetCurrentNotePattern(0);
+            var stepNotes = bassPatternMixer.CurrentNotePattern;
 
             for (var i = 0; i < _partyTypes.Count; i++)
             {
