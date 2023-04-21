@@ -39,10 +39,18 @@ namespace Samples.Scripts
         [SerializeField] private MixView mixView;
         private readonly int[] _goodNotes = new[] { 1, 2, 4, 6, -1, -2 };
 
-        private readonly bool[] _currentPattern = new bool[32];
-        private readonly int[] _currentNotePattern = new int[32];
+        //private readonly bool[] _currentPattern = new bool[32];
+        //private readonly int[] _currentNotePattern = new int[32];
         private int _barsCounter;
-
+        
+        public bool[] CurrentTriggerPattern => _currentTriggerPattern;
+        public int[] CurrentNotePattern => _currentNotePattern;
+        private bool[] _currentTriggerPattern = new bool[32];
+        private int[][] _currentChordPattern = new int[32][];
+        private int[] _currentNotePattern = new int[32];
+        
+        float[] _currentTriggerMixValue = new float[32];
+        float[] _currentNoteMixValue = new float[32];
 
         private void Start()
         {
@@ -62,7 +70,7 @@ namespace Samples.Scripts
             int currentStep = stepIndex + (_barsCounter * 16);
 
 
-            if (GetCurrentPattern(0)[currentStep])
+            if (CurrentTriggerPattern[currentStep])
             {
                 var n = GetNoteForStep(currentStep);
                 NoteEvent note = new NoteEvent(n, NoteEvent.EventTypes.NoteOn, 1,
@@ -91,26 +99,26 @@ namespace Samples.Scripts
         }
 
 
-        public bool[] GetCurrentPattern(int trackIndex)
-        {
-            for (int i = 0; i < 32; i++)
-            {
-                _currentPattern[i] = false;
-            }
-
-
-            foreach (var pattern in triggerPatterns)
-            {
-                for (int i = 0; i < 32; i++)
-                {
-                    if (pattern.ShouldTrigger(i))
-                        _currentPattern[i] = true;
-                }
-            }
-
-
-            return _currentPattern;
-        }
+        //public bool[] GetCurrentPattern(int trackIndex)
+        //{
+        //    for (int i = 0; i < 32; i++)
+        //    {
+        //        _currentPattern[i] = false;
+        //    }
+//
+//
+        //    foreach (var pattern in triggerPatterns)
+        //    {
+        //        for (int i = 0; i < 32; i++)
+        //        {
+        //            if (pattern.ShouldTrigger(i))
+        //                _currentPattern[i] = true;
+        //        }
+        //    }
+//
+//
+        //    return _currentPattern;
+        //}
 
 
         public int[] GetCurrentNotePattern(int trackIndex)
@@ -125,6 +133,31 @@ namespace Samples.Scripts
 
 
             return _currentNotePattern;
+        }
+
+        private void Update()
+        {
+            GetCurrentTriggerPattern();
+        }
+
+        private void GetCurrentTriggerPattern()
+        {
+            for (int i = 0; i < 32; i++)
+            {
+                float weightDistance = 100;
+                for (var index = 0; index < triggerPatterns.Length; index++)
+                {
+                    float thisWeightDistance =
+                        (Mathf.Abs(_currentTriggerMixValue[i] - index) -
+                         (triggerPatterns[index].pattern.steps[i].stepWeight));
+
+                    if (thisWeightDistance < weightDistance)
+                    {
+                        weightDistance = thisWeightDistance;
+                        _currentTriggerPattern[i] = triggerPatterns[index].pattern.steps[i].noteOn;
+                    }
+                }
+            }
         }
 
 
@@ -211,75 +244,48 @@ namespace Samples.Scripts
 
         void MixTriggers(int mixIndex, int stepIndex)
         {
-            float combinedWeight = 0;
-
-            //triggerPatterns[mixIndex].currentWeight += 0.05f;
+            
+            float add = mixIndex == 1 ? -0.25f : 0.25f;
+            int range = 3;
+            for (int i = stepIndex - range; i < stepIndex + range; i++)
+            {
+                int paintIndex = (int)Mathf.Repeat(i, 32);
+                float effect = Mathf.InverseLerp(range, 0f, Mathf.Abs(stepIndex - paintIndex));
+                _currentTriggerMixValue[paintIndex] += add * effect;
+                _currentTriggerMixValue[paintIndex] =
+                    Mathf.Clamp(_currentTriggerMixValue[paintIndex], 0, triggerPatterns.Length);
+            }
+            
+            
+            
+            //float combinedWeight = 0;
+//
+//
+//
+            //int patternIndex = mixIndex;
+            //int range = 3;
+//
             //for (int i = 0; i < triggerPatterns.Length; i++)
             //{
-            //    combinedWeight += triggerPatterns[i].currentWeight;
-            //}
-//
-            //if (combinedWeight > 1)
-            //{
-            //    float subtract = (combinedWeight - 1);
-            //    for (int i = 0; i < triggerPatterns.Length; i++)
+            //    for (int step = 0; step < triggerPatterns[i].pattern.steps.Length; step++)
             //    {
-            //        if (i != mixIndex)
-            //            triggerPatterns[i].currentWeight -= subtract;
+            //        var b = Mathf.Abs(step - stepIndex) < range;
+//
+            //        if (b)
+            //        {
+            //            float add = patternIndex != i ? Random.Range(-.1f, -.05f) : Random.Range(.1f, .05f);
+//
+            //            triggerPatterns[i].pattern.steps[step].stepWeight += add;
+            //            triggerPatterns[i].pattern.steps[step].stepWeight =
+            //                Mathf.Clamp01(triggerPatterns[i].pattern.steps[step].stepWeight);
+            //        }
             //    }
             //}
-//
-            //for (int i = 0; i < triggerPatterns.Length; i++)
-            //{
-            //    triggerPatterns[i].currentWeight = Mathf.Clamp01(triggerPatterns[i].currentWeight);
-            //}
-
-            int patternIndex = mixIndex;
-            int range = 3;
-
-            for (int i = 0; i < triggerPatterns.Length; i++)
-            {
-                for (int step = 0; step < triggerPatterns[i].pattern.steps.Length; step++)
-                {
-                    var b = Mathf.Abs(step - stepIndex) < range;
-
-                    if (b)
-                    {
-                        float add = patternIndex == i ? Random.Range(-.1f, -.05f) : Random.Range(.1f, .05f);
-
-                        triggerPatterns[i].pattern.steps[step].stepWeight += add;
-                        triggerPatterns[i].pattern.steps[step].stepWeight =
-                            Mathf.Clamp01(triggerPatterns[i].pattern.steps[step].stepWeight);
-                    }
-                }
-            }
         }
 
         void MixMelody(int mixIndex, int stepIndex)
         {
             mixIndex -= 2;
-            //float combinedWeight = 0;
-//
-            //melodyPatterns[mixIndex].currentWeight += 0.05f;
-            //for (int i = 0; i < melodyPatterns.Length; i++)
-            //{
-            //    combinedWeight += melodyPatterns[i].currentWeight;
-            //}
-//
-            //if (combinedWeight > 1)
-            //{
-            //    float subtract = (combinedWeight - 1);
-            //    for (int i = 0; i < melodyPatterns.Length; i++)
-            //    {
-            //        if (i != mixIndex)
-            //            melodyPatterns[i].currentWeight -= subtract;
-            //    }
-            //}
-//
-            //for (int i = 0; i < melodyPatterns.Length; i++)
-            //{
-            //    melodyPatterns[i].currentWeight = Mathf.Clamp01(melodyPatterns[i].currentWeight);
-            //}
 
 
             int patternIndex = mixIndex;

@@ -1,7 +1,6 @@
-using System;
-using Anywhen;
 using Samples.Scripts;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using Random = UnityEngine.Random;
 
 public class PartyType : MonoBehaviour
@@ -20,6 +19,9 @@ public class PartyType : MonoBehaviour
     public DrumPatternMixer.InstrumentObject InstrumentObject => _instrumentObject;
     private int _patternStepLength;
     private bool _isTrackActive;
+
+    public GameObject[] subObjects;
+
 
     public void Init(int connectedStep, int patternStepLength, Vector3 circlePosition,
         DrumPatternMixer.InstrumentObject connectedInstrument = new DrumPatternMixer.InstrumentObject())
@@ -53,10 +55,28 @@ public class PartyType : MonoBehaviour
     }
 
 
-    private void SetColor(Color color)
+    public void SetColor(Color color)
     {
         _materialPropertyBlock.SetColor("_Color", color);
         _objectRenderer.SetPropertyBlock(_materialPropertyBlock);
+        Color prevColor = color;
+        for (var i = 0; i < subObjects.Length; i++)
+        {
+            var subObject = subObjects[i];
+            var r = subObject.GetComponent<Renderer>();
+            prevColor = RandomizeColor(prevColor, i);
+            _materialPropertyBlock.SetColor("_Color", prevColor);
+            r.SetPropertyBlock(_materialPropertyBlock);
+        }
+    }
+
+    Color RandomizeColor(Color color, int width)
+    {
+        float thisWidth = (1 + width) * 0.25f;
+        color.r += thisWidth;
+        //color.g += Random.Range(-thisWidth, thisWidth);
+        //color.b += Random.Range(-thisWidth, thisWidth);
+        return color;
     }
 
     private void Update()
@@ -74,6 +94,24 @@ public class PartyType : MonoBehaviour
             stepTrigger ? _inCirclePosition + _inCirclePosition.normalized * (note) : _onLookPosition;
         _currentScaleTarget = _noteOn ? Vector3.one * 0.4f : Vector3.one * 0.3f;
         _wobbleAmount = _noteOn ? Random.Range(0.1f, 0.2f) : 0.1f;
+        foreach (var subObject in subObjects)
+        {
+            subObject.SetActive(false);
+        }
+    }
+
+    public void SetChordOn(bool stepTrigger, int rootNote, int[] notes)
+    {
+        if (!_isTrackActive) return;
+        _noteOn = stepTrigger;
+        _currentPositionTarget =
+            stepTrigger ? _inCirclePosition + _inCirclePosition.normalized * (rootNote * 0.25f) : _onLookPosition;
+        _currentScaleTarget = _noteOn ? Vector3.one * 0.4f : Vector3.one * 0.3f;
+        _wobbleAmount = _noteOn ? Random.Range(0.1f, 0.2f) : 0.1f;
+        for (int i = 1; i < notes.Length; i++)
+        {
+            subObjects[i - 1].SetActive(true);
+        }
     }
 
     public void Tick()
