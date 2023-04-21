@@ -70,4 +70,10 @@ public class GodHand : MonoBehaviour
             gfxObject.transform.localScale = Vector3.one;
         }
     }
+
+    public void SetIsActive(bool state)
+    {
+        gameObject.SetActive(state);
+        Cursor.visible = !state;
+    }
 }
