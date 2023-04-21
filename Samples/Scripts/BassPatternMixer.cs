@@ -182,7 +182,7 @@ namespace Samples.Scripts
             {
                 for (var index = 0; index < triggerPatterns[i].pattern.steps.Length; index++)
                 {
-                    triggerPatterns[i].pattern.steps[index].stepWeight = Random.Range(0.5f, 0.8f) * i;
+                    triggerPatterns[i].pattern.steps[index].stepWeight = Random.Range(0f, 0.9f);
                 }
             }
 
@@ -190,7 +190,7 @@ namespace Samples.Scripts
             {
                 for (var index = 0; index < melodyPatterns[i].pattern.steps.Length; index++)
                 {
-                    melodyPatterns[i].pattern.steps[index].stepWeight = 1 - Random.Range(0.5f, 0.8f) * i;
+                    melodyPatterns[i].pattern.steps[index].stepWeight = Random.Range(0f, 0.8f);
                 }
             }
         }
