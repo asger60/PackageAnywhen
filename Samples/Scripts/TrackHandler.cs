@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Samples.Scripts;
@@ -10,33 +11,38 @@ namespace PackageAnywhen.Samples.Scripts
     {
         public int activeTrack;
 
-        public Button buttonDrums, buttonBass, buttonChords;
+        //public Button buttonDrums, buttonBass, buttonChords;
         public UISet[] uiSets;
         private List<IMixableObject> _mixTargets = new();
-
+        public UIToggleGroup trackToggleGroup;
         public static TrackHandler Instance => _instance;
         private static TrackHandler _instance;
 
         private void Awake()
         {
             _instance = this;
-        
             _mixTargets = new List<IMixableObject>(4);
             for (int i = 0; i < 4; i++)
             {
                 _mixTargets.Add(null);
             }
+        }
 
-            buttonDrums.onClick.AddListener(() => { SetActiveTrack(0); });
-            buttonBass.onClick.AddListener(() => { SetActiveTrack(1); });
-            buttonChords.onClick.AddListener(() => { SetActiveTrack(2); });
-            StartCoroutine(WaitAndActivate());
+        private void Start()
+        {
+            trackToggleGroup.OnSelect = OnSelectTrack;
+        }
+
+        private void OnSelectTrack(int index)
+        {
+            SetActiveTrack(index);
         }
 
         IEnumerator WaitAndActivate()
         {
             yield return new WaitForSeconds(1);
             SetActiveTrack(2);
+            trackToggleGroup.SelectButton(2, false);
         }
 
         public void AttachMixInterface(IMixableObject mixableObject, int index)
@@ -45,7 +51,7 @@ namespace PackageAnywhen.Samples.Scripts
         }
 
 
-        void SetActiveTrack(int trackIndex)
+        public void SetActiveTrack(int trackIndex)
         {
             for (int i = 0; i < uiSets.Length; i++)
             {
@@ -59,6 +65,24 @@ namespace PackageAnywhen.Samples.Scripts
         public void Mix(int pattern, int stepIndex)
         {
             _mixTargets[activeTrack].Mix(pattern, stepIndex);
+        }
+
+        private int _prevActiveTrack;
+        public void HideTrackInterfaces()
+        {
+            _prevActiveTrack = activeTrack;
+            for (int i = 0; i < uiSets.Length; i++)
+            {
+                uiSets[i].SetIsActive(false);
+                _mixTargets[i]?.SetIsActive(false);
+            }
+
+            activeTrack = -1;
+        }
+        
+        public void ShowTrackInterfaces()
+        {
+            SetActiveTrack(_prevActiveTrack);
         }
     }
 }

@@ -4,10 +4,8 @@ using Anywhen;
 using Anywhen.SettingsObjects;
 using PackageAnywhen.Runtime.Anywhen;
 using PackageAnywhen.Samples.Scripts;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
@@ -38,9 +36,47 @@ namespace Samples.Scripts
         public AnywhenMetronome.TickRate tickRate;
         private ChordPatternVisualizer _chordPatternVisualizer;
         [SerializeField] private MixView mixView;
+        public int octave = 0;
         private readonly int[] _goodNotes = new[] { 2, 4, 5, 6, -2, -1, 8 };
 
-        private readonly int[] _rootNotes = new[] { 0, 4, 6, -2, 8 };
+        private readonly int[] _rootNotes = new[] { 0, 2, 4, 6, -2 };
+
+        private readonly int[][] _goodSimpleChords =
+        {
+            new[]
+            {
+                0, 2, 4,
+            },
+            new[]
+            {
+                0, 2, 5,
+            },
+            new[]
+            {
+                0, 1, 4,
+            },
+            new[]
+            {
+                0, 3, 4,
+            }
+        };
+
+        private readonly int[][] _goodComplexChords =
+        {
+            new[]
+            {
+                0, 2, 4, -1,
+            },
+            new[]
+            {
+                0, 2, 4, 6,
+            },
+            new[]
+            {
+                0, 1, 4, 5,
+            },
+        };
+
 
         public bool[] CurrentTriggerPattern => _currentTriggerPattern;
         public int[][] CurrentChordPattern => _currentChordPattern;
@@ -84,7 +120,7 @@ namespace Samples.Scripts
                     var root = _currentNotePattern[currentStep];
                     for (var i = 0; i < n.Length; i++)
                     {
-                        n[i] += root;
+                        n[i] += root + (octave * 7);
                     }
 
 
@@ -200,11 +236,12 @@ namespace Samples.Scripts
         {
             for (int i = 0; i < chordPatterns.Length; i++)
             {
-                int width = i + 2;
+                int width = i;
                 for (var index1 = 0; index1 < chordPatterns[i].pattern.steps.Length; index1++)
                 {
                     chordPatterns[i].pattern.steps[index1].note = GetRootNote(width);
-                    chordPatterns[i].pattern.steps[index1].chord = CreateChord(width);
+                    chordPatterns[i].pattern.steps[index1].chord =
+                        CreateChord((i < 2) ? _goodSimpleChords : _goodComplexChords, width);
                     chordPatterns[i].pattern.steps[index1].stepWeight = Random.Range(0, 1f);
                 }
             }
@@ -212,25 +249,29 @@ namespace Samples.Scripts
 
         int GetRootNote(int width)
         {
-            int i = (int)Mathf.Repeat(Random.Range(-width, width), _rootNotes.Length);
+            //return 0;
+            int i = (int)Mathf.Repeat(Random.Range(0, width*2), _rootNotes.Length);
             return _rootNotes[i];
         }
 
-        string CreateChord(int width)
+        string CreateChord(int[][] chordArray, int width)
         {
-            int[] chord = new int[width];
-            chord[0] = 0;
-            for (var index = 1; index < chord.Length; index++)
-            {
-                chord[index] = GetRandomNote(index * 2, new List<int>(chord));
-            }
+            int[] chord = chordArray[Random.Range(0, Mathf.Min(width, chordArray.Length))];
+
+            //chord[0] = 0;
+            //for (var index = 1; index < chord.Length; index++)
+            //{
+            //    chord[index] = GetRandomNote(index * 2, new List<int>(chord));
+            //}
 
             string s = "";
             foreach (var c in chord)
             {
+                print(c);
                 s += c + ",";
             }
 
+            print("break");
             s = s.Remove(s.Length - 1, 1);
             return s;
         }
@@ -253,9 +294,10 @@ namespace Samples.Scripts
 
 #endif
 
+        public float mixPower = 0.5f;
         void MixTriggers(int mixIndex, int stepIndex)
         {
-            float add = mixIndex == 1 ? -0.25f : 0.25f;
+            float add = mixIndex == 1 ? -mixPower : mixPower;
             int range = 3;
             for (int i = stepIndex - range; i < stepIndex + range; i++)
             {
@@ -270,7 +312,7 @@ namespace Samples.Scripts
         void MixNotes(int mixIndex, int stepIndex)
         {
             mixIndex -= 2;
-            float add = mixIndex == 0 ? -0.25f : 0.25f;
+            float add = mixIndex == 0 ? -mixPower : mixPower;
             int range = 3;
             for (int i = stepIndex - range; i < stepIndex + range; i++)
             {

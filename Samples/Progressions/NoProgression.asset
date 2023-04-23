@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
-  m_Name: DebugKick3
+  m_Script: {fileID: 11500000, guid: 874abb4ab5b2641f8b06b16a62b0c9c5, type: 3}
+  m_Name: NoProgression
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: ade6d414dc4984d788216780c279e2bd, type: 3}
-  volume: 1
-  stopDuration: 0.1
-  instrumentType: 0
-  clipSelectType: 1
+  patternSteps:
+  - rootNote: 0
+    anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}

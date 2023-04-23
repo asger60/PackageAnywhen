@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using PackageAnywhen.Samples.Scripts;
 using UnityEngine;
 
 public class AppHandler : MonoBehaviour
@@ -17,7 +16,8 @@ public class AppHandler : MonoBehaviour
     public UIMenu uiMenu;
     public static AppHandler Instance => _instance;
     private static AppHandler _instance;
-
+    public GameObject menuButton;
+    public UITrackSelector trackSelector;
     private void Awake()
     {
         _instance = this;
@@ -37,10 +37,16 @@ public class AppHandler : MonoBehaviour
             case AppStates.Menu:
                 godHand.SetIsActive(false);
                 uiMenu.SetIsActive(true);
+                TrackHandler.Instance.HideTrackInterfaces();
+                menuButton.SetActive(false);
+                trackSelector.SetIsActive(false);
                 break;
             case AppStates.Playing:
                 godHand.SetIsActive(true);
                 uiMenu.SetIsActive(false);
+                TrackHandler.Instance.ShowTrackInterfaces();
+                menuButton.SetActive(true);
+                trackSelector.SetIsActive(true);
 
                 break;
             default:

@@ -211,9 +211,10 @@ namespace Samples.Scripts
 
 #endif
 
+        public float mixPower = 0.5f;
         void MixTriggers(int mixIndex, int stepIndex)
         {
-            float add = mixIndex == 1 ? -0.25f : 0.25f;
+            float add = mixIndex == 1 ? -mixPower : mixPower;
             int range = 3;
             for (int i = stepIndex - range; i < stepIndex + range; i++)
             {
@@ -228,7 +229,7 @@ namespace Samples.Scripts
         void MixMelody(int mixIndex, int stepIndex)
         {
             mixIndex -= 2;
-            float add = mixIndex == 0 ? -0.25f : 0.25f;
+            float add = mixIndex == 0 ? -mixPower : mixPower;
             int range = 3;
             for (int i = stepIndex - range; i < stepIndex + range; i++)
             {

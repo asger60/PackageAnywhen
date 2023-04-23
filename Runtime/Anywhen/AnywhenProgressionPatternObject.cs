@@ -5,17 +5,17 @@ namespace Anywhen
 {
     [CreateAssetMenu(fileName = "New progression pattern", menuName = "Anywhen/Conductor/Note Progression")]
 
-    public class PatternObject : ScriptableObject
+    public class AnywhenProgressionPatternObject : ScriptableObject
     {
         [System.Serializable]
-        public class PatternStep
+        public class ProgressionStep
         {
             public int rootNote;
             public AnywhenScaleObject anywhenScale;
         }
 
         
-        public PatternStep[] patternSteps;
+        public ProgressionStep[] patternSteps;
 
     }
 }

@@ -7,7 +7,7 @@ public class FillSelector : MonoBehaviour
     private RectTransform _rectTransform;
     private Vector2 _shownPosition, _hiddenPosition, _currentPositionTarget;
     public Button[] buttons;
-    private Vector2[] _buttonTargets = new Vector2[4];
+    private readonly Vector2[] _buttonTargets = new Vector2[4];
     private void Awake()
     {
         TryGetComponent(out _rectTransform);
@@ -24,11 +24,7 @@ public class FillSelector : MonoBehaviour
             var i1 = i;
             buttons[i].onClick.AddListener(() =>
             {
-                GodHand.Instance.SetFillIndex(i1, buttons[i1].image.color);
-                for (var index = 0; index < _buttonTargets.Length; index++)
-                {
-                    _buttonTargets[index] = (index == i1) ? Vector2.right * 20 : Vector2.zero;
-                }
+                SetFillIndex(i1);
             });
         }
     }
@@ -50,5 +46,22 @@ public class FillSelector : MonoBehaviour
     public void SetIsActive(bool state)
     {
         _currentPositionTarget = state ? _shownPosition : _hiddenPosition;
+    }
+
+    public void SetFillIndex(int index)
+    {
+        if (index == -1)
+        {
+            for (var i = 0; i < _buttonTargets.Length; i++)
+            {
+                _buttonTargets[i] = (i == index) ? Vector2.right * 20 : Vector2.zero;
+            }
+            return;
+        }
+        GodHand.Instance.SetFillIndex(index, buttons[index].image.color);
+        for (var i = 0; i < _buttonTargets.Length; i++)
+        {
+            _buttonTargets[i] = (i == index) ? Vector2.right * 20 : Vector2.zero;
+        }
     }
 }

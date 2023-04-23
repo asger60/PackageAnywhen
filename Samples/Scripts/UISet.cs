@@ -1,12 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class UISet : MonoBehaviour
 {
-    [FormerlySerializedAs("selector")] public FillSelector fillSelector;
+    public FillSelector fillSelector;
     public MixView mixView;
 
 
@@ -19,6 +16,20 @@ public class UISet : MonoBehaviour
     {
         mixView.SetIsActive(state);
         fillSelector.SetIsActive(state);
-        
+        if (state)
+        {
+            StopAllCoroutines();
+            StartCoroutine(WaitAndSetFill());
+        }
+        else
+        {
+            fillSelector.SetFillIndex(-1);
+        }
+    }
+
+    IEnumerator WaitAndSetFill()
+    {
+        yield return new WaitForSeconds(0.5f);
+        fillSelector.SetFillIndex(0);
     }
 }

@@ -129,6 +129,17 @@ namespace Anywhen
 
             OnTick32?.Invoke();
             Sub32++;
+            if (Sub32 == 32)
+            {
+                _currentBar++;
+                OnNextBar?.Invoke();
+
+                if (debugSettings.debugBar)
+                {
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub32);
+                }
+            }
 
             if (Sub32 % 2 == 0)
             {
@@ -138,7 +149,7 @@ namespace Anywhen
                 if (debugSettings.debug16)
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument,TickRate.Sub16);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
                 }
             }
 
@@ -151,7 +162,7 @@ namespace Anywhen
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument,TickRate.Sub8);
+                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub8);
                 }
             }
 
@@ -190,16 +201,6 @@ namespace Anywhen
                 sub8 = 0;
                 sub4 = 0;
                 sub2 = 0;
-
-                _currentBar++;
-                OnNextBar?.Invoke();
-
-                if (debugSettings.debugBar)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub32);
-                }
             }
 
             _nextTime32 += _sub32Length;
@@ -263,7 +264,6 @@ namespace Anywhen
         public int GetCountForTickRate(TickRate tickRate)
         {
             return (Sub32 / (32 / (int)tickRate));
-            
         }
 
         public float GetTimeToNextPlay(TickRate playbackRate)
@@ -291,7 +291,7 @@ namespace Anywhen
                 _ => throw new ArgumentOutOfRangeException(nameof(tickRate), tickRate, null)
             };
         }
-        
+
         public static double GetTiming(TickRate playbackRate, float swingAmount, float humanizeAmount)
         {
             //if (humanizeAmount <= 0) return 0;
