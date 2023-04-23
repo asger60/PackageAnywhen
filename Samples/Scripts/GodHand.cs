@@ -44,7 +44,9 @@ public class GodHand : MonoBehaviour
         gfxObject.transform.localScale =
             Vector3.Lerp(gfxObject.transform.localScale, Vector3.one * 0.7f, Time.deltaTime * 10);
 
-        bool isHidden = Input.mousePosition.x < 200 || Input.mousePosition.x > Screen.width - 100;
+        float relativeMousePos = Input.mousePosition.x / Screen.width;
+        bool isHidden = relativeMousePos < 0.15f || relativeMousePos > 0.93f;
+        
         Cursor.visible = isHidden;
         gfxObject.SetActive(!isHidden);
 

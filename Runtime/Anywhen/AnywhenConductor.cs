@@ -24,8 +24,9 @@ namespace Anywhen
                 return _instance;
             }
         }
+        public AnywhenProgressionPatternObject initialProgressionPattern;
 
-        private AnywhenProgressionPatternObject _currentAnywhenProgressionPattern;
+        private AnywhenProgressionPatternObject _currentProgressionPattern;
         private int _currentPatternStep;
         private bool _scaleOverridden;
         private bool _rootOverridden;
@@ -37,23 +38,26 @@ namespace Anywhen
 
         private void Start()
         {
-            AnywhenMetronome.Instance.OnNextBar += OnNextBar;
             _scaleOverridden = false;
             if (anywhenScale != null)
                 _currentAnywhenScale = anywhenScale;
+            if (initialProgressionPattern != null)
+                _currentProgressionPattern = initialProgressionPattern;
+            AnywhenMetronome.Instance.OnNextBar += OnNextBar;
+
         }
 
         private void OnNextBar()
         {
             if (!_rootOverridden)
-                _rootNote = _currentAnywhenProgressionPattern.patternSteps[_currentPatternStep].rootNote;
+                _rootNote = _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
 
             if (!_scaleOverridden)
-                _currentAnywhenScale = _currentAnywhenProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
+                _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
 
             _currentPatternStep++;
             _currentPatternStep =
-                (int)Mathf.Repeat(_currentPatternStep, _currentAnywhenProgressionPattern.patternSteps.Length);
+                (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
             //if (_currentPatternStep >= _currentPattern.patternSteps.Length-1)
             //    _currentPatternStep = 0;
         }
@@ -76,7 +80,7 @@ namespace Anywhen
 
         public void OverridePattern(AnywhenProgressionPatternObject anywhenProgressionPatternObject)
         {
-            _currentAnywhenProgressionPattern = anywhenProgressionPatternObject;
+            _currentProgressionPattern = anywhenProgressionPatternObject;
             _currentPatternStep = 0;
         }
 
