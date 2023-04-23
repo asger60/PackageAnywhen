@@ -56,7 +56,7 @@ namespace PackageAnywhen.Samples.Scripts
             for (int i = 0; i < uiSets.Length; i++)
             {
                 uiSets[i].SetIsActive(i == trackIndex);
-                _mixTargets[i].SetIsActive(i == trackIndex);
+                _mixTargets[i]?.SetIsActive(i == trackIndex);
             }
 
             activeTrack = trackIndex;
