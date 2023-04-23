@@ -15,7 +15,7 @@ public class MixView : MonoBehaviour
     {
         TryGetComponent(out _rectTransform);
         _shownPosition = _rectTransform.anchoredPosition;
-        _hiddenPosition = _shownPosition + Vector2.up * 200;
+        _hiddenPosition = _shownPosition + Vector2.up * 300;
         _rectTransform.anchoredPosition = _hiddenPosition;
         _currentPositionTarget = _hiddenPosition;
     }
@@ -23,7 +23,7 @@ public class MixView : MonoBehaviour
     private void Update()
     {
         _rectTransform.anchoredPosition =
-            Vector2.Lerp(_rectTransform.anchoredPosition, _currentPositionTarget, Time.deltaTime * 5);
+            Vector2.Lerp(_rectTransform.anchoredPosition, _currentPositionTarget, Time.deltaTime * 10);
         
         float elapsedFill = 0;
         for (var i = 0; i < fillImages.Length; i++)

@@ -39,7 +39,27 @@ namespace Samples.Scripts
         public int octave = 0;
         private readonly int[] _goodNotes = new[] { 2, 4, 5, 6, -2, -1, 8 };
 
-        private readonly int[] _rootNotes = new[] { 0, 2, 4, 6, -2 };
+        private readonly int[] _rootNotes = new[] { 0,  2,  4 };
+
+        private readonly int[][] _goodBasicChords =
+        {
+            new[]
+            {
+                0, 2
+            },
+            new[]
+            {
+                0, 4,
+            },
+            new[]
+            {
+                0, 5,
+            },
+            new[]
+            {
+                0, 3,
+            }
+        };
 
         private readonly int[][] _goodSimpleChords =
         {
@@ -240,8 +260,16 @@ namespace Samples.Scripts
                 for (var index1 = 0; index1 < chordPatterns[i].pattern.steps.Length; index1++)
                 {
                     chordPatterns[i].pattern.steps[index1].note = GetRootNote(width);
-                    chordPatterns[i].pattern.steps[index1].chord =
-                        CreateChord((i < 2) ? _goodSimpleChords : _goodComplexChords, width);
+
+                    int[][] chordArray = null;
+                    if (i == 0)
+                        chordArray = _goodBasicChords;
+                    if (i == 1)
+                        chordArray = _goodSimpleChords;
+                    if (i == 2)
+                        chordArray = _goodComplexChords;
+
+                    chordPatterns[i].pattern.steps[index1].chord = CreateChord(chordArray, width);
                     chordPatterns[i].pattern.steps[index1].stepWeight = Random.Range(0, 1f);
                 }
             }
@@ -250,13 +278,13 @@ namespace Samples.Scripts
         int GetRootNote(int width)
         {
             //return 0;
-            int i = (int)Mathf.Repeat(Random.Range(0, width*2), _rootNotes.Length);
+            int i = (int)Mathf.Repeat(Random.Range(0, width * 2), _rootNotes.Length);
             return _rootNotes[i];
         }
 
         string CreateChord(int[][] chordArray, int width)
         {
-            int[] chord = chordArray[Random.Range(0, Mathf.Min(width, chordArray.Length))];
+            int[] chord = chordArray[Random.Range(0, chordArray.Length)];
 
             //chord[0] = 0;
             //for (var index = 1; index < chord.Length; index++)
@@ -295,6 +323,7 @@ namespace Samples.Scripts
 #endif
 
         public float mixPower = 0.5f;
+
         void MixTriggers(int mixIndex, int stepIndex)
         {
             float add = mixIndex == 1 ? -mixPower : mixPower;

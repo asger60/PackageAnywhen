@@ -18,6 +18,7 @@ public class AppHandler : MonoBehaviour
     private static AppHandler _instance;
     public GameObject menuButton;
     public UITrackSelector trackSelector;
+    public CameraHandler cameraHandler;
     private void Awake()
     {
         _instance = this;
@@ -40,6 +41,7 @@ public class AppHandler : MonoBehaviour
                 TrackHandler.Instance.HideTrackInterfaces();
                 menuButton.SetActive(false);
                 trackSelector.SetIsActive(false);
+                cameraHandler.SetIsInGame(false);
                 break;
             case AppStates.Playing:
                 godHand.SetIsActive(true);
@@ -47,6 +49,7 @@ public class AppHandler : MonoBehaviour
                 TrackHandler.Instance.ShowTrackInterfaces();
                 menuButton.SetActive(true);
                 trackSelector.SetIsActive(true);
+                cameraHandler.SetIsInGame(true);
 
                 break;
             default:

@@ -1,12 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using PackageAnywhen.Samples.Scripts;
-using Samples.Scripts;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class GodHand : MonoBehaviour
 {
@@ -14,7 +8,7 @@ public class GodHand : MonoBehaviour
     public LayerMask layerMask;
     RaycastHit _hit;
     public int currentPattern;
-
+    public ParticleSystem particleSystem;
 
     private float _lastMixTime;
 
@@ -40,6 +34,9 @@ public class GodHand : MonoBehaviour
         _materialPropertyBlock.SetColor("_Color", color);
         thisRenderer.SetPropertyBlock(_materialPropertyBlock);
         _currentColor = color;
+
+        var em = particleSystem.main;
+        em.startColor = color;
     }
 
     void Update()
@@ -47,8 +44,7 @@ public class GodHand : MonoBehaviour
         gfxObject.transform.localScale =
             Vector3.Lerp(gfxObject.transform.localScale, Vector3.one * 0.7f, Time.deltaTime * 10);
 
-        bool isHidden = Input.mousePosition.y < 100 || Input.mousePosition.y > Screen.height - 100 ||
-                        Input.mousePosition.x < 200;
+        bool isHidden = Input.mousePosition.x < 200 || Input.mousePosition.x > Screen.width - 100;
         Cursor.visible = isHidden;
         gfxObject.SetActive(!isHidden);
 
@@ -65,11 +61,27 @@ public class GodHand : MonoBehaviour
             float angle = Mathf.Repeat(Vector2.SignedAngle(Vector2.left, direction) * -1, 360);
             TrackHandler.Instance.Mix(currentPattern, (int)(angle / 360 * 32));
             _lastMixTime = Time.time;
-            var rainDrop = Instantiate(rainPrefab, transform.position, Quaternion.identity);
-            rainDrop.Init(_currentColor);
+            //var rainDrop = Instantiate(rainPrefab, transform.position, Quaternion.identity);
+            //rainDrop.Init(_currentColor);
             gfxObject.transform.localScale = Vector3.one;
         }
+
+        if (!isHidden && Input.GetMouseButton(0))
+        {
+            if (!_particleEmitting)
+            {
+                particleSystem.Play();
+                _particleEmitting = true;
+            }
+        }
+        else
+        {
+            particleSystem.Stop();
+            _particleEmitting = false;
+        }
     }
+
+    private bool _particleEmitting;
 
     public void SetIsActive(bool state)
     {

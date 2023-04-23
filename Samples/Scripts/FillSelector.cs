@@ -12,7 +12,7 @@ public class FillSelector : MonoBehaviour
     {
         TryGetComponent(out _rectTransform);
         _shownPosition = _rectTransform.anchoredPosition;
-        _hiddenPosition = _shownPosition + Vector2.left * 200;
+        _hiddenPosition = _shownPosition + Vector2.left * 300;
         _rectTransform.anchoredPosition = _hiddenPosition;
         _currentPositionTarget = _hiddenPosition;
     }
@@ -40,7 +40,7 @@ public class FillSelector : MonoBehaviour
         }
 
         _rectTransform.anchoredPosition =
-            Vector2.Lerp(_rectTransform.anchoredPosition, _currentPositionTarget, Time.deltaTime * 5);
+            Vector2.Lerp(_rectTransform.anchoredPosition, _currentPositionTarget, Time.deltaTime * 15);
     }
 
     public void SetIsActive(bool state)
