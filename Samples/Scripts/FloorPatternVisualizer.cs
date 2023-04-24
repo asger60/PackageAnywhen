@@ -30,7 +30,7 @@ namespace Samples.Scripts
             }
 
 
-            //AnywhenMetronome.Instance.OnTick16 += OnTick16;
+            //gAnywhenMetronome.Instance.OnTick16 += OnTick16;
         }
 
         //private void OnTick16()

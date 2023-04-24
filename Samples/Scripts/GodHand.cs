@@ -21,6 +21,8 @@ public class GodHand : MonoBehaviour
 
     private static GodHand _instance;
     public static GodHand Instance => _instance;
+    private Vector3 _positionAddHack;
+    public UIFakeCursor uiCursor;
 
     private void Awake()
     {
@@ -48,14 +50,15 @@ public class GodHand : MonoBehaviour
         float relativeMousePos = Input.mousePosition.x / Screen.width;
         bool isHidden = relativeMousePos < 0.15f || relativeMousePos > 0.93f;
 
-        Cursor.visible = isHidden;
-        gfxObject.SetActive(!isHidden);
+        Cursor.visible = false;
+        uiCursor.SetIsActive(isHidden);
+        _positionAddHack = (isHidden ? Vector3.right * 30 : Vector3.zero);
 
         Ray ray = thisCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out _hit, 100, layerMask))
         {
-            transform.position = _hit.point;
+            transform.position = _hit.point + _positionAddHack;
         }
 
         if (!isHidden && Input.GetMouseButton(0) && _lastMixTime + 0.1f < Time.time)
@@ -94,6 +97,6 @@ public class GodHand : MonoBehaviour
     public void SetIsActive(bool state)
     {
         gameObject.SetActive(state);
-        Cursor.visible = !state;
+        //Cursor.visible = !state;
     }
 }
