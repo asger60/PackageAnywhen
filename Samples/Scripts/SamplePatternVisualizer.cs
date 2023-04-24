@@ -21,15 +21,16 @@ namespace Samples.Scripts
         public AnywhenMetronome.TickRate tickRate;
         private List<PartyType> _partyTypes = new();
         public GameObject groundTilePrefab;
+        public bool lightUp;
 
         private void Start()
         {
             GeneratePositions();
-            for (var i = 0; i < 16; i++)
-            {
-                var groundObject = Instantiate(groundTilePrefab, transform);
-                groundObject.transform.position = circlePositions[i];
-            }
+            //for (var i = 0; i < 16; i++)
+            //{
+            //    var groundObject = Instantiate(groundTilePrefab, transform);
+            //    groundObject.transform.position = circlePositions[i];
+            //}
 
             for (var i = 0; i < 16; i++)
             {

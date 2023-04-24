@@ -17,12 +17,15 @@ namespace PackageAnywhen.Samples.Scripts
         public UIToggleGroup trackToggleGroup;
         public static TrackHandler Instance => _instance;
         private static TrackHandler _instance;
+        public DrumPatternMixer drumPatternMixer;
+        public BassPatternMixer bassPatternMixer;
+        public ChordPatternMixer chordPatternMixer;
 
         private void Awake()
         {
             _instance = this;
-            _mixTargets = new List<IMixableObject>(4);
-            for (int i = 0; i < 4; i++)
+            _mixTargets = new List<IMixableObject>(3);
+            for (int i = 0; i < 3; i++)
             {
                 _mixTargets.Add(null);
             }
@@ -31,6 +34,20 @@ namespace PackageAnywhen.Samples.Scripts
         private void Start()
         {
             trackToggleGroup.OnSelect = OnSelectTrack;
+            
+        }
+
+        private bool _didInit;
+
+        void Init()
+        {
+            if (_didInit) return;
+            for (var i = 0; i < uiSets.Length; i++)
+            {
+                var uiSet = uiSets[i];
+                uiSet.Init(_mixTargets[i]);
+            }
+            _didInit = true;
         }
 
         private void OnSelectTrack(int index)
@@ -48,6 +65,14 @@ namespace PackageAnywhen.Samples.Scripts
         public void AttachMixInterface(IMixableObject mixableObject, int index)
         {
             _mixTargets[index] = (mixableObject);
+            int targetsAttached = 0;
+            foreach (var mixTarget in _mixTargets)
+            {
+                if (mixTarget != null) targetsAttached++;
+            }
+
+            if (targetsAttached == 3)
+                Init();
         }
 
 
@@ -67,7 +92,13 @@ namespace PackageAnywhen.Samples.Scripts
             _mixTargets[activeTrack].Mix(pattern, stepIndex);
         }
 
+        public void OnMixDone()
+        {
+            uiSets[activeTrack].fillSelector.OnMixDone();
+        }
+
         private int _prevActiveTrack;
+
         public void HideTrackInterfaces()
         {
             _prevActiveTrack = activeTrack;
@@ -79,10 +110,16 @@ namespace PackageAnywhen.Samples.Scripts
 
             activeTrack = -1;
         }
-        
+
         public void ShowTrackInterfaces()
         {
             SetActiveTrack(_prevActiveTrack);
+        }
+
+        public void SetInstrumentSetIndex(int index)
+        {
+            chordPatternMixer.SetInstrument(index);
+            bassPatternMixer.SetInstrument(index);
         }
     }
 }

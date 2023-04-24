@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -428,6 +428,9 @@ MonoBehaviour:
   - {fileID: 1809133122}
   - {fileID: 1160254628}
   trackToggleGroup: {fileID: 403176205}
+  drumPatternMixer: {fileID: 1683473675}
+  bassPatternMixer: {fileID: 1413885029}
+  chordPatternMixer: {fileID: 486861916}
 --- !u!4 &172206707
 Transform:
   m_ObjectHideFlags: 0
@@ -495,9 +498,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   currentPattern: 0
-  particleSystem: {fileID: 500323991}
+  thisParticleSystem: {fileID: 500323991}
   thisRenderer: {fileID: 1751705949}
-  rainPrefab: {fileID: 8026896790951603576, guid: 973589762e1ff4aca89664b3fadd7bf2, type: 3}
   gfxObject: {fileID: 490147656}
 --- !u!1 &250137032
 GameObject:
@@ -909,6 +911,26 @@ PrefabInstance:
     - target: {fileID: 5224315441429965596, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032114698306085757, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -190
       objectReference: {fileID: 0}
     - target: {fileID: 8347285625530919346, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_IsActive
@@ -1984,6 +2006,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 470553154}
   m_CullTransparentMesh: 1
+--- !u!1 &485555697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485555698}
+  - component: {fileID: 485555699}
+  m_Layer: 0
+  m_Name: PartyFloor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &485555698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485555697}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 20
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &485555699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485555697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31b9110cb4aa407c8ab75bfd4b3b4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  circlePositions:
+  - {x: -5, y: 0, z: 0}
+  - {x: -4.6193976, y: 0, z: 1.9134173}
+  - {x: -3.535534, y: 0, z: 3.535534}
+  - {x: -1.9134165, y: 0, z: 4.6193976}
+  - {x: 0.00000021855695, y: 0, z: 5}
+  - {x: 1.9134176, y: 0, z: 4.6193976}
+  - {x: 3.5355349, y: 0, z: 3.535533}
+  - {x: 4.619398, y: 0, z: 1.9134164}
+  - {x: 5, y: 0, z: -0.0000004371139}
+  - {x: 4.619397, y: 0, z: -1.9134183}
+  - {x: 3.5355332, y: 0, z: -3.5355344}
+  - {x: 1.9134157, y: 0, z: -4.6193986}
+  - {x: -0.0000024438102, y: 0, z: -5}
+  - {x: -1.913418, y: 0, z: -4.619397}
+  - {x: -3.535535, y: 0, z: -3.5355327}
+  - {x: -4.6193986, y: 0, z: -1.913415}
+  circleStepLength: 16
+  ringCount: 4
+  tickRate: 16
+  groundTilePrefab: {fileID: 6484381187926788658, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
 --- !u!1 &486861912
 GameObject:
   m_ObjectHideFlags: 0
@@ -2030,7 +2117,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   savePatternCollection: {fileID: 0}
-  patternInstruments: []
   triggerPatterns:
   - currentWeight: 0.5
     pattern:
@@ -2213,12 +2299,12 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.84968317
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.7621261
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2243,12 +2329,12 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.7113148
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.37797314
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2278,12 +2364,12 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.47760373
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.011970401
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
@@ -2333,12 +2419,12 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.51778084
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.29577035
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2401,17 +2487,17 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.18201458
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.7113148
       - noteOn: 1
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.37797314
+        stepWeight: 0.7113148
       - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.37797314
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2431,37 +2517,37 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.7215475
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.82785046
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.47760373
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.011970401
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.028226018
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.071902394
       - noteOn: 1
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.08491933
+        stepWeight: 0.071902394
       - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.08491933
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2481,27 +2567,27 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.7085552
-      - noteOn: 0
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.09412849
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
         stepWeight: 0.534169
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.51778084
       - noteOn: 1
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.29577035
+        stepWeight: 0.51778084
       - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.29577035
+      - noteOn: 1
         accent: 0
         note: 0
         chord: 
@@ -2516,7 +2602,7 @@ MonoBehaviour:
         note: 0
         chord: 
         stepWeight: 0.27165467
-      - noteOn: 1
+      - noteOn: 0
         accent: 0
         note: 0
         chord: 
@@ -2528,493 +2614,496 @@ MonoBehaviour:
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.2408936
+        chord: 0,2,4
+        stepWeight: 0.009361267
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.48284763
+        chord: 0,2,5
+        stepWeight: 0.99873257
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.035416365
+        chord: 0,2,4
+        stepWeight: 0.7724538
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.34668607
+        chord: 0,2,5
+        stepWeight: 0.8958081
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.059814095
+        chord: 0,2,5
+        stepWeight: 0.8490814
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.56645924
+        chord: 0,2,4
+        stepWeight: 0.74818647
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.679427
+        chord: 0,2,5
+        stepWeight: 0.5061894
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.41012114
+        chord: 0,2,5
+        stepWeight: 0.23849988
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.23124313
+        chord: 0,2,5
+        stepWeight: 0.48386043
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.94889176
+        chord: 0,2,5
+        stepWeight: 0.76927674
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.72482896
+        chord: 0,2,5
+        stepWeight: 0.7042998
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.024431467
+        chord: 0,2,4
+        stepWeight: 0.75618494
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.8189869
+        chord: 0,2,5
+        stepWeight: 0.091359496
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.37373668
+        chord: 0,2,4
+        stepWeight: 0.51955074
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.7981397
+        chord: 0,2,4
+        stepWeight: 0.094430566
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.42527884
+        chord: 0,2,5
+        stepWeight: 0.8390186
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.011159539
+        chord: 0,2,4
+        stepWeight: 0.59832114
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.94240844
+        chord: 0,2,4
+        stepWeight: 0.4746117
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.34987825
+        chord: 0,2,4
+        stepWeight: 0.22770178
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.9205897
+        chord: 0,2,5
+        stepWeight: 0.048889756
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,2
-        stepWeight: 0.73290205
+        chord: 0,2,5
+        stepWeight: 0.3532887
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.38039762
+        chord: 0,2,4
+        stepWeight: 0.96543527
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.29671782
+        chord: 0,2,4
+        stepWeight: 0.004306793
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.38009506
+        chord: 0,2,5
+        stepWeight: 0.91792977
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.5883432
+        chord: 0,2,5
+        stepWeight: 0.08178055
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.35473436
+        chord: 0,2,5
+        stepWeight: 0.3066165
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.88892686
+        chord: 0,2,4
+        stepWeight: 0.5937622
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,4
-        stepWeight: 0.23021996
+        chord: 0,2,4
+        stepWeight: 0.9496298
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.90028536
+        chord: 0,2,4
+        stepWeight: 0.02203083
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.17294717
+        chord: 0,2,5
+        stepWeight: 0.6983119
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3
-        stepWeight: 0.3075089
+        chord: 0,2,5
+        stepWeight: 0.099440336
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,5
-        stepWeight: 0.656584
+        chord: 0,2,4
+        stepWeight: 0.56809586
   - currentWeight: 0.5
     pattern:
       steps:
       - noteOn: 0
         accent: 0
+        note: 0
+        chord: 0,2,4
+        stepWeight: 0.12178767
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,1,4
+        stepWeight: 0.14960742
+      - noteOn: 0
+        accent: 0
         note: 2
-        chord: 0,3,4
-        stepWeight: 0.8333998
+        chord: 0,2,4
+        stepWeight: 0.17053545
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,2,5
-        stepWeight: 0.5010653
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,2,4
-        stepWeight: 0.42682666
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,2,4
-        stepWeight: 0.8565799
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,3,4
-        stepWeight: 0.5855995
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,2,4
-        stepWeight: 0.7724968
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4
-        stepWeight: 0.9326142
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,2,4
-        stepWeight: 0.4969651
+        stepWeight: 0.0008749962
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,1,4
-        stepWeight: 0.985729
+        stepWeight: 0.24052656
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,5
+        stepWeight: 0.2209363
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.26038092
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,3,4
+        stepWeight: 0.16546321
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.48219436
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.47246403
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.554506
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.018874884
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,2,4
-        stepWeight: 0.8196527
+        stepWeight: 0.65863144
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,3,4
+        stepWeight: 0.8478577
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,2,4
-        stepWeight: 0.6031391
+        stepWeight: 0.20257604
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,5
+        stepWeight: 0.29304892
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.72620595
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,5
+        stepWeight: 0.25668508
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,1,4
-        stepWeight: 0.67636955
+        stepWeight: 0.11584926
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,3,4
-        stepWeight: 0.5108202
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,1,4
-        stepWeight: 0.12313485
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,3,4
-        stepWeight: 0.5899225
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,1,4
-        stepWeight: 0.9462457
+        stepWeight: 0.4069863
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,2,4
-        stepWeight: 0.819765
+        stepWeight: 0.1468581
       - noteOn: 0
         accent: 0
-        note: 0
+        note: 2
         chord: 0,1,4
-        stepWeight: 0.45711178
+        stepWeight: 0.2017405
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,3,4
-        stepWeight: 0.023360372
+        chord: 0,2,5
+        stepWeight: 0.9431349
       - noteOn: 0
         accent: 0
-        note: 0
+        note: 2
         chord: 0,3,4
-        stepWeight: 0.06540525
+        stepWeight: 0.045739412
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,2,4
-        stepWeight: 0.117620945
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,3,4
-        stepWeight: 0.3769999
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,3,4
-        stepWeight: 0.28761154
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,3,4
-        stepWeight: 0.23684013
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,3,4
-        stepWeight: 0.24991834
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,1,4
-        stepWeight: 0.35144562
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4
-        stepWeight: 0.032345414
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,3,4
-        stepWeight: 0.6945547
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,3,4
-        stepWeight: 0.56643313
+        stepWeight: 0.07783866
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,2,4
-        stepWeight: 0.947073
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 0,2,4
-        stepWeight: 0.4912768
+        stepWeight: 0.11059141
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,1,4
-        stepWeight: 0.7552792
+        stepWeight: 0.3417868
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,5
+        stepWeight: 0.3661868
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,5
+        stepWeight: 0.9769646
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4
+        stepWeight: 0.6485611
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,1,4
+        stepWeight: 0.34783477
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,1,4
+        stepWeight: 0.5361896
   - currentWeight: 0.5
     pattern:
       steps:
       - noteOn: 0
         accent: 0
-        note: 4
-        chord: 0,2,4,6
-        stepWeight: 0.019808054
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,2,4,6
-        stepWeight: 0.08055174
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.39408213
-      - noteOn: 0
-        accent: 0
         note: 0
         chord: 0,2,4,-1
-        stepWeight: 0.88000596
+        stepWeight: 0.56560117
       - noteOn: 0
         accent: 0
-        note: 0
+        note: 4
         chord: 0,2,4,-1
-        stepWeight: 0.90284395
+        stepWeight: 0.8416772
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,2,4,-1
-        stepWeight: 0.28662628
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.92910075
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4,-1
-        stepWeight: 0.6577641
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4,-1
-        stepWeight: 0.7655641
+        stepWeight: 0.64801705
       - noteOn: 0
         accent: 0
         note: 2
-        chord: 0,1,4,5
-        stepWeight: 0.76932704
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.8138373
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.142586
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,2,4,-1
-        stepWeight: 0.012635708
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,2,4,-1
-        stepWeight: 0.84249616
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,2,4,-1
-        stepWeight: 0.9763514
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.24561489
+        chord: 0,2,4,-2
+        stepWeight: 0.9263246
       - noteOn: 0
         accent: 0
         note: 2
-        chord: 0,2,4,-1
-        stepWeight: 0.01963377
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4,6
-        stepWeight: 0.6996379
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4,-1
-        stepWeight: 0.5661271
+        chord: 0,2,4,-2
+        stepWeight: 0.66017866
       - noteOn: 0
         accent: 0
         note: 2
-        chord: 0,1,4,5
-        stepWeight: 0.3256647
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 0,2,4,-1
-        stepWeight: 0.5780956
+        chord: 0,2,4,-2
+        stepWeight: 0.42813772
       - noteOn: 0
         accent: 0
         note: 4
-        chord: 0,1,4,5
-        stepWeight: 0.9929923
+        chord: 0,2,4,-1
+        stepWeight: 0.24561155
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 0,2,4,-1
+        stepWeight: 0.42018753
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4,-2
+        stepWeight: 0.72881365
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-2
+        stepWeight: 0.97415006
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,2,4,-1
-        stepWeight: 0.12035334
+        stepWeight: 0.2517993
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.31809646
+        chord: 0,2,4,-2
+        stepWeight: 0.6620414
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-1
+        stepWeight: 0.080004215
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4,-2
+        stepWeight: 0.22118115
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-1
+        stepWeight: 0.6013127
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-2
+        stepWeight: 0.6773958
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 0,2,4,-2
+        stepWeight: 0.24791098
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-1
+        stepWeight: 0.8902465
       - noteOn: 0
         accent: 0
         note: 2
         chord: 0,2,4,-1
-        stepWeight: 0.14682019
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,1,4,5
-        stepWeight: 0.40461522
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 0,2,4,-1
-        stepWeight: 0.15603566
+        stepWeight: 0.7924948
       - noteOn: 0
         accent: 0
         note: 0
         chord: 0,2,4,-1
-        stepWeight: 0.8635899
+        stepWeight: 0.9223852
       - noteOn: 0
         accent: 0
-        note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.9905788
+        note: 4
+        chord: 0,2,4,-2
+        stepWeight: 0.2667796
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 0,2,4,-1
+        stepWeight: 0.3436075
       - noteOn: 0
         accent: 0
         note: 2
-        chord: 0,1,4,5
-        stepWeight: 0.27733713
+        chord: 0,2,4,-2
+        stepWeight: 0.33358604
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.6743767
+        chord: 0,2,4,-2
+        stepWeight: 0.7805369
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4,-1
+        stepWeight: 0.4476841
       - noteOn: 0
         accent: 0
         note: 0
-        chord: 0,1,4,5
-        stepWeight: 0.3653341
+        chord: 0,2,4,-1
+        stepWeight: 0.36834413
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-2
+        stepWeight: 0.889341
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4,-1
+        stepWeight: 0.37743634
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 0,2,4,-2
+        stepWeight: 0.64813566
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 0,2,4,-1
+        stepWeight: 0.87712514
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 0,2,4,-2
+        stepWeight: 0.70070016
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 0,2,4,-1
+        stepWeight: 0.57800037
   tickRate: 16
   mixView: {fileID: 1292621597}
   octave: 1
-  instrument: {fileID: 11400000, guid: 6340f9ee9b4a24bf682d55c9d54ef526, type: 2}
+  instruments:
+  - {fileID: 11400000, guid: 0cf1820c4944a44c7b302c2496c39243, type: 2}
+  - {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
+  - {fileID: 11400000, guid: 6340f9ee9b4a24bf682d55c9d54ef526, type: 2}
   mixPower: 0.5
 --- !u!114 &486861917
 MonoBehaviour:
@@ -3030,7 +3119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   partyTypePrefab: {fileID: 5210422223288221570, guid: dc45d587406f847249236ed754c871f8, type: 3}
   chordPatternMixer: {fileID: 486861916}
-  circleDistance: 4
+  circleDistance: 5
 --- !u!1 &490147656
 GameObject:
   m_ObjectHideFlags: 0
@@ -3330,6 +3419,7 @@ MonoBehaviour:
   trackIndex: 0
   tickRate: 16
   groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
+  lightUp: 0
 --- !u!1 &500323988
 GameObject:
   m_ObjectHideFlags: 0
@@ -8152,6 +8242,141 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &527878128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 527878129}
+  - component: {fileID: 527878131}
+  - component: {fileID: 527878130}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &527878129
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527878128}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1644690770}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -30}
+  m_SizeDelta: {x: -60, y: 20}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &527878130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527878128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Tiny Music People
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 14
+  m_fontSizeBase: 14
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 16
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &527878131
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527878128}
+  m_CullTransparentMesh: 1
 --- !u!1001 &613460921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8575,6 +8800,229 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7017417553949342666, guid: 846abbe90d9ca4f2b964aad86b36ce43, type: 3}
   m_PrefabInstance: {fileID: 637720370}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &656143374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 656143375}
+  - component: {fileID: 656143377}
+  - component: {fileID: 656143376}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &656143375
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656143374}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1739973773}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 60}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &656143376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656143374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &656143377
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656143374}
+  m_CullTransparentMesh: 1
+--- !u!1 &697313956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 697313957}
+  - component: {fileID: 697313961}
+  - component: {fileID: 697313960}
+  - component: {fileID: 697313959}
+  - component: {fileID: 697313958}
+  m_Layer: 5
+  m_Name: PlayButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &697313957
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697313956}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1673125355}
+  m_Father: {fileID: 1739973773}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 210, y: 60}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &697313958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697313956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e74ef4b2a2a4ca69f74233fdc052fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &697313959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697313956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 697313960}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1477001603}
+        m_TargetAssemblyTypeName: AppHandler, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &697313960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697313956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -1109121484, guid: 52db5696cfd5e4071872d274696a887c, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &697313961
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697313956}
+  m_CullTransparentMesh: 1
 --- !u!1 &716641318
 GameObject:
   m_ObjectHideFlags: 0
@@ -8881,6 +9329,7 @@ MonoBehaviour:
   trackIndex: 3
   tickRate: 16
   groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
+  lightUp: 0
 --- !u!4 &855540688
 Transform:
   m_ObjectHideFlags: 0
@@ -9425,9 +9874,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4742305061022391141, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: hideButton3And4
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742305061022391141, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: hideButton3and4
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5224315441429965596, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_text
       value: add
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8412436049153538521, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -9798,6 +10271,7 @@ MonoBehaviour:
   trackIndex: 1
   tickRate: 16
   groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
+  lightUp: 0
 --- !u!4 &959621062
 Transform:
   m_ObjectHideFlags: 0
@@ -10560,82 +11034,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1170541677}
   m_CullTransparentMesh: 1
---- !u!1 &1170693810
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1170693811}
-  - component: {fileID: 1170693813}
-  - component: {fileID: 1170693812}
-  m_Layer: 5
-  m_Name: Panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1170693811
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1170693810}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1928220284}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 450, y: 480}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1170693812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1170693810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: -1109121484, guid: 52db5696cfd5e4071872d274696a887c, type: 3}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1170693813
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1170693810}
-  m_CullTransparentMesh: 1
 --- !u!1 &1215198188
 GameObject:
   m_ObjectHideFlags: 0
@@ -11178,6 +11576,141 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1331180233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1331180234}
+  - component: {fileID: 1331180236}
+  - component: {fileID: 1331180235}
+  m_Layer: 5
+  m_Name: Text (TMP) (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1331180234
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331180233}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1739973773}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 15}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &1331180235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331180233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Music Mixer - tech prototype
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 64982cc74ff8848218eda6ea7f852558, type: 2}
+  m_sharedMaterial: {fileID: 3851438510345292848, guid: 64982cc74ff8848218eda6ea7f852558, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 15
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 17
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1331180236
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331180233}
+  m_CullTransparentMesh: 1
 --- !u!1 &1375574900
 GameObject:
   m_ObjectHideFlags: 0
@@ -11380,7 +11913,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   savePatternCollection: {fileID: 0}
-  instrument: {fileID: 11400000, guid: 1aeb819c70a124cee8ad214a42a6b1ec, type: 2}
+  instruments:
+  - {fileID: 11400000, guid: 4e61c27547bfb44d2b1ca2cf611430fc, type: 2}
+  - {fileID: 11400000, guid: f7afe38b069234005a7aca86bb40cc6d, type: 2}
+  - {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
   triggerPatterns:
   - currentWeight: 0.5
     pattern:
@@ -11879,488 +12415,488 @@ MonoBehaviour:
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.71242315
+        stepWeight: 0.39853102
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.332754
+        stepWeight: 0.046789527
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.4323547
+        stepWeight: 0.61844045
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.7345344
+        stepWeight: 0.26850575
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.44483516
+        stepWeight: 0.7940117
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.60638994
+        stepWeight: 0.49934882
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.006202221
+        stepWeight: 0.2163186
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.63483554
+        stepWeight: 0.09679806
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.5348978
+        stepWeight: 0.1137979
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.4223125
+        stepWeight: 0.5029705
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.2734842
+        stepWeight: 0.39634854
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.498583
+        stepWeight: 0.44548625
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.31799617
+        stepWeight: 0.3022818
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.14968376
+        stepWeight: 0.16330576
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.005187321
+        stepWeight: 0.11998129
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.626699
+        stepWeight: 0.8201053
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.30572316
+        stepWeight: 0.78435886
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.10253344
+        stepWeight: 0.67113185
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.13936663
+        stepWeight: 0.5615062
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.5711277
+        stepWeight: 0.7252543
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.73868173
+        stepWeight: 0.8859273
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.38615623
+        stepWeight: 0.41236883
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.36164138
+        stepWeight: 0.15812922
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.72769463
+        stepWeight: 0.9023701
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.35007492
+        stepWeight: 0.559514
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.40992627
+        stepWeight: 0.19654167
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.479549
+        stepWeight: 0.119091034
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.6513594
+        stepWeight: 0.09448993
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.30071694
+        stepWeight: 0.85099864
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.71759176
+        stepWeight: 0.8914789
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.60596687
+        stepWeight: 0.50920504
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.39627835
+        stepWeight: 0.9844965
   - currentWeight: 0.5
     pattern:
       steps:
       - noteOn: 0
         accent: 0
-        note: 0
+        note: 4
         chord: 
-        stepWeight: 0.54219896
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.31309554
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.79071426
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.025067044
+        stepWeight: 0.52689224
       - noteOn: 0
         accent: 0
         note: 2
         chord: 
-        stepWeight: 0.54211503
+        stepWeight: 0.8949162
       - noteOn: 0
         accent: 0
-        note: 1
+        note: 4
         chord: 
-        stepWeight: 0.12749234
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.29829556
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.47378775
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.11807442
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.72568226
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.49146017
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.6349806
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.6617972
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.07390728
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.078304194
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.38003355
+        stepWeight: 0.8308656
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.005600834
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.042328168
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.4425671
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.6758272
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.08218222
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.46785656
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.6584941
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.21932912
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.73062545
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.5912636
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.5417598
+        stepWeight: 0.3095364
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.08734055
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.5694934
+        stepWeight: 0.9378848
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.28532824
+        stepWeight: 0.70988095
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.2331096
       - noteOn: 0
         accent: 0
         note: 2
         chord: 
-        stepWeight: 0.093160726
+        stepWeight: 0.089959264
       - noteOn: 0
         accent: 0
-        note: 1
+        note: 0
         chord: 
-        stepWeight: 0.50985366
+        stepWeight: 0.053323865
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.26410526
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.62583053
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.60001737
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.34451276
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.8369144
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.89487934
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.15357482
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.6762599
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.05145037
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.12763798
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.5610803
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.0598377
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.3096475
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.7553266
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.99474
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.47774976
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.37736207
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.9151392
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.28227574
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.2596677
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.013892055
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.21540904
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.82865715
   - currentWeight: 0.5
     pattern:
       steps:
       - noteOn: 0
         accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.54219896
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 
-        stepWeight: 0.31309554
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.79071426
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.025067044
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.54211503
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.12749234
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.29829556
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.47378775
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.11807442
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 
-        stepWeight: 0.72568226
-      - noteOn: 0
-        accent: 0
         note: -1
         chord: 
-        stepWeight: 0.49146017
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.6349806
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.6617972
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 
-        stepWeight: 0.07390728
-      - noteOn: 0
-        accent: 0
-        note: 2
-        chord: 
-        stepWeight: 0.078304194
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.38003355
+        stepWeight: 0.31884295
       - noteOn: 0
         accent: 0
         note: 0
         chord: 
-        stepWeight: 0.005600834
+        stepWeight: 0.55920786
       - noteOn: 0
         accent: 0
         note: 4
         chord: 
-        stepWeight: 0.042328168
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.4425671
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 
-        stepWeight: 0.6758272
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.08218222
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.46785656
-      - noteOn: 0
-        accent: 0
-        note: 4
-        chord: 
-        stepWeight: 0.6584941
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.21932912
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.73062545
-      - noteOn: 0
-        accent: 0
-        note: 1
-        chord: 
-        stepWeight: 0.5912636
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.5417598
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.08734055
-      - noteOn: 0
-        accent: 0
-        note: -1
-        chord: 
-        stepWeight: 0.5694934
-      - noteOn: 0
-        accent: 0
-        note: 0
-        chord: 
-        stepWeight: 0.28532824
+        stepWeight: 0.6650183
       - noteOn: 0
         accent: 0
         note: 2
         chord: 
-        stepWeight: 0.093160726
+        stepWeight: 0.56236714
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.54693073
+      - noteOn: 0
+        accent: 0
+        note: -1
+        chord: 
+        stepWeight: 0.99607193
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.49581558
+      - noteOn: 0
+        accent: 0
+        note: -1
+        chord: 
+        stepWeight: 0.30434293
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.6170842
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.27926558
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.06450343
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.546303
       - noteOn: 0
         accent: 0
         note: 1
         chord: 
-        stepWeight: 0.50985366
+        stepWeight: 0.29695052
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.62662244
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.5614616
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.3174458
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.5629054
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.5614334
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.7451714
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.29631394
+      - noteOn: 0
+        accent: 0
+        note: -1
+        chord: 
+        stepWeight: 0.76092064
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.9693724
+      - noteOn: 0
+        accent: 0
+        note: -1
+        chord: 
+        stepWeight: 0.47962433
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.6201001
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.56057924
+      - noteOn: 0
+        accent: 0
+        note: 0
+        chord: 
+        stepWeight: 0.121433616
+      - noteOn: 0
+        accent: 0
+        note: 1
+        chord: 
+        stepWeight: 0.7714795
+      - noteOn: 0
+        accent: 0
+        note: 2
+        chord: 
+        stepWeight: 0.9335108
+      - noteOn: 0
+        accent: 0
+        note: -1
+        chord: 
+        stepWeight: 0.7073971
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.73207366
+      - noteOn: 0
+        accent: 0
+        note: 6
+        chord: 
+        stepWeight: 0.4017853
+      - noteOn: 0
+        accent: 0
+        note: 4
+        chord: 
+        stepWeight: 0.6641362
   tickRate: 16
   mixView: {fileID: 1101408467}
   mixPower: 0.5
@@ -12533,6 +13069,7 @@ MonoBehaviour:
   menuButton: {fileID: 332754794}
   trackSelector: {fileID: 403176206}
   cameraHandler: {fileID: 963194229}
+  welcomePanel: {fileID: 1928220283}
 --- !u!4 &1477001604
 Transform:
   m_ObjectHideFlags: 0
@@ -12853,6 +13390,232 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1644690769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1644690770}
+  - component: {fileID: 1644690772}
+  - component: {fileID: 1644690771}
+  m_Layer: 5
+  m_Name: Panel (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1644690770
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644690769}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 527878129}
+  - {fileID: 1739973773}
+  m_Father: {fileID: 1928220284}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.00012207031, y: -0.000061035156}
+  m_SizeDelta: {x: 450, y: 510}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1644690771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644690769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.16078432, g: 0.14509805, b: 0.19215687, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -1109121484, guid: 52db5696cfd5e4071872d274696a887c, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1644690772
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644690769}
+  m_CullTransparentMesh: 1
+--- !u!1 &1646523882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1646523883}
+  - component: {fileID: 1646523885}
+  - component: {fileID: 1646523884}
+  m_Layer: 5
+  m_Name: Text (TMP) (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1646523883
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646523882}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1739973773}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -60}
+  m_SizeDelta: {x: 0, y: 15}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &1646523884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646523882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'Welcome to the prototype for the tiny music people - music mixer.
+
+
+    This
+    version lets you create beats using three tracks, rhythm, bass and chords, select
+    them in the bottom left corner of the screen.
+
+
+    Once you have a track selected
+    you can "paint" in the music by clicking anywhere on the screen. You can add,
+    remove, and modify the notes, using the bottoms to the left.
+
+
+    Have fun!'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: b29aa10ce2db0405d8312cc3f7869e8b, type: 2}
+  m_sharedMaterial: {fileID: 8802629135966232033, guid: b29aa10ce2db0405d8312cc3f7869e8b, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 15
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 16
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1646523885
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646523882}
+  m_CullTransparentMesh: 1
 --- !u!1 &1651520359
 GameObject:
   m_ObjectHideFlags: 0
@@ -12987,6 +13750,141 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651520359}
+  m_CullTransparentMesh: 1
+--- !u!1 &1673125354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1673125355}
+  - component: {fileID: 1673125357}
+  - component: {fileID: 1673125356}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1673125355
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673125354}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 697313957}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1673125356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673125354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: play
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 64982cc74ff8848218eda6ea7f852558, type: 2}
+  m_sharedMaterial: {fileID: 3851438510345292848, guid: 64982cc74ff8848218eda6ea7f852558, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 30
+  m_fontSizeBase: 30
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 17
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1673125357
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673125354}
   m_CullTransparentMesh: 1
 --- !u!1001 &1676247617
 PrefabInstance:
@@ -15989,6 +16887,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e74ef4b2a2a4ca69f74233fdc052fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1739973772
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1739973773}
+  - component: {fileID: 1739973775}
+  - component: {fileID: 1739973774}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1739973773
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739973772}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1331180234}
+  - {fileID: 1646523883}
+  - {fileID: 656143375}
+  - {fileID: 697313957}
+  m_Father: {fileID: 1644690770}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -60, y: -60}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1739973774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739973772}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1739973775
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739973772}
+  m_CullTransparentMesh: 1
 --- !u!1 &1745361312
 GameObject:
   m_ObjectHideFlags: 0
@@ -16410,6 +17388,7 @@ MonoBehaviour:
   trackIndex: 2
   tickRate: 16
   groundTilePrefab: {fileID: 4431123535542898058, guid: 9d28f3cc8866041fb912258e26f6e9a5, type: 3}
+  lightUp: 0
 --- !u!4 &1782099247
 Transform:
   m_ObjectHideFlags: 0
@@ -16762,6 +17741,7 @@ MonoBehaviour:
   playButton: {fileID: 1735574286}
   tempoToggle: {fileID: 976574900}
   progressionToggle: {fileID: 864215732}
+  soundToggle: {fileID: 1416594519}
 --- !u!1 &1928220283
 GameObject:
   m_ObjectHideFlags: 0
@@ -16779,7 +17759,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1928220284
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16792,7 +17772,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1170693811}
+  - {fileID: 1644690770}
   m_Father: {fileID: 1222999231}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17509,9 +18489,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4742305061022391141, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: hideButton3And4
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742305061022391141, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: hideButton3and4
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5224315441429965596, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_text
       value: add
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918583968124737006, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8412436049153538521, guid: c9f393b0ab1314577b10be2ea6709b8e, type: 3}
       propertyPath: m_AnchorMax.y

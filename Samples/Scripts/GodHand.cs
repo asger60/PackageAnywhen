@@ -1,6 +1,7 @@
 using System;
 using PackageAnywhen.Samples.Scripts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GodHand : MonoBehaviour
 {
@@ -8,14 +9,14 @@ public class GodHand : MonoBehaviour
     public LayerMask layerMask;
     RaycastHit _hit;
     public int currentPattern;
-    public ParticleSystem particleSystem;
+
+    [FormerlySerializedAs("particleSystem")]
+    public ParticleSystem thisParticleSystem;
 
     private float _lastMixTime;
 
     public Renderer thisRenderer;
     private MaterialPropertyBlock _materialPropertyBlock;
-    public RainDrop rainPrefab;
-    private Color _currentColor;
     public GameObject gfxObject;
 
     private static GodHand _instance;
@@ -33,11 +34,11 @@ public class GodHand : MonoBehaviour
         currentPattern = index;
         _materialPropertyBlock.SetColor("_Color", color);
         thisRenderer.SetPropertyBlock(_materialPropertyBlock);
-        _currentColor = color;
-
-        var em = particleSystem.main;
+        var em = thisParticleSystem.main;
         em.startColor = color;
     }
+
+    private bool _didMix;
 
     void Update()
     {
@@ -46,7 +47,7 @@ public class GodHand : MonoBehaviour
 
         float relativeMousePos = Input.mousePosition.x / Screen.width;
         bool isHidden = relativeMousePos < 0.15f || relativeMousePos > 0.93f;
-        
+
         Cursor.visible = isHidden;
         gfxObject.SetActive(!isHidden);
 
@@ -63,22 +64,27 @@ public class GodHand : MonoBehaviour
             float angle = Mathf.Repeat(Vector2.SignedAngle(Vector2.left, direction) * -1, 360);
             TrackHandler.Instance.Mix(currentPattern, (int)(angle / 360 * 32));
             _lastMixTime = Time.time;
-            //var rainDrop = Instantiate(rainPrefab, transform.position, Quaternion.identity);
-            //rainDrop.Init(_currentColor);
             gfxObject.transform.localScale = Vector3.one;
+            _didMix = true;
+        }
+
+        if (!Input.GetMouseButton(0) && _didMix)
+        {
+            TrackHandler.Instance.OnMixDone();
+            _didMix = false;
         }
 
         if (!isHidden && Input.GetMouseButton(0))
         {
             if (!_particleEmitting)
             {
-                particleSystem.Play();
+                thisParticleSystem.Play();
                 _particleEmitting = true;
             }
         }
         else
         {
-            particleSystem.Stop();
+            thisParticleSystem.Stop();
             _particleEmitting = false;
         }
     }

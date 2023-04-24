@@ -1,4 +1,5 @@
 using System.Collections;
+using Samples.Scripts;
 using UnityEngine;
 
 public class UISet : MonoBehaviour
@@ -6,6 +7,11 @@ public class UISet : MonoBehaviour
     public FillSelector fillSelector;
     public MixView mixView;
 
+
+    public void Init(IMixableObject mixableObject)
+    {
+        fillSelector.Init(mixableObject);
+    }
 
     private void Start()
     {

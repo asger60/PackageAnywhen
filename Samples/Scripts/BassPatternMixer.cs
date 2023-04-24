@@ -16,7 +16,8 @@ namespace Samples.Scripts
     {
         public PatternCollection savePatternCollection;
 
-        public AnywhenInstrument instrument;
+        public AnywhenInstrument[] instruments;
+        private AnywhenInstrument _currentInstrument;
 
         [Serializable]
         public struct BassPattern
@@ -37,7 +38,7 @@ namespace Samples.Scripts
         public AnywhenMetronome.TickRate tickRate;
         private BassPatternVisualizer _bassPatternVisualizer;
         [SerializeField] private MixView mixView;
-        private readonly int[] _goodNotes = new[] { 1, 2, 4, 6, -1, -2 };
+        private readonly int[] _goodNotes = new[] { 4, 2, 6, 1, -1, };
 
         //private readonly bool[] _currentPattern = new bool[32];
         //private readonly int[] _currentNotePattern = new int[32];
@@ -57,6 +58,7 @@ namespace Samples.Scripts
             TrackHandler.Instance.AttachMixInterface(this, 1);
             AnywhenMetronome.Instance.OnTick16 += OnTick;
             _bassPatternVisualizer = GetComponent<BassPatternVisualizer>();
+            _currentInstrument = instruments[0];
         }
 
 
@@ -76,11 +78,9 @@ namespace Samples.Scripts
                 NoteEvent note = new NoteEvent(n, NoteEvent.EventTypes.NoteOn, 1,
                     AnywhenMetronome.GetTiming(tickRate, 0, 0));
 
-                EventFunnel.HandleNoteEvent(note, instrument, tickRate);
+                EventFunnel.HandleNoteEvent(note, _currentInstrument, tickRate);
             }
         }
-
-        
 
 
         private void Update()
@@ -108,7 +108,7 @@ namespace Samples.Scripts
                 }
             }
         }
-        
+
         private void GetCurrentMelodyPattern()
         {
             for (int i = 0; i < 32; i++)
@@ -172,11 +172,16 @@ namespace Samples.Scripts
             {
                 for (var index1 = 0; index1 < melodyPatterns[i].pattern.steps.Length; index1++)
                 {
+                    if (i == 0)
+                    {
+                        melodyPatterns[i].pattern.steps[index1].note = 0;
+                        continue;
+                    }
                     int rnd = Random.Range(0, i + 1);
                     switch (rnd)
                     {
                         case 0:
-                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(1);
+                            melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(0);
                             break;
                         case 1:
                             melodyPatterns[i].pattern.steps[index1].note = GetRandomNote(2);
@@ -212,6 +217,7 @@ namespace Samples.Scripts
 #endif
 
         public float mixPower = 0.5f;
+
         void MixTriggers(int mixIndex, int stepIndex)
         {
             float add = mixIndex == 1 ? -mixPower : mixPower;
@@ -281,6 +287,22 @@ namespace Samples.Scripts
         public void SetIsActive(bool state)
         {
             _bassPatternVisualizer.SetIsTrackActive(state);
+        }
+
+        public float GetMixValueForTrack(int track)
+        {
+            float totalNoteMix = 0;
+            foreach (var f in _currentTriggerMixValue)
+            {
+                totalNoteMix += f;
+            }
+
+            return (totalNoteMix / triggerPatterns.Length) / 32f;
+        }
+        
+        public void SetInstrument(int index)
+        {
+            _currentInstrument = instruments[index];
         }
     }
 }

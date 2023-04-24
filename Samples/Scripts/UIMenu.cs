@@ -1,4 +1,5 @@
 using Anywhen;
+using PackageAnywhen.Samples.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,8 @@ public class UIMenu : MonoBehaviour
     public Button playButton;
     public UIToggleGroup tempoToggle;
     public UIToggleGroup progressionToggle;
+    public UIToggleGroup soundToggle;
+    
     private int[] _presetTempis = new[] { 90, 120, 130 };
 
     private void Start()
@@ -14,6 +17,12 @@ public class UIMenu : MonoBehaviour
         playButton.onClick.AddListener(() => { AppHandler.Instance.SetAppState(AppHandler.AppStates.Playing); });
         tempoToggle.OnSelect = OnTempoSelect;
         progressionToggle.OnSelect = OnProgressionSelect;
+        soundToggle.OnSelect = OnSoundSelect;
+    }
+
+    private void OnSoundSelect(int index)
+    {
+        TrackHandler.Instance.SetInstrumentSetIndex(index);
     }
 
     private void OnProgressionSelect(int index)

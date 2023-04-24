@@ -6,6 +6,7 @@ using PackageAnywhen.Runtime.Anywhen;
 using PackageAnywhen.Samples.Scripts;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Samples.Scripts
@@ -29,7 +30,6 @@ namespace Samples.Scripts
         }
 
 
-        public DrumPatternMixer.PatternInstrument[] patternInstruments;
 
         public BassPattern[] triggerPatterns;
         public BassPattern[] chordPatterns;
@@ -39,26 +39,18 @@ namespace Samples.Scripts
         public int octave = 0;
         private readonly int[] _goodNotes = new[] { 2, 4, 5, 6, -2, -1, 8 };
 
-        private readonly int[] _rootNotes = new[] { 0,  2,  4 };
+        private readonly int[] _rootNotes = new[] { 0, 2, 4 };
 
         private readonly int[][] _goodBasicChords =
         {
             new[]
             {
-                0, 2
+                0, 2, 4,
             },
             new[]
             {
-                0, 4,
+                0, 2, 5,
             },
-            new[]
-            {
-                0, 5,
-            },
-            new[]
-            {
-                0, 3,
-            }
         };
 
         private readonly int[][] _goodSimpleChords =
@@ -89,11 +81,7 @@ namespace Samples.Scripts
             },
             new[]
             {
-                0, 2, 4, 6,
-            },
-            new[]
-            {
-                0, 1, 4, 5,
+                0, 2, 4, -2,
             },
         };
 
@@ -106,7 +94,8 @@ namespace Samples.Scripts
         private int[] _currentNotePattern = new int[32];
 
         private int _barsCounter;
-        public AnywhenInstrument instrument;
+        public AnywhenInstrument[] instruments;
+        private AnywhenInstrument _currentInstrument;
 
         float[] _currentTriggerMixValue = new float[32];
         float[] _currentNoteMixValue = new float[32];
@@ -119,6 +108,7 @@ namespace Samples.Scripts
             TrackHandler.Instance.AttachMixInterface(this, 2);
             AnywhenMetronome.Instance.OnTick16 += OnTick;
             _chordPatternVisualizer = GetComponent<ChordPatternVisualizer>();
+            _currentInstrument = instruments[0];
         }
 
 
@@ -148,7 +138,7 @@ namespace Samples.Scripts
                         AnywhenMetronome.GetTiming(tickRate, 0, 0),
                         n, new double[] { 0, 0, 0, 0, 0 }, 0, 0, 1);
 
-                    EventFunnel.HandleNoteEvent(note, instrument, tickRate);
+                    EventFunnel.HandleNoteEvent(note, _currentInstrument, tickRate);
                 }
             }
         }
@@ -236,20 +226,7 @@ namespace Samples.Scripts
             }
         }
 
-        [ContextMenu("Randomize instrument weights")]
-        void RandomizeInstrumentWeights()
-        {
-            for (int i = 0; i < patternInstruments.Length; i++)
-            {
-                foreach (var track in patternInstruments[i].patternTracks)
-                {
-                    for (var index = 0; index < track.steps.Length; index++)
-                    {
-                        track.steps[index].stepWeight = Random.Range(0, 1f);
-                    }
-                }
-            }
-        }
+
 
         [ContextMenu("create chords")]
         void CreateChords()
@@ -391,6 +368,22 @@ namespace Samples.Scripts
         public void SetIsActive(bool state)
         {
             _chordPatternVisualizer.SetIsTrackActive(state);
+        }
+
+        public float GetMixValueForTrack(int track)
+        {
+            float totalNoteMix = 0;
+            foreach (var f in _currentTriggerMixValue)
+            {
+                totalNoteMix += f;
+            }
+
+            return (totalNoteMix / triggerPatterns.Length) / 32f;
+        }
+
+        public void SetInstrument(int index)
+        {
+            _currentInstrument = instruments[index];
         }
     }
 }

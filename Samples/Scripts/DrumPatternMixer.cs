@@ -111,6 +111,11 @@ namespace Samples.Scripts
             }
         }
 
+        public float GetMixValueForTrack(int track)
+        {
+            return 1;
+        }
+
         private void OnTick()
         {
             int stepIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), 16);
@@ -243,5 +248,7 @@ namespace Samples.Scripts
     {
         public void Mix(int currentPattern, int stepIndex);
         public void SetIsActive(bool state);
+
+        public float GetMixValueForTrack(int track);
     }
 }

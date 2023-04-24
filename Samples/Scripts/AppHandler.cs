@@ -8,7 +8,8 @@ public class AppHandler : MonoBehaviour
     {
         None,
         Menu,
-        Playing
+        Playing,
+        Welcome
     }
 
     private AppStates _currentAppState;
@@ -19,6 +20,7 @@ public class AppHandler : MonoBehaviour
     public GameObject menuButton;
     public UITrackSelector trackSelector;
     public CameraHandler cameraHandler;
+    public GameObject welcomePanel;
     private void Awake()
     {
         _instance = this;
@@ -26,7 +28,7 @@ public class AppHandler : MonoBehaviour
 
     private void Start()
     {
-        SetAppState(AppStates.Menu);
+        SetAppState(AppStates.Welcome);
     }
 
     public void SetAppState(AppStates newAppState)
@@ -36,6 +38,7 @@ public class AppHandler : MonoBehaviour
             case AppStates.None:
                 break;
             case AppStates.Menu:
+                welcomePanel.SetActive(false);
                 godHand.SetIsActive(false);
                 uiMenu.SetIsActive(true);
                 TrackHandler.Instance.HideTrackInterfaces();
@@ -44,6 +47,7 @@ public class AppHandler : MonoBehaviour
                 cameraHandler.SetIsInGame(false);
                 break;
             case AppStates.Playing:
+                welcomePanel.SetActive(false);
                 godHand.SetIsActive(true);
                 uiMenu.SetIsActive(false);
                 TrackHandler.Instance.ShowTrackInterfaces();
@@ -51,6 +55,10 @@ public class AppHandler : MonoBehaviour
                 trackSelector.SetIsActive(true);
                 cameraHandler.SetIsInGame(true);
 
+                break;
+            case AppStates.Welcome:
+                godHand.SetIsActive(false);
+                welcomePanel.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newAppState), newAppState, null);
@@ -74,8 +82,15 @@ public class AppHandler : MonoBehaviour
                 }
 
                 break;
+            case AppStates.Welcome:
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    public void StartGame()
+    {
+        SetAppState(AppStates.Playing);
     }
 }
