@@ -1,6 +1,5 @@
 ﻿using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {

@@ -36,6 +36,7 @@ namespace Samples.Scripts
 
         void SetKeyState(int keyIndex, bool state)
         {
+            print("set state " + state);
             if (state)
             {
                 switch (playMode)

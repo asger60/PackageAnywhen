@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731689, g: 0.13414702, b: 0.1210784, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &122869347
 Transform:
   m_ObjectHideFlags: 0
@@ -255,7 +255,7 @@ MonoBehaviour:
   debugSettings:
     debugBar: 0
     debug2: 0
-    debug4: 1
+    debug4: 0
     debug8: 0
     debug16: 0
     debugAnywhenInstrument: {fileID: 11400000, guid: a2f7f0cad97fc43f6a134c48bd25e5af, type: 2}
@@ -303,7 +303,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bbf82b0c5e2c4cf3836bd9dd711b5cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rootNote: 0
   anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+  initialProgressionPattern: {fileID: 11400000, guid: 93b153cfdcc66446ba41621f3719e298, type: 2}
 --- !u!4 &733866051
 Transform:
   m_ObjectHideFlags: 0
@@ -463,7 +465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1683473674
 Transform:
   m_ObjectHideFlags: 0

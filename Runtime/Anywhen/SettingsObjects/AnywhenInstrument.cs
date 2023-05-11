@@ -11,7 +11,7 @@ namespace Anywhen.SettingsObjects
         [Range(0,1f)]
         public float volume = 1;
         public float stopDuration = 0.1f;
-
+        public AnywhenNoteClip noteClip;
         public enum InstrumentType
         {
             OneShotShort = 0,

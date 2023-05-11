@@ -6,9 +6,12 @@ namespace Anywhen
 {
     public class EventFunnel : MonoBehaviour
     {
+        
         public static void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
             AudioMixerGroup mixerChannel = null)
         {
+            
+            print("handle event " + e.state);
             //if (instant) e.step = -1;
             switch (anywhenSettings)
             {

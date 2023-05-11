@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Anywhen.SettingsObjects;
+using PackageAnywhen.Runtime.Anywhen;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -54,7 +55,7 @@ namespace Anywhen
         {
             foreach (var thisSampler in _allSamplers)
             {
-                if (thisSampler.IsReady && !thisSampler.IsStopping)
+                if (thisSampler.IsReady)
                     return thisSampler;
             }
 
@@ -108,7 +109,7 @@ namespace Anywhen
                     {
                         foreach (var thisSampler in _allSamplers)
                         {
-                            if (!thisSampler.IsStopping && thisSampler.Settings == anywhenInstrumentSettings)
+                            if (thisSampler.Settings == anywhenInstrumentSettings)
                                 thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(rate) +
                                                     drift);
                         }

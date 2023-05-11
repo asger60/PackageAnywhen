@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: DebugSustainedNotes
   m_EditorClassIdentifier: 
-  displayName: 
   audioClips:
   - {fileID: 8300000, guid: ac2fcf34cfea44d1b87766f6af8f9e9d, type: 3}
   - {fileID: 8300000, guid: b91f25e2191454fabb8b7bcaccfa8add, type: 3}
@@ -50,6 +49,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f11b093b1a2af41d999a6012750559ab, type: 3}
   - {fileID: 8300000, guid: 736bae204bde94608a95cb2ec5519762, type: 3}
   - {fileID: 8300000, guid: e7185e4abf60d49758b27643c1640c71, type: 3}
+  volume: 1
   stopDuration: 0.05
+  noteClip: {fileID: 11400000, guid: b9488cb82fba84017b3e5382003233b5, type: 2}
   instrumentType: 2
-  noteSelectType: 0
+  clipSelectType: 0

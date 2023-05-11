@@ -66,46 +66,7 @@ namespace Anywhen
 
         
 
-        public void HandleEvent(NoteEvent e, JamModePercussion instrumentSettings, AnywhenMetronome.TickRate tickRate, AudioMixerGroup mixerChannel)
-        {
-            switch (e.state)
-            {
-                case NoteEvent.EventTypes.NoteOn:
-                    for (int i = 0; i < e.notes.Length; i++)
-                    {
-                        var note = e.notes[i];
-                        Sampler sampler = GetSampler();
-
-                        if (sampler == null)
-                        {
-                            Debug.LogWarning("no available samplers ");
-                            return;
-                        }
-
-                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate)+ e.drift + e.chordStrum[i];
-                        
-                        if (note < (instrumentSettings.instrumentObjects.Length) && note >= 0)
-                        {
-                            sampler.NoteOn(0, timing, e.velocity, instrumentSettings.instrumentObjects[note], mixerChannel);
-                        }
-                        else
-                        {
-                            print("note out of range");
-                        }
-                    }
-
-
-                    break;
-                case NoteEvent.EventTypes.NoteOff:
-                    foreach (var thisSampler in _allSamplers)
-                    {
-                        if (!thisSampler.IsStopping && thisSampler.Settings == instrumentSettings.instrumentObjects[0])
-                            thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate));
-                    }
-                    break;
-                case NoteEvent.EventTypes.NoteDown:
-                    break;
-            }
-        }
+        
+        
     }
 }

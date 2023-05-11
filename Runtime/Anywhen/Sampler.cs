@@ -27,20 +27,24 @@ namespace Anywhen
 
         public void Init(AnywhenMetronome.TickRate tickRate)
         {
+            AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
+
+
             TryGetComponent(out _audioSource);
             IsReady = true;
             _tickRate = tickRate;
-            _audioSource.playOnAwake = false;
+            _audioSource.playOnAwake = true;
+            _audioSource.clip = myClip;
         }
 
 
         private void Update()
         {
-            if (_isArmed && !_audioSource.isPlaying)
-            {
-                _isArmed = false;
-                IsReady = true;
-            }
+            //if (_isArmed && !_audioSource.isPlaying)
+            //{
+            //    _isArmed = false;
+            //    IsReady = true;
+            //}
         }
 
 
@@ -65,12 +69,14 @@ namespace Anywhen
             _queuedClip = audioClip;
             IsReady = false;
             _isArmed = true;
-            _audioSource.clip = _queuedClip;
+            //_audioSource.clip = _queuedClip;
+            _audioSource.Play();
             _audioSource.volume = volume * _settings.volume;
             _audioSource.time = 0;
             _audioSource.outputAudioMixerGroup = mixerChannel;
 
-            _audioSource.PlayScheduled(playTime);
+//            _audioSource.PlayScheduled(playTime);
+            PlayScheduled(playTime, newSettings.noteClip);
         }
 
 
@@ -78,23 +84,24 @@ namespace Anywhen
         {
             _isStopping = true;
             IsReady = false;
-            if (stopTime != 0)
-                stopTime -= AudioSettings.dspTime;
+            //if (stopTime != 0)
+            //    stopTime -= AudioSettings.dspTime;
 
 
-            Ticker.DelayedAction((float)stopTime, onDone: () =>
-            {
-                float startVolume = _audioSource.volume;
-                float duration = _settings.stopDuration;
-                Ticker.Tween(duration,
-                    onUpdate: f => _audioSource.volume = Mathf.Lerp(startVolume, 0, f),
-                    onDone: () =>
-                    {
-                        _audioSource.Stop();
-                        Reset();
-                    }
-                );
-            });
+            StopScheduled(stopTime);
+            //Ticker.DelayedAction((float)stopTime, onDone: () =>
+            //{
+            //    float startVolume = _audioSource.volume;
+            //    float duration = _settings.stopDuration;
+            //    Ticker.Tween(duration,
+            //        onUpdate: f => _audioSource.volume = Mathf.Lerp(startVolume, 0, f),
+            //        onDone: () =>
+            //        {
+            //            _audioSource.Stop();
+            //            //Reset();
+            //        }
+            //    );
+            //});
         }
 
         void Reset()
@@ -103,7 +110,6 @@ namespace Anywhen
             _settings = null;
             IsReady = true;
             _isArmed = false;
-            //_overrideTick = false;
         }
 
         public float GetDurationToEnd()
@@ -116,6 +122,99 @@ namespace Anywhen
         public void SetMixerGroup(AudioMixerGroup group)
         {
             _audioSource.outputAudioMixerGroup = group;
+        }
+
+
+        private float[] _clipSamples;
+        private int _sampleRate;
+        public float loopStart;
+
+        public int loopLength;
+
+        //public bool noteDown;
+        private bool _isPlaying;
+        private int _sampleIndex = 0;
+        private bool _scheduledPlay;
+        private double _scheduledPlayTime = -1;
+        private double _scheduledStopTime;
+        private bool _noteDown;
+        
+        void StopScheduled(double absoluteTime)
+        {
+            print("stop " + absoluteTime);
+            _scheduledStopTime = absoluteTime;
+        }
+        
+        void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
+        {
+            _sampleRate = clip.audioClip.frequency;
+            _clipSamples = new float[clip.audioClip.samples];
+
+            if (!clip.audioClip.GetData(_clipSamples, 0))
+            {
+                Debug.Log("Uh oh, sourceClip1 was unreadable!");
+            }
+
+            loopStart = clip.loopStart;
+            loopLength = clip.loopLength;
+            Debug.Log("schedule play " + absolutePlayTime, transform);
+            _scheduledPlay = true;
+            _scheduledPlayTime = absolutePlayTime;
+            _isArmed = true;
+            IsReady = false;
+        }
+
+        void OnAudioFilterRead(float[] data, int channels)
+        {
+            if (_clipSamples == null)
+            {
+                return;
+            }
+
+            if (!_isPlaying && _scheduledPlay && _scheduledPlayTime > 0 && AudioSettings.dspTime >= _scheduledPlayTime)
+            {
+                _isPlaying = true;
+                _sampleIndex = 0;
+                _scheduledPlay = false;
+                _isArmed = false;
+                _noteDown = true;
+            }
+
+            if (!_isPlaying) return;
+
+            if (_scheduledStopTime > 0 && AudioSettings.dspTime > _scheduledStopTime)
+            {
+                _noteDown = false;
+                _scheduledStopTime = -1;
+            }
+            
+            //if (noteDown && !_isPlaying)
+            //{
+            //    _isPlaying = true;
+            //    _thisSample = 0;
+            //}
+
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                var sourceSample1 = Mathf.Max(Mathf.Min(_sampleIndex + (i / 2), _clipSamples.Length - 1), 0);
+                data[i] = _clipSamples[sourceSample1];
+            }
+
+            if (_isPlaying && _noteDown && _sampleIndex > loopStart)
+            {
+                _sampleIndex -= loopLength;
+            }
+            else
+            {
+                _sampleIndex += data.Length / 2;
+            }
+
+            if (_sampleIndex >= _clipSamples.Length)
+            {
+                _isPlaying = false;
+                IsReady = true;
+            }
         }
     }
 }
