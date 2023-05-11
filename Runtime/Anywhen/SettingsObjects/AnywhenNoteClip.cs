@@ -1,48 +1,76 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen.SettingsObjects
 {
-    [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/NoteClip")]
     public class AnywhenNoteClip : AnywhenSettingsBase
     {
-        public AudioClip audioClip;
+        [FormerlySerializedAs("testAudioClip")]
+        public AudioClip sourceClip;
+
         public int loopStart;
         public int loopLength;
+        public float[] clipSamples;
+        public int frequency;
+        public int channels;
 
-
-        [ContextMenu(" nest audioCLip")]
-        void NestAudioClip()
+        private void ReadAudioClip(AudioClip audioClip)
         {
             var originalClip = audioClip;
-            var originalPath = AssetDatabase.GetAssetPath(originalClip);
-            //var originalFolder = Path.GetDirectoryName(originalPath);
-            //Debug.Log(originalFolder);
-            
-            var newPath = "Assets/" + originalClip.name + Path.GetExtension(originalPath);
-            AssetDatabase.CopyAsset(originalPath, newPath);
-            var clipCopy = AssetDatabase.LoadAssetAtPath<AudioClip>(newPath);
-            
-            clipCopy.name = originalClip.name + "_AudioClip";
-            
-            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(this), originalClip.name);
-            clipCopy = CloneAudioClip(originalClip, originalClip.name + "-AudioClip");
-            AssetDatabase.AddObjectToAsset((clipCopy), AssetDatabase.GetAssetPath(this));
-            this.audioClip = clipCopy;
-            //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(originalClip));
+            clipSamples = new float[audioClip.samples * audioClip.channels];
+            originalClip.GetData(clipSamples, 0);
+            frequency = originalClip.frequency;
+            channels = originalClip.channels;
+            sourceClip = audioClip;
+        }
+
+        [MenuItem("Assets/Anywhen/Convert to NoteClip", false, 1)]
+        private static void CreateNewAsset()
+        {
+            var activeObject = Selection.activeObject as AudioClip;
+            if (activeObject == null) return;
+
+            var newNoteClip = CreateInstance<AnywhenNoteClip>();
+
+            var directory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(activeObject));
+            var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(activeObject));
+            var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
+            ProjectWindowUtil.CreateAsset(newNoteClip, fileName + ".asset");
+
+            var fullPath = directory + "/" + fileName;
+
+            var clip = Instantiate<AudioClip>(activeObject);
+
+            extension = ".asset";
+            Debug.Log(fullPath + ".asset");
+            var newClipPath = "Assets/" + clip.name + extension;
+            AssetDatabase.CreateAsset(clip, newClipPath);
+            AssetDatabase.ImportAsset(newClipPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            AssetDatabase.AddObjectToAsset(clip, fullPath + ".asset");
+
+            newNoteClip.ReadAudioClip(clip);
+
+
+            //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            //Selection.activeObject = newNoteClip;
         }
-        
-        private AudioClip CloneAudioClip(AudioClip sourceClip, string newName)
+
+        [ContextMenu("Print path")]
+        void PrintPath()
         {
-            AudioClip newAudioClip = AudioClip.Create(newName, sourceClip.samples, sourceClip.channels, sourceClip.frequency, false);
-            float[] copyData = new float[sourceClip.samples * sourceClip.channels];
-            sourceClip.GetData(copyData, 0);
-            newAudioClip.SetData(copyData, 0);
-            return newAudioClip;
+            Debug.Log(AssetDatabase.GetAssetPath(this));
+        }
+
+        [ContextMenu("add clip")]
+        void AddClip()
+        {
+            AssetDatabase.AddObjectToAsset(Instantiate(sourceClip), AssetDatabase.GetAssetPath(this));
         }
     }
 }

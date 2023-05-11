@@ -147,13 +147,10 @@ namespace Anywhen
         
         void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
-            _sampleRate = clip.audioClip.frequency;
-            _clipSamples = new float[clip.audioClip.samples];
+            _sampleRate = clip.frequency;
+            _clipSamples = clip.clipSamples;
 
-            if (!clip.audioClip.GetData(_clipSamples, 0))
-            {
-                Debug.Log("Uh oh, sourceClip1 was unreadable!");
-            }
+          
 
             loopStart = clip.loopStart;
             loopLength = clip.loopLength;
