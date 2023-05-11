@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Anywhen.SettingsObjects
 {
@@ -16,14 +19,13 @@ namespace Anywhen.SettingsObjects
         public int frequency;
         public int channels;
 
-        private void ReadAudioClip(AudioClip audioClip)
+        private void ReadAudioClip(AudioClip thisSource)
         {
-            var originalClip = audioClip;
-            clipSamples = new float[audioClip.samples * audioClip.channels];
-            originalClip.GetData(clipSamples, 0);
-            frequency = originalClip.frequency;
-            channels = originalClip.channels;
-            sourceClip = audioClip;
+            clipSamples = new float[thisSource.samples * thisSource.channels];
+            thisSource.GetData(clipSamples, 0);
+            frequency = thisSource.frequency;
+            channels = thisSource.channels;
+            this.sourceClip = thisSource;
         }
 
         [MenuItem("Assets/Anywhen/Convert to NoteClip", false, 1)]
@@ -37,28 +39,51 @@ namespace Anywhen.SettingsObjects
             var directory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(activeObject));
             var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(activeObject));
             var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
-            ProjectWindowUtil.CreateAsset(newNoteClip, fileName + ".asset");
 
             var fullPath = directory + "/" + fileName;
+            AssetDatabase.CreateAsset(newNoteClip, fullPath + ".asset");
 
-            var clip = Instantiate<AudioClip>(activeObject);
 
-            extension = ".asset";
-            Debug.Log(fullPath + ".asset");
-            var newClipPath = "Assets/" + clip.name + extension;
-            AssetDatabase.CreateAsset(clip, newClipPath);
-            AssetDatabase.ImportAsset(newClipPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            AssetDatabase.AddObjectToAsset(clip, fullPath + ".asset");
+            //var clipClone = Instantiate(activeObject);
+            AudioClip newAudioClip =
+                AudioClip.Create(activeObject.name, activeObject.samples, activeObject.channels, activeObject.frequency,
+                    false);
+            float[] copyData = new float[activeObject.samples * activeObject.channels];
+            activeObject.GetData(copyData, 0);
+            newAudioClip.SetData(copyData, 0);
+            Debug.Log(newAudioClip.samples * newAudioClip.channels);
+            newAudioClip.LoadAudioData();
 
-            newNoteClip.ReadAudioClip(clip);
 
+            //AssetDatabase.DeleteAsset(fullPath + "aaaa" + extension);
+            // AssetDatabase.CreateAsset(newAudioClip, "Assets/test.asset");
+            AssetDatabase.AddObjectToAsset(newAudioClip, newNoteClip);
+            newAudioClip.SetData(copyData, 0);
+
+            //AssetDatabase.ImportAsset(fullPath + ".asset", ImportAssetOptions.Default);
+
+            newNoteClip.ReadAudioClip(newAudioClip);
+            newAudioClip.LoadAudioData();
+            Debug.Log(newAudioClip.samples * newAudioClip.channels);
 
             //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
+            EditorUtility.SetDirty(newNoteClip);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            //Selection.activeObject = newNoteClip;
+
+            Selection.activeObject = newNoteClip;
+            //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
+        }
+
+        private static AudioClip CloneAudioClip(AudioClip audioClip)
+        {
+            AudioClip newAudioClip =
+                AudioClip.Create(audioClip.name, audioClip.samples, audioClip.channels, audioClip.frequency, false);
+            float[] copyData = new float[audioClip.samples * audioClip.channels];
+            audioClip.GetData(copyData, 0);
+            newAudioClip.SetData(copyData, 0);
+            Debug.Log(newAudioClip.samples * newAudioClip.channels);
+            return newAudioClip;
         }
 
         [ContextMenu("Print path")]

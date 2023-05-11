@@ -1,9 +1,8 @@
-using System;
 using Anywhen.SettingsObjects;
-using JD.EditorAudioUtils;
 using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using System;
+using System.Reflection;
 
 namespace Editor
 {
@@ -17,7 +16,6 @@ namespace Editor
         SerializedProperty channels;
         private AudioClip _editorClip;
         private AnywhenNoteClip _target;
-        private int _length = 100;
 
         void OnEnable()
         {
@@ -26,19 +24,6 @@ namespace Editor
             loopLength = serializedObject.FindProperty("loopLength");
             frequency = serializedObject.FindProperty("frequency");
             channels = serializedObject.FindProperty("channels");
-            
-            //_length = _target.clipSamples.Length;
-            //_editorClip = AudioClip.Create("editorClip", _length, _target.channels, _target.frequency, false);
-//
-            //float[] noise = new float[_length];
-//
-            //for (var i = 0; i < noise.Length; i++)
-            //{
-            //    noise[i] = Random.Range(-1f, 1);
-            //}
-//
-            //_editorClip.SetData(_target.clipSamples, 0);
-            
         }
 
         public override void OnInspectorGUI()
@@ -48,24 +33,65 @@ namespace Editor
             EditorGUILayout.PropertyField(loopLength);
             EditorGUILayout.PropertyField(frequency);
             EditorGUILayout.PropertyField(channels);
+            EditorGUILayout.LabelField("Samples", _target.clipSamples.Length.ToString());
 
-            //if (editorClip.samples > 0)
-            //{
-            //     Debug.Log(AssetPreview.GetAssetPreview(editorClip as AudioClip));
-            //     GUILayout.Box(AssetPreview.GetAssetPreview(editorClip), GUILayout.Height(70), GUILayout.Width(70));
-//
-            //}
 
-            if (GUILayout.Button("PLAY test"))
+            if (GUILayout.Button("PLAY"))
             {
-                EditorAudioUtility.PlayPreviewClip(_target.sourceClip);
+                AudioClip newAudioClip =
+                    AudioClip.Create("source", _target.clipSamples.Length, _target.channels, _target.frequency,
+                        false);
+                
+                newAudioClip.SetData(_target.clipSamples, 0);
+                _target.sourceClip = newAudioClip;
+                newAudioClip.LoadAudioData();
+                Debug.Log(newAudioClip.samples);
+                AssetDatabase.CreateAsset(newAudioClip, "Assets/testasset.asset");
+               //PlayClip(newAudioClip);
             }
-
 
 
             serializedObject.ApplyModifiedProperties();
         }
 
-        
+        public static void PlayClip(AudioClip clip, int startSample = 0, bool loop = false)
+        {
+            Assembly unityEditorAssembly = typeof(AudioImporter).Assembly;
+
+            Type audioUtilClass = unityEditorAssembly.GetType("UnityEditor.AudioUtil");
+            MethodInfo method = audioUtilClass.GetMethod(
+                "PlayPreviewClip",
+                BindingFlags.Static | BindingFlags.Public,
+                null,
+                new Type[] { typeof(AudioClip), typeof(int), typeof(bool) },
+                null
+            );
+
+            Debug.Log(method);
+            method.Invoke(
+                null,
+                new object[] { clip, startSample, loop }
+            );
+        }
+
+        public static void StopAllClips()
+        {
+            Assembly unityEditorAssembly = typeof(AudioImporter).Assembly;
+
+            Type audioUtilClass = unityEditorAssembly.GetType("UnityEditor.AudioUtil");
+            MethodInfo method = audioUtilClass.GetMethod(
+                "StopAllPreviewClips",
+                BindingFlags.Static | BindingFlags.Public,
+                null,
+                new Type[] { },
+                null
+            );
+
+            Debug.Log(method);
+            method.Invoke(
+                null,
+                new object[] { }
+            );
+        }
     }
 }
