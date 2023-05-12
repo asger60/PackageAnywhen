@@ -41,13 +41,13 @@ namespace Editor
                 AudioClip newAudioClip =
                     AudioClip.Create("source", _target.clipSamples.Length, _target.channels, _target.frequency,
                         false);
-                
+
                 newAudioClip.SetData(_target.clipSamples, 0);
                 _target.sourceClip = newAudioClip;
                 newAudioClip.LoadAudioData();
                 Debug.Log(newAudioClip.samples);
-                AssetDatabase.CreateAsset(newAudioClip, "Assets/testasset.asset");
-               //PlayClip(newAudioClip);
+                //AssetDatabase.CreateAsset(newAudioClip, "Assets/testasset.asset");
+                PlayClip(newAudioClip);
             }
 
 
