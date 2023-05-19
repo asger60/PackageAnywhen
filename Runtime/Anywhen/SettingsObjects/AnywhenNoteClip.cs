@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen.SettingsObjects
 {
@@ -14,8 +13,10 @@ namespace Anywhen.SettingsObjects
         public float[] clipSamples;
         public int frequency;
         public int channels;
+        public int attack = 1, decay = 10, sustain = 1, release = 10;
 
-        private void ReadAudioClip(AudioClip audioClip)
+
+        internal void ReadAudioClip(AudioClip audioClip)
         {
             clipSamples = new float[audioClip.samples * audioClip.channels];
             audioClip.GetData(clipSamples, 0);

@@ -1,3 +1,4 @@
+using System;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
@@ -7,11 +8,14 @@ public class NoteClipPlayer : MonoBehaviour
     private double _scheduledPlayTime, _scheduledStopTime;
     private bool _scheduledPlay;
     private bool _isPlaying;
-    private int _sampleIndex;
+    private double _samplePos;
+    private int _realSampleIndex;
     private bool _noteDown;
     private AnywhenNoteClip _noteClip;
 
     public AnywhenNoteClip testClip;
+    private int _sampleRate;
+    private double _sampleStepFrac;
 
     [ContextMenu("Test")]
     void Test()
@@ -21,15 +25,17 @@ public class NoteClipPlayer : MonoBehaviour
 
     public void PlayScheduled(double absoluteTime, AnywhenNoteClip clip)
     {
-        AudioClip myClip = AudioClip.Create("MySound", 1024, 2, 44100, false);
+        AudioClip myClip = AudioClip.Create("MySound", 1024, 2, 48000, false);
         var audioSource = GetComponent<AudioSource>();
         audioSource.clip = myClip;
         audioSource.Play();
-        print("play");
         _noteClip = clip;
         _scheduledPlay = true;
         _scheduledPlayTime = absoluteTime;
         _isPlaying = false;
+        _sampleRate = AudioSettings.outputSampleRate;
+        _sampleStepFrac = _noteClip.frequency / (float)_sampleRate;
+        print(_sampleStepFrac);
         print(AudioSettings.outputSampleRate);
     }
 
@@ -43,7 +49,7 @@ public class NoteClipPlayer : MonoBehaviour
         if (!_isPlaying && _scheduledPlay && _scheduledPlayTime >= 0 && AudioSettings.dspTime >= _scheduledPlayTime)
         {
             _isPlaying = true;
-            _sampleIndex = 0;
+            _samplePos = 0;
             _scheduledPlay = false;
             _noteDown = true;
         }
@@ -56,28 +62,53 @@ public class NoteClipPlayer : MonoBehaviour
             _scheduledStopTime = -1;
         }
 
-        for (int i = 0; i < data.Length; i += _noteClip.channels)
+
+        int i = 0;
+        while (i < data.Length)
         {
             for (int channel = 0; channel < _noteClip.channels; channel++)
             {
-                var sourceSample1 = Mathf.Max(Mathf.Min(_sampleIndex + i + channel, _noteClip.clipSamples.Length - 1),
-                    0);
-                
-                
-                data[i + channel] = _noteClip.clipSamples[sourceSample1];
+                int sampleIndex = (int)_samplePos;
+                double f = (double)_samplePos - sampleIndex;
+                var sourceSample1 = Mathf.Min((sampleIndex), _noteClip.clipSamples.Length - 1);
+                var sourceSample2 = Mathf.Min((sampleIndex) + 1, _noteClip.clipSamples.Length - 1);
+              
+                double e = ((1 - f) * _noteClip.clipSamples[sourceSample1]) + (f * _noteClip.clipSamples[sourceSample2]);
+                data[i] = (float)e;
+                //data[i] = Mathf.Lerp(_noteClip.clipSamples[sourceSample1], _noteClip.clipSamples[sourceSample2],
+                //    (float)f);
+
+                _samplePos += _sampleStepFrac/2f;
+                i++;
             }
+            //data[i] =
+            //    ((1 - f) * _noteClip.clipSamples[sourceSample1]) + (f * _noteClip.clipSamples[sourceSample2]);
+            //for (int channel = 0; channel < _noteClip.channels; channel++)
+            //{
+            //    var sourceSample1 = Mathf.Min(i + channel + SI_floor, _noteClip.clipSamples.Length - 1);
+            //    var sourceSample2 = Mathf.Min(i + channel + SI_floor + _noteClip.channels,
+            //        _noteClip.clipSamples.Length - 1);
+//
+//
+            //    data[i + channel] =
+            //        ((1 - f) * _noteClip.clipSamples[sourceSample1]) + (f * _noteClip.clipSamples[sourceSample2]);
+            //    //data[(i + channel)] = Mathf.Lerp(
+            //    //    _noteClip.clipSamples[sourceSample1],
+            //    //    _noteClip.clipSamples[sourceSample2],
+            //    //    f);
+            //}
         }
-        
-        
+
+
         //if (_isPlaying && _noteDown && _sampleIndex > _noteClip.loopStart)
         //{
         //    _sampleIndex -= _noteClip.loopLength;
         //}
         //else
         {
-            _sampleIndex += data.Length;
+            //sampleIndex += data.Length * _sampleStepFrac;
         }
-        if (_sampleIndex >= _noteClip.clipSamples.Length - 1)
+        if (_samplePos >= _noteClip.clipSamples.Length - 1)
         {
             _isPlaying = false;
         }

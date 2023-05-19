@@ -67,7 +67,6 @@ namespace Editor
                 newAudioClip.SetData(_target.clipSamples, 0);
                 _target.sourceClip = newAudioClip;
                 newAudioClip.LoadAudioData();
-                Debug.Log(newAudioClip.samples);
                 //AssetDatabase.CreateAsset(newAudioClip, "Assets/testasset.asset");
                // PlayClip(newAudioClip);
 

@@ -11,7 +11,6 @@ namespace Anywhen
             AudioMixerGroup mixerChannel = null)
         {
             
-            print("handle event " + e.state);
             //if (instant) e.step = -1;
             switch (anywhenSettings)
             {

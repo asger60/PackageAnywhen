@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Anywhen.SettingsObjects;
-using PackageAnywhen.Runtime.Anywhen;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -11,11 +11,11 @@ namespace Anywhen
     {
         public Sampler samplerPrefab;
 
-        private readonly List<Sampler> _allSamplers = new List<Sampler>(100);
+        private readonly List<Sampler> _allSamplers = new List<Sampler>(1000);
 
         private bool _isInit;
         public bool IsInit => _isInit;
-
+        public int activeSamplePlayers;
         public static SamplePlayer Instance
         {
             get
@@ -36,12 +36,22 @@ namespace Anywhen
             _instance = this;
         }
 
+        private void Update()
+        {
+            activeSamplePlayers = 0;
+            foreach (var sampler in _allSamplers)
+            {
+                if (!sampler.IsReady)
+                    activeSamplePlayers++;
+            }
+        }
+
         private void Start()
         {
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
 
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 _allSamplers.Add(Instantiate(samplerPrefab, transform));
                 _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);
@@ -56,7 +66,10 @@ namespace Anywhen
             foreach (var thisSampler in _allSamplers)
             {
                 if (thisSampler.IsReady)
+                {
+                    thisSampler.SetReady(false);
                     return thisSampler;
+                }
             }
 
             print("#AudioSystem#didn't find a free sampler - returning the one with the oldest source");

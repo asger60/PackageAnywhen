@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anywhenInstrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
   quantization: 16
+  stress: 1
   playMode: 1
 --- !u!1 &244481636
 GameObject:
@@ -198,7 +199,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 1360066253}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -311,7 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa255ca0d1ac49418c707d8e05646c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testClip: {fileID: 11400000, guid: 70b6fd62d40e6423385bec6a0971e9d8, type: 2}
+  testClip: {fileID: 11400000, guid: 8bfa3ba4f6de74997a31057034255de8, type: 2}
 --- !u!1 &336908727
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,7 +398,7 @@ MonoBehaviour:
   debugSettings:
     debugBar: 0
     debug2: 0
-    debug4: 0
+    debug4: 1
     debug8: 0
     debug16: 0
     debugAnywhenInstrument: {fileID: 11400000, guid: a2f7f0cad97fc43f6a134c48bd25e5af, type: 2}
@@ -547,34 +548,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!83 &1360066253
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MySound
-  m_LoadType: 0
-  m_Channels: 2
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0
 --- !u!1 &1637504776
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,6 +675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   samplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
+  activeSamplePlayers: 0
 --- !u!4 &1709344288
 Transform:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ namespace Samples.Scripts
         public AnywhenInstrument anywhenInstrument;
         public AnywhenMetronome.TickRate quantization;
         int _noteIndex = 0;
-
+        public int stress;
         public enum PlayMode
         {
             Random,
@@ -60,8 +60,10 @@ namespace Samples.Scripts
             }
 
             NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
-        
-            EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
+            for (int i = 0; i < stress; i++)
+            {
+                EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
+            }
         }
     }
 }
