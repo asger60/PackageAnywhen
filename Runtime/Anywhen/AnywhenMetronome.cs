@@ -8,7 +8,7 @@ namespace Anywhen
 {
     public class AnywhenMetronome : MonoBehaviour
     {
-        public int Bpm;
+        public int Bpm = 100;
         public bool Playing;
         public int sub2;
         public int sub4;
@@ -137,7 +137,7 @@ namespace Anywhen
                 if (debugSettings.debugBar)
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub32);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub32);
                 }
             }
 
@@ -149,7 +149,7 @@ namespace Anywhen
                 if (debugSettings.debug16)
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
                 }
             }
 
@@ -162,7 +162,7 @@ namespace Anywhen
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub8);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub8);
                 }
             }
 
@@ -175,7 +175,7 @@ namespace Anywhen
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub4);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub4);
                 }
             }
 
@@ -188,7 +188,7 @@ namespace Anywhen
                 {
                     NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
 
-                    SamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub2);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub2);
                 }
             }
 

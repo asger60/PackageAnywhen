@@ -7,7 +7,7 @@ using UnityEngine.Audio;
 
 namespace Anywhen
 {
-    public class SamplePlayer : MonoBehaviour
+    public class AnywhenSamplePlayer : MonoBehaviour
     {
         public Sampler samplerPrefab;
 
@@ -16,7 +16,7 @@ namespace Anywhen
         private bool _isInit;
         public bool IsInit => _isInit;
         public int activeSamplePlayers;
-        public static SamplePlayer Instance
+        public static AnywhenSamplePlayer Instance
         {
             get
             {
@@ -29,7 +29,7 @@ namespace Anywhen
             }
         }
 
-        private static SamplePlayer _instance;
+        private static AnywhenSamplePlayer _instance;
 
         private void Awake()
         {

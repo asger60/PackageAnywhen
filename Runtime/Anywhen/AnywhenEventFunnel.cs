@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 
 namespace Anywhen
 {
-    public class EventFunnel : MonoBehaviour
+    public class AnywhenEventFunnel : MonoBehaviour
     {
         
         public static void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
@@ -15,7 +15,7 @@ namespace Anywhen
             switch (anywhenSettings)
             {
                 case AnywhenInstrument instrumentObject:
-                    SamplePlayer.Instance.HandleEvent(e, instrumentObject, tickRate, mixerChannel);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, instrumentObject, tickRate, mixerChannel);
                     break;
                 //case InstrumentObjectSynth synthSettings:
                 //    SynthPlayer.Instance.HandleEvent(e, synthSettings);

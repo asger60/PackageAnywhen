@@ -80,10 +80,7 @@ namespace Anywhen.SettingsObjects
         void ConvertToNoteClips()
         {
             List<AnywhenNoteClip> newNoteClips = new List<AnywhenNoteClip>();
-            foreach (var noteClip in noteClips)
-            {
-                
-            }
+            
             foreach (var audioClip in audioClips)
             {
                 var activeObject = audioClip;
