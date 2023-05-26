@@ -23,6 +23,15 @@ namespace Samples.Scripts
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                SetKeyState(0, true);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                SetKeyState(0, false);
+            }
             if (Input.GetKeyDown(KeyCode.A))
             {
                 SetKeyState(0, true);
@@ -36,7 +45,6 @@ namespace Samples.Scripts
 
         void SetKeyState(int keyIndex, bool state)
         {
-            print("set state " + state);
             if (state)
             {
                 switch (playMode)
@@ -62,7 +70,7 @@ namespace Samples.Scripts
             NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
             for (int i = 0; i < stress; i++)
             {
-                AnywhenEventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
+                AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
             }
         }
     }

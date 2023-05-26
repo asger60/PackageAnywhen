@@ -59,6 +59,8 @@ class ADSR
         setTargetRatioDR(0.0001f);
     }
 
+    public bool IsIdle => state == EnvState.env_idle;
+
     public void setAttackRate(float rate)
     {
         attackRate = rate;
@@ -159,7 +161,6 @@ class ADSR
 
     public void SetGate(bool gate)
     {
-        
         if (gate)
             state = EnvState.env_attack;
         else if (state != EnvState.env_idle)

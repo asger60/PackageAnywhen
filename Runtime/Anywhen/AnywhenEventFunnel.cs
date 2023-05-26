@@ -7,7 +7,7 @@ namespace Anywhen
     public class AnywhenEventFunnel : MonoBehaviour
     {
         
-        public static void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
+        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
             AudioMixerGroup mixerChannel = null)
         {
             

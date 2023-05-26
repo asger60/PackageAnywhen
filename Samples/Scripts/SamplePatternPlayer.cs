@@ -27,7 +27,7 @@ namespace Samples.Scripts
                 if (steps[stepIndex])
                 {
                     var e = anywhenPerformerSettings.MakeNote(_noteIndex, anywhenInstrument);
-                    AnywhenEventFunnel.HandleNoteEvent(e, anywhenInstrument, tickRate);
+                    AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, tickRate);
                     _noteIndex++;
                 }
             }

@@ -1,10 +1,12 @@
-﻿using Anywhen.SettingsObjects;
+﻿using System;
+using Anywhen.SettingsObjects;
 using Farmand.Utilities;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Anywhen
 {
+    [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
     public class Sampler : MonoBehaviour
     {
@@ -27,8 +29,6 @@ namespace Anywhen
         public void Init(AnywhenMetronome.TickRate tickRate)
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
-
-
             TryGetComponent(out _audioSource);
             IsReady = true;
             _tickRate = tickRate;
@@ -59,39 +59,53 @@ namespace Anywhen
                 return;
             }
 
-            var audioClip = _settings.GetAudioClip(note);
-            var noteClip = _settings.GetNoteClip(note);
+            switch (_settings.clipType)
+            {
+                case AnywhenInstrument.ClipTypes.AudioClips:
+                    var audioClip = _settings.GetAudioClip(note);
 
-            if (audioClip != null)
-            {
-                _queuedClip = audioClip;
-                IsReady = false;
-                _isArmed = true;
-                _audioSource.clip = _queuedClip;
-                _audioSource.Play();
-                _audioSource.volume = volume * _settings.volume;
-                _audioSource.time = 0;
-                _audioSource.outputAudioMixerGroup = mixerChannel;
-                _playingNoteClip = false;
-                _audioSource.PlayScheduled(playTime);
-            }
-            else if (noteClip != null)
-            {
-                IsReady = false;
-                _isArmed = true;
-                _playingNoteClip = true;
-                PlayScheduled(playTime, noteClip);
-            }
-            else
-            {
-                Debug.LogWarning("failed to find AudioClip");
+                    if (audioClip != null)
+                    {
+                        _queuedClip = audioClip;
+                        IsReady = false;
+                        _isArmed = true;
+                        _audioSource.clip = _queuedClip;
+                        _audioSource.Play();
+                        _audioSource.volume = volume * _settings.volume;
+                        _audioSource.time = 0;
+                        _audioSource.outputAudioMixerGroup = mixerChannel;
+                        _playingNoteClip = false;
+                        _audioSource.PlayScheduled(playTime);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("failed to find AudioClip");
+                    }
+
+                    break;
+                case AnywhenInstrument.ClipTypes.NoteClips:
+                    var noteClip = _settings.GetNoteClip(note);
+                    if (noteClip != null)
+                    {
+                        IsReady = false;
+                        _isArmed = true;
+                        _playingNoteClip = true;
+                        PlayScheduled(playTime, noteClip);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("failed to find NoteClip");
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
 
         public void NoteOff(double stopTime)
         {
-            
             _isStopping = true;
             if (_playingNoteClip)
             {
@@ -113,14 +127,10 @@ namespace Anywhen
                     );
                 });
             }
-            
+
             //IsReady = false;
             //if (stopTime != 0)
             //    stopTime -= AudioSettings.dspTime;
-
-
-           
-            
         }
 
         void Reset()
@@ -138,6 +148,7 @@ namespace Anywhen
                 //todo, make this better
                 return 0;
             }
+
             if (_audioSource.clip == null) return 0;
             if (!_audioSource.isPlaying) return 0;
             return _audioSource.clip.length - _audioSource.time;
@@ -149,8 +160,7 @@ namespace Anywhen
         }
 
 
-        public float loopStart;
-        public int loopLength;
+        private bool _isLooping;
 
         private bool _isPlaying;
         private bool _scheduledPlay;
@@ -158,33 +168,71 @@ namespace Anywhen
         private double _scheduledStopTime;
         private AnywhenNoteClip _noteClip;
         ADSR _adsr = new ADSR();
+        private bool _useEnvelope;
+        private AnywhenInstrument.LoopSettings _currentLoopSettings;
 
-        void StopScheduled(double absoluteTime)
+        protected void StopScheduled(double absoluteTime)
         {
             _scheduledStopTime = absoluteTime;
         }
 
-        void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
+        protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
+            print("play scheduled");
+            _audioSource.Play();
             _samplePos = 0;
             _noteClip = clip;
-            loopStart = clip.loopStart;
-            loopLength = clip.loopLength;
+
             _scheduledPlay = true;
             _scheduledPlayTime = absolutePlayTime;
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
-            _adsr.setAttackRate(_noteClip.attack);
-            _adsr.setDecayRate(_noteClip.decay);
-            _adsr.setSustainLevel(_noteClip.sustain);
-            _adsr.setReleaseRate(_noteClip.release);
-            _adsr.reset();
+
+            var currentEnvelopeSettings = new AnywhenInstrument.EnvelopeSettings();
+
+            if (_settings != null)
+                currentEnvelopeSettings = _settings.envelopeSettings;
+
+            if (clip.envelopeSettings.enabled)
+                currentEnvelopeSettings = clip.envelopeSettings;
+
+            _useEnvelope = currentEnvelopeSettings.enabled;
+            SetEnvelope(currentEnvelopeSettings);
+
+
+             _currentLoopSettings = new AnywhenInstrument.LoopSettings();
+            if (_settings != null)
+            {
+                _currentLoopSettings = _settings.loopSettings;
+            }
+
+            if (clip.loopSettings.enabled)
+                _currentLoopSettings = clip.loopSettings;
+
+
+            _isLooping = _currentLoopSettings.enabled;
+            SetLoop(_currentLoopSettings);
+
+
             _scheduledStopTime = -1;
         }
 
-        private double _samplePos;
+        void SetEnvelope(AnywhenInstrument.EnvelopeSettings envelopeSettings)
+        {
+            _adsr.setAttackRate(envelopeSettings.attack);
+            _adsr.setDecayRate(envelopeSettings.decay);
+            _adsr.setSustainLevel(envelopeSettings.sustain);
+            _adsr.setReleaseRate(envelopeSettings.release);
+            _adsr.reset();
+        }
 
+        void SetLoop(AnywhenInstrument.LoopSettings loopSettings)
+        {
+            _currentLoopSettings = loopSettings;
+        }
+
+        private double _samplePos;
         private double _sampleStepFrac;
-        private float ampMod;
+        private float _ampMod;
 
         void OnAudioFilterRead(float[] data, int channels)
         {
@@ -193,8 +241,10 @@ namespace Anywhen
                 return;
             }
 
-            if (!_isPlaying && _scheduledPlay && _scheduledPlayTime > 0 && AudioSettings.dspTime >= _scheduledPlayTime)
+            if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _scheduledPlayTime)
             {
+                print("play 4 realz");
+
                 _isPlaying = true;
                 _scheduledPlay = false;
                 _isArmed = false;
@@ -207,49 +257,41 @@ namespace Anywhen
             {
                 _scheduledStopTime = -1;
                 _adsr.SetGate(false);
-                IsReady = true;
-                _isPlaying = false;
-                return;
+                _isLooping = false;
             }
-
-            //if (noteDown && !_isPlaying)
-            //{
-            //    _isPlaying = true;
-            //    _thisSample = 0;
-            //}
 
 
             int i = 0;
-            ampMod = 1;
-            ampMod *= _adsr.Process();
+            _ampMod = 1;
+            if (_useEnvelope)
+                _ampMod *= _adsr.Process();
 
             while (i < data.Length)
             {
-                //for (int channel = 0; channel < _noteClip.channels; channel++)
-                {
-                    int sampleIndex = (int)_samplePos;
-                    double f = _samplePos - sampleIndex;
-                    var sourceSample1 = Mathf.Min((sampleIndex), _noteClip.clipSamples.Length - 1);
-                    var sourceSample2 = Mathf.Min((sampleIndex) + 1, _noteClip.clipSamples.Length - 1);
+                int sampleIndex = (int)_samplePos;
+                double f = _samplePos - sampleIndex;
+                var sourceSample1 = Mathf.Min((sampleIndex), _noteClip.clipSamples.Length - 1);
+                var sourceSample2 = Mathf.Min((sampleIndex) + 1, _noteClip.clipSamples.Length - 1);
 
-                    double e = ((1 - f) * _noteClip.clipSamples[sourceSample1]) +
-                               (f * _noteClip.clipSamples[sourceSample2]);
-                    data[i] = (float)e * ampMod;
+                double e = ((1 - f) * _noteClip.clipSamples[sourceSample1]) +
+                           (f * _noteClip.clipSamples[sourceSample2]);
 
-                    _samplePos += _sampleStepFrac / 2f;
-                    i++;
-                }
+                data[i] = (float)e * _ampMod;
+
+                _samplePos += _sampleStepFrac / 2f;
+                i++;
             }
 
+            if (_isLooping && (int)_samplePos > _currentLoopSettings.loopStart)
+            {
+                _samplePos -= _currentLoopSettings.loopLength * _sampleStepFrac;
+            }
 
-            //if (_isPlaying && _noteDown && _sampleIndex > loopStart)
-            //{
-            //    _sampleIndex -= loopLength;
-            //}
-            //else
-            //{
-            //    _sampleIndex += data.Length / 2;
-            //}
+            if (_useEnvelope && _adsr.IsIdle)
+            {
+                _isPlaying = false;
+                IsReady = true;
+            }
 
             if (_samplePos >= _noteClip.clipSamples.Length)
             {

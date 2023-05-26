@@ -8,14 +8,11 @@ namespace Anywhen.SettingsObjects
     {
         public AudioClip sourceClip;
 
-        public int loopStart;
-        public int loopLength;
         public float[] clipSamples;
         public int frequency;
         public int channels;
-        public int attack = 1, decay = 10, sustain = 1, release = 10;
-
-
+        public AnywhenInstrument.EnvelopeSettings envelopeSettings;
+        public AnywhenInstrument.LoopSettings loopSettings;
         internal void ReadAudioClip(AudioClip audioClip)
         {
             clipSamples = new float[audioClip.samples * audioClip.channels];
@@ -23,8 +20,6 @@ namespace Anywhen.SettingsObjects
             frequency = audioClip.frequency;
             channels = audioClip.channels;
             sourceClip = audioClip;
-            loopLength = 100;
-            loopStart = 100;
         }
 
         [MenuItem("Assets/Anywhen/Convert to NoteClip", false, 1)]

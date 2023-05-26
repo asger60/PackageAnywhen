@@ -1,28 +1,26 @@
 using System;
+using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class NoteClipPlayer : MonoBehaviour
+public class AnywhenNoteClipPreviewer : Sampler
 {
-    private double _scheduledPlayTime, _scheduledStopTime;
-    private bool _scheduledPlay;
-    private bool _isPlaying;
-    private double _samplePos;
-    private int _realSampleIndex;
-    private bool _noteDown;
-    private AnywhenNoteClip _noteClip;
 
-    public AnywhenNoteClip testClip;
-    private int _sampleRate;
-    private double _sampleStepFrac;
-
-    [ContextMenu("Test")]
-    void Test()
+    
+    public void PlayClip(AnywhenNoteClip clip)
     {
-        PlayScheduled(0, testClip);
+        Init(AnywhenMetronome.TickRate.None);
+        PlayScheduled(0, clip);
+        print("play");
     }
 
+    public void StopClip()
+    {
+        StopScheduled(1);
+    }
+
+/*
     public void PlayScheduled(double absoluteTime, AnywhenNoteClip clip)
     {
         AudioClip myClip = AudioClip.Create("MySound", 1024, 2, 48000, false);
@@ -112,5 +110,7 @@ public class NoteClipPlayer : MonoBehaviour
         {
             _isPlaying = false;
         }
-    }
+        
+
+}*/
 }
