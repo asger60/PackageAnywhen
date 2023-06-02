@@ -3,14 +3,15 @@ using System.Linq;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
     public class AnywhenSamplePlayer : MonoBehaviour
     {
-        public Sampler samplerPrefab;
+        [FormerlySerializedAs("samplerPrefab")] public AnywhenSampler anywhenSamplerPrefab;
 
-        private readonly List<Sampler> _allSamplers = new List<Sampler>(1000);
+        private readonly List<AnywhenSampler> _allSamplers = new List<AnywhenSampler>(1000);
 
         private bool _isInit;
         public bool IsInit => _isInit;
@@ -36,7 +37,7 @@ namespace Anywhen
 
             for (int i = 0; i < 1000; i++)
             {
-                _allSamplers.Add(Instantiate(samplerPrefab, transform));
+                _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
                 _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);
             }
 
@@ -44,7 +45,7 @@ namespace Anywhen
         }
 
 
-        private Sampler GetSampler()
+        private AnywhenSampler GetSampler()
         {
             foreach (var thisSampler in _allSamplers)
             {
@@ -58,18 +59,18 @@ namespace Anywhen
             print("#AudioSystem#didn't find a free sampler - returning the one with the oldest source");
             //didn't find a free sampler - returning the one with the oldest source
             float shortestDuration = float.MaxValue;
-            Sampler oldestSampler = null;
+            AnywhenSampler oldestAnywhenSampler = null;
             foreach (var thisSampler in _allSamplers)
             {
                 float thisDuration = thisSampler.GetDurationToEnd();
                 if (thisDuration < shortestDuration)
                 {
                     shortestDuration = thisDuration;
-                    oldestSampler = thisSampler;
+                    oldestAnywhenSampler = thisSampler;
                 }
             }
 
-            return oldestSampler;
+            return oldestAnywhenSampler;
         }
 
 
@@ -84,9 +85,9 @@ namespace Anywhen
                     for (int i = 0; i < e.notes.Length; i++)
                     {
                         var note = e.notes[i];
-                        Sampler sampler = GetSampler();
+                        AnywhenSampler anywhenSampler = GetSampler();
 
-                        if (sampler == null)
+                        if (anywhenSampler == null)
                         {
                             Debug.LogWarning("no available samplers ");
                             return;
@@ -94,7 +95,7 @@ namespace Anywhen
 
                         double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
                                         e.chordStrum[i];
-                        sampler.NoteOn(note, timing, e.velocity, anywhenInstrumentSettings, mixerChannel);
+                        anywhenSampler.NoteOn(note, timing, e.velocity, anywhenInstrumentSettings, mixerChannel);
                     }
 
 

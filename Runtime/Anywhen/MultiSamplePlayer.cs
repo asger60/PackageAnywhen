@@ -2,14 +2,15 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
     public class MultiSamplePlayer : MonoBehaviour
     {
-        public Sampler samplerPrefab;
+        [FormerlySerializedAs("samplerPrefab")] public AnywhenSampler anywhenSamplerPrefab;
 
-        private readonly List<Sampler> _allSamplers = new List<Sampler>(50);
+        private readonly List<AnywhenSampler> _allSamplers = new List<AnywhenSampler>(50);
 
         private bool _isInit;
         public bool IsInit => _isInit;
@@ -27,7 +28,7 @@ namespace Anywhen
 
             for (int i = 0; i < 50; i++)
             {
-                _allSamplers.Add(Instantiate(samplerPrefab, transform));
+                _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
                 _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);
             }
 
@@ -38,7 +39,7 @@ namespace Anywhen
 
 
 
-        private Sampler GetSampler()
+        private AnywhenSampler GetSampler()
         {
             foreach (var thisSampler in _allSamplers)
             {
@@ -50,18 +51,18 @@ namespace Anywhen
             
             //didn't find a free sampler - returning the one with the oldest source
             float shortestDuration = float.MaxValue;
-            Sampler oldestSampler = null;
+            AnywhenSampler oldestAnywhenSampler = null;
             foreach (var thisSampler in _allSamplers)
             {
                 float thisDuration = thisSampler.GetDurationToEnd();
                 if (thisDuration < shortestDuration)
                 {
                     shortestDuration = thisDuration;
-                    oldestSampler = thisSampler;
+                    oldestAnywhenSampler = thisSampler;
                 }
             }
 
-            return oldestSampler;
+            return oldestAnywhenSampler;
         }
 
         

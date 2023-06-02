@@ -8,7 +8,7 @@ namespace Anywhen
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
-    public class Sampler : MonoBehaviour
+    public class AnywhenSampler : MonoBehaviour
     {
         private AudioClip _queuedClip;
 
