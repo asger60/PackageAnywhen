@@ -176,9 +176,11 @@ namespace Anywhen
             _scheduledStopTime = absoluteTime;
         }
 
+
+
+
         protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
-            print("play scheduled");
             _audioSource.Play();
             _samplePos = 0;
             _noteClip = clip;
@@ -243,8 +245,6 @@ namespace Anywhen
 
             if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _scheduledPlayTime)
             {
-                print("play 4 realz");
-
                 _isPlaying = true;
                 _scheduledPlay = false;
                 _isArmed = false;

@@ -75,7 +75,7 @@ namespace Anywhen.SettingsObjects
             switch (clipSelectType)
             {
                 case ClipSelectType.PitchedNotes:
-                    note = AnywhenConductor.Instance.GetScaledNote(note);
+                    note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     if (note >= noteClips.Length)
                     {
                         Debug.LogWarning("note out of clip range");
@@ -97,7 +97,7 @@ namespace Anywhen.SettingsObjects
             switch (clipSelectType)
             {
                 case ClipSelectType.PitchedNotes:
-                    note = AnywhenConductor.Instance.GetScaledNote(note);
+                    note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     if (note >= audioClips.Length) Debug.LogWarning("note out of clip range");
                     return note >= audioClips.Length ? null : audioClips[note];
 

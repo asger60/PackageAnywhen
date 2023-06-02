@@ -1,24 +1,23 @@
-using System;
-using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class AnywhenNoteClipPreviewer : Sampler
+namespace Anywhen
 {
+    [RequireComponent(typeof(AudioSource))]
+    public class AnywhenNoteClipPreviewer : Sampler
+    {
 
     
-    public void PlayClip(AnywhenNoteClip clip)
-    {
-        Init(AnywhenMetronome.TickRate.None);
-        PlayScheduled(0, clip);
-        print("play");
-    }
+        public void PlayClip(AnywhenNoteClip clip)
+        {
+            Init(AnywhenMetronome.TickRate.None);
+            PlayScheduled(0, clip);
+        }
 
-    public void StopClip()
-    {
-        StopScheduled(1);
-    }
+        public void StopClip()
+        {
+            StopScheduled(1);
+        }
 
 /*
     public void PlayScheduled(double absoluteTime, AnywhenNoteClip clip)
@@ -113,4 +112,5 @@ public class AnywhenNoteClipPreviewer : Sampler
         
 
 }*/
+    }
 }

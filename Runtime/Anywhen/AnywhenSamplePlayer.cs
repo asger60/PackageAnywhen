@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -16,25 +15,9 @@ namespace Anywhen
         private bool _isInit;
         public bool IsInit => _isInit;
         public int activeSamplePlayers;
-        public static AnywhenSamplePlayer Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    Debug.LogWarning("Sampleplayer is missing, please add to scene");
-                }
+        public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplePlayer;
 
-                return _instance;
-            }
-        }
-
-        private static AnywhenSamplePlayer _instance;
-
-        private void Awake()
-        {
-            _instance = this;
-        }
+        
 
         private void Update()
         {

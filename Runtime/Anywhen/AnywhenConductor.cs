@@ -9,20 +9,9 @@ namespace Anywhen
         public AnywhenScaleObject anywhenScale;
         private AnywhenScaleObject _currentAnywhenScale;
 
-        private static AnywhenConductor _instance;
 
-        public static AnywhenConductor Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    Debug.LogWarning("Conductor is missing, please add to scene");
-                }
-
-                return _instance;
-            }
-        }
+        public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
+        
         public AnywhenProgressionPatternObject initialProgressionPattern;
 
         private AnywhenProgressionPatternObject _currentProgressionPattern;
@@ -30,10 +19,7 @@ namespace Anywhen
         private bool _scaleOverridden;
         private bool _rootOverridden;
 
-        private void Awake()
-        {
-            _instance = this;
-        }
+
 
         private void Start()
         {

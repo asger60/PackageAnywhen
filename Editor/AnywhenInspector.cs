@@ -17,19 +17,20 @@ namespace Editor
         }
 
         public OPTIONS op;
-        private int _tab;
 
         Texture2D _texture;
         private float _textureAspect;
         private float _textureMaxWidth = 800;
         private float _currentWidth;
         private float _slider1, _slider2, _slider3;
+        private AnywhenRuntime _anywhenRuntime;
 
         void OnEnable()
         {
             _texture = Resources.Load<Texture2D>("ANYWHENLOGO");
             _textureAspect = (float)_texture.width / _texture.height;
             _textureMaxWidth = 500;
+            _anywhenRuntime = (AnywhenRuntime)target;
         }
 
 
@@ -52,15 +53,16 @@ namespace Editor
             op = (OPTIONS)EditorGUILayout.EnumPopup("Current musical style:", op);
             EditorGUILayout.Separator();
             EditorGUILayout.LabelField("Variations:");
-            _tab = GUILayout.Toolbar(_tab, new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            _anywhenRuntime.tap = GUILayout.Toolbar(_anywhenRuntime.tap,
+                new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
 
 
             EditorGUILayout.Separator();
 
             EditorGUILayout.LabelField("RUNTIME VARIABLES");
-            _slider1 = EditorGUILayout.Slider("Intensity", _slider1, 0, 1);
-            _slider2 = EditorGUILayout.Slider("Complexity", _slider2, 0, 1);
-            _slider3 = EditorGUILayout.Slider("Variation", _slider3, 0, 1);
+            _anywhenRuntime.slider1 = (int)EditorGUILayout.Slider("Chase mode", _anywhenRuntime.slider1, 0, 1);
+            _anywhenRuntime.slider2 = EditorGUILayout.Slider("Monster proximity", _anywhenRuntime.slider2, 0, 1);
+            _anywhenRuntime.slider3 = (int)EditorGUILayout.Slider("Game state", _anywhenRuntime.slider3, 0, 3);
             EditorGUILayout.Separator();
             GUILayout.BeginHorizontal();
 

@@ -56,7 +56,7 @@ namespace Anywhen
         public bool IsInit => _isInit;
 
 
-        public static AnywhenMetronome Instance { get; private set; }
+        public static AnywhenMetronome Instance => AnywhenRuntime.Metronome;
         public bool debugMode;
 
         [Serializable]
@@ -67,11 +67,7 @@ namespace Anywhen
         }
 
         public DebugSettings debugSettings;
-
-        private void Awake()
-        {
-            Instance = this;
-        }
+        
 
 
         private void Start()

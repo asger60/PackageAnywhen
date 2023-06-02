@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands;
 using UnityEngine;
 
 namespace Anywhen
@@ -11,21 +12,31 @@ namespace Anywhen
     {
         private static AnywhenMetronome _metronome;
         public static AnywhenMetronome Metronome => _metronome;
+        
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
+        
         private static AnywhenNoteClipPreviewer _previewer;
-
+        
         static AnywhenEventFunnel _eventFunnel;
-        public static AnywhenEventFunnel EventFunnel
+        public static AnywhenSamplePlayer AnywhenSamplePlayer => _anywhenSamplePlayer;
+        
+        private static AnywhenSamplePlayer _anywhenSamplePlayer;
+        public static AnywhenEventFunnel EventFunnel => _eventFunnel;
+
+        public int tap;
+        public float slider1;
+        public float slider2;
+        public float slider3;
+        
+        
+        private void OnDestroy()
         {
-            get
-            {
-                if (_eventFunnel != null)
-                    return _eventFunnel;
-                _eventFunnel = FindObjectOfType<AnywhenRuntime>().GetComponent<AnywhenEventFunnel>();
-                return _eventFunnel;
-            }
-        } 
+            AudioConfiguration config = AudioSettings.GetConfiguration();
+            AudioSettings.Reset(config);
+        }
+
+       
 
         public static AnywhenNoteClipPreviewer ClipPreviewer
         {
@@ -47,6 +58,9 @@ namespace Anywhen
         {
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
+            TryGetComponent(out _anywhenSamplePlayer);
+            TryGetComponent(out _eventFunnel);
+            
         }
     }
 }
