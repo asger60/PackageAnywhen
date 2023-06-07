@@ -1,7 +1,5 @@
 ﻿using System;
 using Anywhen.SettingsObjects;
-using Farmand.Utilities;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
