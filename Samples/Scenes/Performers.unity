@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e70111c293bc45d4bc7d1660b80d259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  samplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
+  anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
   activeSamplePlayers: 0
 --- !u!114 &63826044
 MonoBehaviour:
@@ -199,7 +199,7 @@ MonoBehaviour:
   debugMode: 0
   debugSettings:
     debugBar: 0
-    debug2: 0
+    debug2: 1
     debug4: 0
     debug8: 0
     debug16: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e24ddefc1c3246b893eaebb5e324a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anywhenInstrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
+  anywhenInstrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
   quantization: 16
   stress: 1
   playMode: 1

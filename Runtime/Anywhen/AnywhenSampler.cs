@@ -1,6 +1,7 @@
 ﻿using System;
 using Anywhen.SettingsObjects;
 using Farmand.Utilities;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -35,6 +36,7 @@ namespace Anywhen
             _audioSource.playOnAwake = true;
             _audioSource.clip = myClip;
             _adsr = new ADSR();
+            _audioSource.Play();
         }
 
 
@@ -49,13 +51,15 @@ namespace Anywhen
         }
 
 
-        public void NoteOn(int note, double playTime, float volume, AnywhenInstrument newSettings,
+        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenInstrument newSettings,
             AudioMixerGroup mixerChannel = null)
         {
+            SetReady(false);
             _settings = newSettings;
             if (_settings == null)
             {
                 Debug.LogWarning("settings was null");
+                SetReady(true);
                 return;
             }
 
@@ -67,10 +71,9 @@ namespace Anywhen
                     if (audioClip != null)
                     {
                         _queuedClip = audioClip;
-                        IsReady = false;
                         _isArmed = true;
                         _audioSource.clip = _queuedClip;
-                        _audioSource.Play();
+                        _audioSource.Stop();
                         _audioSource.volume = volume * _settings.volume;
                         _audioSource.time = 0;
                         _audioSource.outputAudioMixerGroup = mixerChannel;
@@ -80,6 +83,7 @@ namespace Anywhen
                     else
                     {
                         Debug.LogWarning("failed to find AudioClip");
+                        SetReady(true);
                     }
 
                     break;
@@ -87,14 +91,21 @@ namespace Anywhen
                     var noteClip = _settings.GetNoteClip(note);
                     if (noteClip != null)
                     {
-                        IsReady = false;
                         _isArmed = true;
                         _playingNoteClip = true;
+                        _audioSource.Stop();
                         PlayScheduled(playTime, noteClip);
+                        _hasScheduledStop = false;
+                        if (stopTime > 0)
+                        {
+                            StopScheduled(stopTime);
+                            _hasScheduledStop = true;
+                        }
                     }
                     else
                     {
                         Debug.LogWarning("failed to find NoteClip");
+                        SetReady(true);
                     }
 
                     break;
@@ -103,9 +114,11 @@ namespace Anywhen
             }
         }
 
+        private bool _hasScheduledStop;
 
         public void NoteOff(double stopTime)
         {
+            if (_hasScheduledStop) return;
             _isStopping = true;
             if (_playingNoteClip)
             {
@@ -177,11 +190,9 @@ namespace Anywhen
         }
 
 
-
-
         protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
-            _audioSource.Play();
+            //_audioSource.Play();
             _samplePos = 0;
             _noteClip = clip;
 
@@ -198,10 +209,11 @@ namespace Anywhen
                 currentEnvelopeSettings = clip.envelopeSettings;
 
             _useEnvelope = currentEnvelopeSettings.enabled;
-            SetEnvelope(currentEnvelopeSettings);
+            if (_useEnvelope)
+                SetEnvelope(currentEnvelopeSettings);
 
 
-             _currentLoopSettings = new AnywhenInstrument.LoopSettings();
+            _currentLoopSettings = new AnywhenInstrument.LoopSettings();
             if (_settings != null)
             {
                 _currentLoopSettings = _settings.loopSettings;

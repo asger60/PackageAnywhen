@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: 12 C Japan_FM_Acoustic_Piano_2
   m_EditorClassIdentifier: 
   sourceClip: {fileID: 8300000, guid: 7131275a108264df293d4c11a5861469, type: 3}
-  loopStart: 100
-  loopLength: 100
   clipSamples:
   - 0
   - 0
@@ -166904,7 +166902,13 @@ MonoBehaviour:
   - 0.001373291
   frequency: 44100
   channels: 1
-  attack: 1
-  decay: 10
-  sustain: 1
-  release: 10
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 1
+    loopStart: 17000
+    loopLength: 1100

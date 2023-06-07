@@ -9,7 +9,8 @@ namespace Anywhen
 {
     public class AnywhenSamplePlayer : MonoBehaviour
     {
-        [FormerlySerializedAs("samplerPrefab")] public AnywhenSampler anywhenSamplerPrefab;
+        [FormerlySerializedAs("samplerPrefab")]
+        public AnywhenSampler anywhenSamplerPrefab;
 
         private readonly List<AnywhenSampler> _allSamplers = new List<AnywhenSampler>(1000);
 
@@ -18,7 +19,6 @@ namespace Anywhen
         public int activeSamplePlayers;
         public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplePlayer;
 
-        
 
         private void Update()
         {
@@ -93,9 +93,11 @@ namespace Anywhen
                             return;
                         }
 
-                        double timing = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
+                        double playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
                                         e.chordStrum[i];
-                        anywhenSampler.NoteOn(note, timing, e.velocity, anywhenInstrumentSettings, mixerChannel);
+                        double stopTime = e.duration < 0 ? -1 : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
+                        anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings,
+                            mixerChannel);
                     }
 
 

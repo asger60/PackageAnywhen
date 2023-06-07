@@ -91,13 +91,13 @@ MonoBehaviour:
   instrumentType: 2
   clipSelectType: 0
   clipType: 1
-  hasLoopPoint: 1
   loopSettings:
+    enabled: 1
     loopStart: 20374
     loopLength: 2618
-  useEnvelope: 1
   envelopeSettings:
-    attack: 1
-    decay: 38
-    sustain: 0.36
-    release: 380
+    enabled: 0
+    attack: 0
+    decay: 25
+    sustain: 0.1
+    release: 20

@@ -67,7 +67,7 @@ namespace Samples.Scripts
                 }
             }
 
-            NoteEvent e = new NoteEvent(_noteIndex, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
+            NoteEvent e = new NoteEvent(_noteIndex, 2, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
             for (int i = 0; i < stress; i++)
             {
                 AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);

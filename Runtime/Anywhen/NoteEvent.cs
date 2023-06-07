@@ -20,6 +20,7 @@ namespace Anywhen
         public float expression1;
         public float expression2;
         public float velocity;
+        public float duration;
 
        
 
@@ -29,11 +30,24 @@ namespace Anywhen
             notes = new[] { note };
             this.state = state;
             drift = 0;
-            //this.quantization = quantization;
             chordStrum = new double[] { 0 };
             expression1 = 0;
             expression2 = 0;
             velocity = 1;
+            duration = -1;
+        }
+        
+        public NoteEvent(int note, float noteDuration, EventTypes state)
+        {
+            this.state = state;
+            notes = new[] { note };
+            this.state = state;
+            drift = 0;
+            chordStrum = new double[] { 0 };
+            expression1 = 0;
+            expression2 = 0;
+            velocity = 1;
+            duration = noteDuration;
         }
     
         public NoteEvent(int note, EventTypes state, float volume)
@@ -42,11 +56,11 @@ namespace Anywhen
             notes = new[] { note };
             this.state = state;
             drift = 0;
-            //this.quantization = quantization;
             chordStrum = new double[] { 0 };
             expression1 = 0;
             expression2 = 0;
             velocity = volume;
+            duration = -1;
         }
     
         public NoteEvent(int note, EventTypes state, float volume, double drift)
@@ -55,11 +69,11 @@ namespace Anywhen
             notes = new[] { note };
             this.state = state;
             this.drift = drift;
-            //this.quantization = quantization;
             chordStrum = new double[] { 0 };
             expression1 = 0;
             expression2 = 0;
             velocity = volume;
+            duration = -1;
         }
 
 
@@ -74,6 +88,7 @@ namespace Anywhen
             this.expression2 = expression2;
             this.velocity = 1;
             this.velocity = velocity;
+            duration = -1;
         }
 
     }
