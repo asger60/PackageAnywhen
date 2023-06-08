@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa255ca0d1ac49418c707d8e05646c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testVal: 0
 --- !u!82 &63826050
 AudioSource:
   m_ObjectHideFlags: 0
@@ -269,7 +270,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 136564457}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -483,38 +484,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e24ddefc1c3246b893eaebb5e324a91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anywhenInstrument: {fileID: 11400000, guid: 80c0697f1769244a88a2e7ba7e4a934a, type: 2}
+  anywhenInstrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
   quantization: 16
   stress: 1
   playMode: 1
---- !u!83 &136564457
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MySound
-  m_LoadType: 0
-  m_Channels: 1
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0
 --- !u!1 &336908727
 GameObject:
   m_ObjectHideFlags: 0

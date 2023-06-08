@@ -47,6 +47,7 @@ namespace Anywhen.SettingsObjects
             public bool enabled;
             public int loopStart;
             public int loopLength;
+            public int crossFadeDuration;
         }
 
         public LoopSettings loopSettings;

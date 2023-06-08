@@ -35,7 +35,7 @@ namespace Anywhen
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
 
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 128; i++)
             {
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
                 _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);

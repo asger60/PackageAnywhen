@@ -1,4 +1,5 @@
 ﻿using System;
+using Anywhen.Attributes;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -181,6 +182,10 @@ namespace Anywhen
         ADSR _adsr = new ADSR();
         private bool _useEnvelope;
         private AnywhenInstrument.LoopSettings _currentLoopSettings;
+        private bool _alternateBuffer;
+        private float _buffer1Amp, _buffer2Amp;
+        private float _bufferFadeValue, _buffer2FadeValue;
+        private double _bufferCrossFadeStepValue = 0.0025f;
 
         protected void StopScheduled(double absoluteTime)
         {
@@ -190,8 +195,13 @@ namespace Anywhen
 
         protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
-            //_audioSource.Play();
-            _samplePos = 0;
+            _alternateBuffer = false;
+            _buffer1Amp = 1;
+            _buffer2Amp = 0;
+            _samplePosBuffer1 = 0;
+            _samplePosBuffer2 = 0;
+
+
             _noteClip = clip;
 
             _scheduledPlay = true;
@@ -204,7 +214,9 @@ namespace Anywhen
                 currentEnvelopeSettings = _settings.envelopeSettings;
 
             if (clip.envelopeSettings.enabled)
+            {
                 currentEnvelopeSettings = clip.envelopeSettings;
+            }
 
             _useEnvelope = currentEnvelopeSettings.enabled;
             if (_useEnvelope)
@@ -218,7 +230,11 @@ namespace Anywhen
             }
 
             if (clip.loopSettings.enabled)
+            {
                 _currentLoopSettings = clip.loopSettings;
+            }
+            _bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
+
 
 
             _isLooping = _currentLoopSettings.enabled;
@@ -242,7 +258,7 @@ namespace Anywhen
             _currentLoopSettings = loopSettings;
         }
 
-        private double _samplePos;
+        private double _samplePosBuffer1, _samplePosBuffer2;
         private double _sampleStepFrac;
         private float _ampMod;
 
@@ -274,27 +290,77 @@ namespace Anywhen
             int i = 0;
             _ampMod = 1;
             if (_useEnvelope)
+            {
                 _ampMod *= _adsr.Process();
+            }
 
             while (i < data.Length)
             {
-                int sampleIndex = (int)_samplePos;
-                double f = _samplePos - sampleIndex;
-                var sourceSample1 = Mathf.Min((sampleIndex), _noteClip.clipSamples.Length - 1);
-                var sourceSample2 = Mathf.Min((sampleIndex) + 1, _noteClip.clipSamples.Length - 1);
+                int sampleIndex1 = (int)_samplePosBuffer1;
+                double f1 = _samplePosBuffer1 - sampleIndex1;
+                var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
+                var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
 
-                double e = ((1 - f) * _noteClip.clipSamples[sourceSample1]) +
-                           (f * _noteClip.clipSamples[sourceSample2]);
+                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
+                            (f1 * _noteClip.clipSamples[sourceSample2]);
 
-                data[i] = (float)e * _ampMod;
+                //data[i] = (float)e * _ampMod;
 
-                _samplePos += _sampleStepFrac / 2f;
+
+                int sampleIndex2 = (int)_samplePosBuffer2;
+                double f2 = _samplePosBuffer2 - sampleIndex2;
+                var sourceSample3 = Mathf.Min((sampleIndex2), _noteClip.clipSamples.Length - 1);
+                var sourceSample4 = Mathf.Min((sampleIndex2) + 1, _noteClip.clipSamples.Length - 1);
+
+                double e2 = ((1 - f2) * _noteClip.clipSamples[sourceSample3]) +
+                            (f2 * _noteClip.clipSamples[sourceSample4]);
+
+
+                data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod;
+
+
+                _samplePosBuffer1 += _sampleStepFrac / 2f;
+                _samplePosBuffer2 += _sampleStepFrac / 2f;
+
+
+                _bufferFadeValue += (float)_bufferCrossFadeStepValue;
+
+                if (_alternateBuffer)
+                {
+                    _buffer1Amp = Lin(1 - _bufferFadeValue);
+                    _buffer2Amp = Lin(_bufferFadeValue);
+                }
+                else
+                {
+                    _buffer1Amp = Lin(_bufferFadeValue);
+                    _buffer2Amp = Lin(1 - _bufferFadeValue);
+                }
+
+
+                _buffer1Amp = Mathf.Clamp01(_buffer1Amp);
+                _buffer2Amp = Mathf.Clamp01(_buffer2Amp);
+
                 i++;
             }
 
-            if (_isLooping && (int)_samplePos > _currentLoopSettings.loopStart)
+            if (_isLooping)
             {
-                _samplePos -= _currentLoopSettings.loopLength * _sampleStepFrac;
+                if (!_alternateBuffer && (int)_samplePosBuffer1 > _currentLoopSettings.loopStart)
+                {
+                    _samplePosBuffer2 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
+                                        _sampleStepFrac;
+                    _alternateBuffer = true;
+                    _buffer2Amp = 0;
+                    _bufferFadeValue = 0;
+                }
+                else if (_alternateBuffer && (int)_samplePosBuffer2 > _currentLoopSettings.loopStart)
+                {
+                    _samplePosBuffer1 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
+                                        _sampleStepFrac;
+                    _alternateBuffer = false;
+                    _buffer1Amp = 0;
+                    _bufferFadeValue = 0;
+                }
             }
 
             if (_useEnvelope && _adsr.IsIdle)
@@ -303,13 +369,34 @@ namespace Anywhen
                 IsReady = true;
             }
 
-            if (_samplePos >= _noteClip.clipSamples.Length)
+            if (_samplePosBuffer1 >= _noteClip.clipSamples.Length)
             {
                 _adsr.SetGate(false);
                 _isPlaying = false;
                 IsReady = true;
             }
         }
+
+        [Range(0, 2f)] public float testVal;
+
+        [ContextMenu("test")]
+        void Test()
+        {
+            print(Log(testVal));
+        }
+
+        float Log(float x)
+        {
+            //return 1 - Mathf.Exp(-Mathf.Log((1.0f + 0.3f) / 0.3f) / x);
+            return Mathf.Clamp01(1 - Mathf.Pow(1 - x, 5));
+        }
+
+        float Lin(float x)
+        {
+            //return 1 - Mathf.Exp(-Mathf.Log((1.0f + 0.3f) / 0.3f) / x);
+            return Mathf.Clamp01(x);
+        }
+
 
         public void SetReady(bool state)
         {
