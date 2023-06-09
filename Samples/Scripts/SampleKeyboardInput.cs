@@ -11,7 +11,7 @@ namespace Samples.Scripts
         public AnywhenInstrument anywhenInstrument;
         public AnywhenMetronome.TickRate quantization;
         int _noteIndex = 0;
-        public int stress;
+
         public enum PlayMode
         {
             Random,
@@ -21,25 +21,46 @@ namespace Samples.Scripts
 
         public PlayMode playMode;
 
+        private NoteEvent _e;
+
+        private void Start()
+        {
+            _e = new NoteEvent(0, NoteEvent.EventTypes.NoteDown)
+            {
+                expression1 = 1
+            };
+        }
+
+        private bool _noteDown;
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 SetKeyState(0, true);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 SetKeyState(0, false);
             }
+
             if (Input.GetKeyDown(KeyCode.A))
             {
                 SetKeyState(0, true);
+                _noteDown = true;
             }
 
             if (Input.GetKeyUp(KeyCode.A))
             {
                 SetKeyState(0, false);
+                _noteDown = false;
+            }
+
+            if (_noteDown)
+            {
+                _e.expression1 = Mathf.MoveTowards(_e.expression1, 1.5f, Time.deltaTime * 0.5f);
+                AnywhenRuntime.EventFunnel.HandleNoteEvent(_e, anywhenInstrument, quantization);
             }
         }
 
@@ -67,11 +88,16 @@ namespace Samples.Scripts
                 }
             }
 
-            NoteEvent e = new NoteEvent(_noteIndex, 2, state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
-            for (int i = 0; i < stress; i++)
+            if (state)
             {
-                AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
+                _e.expression1 = 1;
             }
+
+            NoteEvent e = new NoteEvent(0,
+                state ? NoteEvent.EventTypes.NoteOn : NoteEvent.EventTypes.NoteOff);
+
+
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, quantization);
         }
     }
 }

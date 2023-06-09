@@ -78,7 +78,7 @@ namespace Anywhen
             AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
             float drift = 0;
-
+print(e.state);
             switch (e.state)
             {
                 case NoteEvent.EventTypes.NoteOn:
@@ -94,8 +94,10 @@ namespace Anywhen
                         }
 
                         double playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
-                                        e.chordStrum[i];
-                        double stopTime = e.duration < 0 ? -1 : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
+                                          e.chordStrum[i];
+                        double stopTime = e.duration < 0
+                            ? -1
+                            : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
                         anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings,
                             mixerChannel);
                     }
@@ -106,17 +108,36 @@ namespace Anywhen
 
                     if (anywhenInstrumentSettings.instrumentType == AnywhenInstrument.InstrumentType.Sustained)
                     {
-                        foreach (var thisSampler in _allSamplers)
+                        for (int i = 0; i < e.notes.Length; i++)
                         {
-                            if (thisSampler.Settings == anywhenInstrumentSettings)
-                                thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(rate) +
-                                                    drift);
+                            var note = e.notes[i];
+                            foreach (var thisSampler in _allSamplers)
+                            {
+                                if (thisSampler.Settings == anywhenInstrumentSettings &&
+                                    thisSampler.CurrentNote == note)
+                                {
+                                    thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + drift);
+                                }
+                            }
                         }
                     }
 
 
                     break;
                 case NoteEvent.EventTypes.NoteDown:
+
+                    for (int i = 0; i < e.notes.Length; i++)
+                    {
+                        var note = e.notes[i];
+                        foreach (var thisSampler in _allSamplers)
+                        {
+                            if (thisSampler.Settings == anywhenInstrumentSettings && thisSampler.CurrentNote == note)
+                            {
+                                thisSampler.SetPitch(e.expression1);
+                            }
+                        }
+                    }
+
                     break;
             }
         }

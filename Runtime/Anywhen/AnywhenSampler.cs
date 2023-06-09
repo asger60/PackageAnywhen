@@ -25,6 +25,8 @@ namespace Anywhen
         private bool _isStopping;
         public AnywhenMetronome.TickRate TickRate => _tickRate;
         private bool _playingNoteClip;
+        public int CurrentNote => _currentNote;
+        private int _currentNote;
 
         public void Init(AnywhenMetronome.TickRate tickRate)
         {
@@ -62,6 +64,8 @@ namespace Anywhen
                 return;
             }
 
+            _currentNote = note;
+            
             switch (_settings.clipType)
             {
                 case AnywhenInstrument.ClipTypes.AudioClips:
@@ -192,7 +196,10 @@ namespace Anywhen
             _scheduledStopTime = absoluteTime;
         }
 
-
+        public void SetPitch(float pitchValue)
+        {
+            _pitch = pitchValue;
+        }
         protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
             _alternateBuffer = false;
@@ -207,6 +214,8 @@ namespace Anywhen
             _scheduledPlay = true;
             _scheduledPlayTime = absolutePlayTime;
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
+            _currentPitch = 1;
+            _pitch = 1;
 
             var currentEnvelopeSettings = new AnywhenInstrument.EnvelopeSettings();
 
@@ -260,6 +269,8 @@ namespace Anywhen
 
         private double _samplePosBuffer1, _samplePosBuffer2;
         private double _sampleStepFrac;
+        private double _currentPitch;
+        private float _pitch;
         private float _ampMod;
 
         void OnAudioFilterRead(float[] data, int channels)
@@ -319,8 +330,8 @@ namespace Anywhen
                 data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod;
 
 
-                _samplePosBuffer1 += _sampleStepFrac / 2f;
-                _samplePosBuffer2 += _sampleStepFrac / 2f;
+                _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
+                _samplePosBuffer2 += (_sampleStepFrac * _currentPitch) / 2f;
 
 
                 _bufferFadeValue += (float)_bufferCrossFadeStepValue;
@@ -339,16 +350,18 @@ namespace Anywhen
 
                 _buffer1Amp = Mathf.Clamp01(_buffer1Amp);
                 _buffer2Amp = Mathf.Clamp01(_buffer2Amp);
+                _currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
 
                 i++;
             }
+
 
             if (_isLooping)
             {
                 if (!_alternateBuffer && (int)_samplePosBuffer1 > _currentLoopSettings.loopStart)
                 {
                     _samplePosBuffer2 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
-                                        _sampleStepFrac;
+                                        (_sampleStepFrac * _currentPitch);
                     _alternateBuffer = true;
                     _buffer2Amp = 0;
                     _bufferFadeValue = 0;
@@ -356,7 +369,7 @@ namespace Anywhen
                 else if (_alternateBuffer && (int)_samplePosBuffer2 > _currentLoopSettings.loopStart)
                 {
                     _samplePosBuffer1 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
-                                        _sampleStepFrac;
+                                        (_sampleStepFrac * _currentPitch);
                     _alternateBuffer = false;
                     _buffer1Amp = 0;
                     _bufferFadeValue = 0;
@@ -377,13 +390,7 @@ namespace Anywhen
             }
         }
 
-        [Range(0, 2f)] public float testVal;
-
-        [ContextMenu("test")]
-        void Test()
-        {
-            print(Log(testVal));
-        }
+        
 
         float Log(float x)
         {
