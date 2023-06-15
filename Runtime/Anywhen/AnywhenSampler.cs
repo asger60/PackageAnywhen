@@ -65,7 +65,7 @@ namespace Anywhen
             }
 
             _currentNote = note;
-            
+
             switch (_settings.clipType)
             {
                 case AnywhenInstrument.ClipTypes.AudioClips:
@@ -200,6 +200,7 @@ namespace Anywhen
         {
             _pitch = pitchValue;
         }
+
         protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
         {
             _alternateBuffer = false;
@@ -242,8 +243,8 @@ namespace Anywhen
             {
                 _currentLoopSettings = clip.loopSettings;
             }
-            _bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
 
+            _bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
 
 
             _isLooping = _currentLoopSettings.enabled;
@@ -255,10 +256,10 @@ namespace Anywhen
 
         void SetEnvelope(AnywhenInstrument.EnvelopeSettings envelopeSettings)
         {
-            _adsr.setAttackRate(envelopeSettings.attack);
-            _adsr.setDecayRate(envelopeSettings.decay);
+            _adsr.setAttackRate(envelopeSettings.attack * AudioSettings.outputSampleRate);
+            _adsr.setDecayRate(envelopeSettings.decay * AudioSettings.outputSampleRate);
+            _adsr.setReleaseRate(envelopeSettings.release * AudioSettings.outputSampleRate);
             _adsr.setSustainLevel(envelopeSettings.sustain);
-            _adsr.setReleaseRate(envelopeSettings.release);
             _adsr.reset();
         }
 
@@ -290,7 +291,7 @@ namespace Anywhen
 
             if (!_isPlaying) return;
 
-            if (_scheduledStopTime > 0 && AudioSettings.dspTime > _scheduledStopTime)
+            if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
             {
                 _scheduledStopTime = -1;
                 _adsr.SetGate(false);
@@ -299,14 +300,16 @@ namespace Anywhen
 
 
             int i = 0;
-            _ampMod = 1;
-            if (_useEnvelope)
-            {
-                _ampMod *= _adsr.Process();
-            }
+
 
             while (i < data.Length)
             {
+                _ampMod = 1;
+                if (_useEnvelope)
+                {
+                    _ampMod *= _adsr.Process();
+                }
+
                 int sampleIndex1 = (int)_samplePosBuffer1;
                 double f1 = _samplePosBuffer1 - sampleIndex1;
                 var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
@@ -390,7 +393,6 @@ namespace Anywhen
             }
         }
 
-        
 
         float Log(float x)
         {

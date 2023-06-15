@@ -78,7 +78,7 @@ namespace Anywhen
             AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
             float drift = 0;
-print(e.state);
+
             switch (e.state)
             {
                 case NoteEvent.EventTypes.NoteOn:
@@ -93,8 +93,13 @@ print(e.state);
                             return;
                         }
 
-                        double playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
-                                          e.chordStrum[i];
+                        double playTime = 0;
+                        if (rate != AnywhenMetronome.TickRate.None)
+                        {
+                            playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
+                                e.chordStrum[i];
+                        }
+                        
                         double stopTime = e.duration < 0
                             ? -1
                             : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
@@ -113,10 +118,13 @@ print(e.state);
                             var note = e.notes[i];
                             foreach (var thisSampler in _allSamplers)
                             {
-                                if (thisSampler.Settings == anywhenInstrumentSettings &&
-                                    thisSampler.CurrentNote == note)
+                                if (thisSampler.Settings == anywhenInstrumentSettings && thisSampler.CurrentNote == note)
                                 {
-                                    thisSampler.NoteOff(AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + drift);
+                                    double stopTime = rate == AnywhenMetronome.TickRate.None
+                                        ? 0
+                                        : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
+                                        
+                                    thisSampler.NoteOff(stopTime);
                                 }
                             }
                         }

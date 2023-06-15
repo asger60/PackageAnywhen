@@ -57,10 +57,11 @@ namespace Anywhen.SettingsObjects
         public struct EnvelopeSettings
         {
             public bool enabled;
-            public int attack;
-            public int decay;
+            public float attack;
+            public float decay;
+            [Range(0,1f)]
             public float sustain;
-            public int release;
+            public float release;
 
         }
 

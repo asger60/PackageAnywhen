@@ -57,11 +57,11 @@ namespace Samples.Scripts
                 _noteDown = false;
             }
 
-            if (_noteDown)
-            {
-                _e.expression1 = Mathf.MoveTowards(_e.expression1, 1.5f, Time.deltaTime * 0.5f);
-                AnywhenRuntime.EventFunnel.HandleNoteEvent(_e, anywhenInstrument, quantization);
-            }
+            //if (_noteDown)
+            //{
+            //    _e.expression1 = Mathf.MoveTowards(_e.expression1, 1.5f, Time.deltaTime * 0.5f);
+            //    AnywhenRuntime.EventFunnel.HandleNoteEvent(_e, anywhenInstrument, quantization);
+            //}
         }
 
         void SetKeyState(int keyIndex, bool state)
