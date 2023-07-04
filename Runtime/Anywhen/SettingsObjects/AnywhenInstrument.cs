@@ -109,7 +109,7 @@ namespace Anywhen.SettingsObjects
                     throw new ArgumentOutOfRangeException();
             }
         }
-
+#if UNITY_EDITOR
         [ContextMenu("ConvertToNoteClips")]
         void ConvertToNoteClips()
         {
@@ -155,5 +155,6 @@ namespace Anywhen.SettingsObjects
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        #endif
     }
 }
