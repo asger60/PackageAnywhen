@@ -21,6 +21,7 @@ namespace Anywhen.SettingsObjects
             channels = audioClip.channels;
             sourceClip = audioClip;
         }
+        #if UNITY_EDITOR
 
         [MenuItem("Assets/Anywhen/Convert to NoteClip", false, 1)]
         private static void CreateNewAsset()
@@ -41,21 +42,13 @@ namespace Anywhen.SettingsObjects
 
             extension = ".asset";
             Debug.Log(fullPath + ".asset");
-            var newClipPath = "Assets/" + clip.name + extension;
-            //AssetDatabase.CreateAsset(clip, newClipPath);
-            //AssetDatabase.ImportAsset(newClipPath);
-            //AssetDatabase.SaveAssets();
-            //AssetDatabase.Refresh();
-            //AssetDatabase.AddObjectToAsset(clip, fullPath + ".asset");
+
 
             newNoteClip.ReadAudioClip(activeObject);
-
-
-            //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
+            
             EditorUtility.SetDirty(newNoteClip);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            //Selection.activeObject = newNoteClip;
         }
 
         [ContextMenu("Print path")]
@@ -69,5 +62,6 @@ namespace Anywhen.SettingsObjects
         {
             AssetDatabase.AddObjectToAsset(Instantiate(sourceClip), AssetDatabase.GetAssetPath(this));
         }
+        #endif
     }
 }

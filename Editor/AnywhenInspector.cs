@@ -47,30 +47,30 @@ namespace Editor
 
 
             //EditorGUILayout.Knob(new Vector2(100, 100), 0, 0, 11, "", Color.black, Color.green, true);
-            EditorGUILayout.LabelField("Anywhen is running");
-
-            EditorGUILayout.Separator();
-            op = (OPTIONS)EditorGUILayout.EnumPopup("Current musical style:", op);
-            EditorGUILayout.Separator();
-            EditorGUILayout.LabelField("Variations:");
-            _anywhenRuntime.tap = GUILayout.Toolbar(_anywhenRuntime.tap,
-                new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
-
-
-            EditorGUILayout.Separator();
-
-            EditorGUILayout.LabelField("RUNTIME VARIABLES");
-            _anywhenRuntime.slider1 = (int)EditorGUILayout.Slider("Chase mode", _anywhenRuntime.slider1, 0, 1);
-            _anywhenRuntime.slider2 = EditorGUILayout.Slider("Monster proximity", _anywhenRuntime.slider2, 0, 1);
-            _anywhenRuntime.slider3 = (int)EditorGUILayout.Slider("Game state", _anywhenRuntime.slider3, 0, 3);
-            EditorGUILayout.Separator();
-            GUILayout.BeginHorizontal();
-
-            GUILayout.Button("SAVE COMPOSITION");
-            GUILayout.Button("LOAD COMPOSITION");
-
-            GUILayout.EndHorizontal();
-            EditorGUILayout.Separator();
+            //EditorGUILayout.LabelField("Anywhen is running");
+//
+            //EditorGUILayout.Separator();
+            //op = (OPTIONS)EditorGUILayout.EnumPopup("Current musical style:", op);
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.LabelField("Variations:");
+            //_anywhenRuntime.tap = GUILayout.Toolbar(_anywhenRuntime.tap,
+            //    new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+//
+//
+            //EditorGUILayout.Separator();
+//
+            //EditorGUILayout.LabelField("RUNTIME VARIABLES");
+            //_anywhenRuntime.slider1 = (int)EditorGUILayout.Slider("Chase mode", _anywhenRuntime.slider1, 0, 1);
+            //_anywhenRuntime.slider2 = EditorGUILayout.Slider("Monster proximity", _anywhenRuntime.slider2, 0, 1);
+            //_anywhenRuntime.slider3 = (int)EditorGUILayout.Slider("Game state", _anywhenRuntime.slider3, 0, 3);
+            //EditorGUILayout.Separator();
+            //GUILayout.BeginHorizontal();
+//
+            //GUILayout.Button("SAVE COMPOSITION");
+            //GUILayout.Button("LOAD COMPOSITION");
+//
+            //GUILayout.EndHorizontal();
+            //EditorGUILayout.Separator();
         }
 
         private Rect _rect;
