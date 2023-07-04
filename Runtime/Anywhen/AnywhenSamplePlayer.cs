@@ -96,9 +96,10 @@ namespace Anywhen
                         double playTime = 0;
                         if (rate != AnywhenMetronome.TickRate.None)
                         {
-                            playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift +
-                                e.chordStrum[i];
+                            playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
                         }
+                        playTime += e.chordStrum[i];
+                        
                         
                         double stopTime = e.duration < 0
                             ? -1
