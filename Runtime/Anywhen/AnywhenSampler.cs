@@ -248,7 +248,6 @@ namespace Anywhen
 
 
             _isLooping = _currentLoopSettings.enabled;
-            SetLoop(_currentLoopSettings);
 
 
             _scheduledStopTime = -1;
@@ -263,10 +262,7 @@ namespace Anywhen
             _adsr.reset();
         }
 
-        void SetLoop(AnywhenInstrument.LoopSettings loopSettings)
-        {
-            _currentLoopSettings = loopSettings;
-        }
+ 
 
         private double _samplePosBuffer1, _samplePosBuffer2;
         private double _sampleStepFrac;
@@ -363,7 +359,7 @@ namespace Anywhen
             {
                 if (!_alternateBuffer && (int)_samplePosBuffer1 > _currentLoopSettings.loopStart)
                 {
-                    _samplePosBuffer2 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
+                    _samplePosBuffer2 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
                                         (_sampleStepFrac * _currentPitch);
                     _alternateBuffer = true;
                     _buffer2Amp = 0;
@@ -371,7 +367,7 @@ namespace Anywhen
                 }
                 else if (_alternateBuffer && (int)_samplePosBuffer2 > _currentLoopSettings.loopStart)
                 {
-                    _samplePosBuffer1 = (_noteClip.loopSettings.loopStart - _noteClip.loopSettings.loopLength) *
+                    _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
                                         (_sampleStepFrac * _currentPitch);
                     _alternateBuffer = false;
                     _buffer1Amp = 0;

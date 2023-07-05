@@ -50,8 +50,6 @@ namespace Anywhen.SettingsObjects
             public int crossFadeDuration;
         }
 
-        public LoopSettings loopSettings;
-
 
         [Serializable]
         public struct EnvelopeSettings
@@ -66,6 +64,7 @@ namespace Anywhen.SettingsObjects
         }
 
         public EnvelopeSettings envelopeSettings;
+        public LoopSettings loopSettings;
 
         public AnywhenNoteClip GetNoteClip(int note)
         {
