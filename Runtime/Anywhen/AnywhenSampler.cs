@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Anywhen.Attributes;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -129,24 +130,40 @@ namespace Anywhen
             }
             else
             {
-                Ticker.DelayedAction((float)stopTime, onDone: () =>
-                {
-                    float startVolume = _audioSource.volume;
-                    float duration = _settings.stopDuration;
-                    Ticker.Tween(duration,
-                        onUpdate: f => _audioSource.volume = Mathf.Lerp(startVolume, 0, f),
-                        onDone: () =>
-                        {
-                            _audioSource.Stop();
-                            //Reset();
-                        }
-                    );
-                });
+                StartCoroutine(WaitAndStop((float)stopTime));
+                //Ticker.DelayedAction((float)stopTime, onDone: () =>
+                //{
+                //    float startVolume = _audioSource.volume;
+                //    float duration = _settings.stopDuration;
+                //    Ticker.Tween(duration,
+                //        onUpdate: f => _audioSource.volume = Mathf.Lerp(startVolume, 0, f),
+                //        onDone: () =>
+                //        {
+                //            _audioSource.Stop();
+                //            //Reset();
+                //        }
+                //    );
+                //});
             }
 
             //IsReady = false;
             //if (stopTime != 0)
             //    stopTime -= AudioSettings.dspTime;
+        }
+
+        IEnumerator WaitAndStop(float stopTime)
+        {
+            yield return new WaitForSeconds(stopTime);
+            float startVolume = _audioSource.volume;
+            float duration = _settings.stopDuration;
+            float f = 0;
+            while (f < duration)
+            {
+                _audioSource.volume = Mathf.Lerp(startVolume, 0, f/duration);
+                f += Time.deltaTime;
+                yield return 0;
+            }
+            _audioSource.Stop();
         }
 
         void Reset()

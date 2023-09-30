@@ -3,17 +3,15 @@ using System.Linq;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {
     public class AnywhenSamplePlayer : MonoBehaviour
     {
-        [FormerlySerializedAs("samplerPrefab")]
         public AnywhenSampler anywhenSamplerPrefab;
 
-        private readonly List<AnywhenSampler> _allSamplers = new List<AnywhenSampler>(1000);
-
+        private readonly List<AnywhenSampler> _allSamplers = new();
+        public int numberOfSamplers = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
         public int activeSamplePlayers;
@@ -35,7 +33,7 @@ namespace Anywhen
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
 
 
-            for (int i = 0; i < 128; i++)
+            for (int i = 0; i < numberOfSamplers; i++)
             {
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
                 _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);

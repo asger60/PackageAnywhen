@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
+  m_IndirectSpecularColor: {r: 0.3708625, g: 0.37838694, b: 0.35726872, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -139,7 +139,6 @@ GameObject:
   - component: {fileID: 63826043}
   - component: {fileID: 63826050}
   - component: {fileID: 63826049}
-  - component: {fileID: 63826051}
   m_Layer: 0
   m_Name: Anywhen
   m_TagString: Untagged
@@ -160,6 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
+  numberOfSamplers: 10
   activeSamplePlayers: 0
 --- !u!114 &63826044
 MonoBehaviour:
@@ -355,22 +355,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!111 &63826051
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63826042}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 01cd655fde2c84183a0a1820bd1d6f60, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 01cd655fde2c84183a0a1820bd1d6f60, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &105811262
 GameObject:
   m_ObjectHideFlags: 0
