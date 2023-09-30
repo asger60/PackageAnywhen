@@ -23,16 +23,12 @@ namespace Anywhen
         private static AnywhenSamplePlayer _anywhenSamplePlayer;
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
 
-        public int tap;
-        public float slider1;
-        public float slider2;
-        public float slider3;
         
         
         private void OnDestroy()
         {
-            AudioConfiguration config = AudioSettings.GetConfiguration();
-            AudioSettings.Reset(config);
+            //AudioConfiguration config = AudioSettings.GetConfiguration();
+            //AudioSettings.Reset(config);
         }
 
        
