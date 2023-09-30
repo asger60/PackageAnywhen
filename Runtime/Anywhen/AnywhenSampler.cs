@@ -287,124 +287,124 @@ namespace Anywhen
         private float _pitch;
         private float _ampMod;
 
-        void OnAudioFilterRead(float[] data, int channels)
-        {
-            if (_noteClip == null)
-            {
-                return;
-            }
-
-            if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _scheduledPlayTime)
-            {
-                _isPlaying = true;
-                _scheduledPlay = false;
-                _isArmed = false;
-                _adsr.SetGate(true);
-            }
-
-            if (!_isPlaying) return;
-
-            if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
-            {
-                _scheduledStopTime = -1;
-                _adsr.SetGate(false);
-                _isLooping = false;
-            }
-
-
-            int i = 0;
-
-
-            while (i < data.Length)
-            {
-                _ampMod = 1;
-                if (_useEnvelope)
-                {
-                    _ampMod *= _adsr.Process();
-                }
-
-                int sampleIndex1 = (int)_samplePosBuffer1;
-                double f1 = _samplePosBuffer1 - sampleIndex1;
-                var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
-                var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
-
-                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
-                            (f1 * _noteClip.clipSamples[sourceSample2]);
-
-                //data[i] = (float)e * _ampMod;
-
-
-                int sampleIndex2 = (int)_samplePosBuffer2;
-                double f2 = _samplePosBuffer2 - sampleIndex2;
-                var sourceSample3 = Mathf.Min((sampleIndex2), _noteClip.clipSamples.Length - 1);
-                var sourceSample4 = Mathf.Min((sampleIndex2) + 1, _noteClip.clipSamples.Length - 1);
-
-                double e2 = ((1 - f2) * _noteClip.clipSamples[sourceSample3]) +
-                            (f2 * _noteClip.clipSamples[sourceSample4]);
-
-
-                data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod;
-
-
-                _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
-                _samplePosBuffer2 += (_sampleStepFrac * _currentPitch) / 2f;
-
-
-                _bufferFadeValue += (float)_bufferCrossFadeStepValue;
-
-                if (_alternateBuffer)
-                {
-                    _buffer1Amp = Lin(1 - _bufferFadeValue);
-                    _buffer2Amp = Lin(_bufferFadeValue);
-                }
-                else
-                {
-                    _buffer1Amp = Lin(_bufferFadeValue);
-                    _buffer2Amp = Lin(1 - _bufferFadeValue);
-                }
-
-
-                _buffer1Amp = Mathf.Clamp01(_buffer1Amp);
-                _buffer2Amp = Mathf.Clamp01(_buffer2Amp);
-                _currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
-
-                i++;
-            }
-
-
-            if (_isLooping)
-            {
-                if (!_alternateBuffer && (int)_samplePosBuffer1 > _currentLoopSettings.loopStart)
-                {
-                    _samplePosBuffer2 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
-                                        (_sampleStepFrac * _currentPitch);
-                    _alternateBuffer = true;
-                    _buffer2Amp = 0;
-                    _bufferFadeValue = 0;
-                }
-                else if (_alternateBuffer && (int)_samplePosBuffer2 > _currentLoopSettings.loopStart)
-                {
-                    _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
-                                        (_sampleStepFrac * _currentPitch);
-                    _alternateBuffer = false;
-                    _buffer1Amp = 0;
-                    _bufferFadeValue = 0;
-                }
-            }
-
-            if (_useEnvelope && _adsr.IsIdle)
-            {
-                _isPlaying = false;
-                IsReady = true;
-            }
-
-            if (_samplePosBuffer1 >= _noteClip.clipSamples.Length)
-            {
-                _adsr.SetGate(false);
-                _isPlaying = false;
-                IsReady = true;
-            }
-        }
+        //void OnAudioFilterRead(float[] data, int channels)
+        //{
+        //    if (_noteClip == null)
+        //    {
+        //        return;
+        //    }
+//
+        //    if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _scheduledPlayTime)
+        //    {
+        //        _isPlaying = true;
+        //        _scheduledPlay = false;
+        //        _isArmed = false;
+        //        _adsr.SetGate(true);
+        //    }
+//
+        //    if (!_isPlaying) return;
+//
+        //    if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
+        //    {
+        //        _scheduledStopTime = -1;
+        //        _adsr.SetGate(false);
+        //        _isLooping = false;
+        //    }
+//
+//
+        //    int i = 0;
+//
+//
+        //    while (i < data.Length)
+        //    {
+        //        _ampMod = 1;
+        //        if (_useEnvelope)
+        //        {
+        //            _ampMod *= _adsr.Process();
+        //        }
+//
+        //        int sampleIndex1 = (int)_samplePosBuffer1;
+        //        double f1 = _samplePosBuffer1 - sampleIndex1;
+        //        var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
+        //        var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
+//
+        //        double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
+        //                    (f1 * _noteClip.clipSamples[sourceSample2]);
+//
+        //        //data[i] = (float)e * _ampMod;
+//
+//
+        //        int sampleIndex2 = (int)_samplePosBuffer2;
+        //        double f2 = _samplePosBuffer2 - sampleIndex2;
+        //        var sourceSample3 = Mathf.Min((sampleIndex2), _noteClip.clipSamples.Length - 1);
+        //        var sourceSample4 = Mathf.Min((sampleIndex2) + 1, _noteClip.clipSamples.Length - 1);
+//
+        //        double e2 = ((1 - f2) * _noteClip.clipSamples[sourceSample3]) +
+        //                    (f2 * _noteClip.clipSamples[sourceSample4]);
+//
+//
+        //        data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod;
+//
+//
+        //        _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
+        //        _samplePosBuffer2 += (_sampleStepFrac * _currentPitch) / 2f;
+//
+//
+        //        _bufferFadeValue += (float)_bufferCrossFadeStepValue;
+//
+        //        if (_alternateBuffer)
+        //        {
+        //            _buffer1Amp = Lin(1 - _bufferFadeValue);
+        //            _buffer2Amp = Lin(_bufferFadeValue);
+        //        }
+        //        else
+        //        {
+        //            _buffer1Amp = Lin(_bufferFadeValue);
+        //            _buffer2Amp = Lin(1 - _bufferFadeValue);
+        //        }
+//
+//
+        //        _buffer1Amp = Mathf.Clamp01(_buffer1Amp);
+        //        _buffer2Amp = Mathf.Clamp01(_buffer2Amp);
+        //        _currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
+//
+        //        i++;
+        //    }
+//
+//
+        //    if (_isLooping)
+        //    {
+        //        if (!_alternateBuffer && (int)_samplePosBuffer1 > _currentLoopSettings.loopStart)
+        //        {
+        //            _samplePosBuffer2 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
+        //                                (_sampleStepFrac * _currentPitch);
+        //            _alternateBuffer = true;
+        //            _buffer2Amp = 0;
+        //            _bufferFadeValue = 0;
+        //        }
+        //        else if (_alternateBuffer && (int)_samplePosBuffer2 > _currentLoopSettings.loopStart)
+        //        {
+        //            _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
+        //                                (_sampleStepFrac * _currentPitch);
+        //            _alternateBuffer = false;
+        //            _buffer1Amp = 0;
+        //            _bufferFadeValue = 0;
+        //        }
+        //    }
+//
+        //    if (_useEnvelope && _adsr.IsIdle)
+        //    {
+        //        _isPlaying = false;
+        //        IsReady = true;
+        //    }
+//
+        //    if (_samplePosBuffer1 >= _noteClip.clipSamples.Length)
+        //    {
+        //        _adsr.SetGate(false);
+        //        _isPlaying = false;
+        //        IsReady = true;
+        //    }
+        //}
 
 
         float Log(float x)
