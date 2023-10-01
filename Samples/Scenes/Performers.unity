@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
-  numberOfSamplers: 10
+  numberOfSamplers: 32
   activeSamplePlayers: 0
 --- !u!114 &63826044
 MonoBehaviour:
@@ -228,10 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8dc0e98a2a204a6882a3c527af95b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tap: 3
-  slider1: 0
-  slider2: 0
-  slider3: 0
 --- !u!4 &63826048
 Transform:
   m_ObjectHideFlags: 0
@@ -723,7 +719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1683473674
 Transform:
   m_ObjectHideFlags: 0

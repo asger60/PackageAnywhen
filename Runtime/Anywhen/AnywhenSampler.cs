@@ -130,7 +130,8 @@ namespace Anywhen
             }
             else
             {
-                StartCoroutine(WaitAndStop((float)stopTime));
+                _audioSource.SetScheduledEndTime(stopTime);
+                //StartCoroutine(WaitAndStop((float)stopTime));
                 //Ticker.DelayedAction((float)stopTime, onDone: () =>
                 //{
                 //    float startVolume = _audioSource.volume;
