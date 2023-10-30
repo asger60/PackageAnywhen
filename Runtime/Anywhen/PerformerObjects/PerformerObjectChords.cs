@@ -41,7 +41,6 @@ namespace Anywhen.PerformerObjects
             _currentEvent = new NoteEvent(0, GetTiming(), chord.notes, CreateStrum(chord), 0, 0, GetVolume());
 
             return _currentEvent;
-            //EventFunnel.HandleNoteEvent(_currentEvent, instrument);
         }
 
         double[] CreateStrum(Chord chord)

@@ -27,8 +27,8 @@ namespace Anywhen
         
         private void OnDestroy()
         {
-            //AudioConfiguration config = AudioSettings.GetConfiguration();
-            //AudioSettings.Reset(config);
+            AudioConfiguration config = AudioSettings.GetConfiguration();
+            AudioSettings.Reset(config);
         }
 
        
@@ -55,7 +55,6 @@ namespace Anywhen
             TryGetComponent(out _conductor);
             TryGetComponent(out _anywhenSamplePlayer);
             TryGetComponent(out _eventFunnel);
-            
         }
     }
 }

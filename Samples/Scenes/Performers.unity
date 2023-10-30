@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
-  numberOfSamplers: 32
+  numberOfSamplers: 64
   activeSamplePlayers: 0
 --- !u!114 &63826044
 MonoBehaviour:
@@ -749,12 +749,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patternTracks:
   - anywhenInstrument: {fileID: 11400000, guid: 6340f9ee9b4a24bf682d55c9d54ef526, type: 2}
-    anywhenPerformerSettings: {fileID: 11400000, guid: f9ddd132d83494f3b8e7ab37e838d313, type: 2}
-    steps: 0101010101010101
-    tickRate: 8
-  - anywhenInstrument: {fileID: 11400000, guid: 85615be01a1024611884947f7053deb6, type: 2}
-    anywhenPerformerSettings: {fileID: 11400000, guid: d25089896a0a34d26ab6a23aad5b7098, type: 2}
-    steps: 01010101
+    anywhenPerformerSettings: {fileID: 11400000, guid: 9023a6bb5416e41a098ca9ff5fbba3cd, type: 2}
+    steps: 0100010100010001
     tickRate: 8
 --- !u!1 &2147466338
 GameObject:

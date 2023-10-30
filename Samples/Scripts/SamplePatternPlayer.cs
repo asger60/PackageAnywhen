@@ -17,19 +17,26 @@ namespace Samples.Scripts
             private int _noteIndex;
             public bool[] steps;
             public AnywhenMetronome.TickRate tickRate;
-
+            private int _prevStep = -1;
             public void OnTick()
             {
                 //Debug.Log(AnywhenMetronome.Instance.Sub32);
 
                 var stepIndex =
                     (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), steps.Length);
-                if (steps[stepIndex])
+                if (stepIndex != _prevStep)
                 {
-                    var e = anywhenPerformerSettings.MakeNote(_noteIndex, anywhenInstrument);
-                    AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, tickRate);
-                    _noteIndex++;
+                    _prevStep = stepIndex;
+                    if (steps[stepIndex])
+                    {
+                        var e = anywhenPerformerSettings.MakeNote(_noteIndex, anywhenInstrument);
+                        //print(e.notes.Length);
+                        AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, tickRate);
+                        _noteIndex++;
+                    }
                 }
+                
+                
             }
         }
 

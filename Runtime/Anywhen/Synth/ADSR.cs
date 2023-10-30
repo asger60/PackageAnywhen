@@ -50,71 +50,71 @@ class ADSR
 
     public ADSR()
     {
-        reset();
-        setAttackRate(0.1f);
-        setDecayRate(0.1f);
-        setReleaseRate(0);
-        setSustainLevel(0.5f);
-        setTargetRatioA(0.3f);
-        setTargetRatioDR(0.0001f);
+        Reset();
+        SetAttackRate(0.1f);
+        SetDecayRate(0.1f);
+        SetReleaseRate(0);
+        SetSustainLevel(0.5f);
+        SetTargetRatioA(0.3f);
+        SetTargetRatioDR(0.0001f);
     }
 
     public bool IsIdle => state == EnvState.env_idle;
 
-    public void setAttackRate(float rate)
+    public void SetAttackRate(float rate)
     {
         attackRate = rate;
-        attackCoef = calcCoef(rate, targetRatioA);
+        attackCoef = CalcCoef(rate, targetRatioA);
         attackBase = (1.0f + targetRatioA) * (1.0f - attackCoef);
     }
 
-    public void setDecayRate(float rate)
+    public void SetDecayRate(float rate)
     {
         decayRate = rate;
-        decayCoef = calcCoef(rate, targetRatioDR);
+        decayCoef = CalcCoef(rate, targetRatioDR);
         decayBase = (sustainLevel - targetRatioDR) * (1.0f - decayCoef);
     }
 
-    public void setReleaseRate(float rate)
+    public void SetReleaseRate(float rate)
     {
         releaseRate = rate;
-        releaseCoef = calcCoef(rate, targetRatioDR);
+        releaseCoef = CalcCoef(rate, targetRatioDR);
         releaseBase = -targetRatioDR * (1.0f - releaseCoef);
     }
 
-    public void setSustainLevel(float level)
+    public void SetSustainLevel(float level)
     {
         sustainLevel = level;
         decayBase = (sustainLevel - targetRatioDR) * (1.0f - decayCoef);
     }
 
-    public void setTargetRatioA(float targetRatio)
+    public void SetTargetRatioA(float targetRatio)
     {
         if (targetRatio < 0.000000001f)
             targetRatio = 0.000000001f; // -180 dB
         targetRatioA = targetRatio;
-        attackCoef = calcCoef(attackRate, targetRatioA);
+        attackCoef = CalcCoef(attackRate, targetRatioA);
         attackBase = (1.0f + targetRatioA) * (1.0f - attackCoef);
     }
 
-    public void setTargetRatioDR(float targetRatio)
+    public void SetTargetRatioDR(float targetRatio)
     {
         if (targetRatio < 0.000000001f)
             targetRatio = 0.000000001f; // -180 dB
         targetRatioDR = targetRatio;
-        decayCoef = calcCoef(decayRate, targetRatioDR);
-        releaseCoef = calcCoef(releaseRate, targetRatioDR);
+        decayCoef = CalcCoef(decayRate, targetRatioDR);
+        releaseCoef = CalcCoef(releaseRate, targetRatioDR);
         decayBase = (sustainLevel - targetRatioDR) * (1.0f - decayCoef);
         releaseBase = -targetRatioDR * (1.0f - releaseCoef);
     }
 
-    public void reset()
+    public void Reset()
     {
         state = EnvState.env_idle;
         output = 0.0f;
     }
 
-    private float calcCoef(float rate, float targetRatio)
+    private float CalcCoef(float rate, float targetRatio)
     {
         return (rate <= 0) ? 0 : Mathf.Exp(-Mathf.Log((1.0f + targetRatio) / targetRatio) / rate);
     }
@@ -166,14 +166,5 @@ class ADSR
         else if (state != EnvState.env_idle)
             state = EnvState.env_release;
     }
-
-    EnvState getState()
-    {
-        return state;
-    }
-
-    float getOutput()
-    {
-        return output;
-    }
+    
 }
