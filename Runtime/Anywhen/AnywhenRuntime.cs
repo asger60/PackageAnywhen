@@ -27,8 +27,8 @@ namespace Anywhen
         
         private void OnDestroy()
         {
-            AudioConfiguration config = AudioSettings.GetConfiguration();
-            AudioSettings.Reset(config);
+            //AudioConfiguration config = AudioSettings.GetConfiguration();
+            //AudioSettings.Reset(config);
         }
 
        
