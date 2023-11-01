@@ -303,7 +303,6 @@ namespace Anywhen
 
         void OnAudioFilterRead(float[] data, int channels)
         {
-            
             if (_noteClip == null)
             {
                 return;
@@ -317,7 +316,7 @@ namespace Anywhen
                 _adsr.SetGate(true);
             }
 
-            
+
             if (!_isPlaying) return;
             if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
             {
@@ -351,7 +350,6 @@ namespace Anywhen
 
         void DSP_WriteToBuffer(float[] data)
         {
-           
             int i = 0;
             while (i < data.Length)
             {
@@ -375,7 +373,7 @@ namespace Anywhen
                 double e2 = ((1 - f2) * _noteClip.clipSamples[sourceSample3]) +
                             (f2 * _noteClip.clipSamples[sourceSample4]);
 
-                data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod;
+                data[i] = ((float)(e1 * _buffer1Amp) + (float)(e2 * _buffer2Amp)) * _ampMod * _settings.volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
                 _samplePosBuffer2 += (_sampleStepFrac * _currentPitch) / 2f;
