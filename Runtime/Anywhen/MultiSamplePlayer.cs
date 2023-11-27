@@ -29,7 +29,7 @@ namespace Anywhen
             for (int i = 0; i < 50; i++)
             {
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
-                _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub32);
+                _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub16);
             }
 
             _isInit = true;

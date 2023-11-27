@@ -30,8 +30,7 @@ namespace Samples.Scripts
                     if (steps[stepIndex])
                     {
                         var e = anywhenPerformerSettings.MakeNote(_noteIndex, anywhenInstrument);
-                        //print(e.notes.Length);
-                        AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument, tickRate);
+                        AnywhenRuntime.EventFunnel.HandleNoteEvent(e, anywhenInstrument);
                         _noteIndex++;
                     }
                 }
@@ -46,7 +45,7 @@ namespace Samples.Scripts
         {
             foreach (var track in patternTracks)
             {
-                AnywhenMetronome.Instance.OnTick32 += track.OnTick;
+                AnywhenMetronome.Instance.OnTick8 += track.OnTick;
             }
         }
     }

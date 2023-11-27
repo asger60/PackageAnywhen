@@ -11,7 +11,7 @@ namespace Anywhen
 
 
         public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
-        
+
         public AnywhenProgressionPatternObject initialProgressionPattern;
 
         private AnywhenProgressionPatternObject _currentProgressionPattern;
@@ -20,25 +20,43 @@ namespace Anywhen
         private bool _rootOverridden;
 
 
-
         private void Start()
         {
+            if (initialProgressionPattern == null)
+            {
+                initialProgressionPattern =
+                    Resources.Load<AnywhenProgressionPatternObject>("Progressions/BasicProgression");
+            }
+            if (anywhenScale == null)
+            {
+                anywhenScale =
+                    Resources.Load<AnywhenScaleObject>("Scales/Minor");
+            }
+
+
             _scaleOverridden = false;
             if (anywhenScale != null)
                 _currentAnywhenScale = anywhenScale;
             if (initialProgressionPattern != null)
                 _currentProgressionPattern = initialProgressionPattern;
-            AnywhenMetronome.Instance.OnNextBar += OnNextBar;
 
+
+            AnywhenMetronome.Instance.OnNextBar += OnNextBar;
         }
 
         private void OnNextBar()
         {
             if (!_rootOverridden)
-                _rootNote = _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
+            {
+                _rootNote = _currentProgressionPattern == null
+                    ? 0
+                    : _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
+            }
 
             if (!_scaleOverridden)
+            {
                 _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
+            }
 
             _currentPatternStep++;
             _currentPatternStep =
