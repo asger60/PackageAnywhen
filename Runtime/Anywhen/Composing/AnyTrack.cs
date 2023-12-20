@@ -40,12 +40,25 @@ public class AnyTrack
         return clone;
     }
 
+
+    
+    public AnyPattern GetPattern(int currentBar)
+    {
+        var pattern = patterns[0];
+        foreach (var anyPattern in patterns)
+        {
+            if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
+        }
+
+        return pattern;
+    }
+
     public void TriggerNoteOn(AnyPatternStep anyPatternStep)
     {
         _lastTrackNote = new NoteEvent(NoteEvent.EventTypes.NoteOn, anyPatternStep.offset,
             anyPatternStep.GetNotes(),
             new double[] { 0, 0, 0 }, anyPatternStep.expression, 1,
-            anyPatternStep.velocity * instrument.volume)
+            anyPatternStep.velocity * instrument.volume * volume)
         {
             duration = anyPatternStep.duration
         };
@@ -53,9 +66,8 @@ public class AnyTrack
 
         AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackNote, instrument);
     }
-    
-#if UNITY_EDITOR
 
+#if UNITY_EDITOR
     public void DrawInspector()
     {
         var track = this;
@@ -65,4 +77,3 @@ public class AnyTrack
     }
 #endif
 }
-

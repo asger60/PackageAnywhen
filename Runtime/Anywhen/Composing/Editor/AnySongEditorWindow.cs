@@ -43,6 +43,7 @@ public class AnysongEditorWindow : EditorWindow
         }
     }
 
+
     public static AnysongEditorWindow Create(Object asset)
     {
         var window = CreateWindow<AnysongEditorWindow>($"{asset.name} | {asset.GetType().Name}");
@@ -52,6 +53,11 @@ public class AnysongEditorWindow : EditorWindow
 
     void OnGUI()
     {
+        if (CurrentSong == null)
+            CurrentSong = Selection.activeObject as AnySongObject;
+        if (CurrentSection == null && CurrentSong != null)
+            CurrentSection = CurrentSong.Sections[0];
+
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.BeginHorizontal();
 
@@ -59,6 +65,7 @@ public class AnysongEditorWindow : EditorWindow
         EditorGUILayout.BeginVertical();
         GUILayout.Label(CurrentSong.name, EditorStyles.boldLabel);
         GUILayout.Space(10);
+
 
         HandleSections();
         GUILayout.BeginHorizontal();

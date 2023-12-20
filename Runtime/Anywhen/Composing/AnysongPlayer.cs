@@ -21,11 +21,11 @@ public class AnysongPlayer : MonoBehaviour
         _loaded = true;
         _currentSong = anySong;
 
-        _lastTrackNote = new NoteEvent[_instruments.Length];
-        for (var i = 0; i < _lastTrackNote.Length; i++)
-        {
-            _lastTrackNote[i] = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-        }
+        //_lastTrackNote = new NoteEvent[_instruments.Length];
+        //for (var i = 0; i < _lastTrackNote.Length; i++)
+        //{
+        //    _lastTrackNote[i] = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+        //}
 
         AnywhenMetronome.Instance.OnTick16 += OnTick16;
     }
@@ -34,28 +34,21 @@ public class AnysongPlayer : MonoBehaviour
 
     private void OnTick16()
     {
-       // if (!_isRunning) return;
+        // if (!_isRunning) return;
 
         int step = AnywhenRuntime.Metronome.Sub16;
-
 
 
         for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
         {
             for (int trackIndex = 0; trackIndex < _currentSong.Sections[sectionIndex].tracks.Count; trackIndex++)
             {
-                for (int patternIndex = 0; patternIndex < _currentSong.Sections[sectionIndex].tracks[trackIndex].patterns.Count; patternIndex++)
-                {
-                    var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex];
-                    if (!thisPattern.GetIsActive(AnywhenMetronome.Instance.CurrentBar)) continue;
-                    
-                    thisPattern.steps[step].TriggerStep(_currentSong.Sections[sectionIndex].tracks[trackIndex]);
-                    
-                    
-                }
+                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
+                    .GetPattern(AnywhenMetronome.Instance.CurrentBar);
+                
+                thisPattern.steps[step].TriggerStep(_currentSong.Sections[sectionIndex].tracks[trackIndex]);
             }
         }
-        
     }
 
 

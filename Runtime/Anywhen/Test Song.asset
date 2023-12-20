@@ -19,9 +19,9 @@ MonoBehaviour:
     volume: 1
     tracks:
     - volume: 1
-      instrument: {fileID: 11400000, guid: eb7b85d0f2a6444e2bb31a4e65b53bfa, type: 2}
+      instrument: {fileID: 11400000, guid: f7afe38b069234005a7aca86bb40cc6d, type: 2}
       patterns:
-      - triggerBars: 00000000
+      - triggerBars: 0000000000000000
         triggerChance: 1
         steps:
         - noteOn: 1
@@ -70,6 +70,56 @@ MonoBehaviour:
           offset: 0
           velocity: 1
           mixWeight: 0.5
+          notes: 02000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
           notes: 00000000
           noteRandom: 0
           chance: 1
@@ -105,56 +155,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
         - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -185,10 +185,60 @@ MonoBehaviour:
           chance: 1
           expression: 1
         isActive: 0
-      - triggerBars: 00000000
+      - triggerBars: 0000000000000000
         triggerChance: 1
         steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 07000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
         - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -228,7 +278,17 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -268,67 +328,7 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -349,173 +349,13 @@ MonoBehaviour:
           chance: 1
           expression: 1
         isActive: 0
+  - rootNote: 0
+    scale: {fileID: 0}
+    volume: 1
+    tracks:
     - volume: 1
-      instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
+      instrument: {fileID: 0}
       patterns:
-      - triggerBars: 
-        triggerChance: 1
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        isActive: 0
       - triggerBars: 00000000
         triggerChance: 1
         steps:
@@ -589,16 +429,6 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
         - noteOn: 0
           noteOff: 0
           duration: 1
@@ -610,26 +440,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
         - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -679,144 +489,7 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        isActive: 0
-    - volume: 1
-      instrument: {fileID: 11400000, guid: 43d87a66235a84132906d915b168c23b, type: 2}
-      patterns:
-      - triggerBars: 
-        triggerChance: 1
-        steps:
         - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -852,42 +525,12 @@ MonoBehaviour:
     volume: 1
     tracks:
     - volume: 1
-      instrument: {fileID: 11400000, guid: 1820bc9ce02ed41d29401a7c57f40ec5, type: 2}
+      instrument: {fileID: 11400000, guid: eb7b85d0f2a6444e2bb31a4e65b53bfa, type: 2}
       patterns:
       - triggerBars: 00000000
         triggerChance: 1
         steps:
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
         - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
@@ -927,7 +570,17 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -957,7 +610,27 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -1018,10 +691,33 @@ MonoBehaviour:
           chance: 1
           expression: 1
         isActive: 0
+    - volume: 1
+      instrument: {fileID: 0}
+      patterns:
       - triggerBars: 00000000
         triggerChance: 1
         steps:
-        - noteOn: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -1061,7 +757,27 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          notes: 00000000
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -1101,47 +817,7 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
         - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          notes: 00000000
-          noteRandom: 0
-          chance: 1
-          expression: 1
-        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0

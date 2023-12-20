@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 [Serializable]
 public class AnyPattern
 {
-    public int[] triggerBars;
-    [Range(0, 1f)] public float triggerChance;
+    [FormerlySerializedAs("triggerBars")] public List<float> triggerChances = new List<float>();
     public List<AnyPatternStep> steps;
-    public bool isActive;
 
     public void Init()
     {
-        triggerBars = new[] { 0 };
-        triggerChance = 1;
+        triggerChances.Add(0);
+
         steps = new List<AnyPatternStep>();
         for (int i = 0; i < 16; i++)
         {
@@ -35,20 +35,15 @@ public class AnyPattern
             clone.steps.Add(steps[i].Clone());
         }
 
-        clone.triggerChance = triggerChance;
+        clone.triggerChances.AddRange(triggerChances);
         return clone;
     }
 
-    public bool GetIsActive(int currentBar)
+    public bool TriggerOnBar(int currentBar)
     {
-        currentBar = (int)Mathf.Repeat(currentBar, triggerBars.Length);
+        currentBar = (int)Mathf.Repeat(currentBar, triggerChances.Count);
 
-        foreach (var triggerBar in triggerBars)
-        {
-            if (triggerBar == currentBar) return true;
-        }
-
-        return false;
+        return triggerChances[currentBar] > 0.5f;
     }
 
 #if UNITY_EDITOR
@@ -56,13 +51,31 @@ public class AnyPattern
     public void DrawInspector()
     {
         var pattern = this;
-        pattern.triggerChance = EditorGUILayout.FloatField("Trigger chance", pattern.triggerChance);
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < pattern.triggerChances.Count; i++)
+        {
+            pattern.triggerChances[i] = EditorGUILayout.FloatField(pattern.triggerChances[i]);
+        }
+
+        if (GUILayout.Button("+", GUILayout.Width(20)))
+        {
+            pattern.triggerChances.Add(new int());
+        }
+
+        if (GUILayout.Button("-", GUILayout.Width(20)))
+        {
+            pattern.triggerChances.RemoveAt(pattern.triggerChances.Count - 1);
+        }
+
+        GUILayout.EndHorizontal();
+
+        //pattern.triggerChance = EditorGUILayout.FloatField("Trigger chance", pattern.triggerChance);
+
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Copy", GUILayout.Width(60)))
         {
             AnysongEditorWindow.CopyCurrentPattern();
-            
         }
 
         if (AnysongEditorWindow.PatternCopy != null)
@@ -70,7 +83,6 @@ public class AnyPattern
             if (GUILayout.Button("Paste", GUILayout.Width(60)))
             {
                 AnysongEditorWindow.PastePattern();
-                
             }
         }
 
@@ -79,7 +91,6 @@ public class AnyPattern
         if (GUILayout.Button("Clear", GUILayout.Width(60)))
         {
             AnysongEditorWindow.ClearCurrentPattern();
-            
         }
 
         GUI.color = Color.white;
