@@ -1,12 +1,17 @@
 using System;
+using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
-public class AnySongEditorWindow : EditorWindow
+public class AnysongEditorWindow : EditorWindow
 {
-    [FormerlySerializedAs("anySong")] public AnySongObject currentSong;
+    public static AnySongObject CurrentSong { get; private set; }
+    public static AnySection CurrentSection { get; private set; }
+    public static AnyTrack CurrentTrack { get; private set; }
+    public static AnyPattern CurrentPattern { get; private set; }
+    public static AnyPatternStep CurrentStep { get; private set; }
+
     private Color _hilightedColor = new Color(0.8f, 0.9f, 1);
 
     private enum InspectorModes
@@ -17,13 +22,12 @@ public class AnySongEditorWindow : EditorWindow
         Step
     }
 
-    private int _selectedPatternStep;
-    private int _currentTrack;
+    private int _currentTrackIndex;
     bool _aDown = false;
 
     private InspectorModes _currentInspectorMode = InspectorModes.Sections;
 
-    [MenuItem("Anywhen/AnySong Editor")]
+    [MenuItem("Anywhen/Anysong Editor")]
     public static void ShowModuleWindow()
     {
         Object[] selection = Selection.GetFiltered(typeof(AnySongObject), SelectionMode.Assets);
@@ -32,16 +36,16 @@ public class AnySongEditorWindow : EditorWindow
             AnySongObject songObject = selection[0] as AnySongObject;
             if (songObject != null)
             {
-                AnySongEditorWindow window = (AnySongEditorWindow)GetWindow(typeof(AnySongEditorWindow));
-                window.currentSong = songObject;
+                AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+                CurrentSong = songObject;
                 window.Show();
             }
         }
     }
 
-    public static AnySongEditorWindow Create(Object asset)
+    public static AnysongEditorWindow Create(Object asset)
     {
-        var window = CreateWindow<AnySongEditorWindow>($"{asset.name} | {asset.GetType().Name}");
+        var window = CreateWindow<AnysongEditorWindow>($"{asset.name} | {asset.GetType().Name}");
         return window;
     }
 
@@ -49,22 +53,43 @@ public class AnySongEditorWindow : EditorWindow
     void OnGUI()
     {
         EditorGUI.BeginChangeCheck();
-        GUILayout.Label(currentSong.name, EditorStyles.boldLabel);
+        EditorGUILayout.BeginHorizontal();
+
+
+        EditorGUILayout.BeginVertical();
+        GUILayout.Label(CurrentSong.name, EditorStyles.boldLabel);
         GUILayout.Space(10);
 
         HandleSections();
+        GUILayout.BeginHorizontal();
         HandleTracks();
+        GUILayout.BeginVertical();
+        GUILayout.Space(20 + (_currentTrackIndex * 21));
         HandlePatterns();
+        HandleSteps();
+        GUILayout.EndVertical();
+
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(10);
 
 
         GUILayout.Space(20);
+        EditorGUILayout.EndVertical();
+        GUILayout.Space(20);
+        EditorGUILayout.BeginVertical(GUILayout.Width(300));
+
         HandleInspector();
         HandleConsole();
+
+        EditorGUILayout.EndVertical();
+
+
+        EditorGUILayout.EndHorizontal();
+
         if (EditorGUI.EndChangeCheck())
         {
-            EditorUtility.SetDirty(currentSong);
+            EditorUtility.SetDirty(CurrentSong);
         }
     }
 
@@ -89,7 +114,6 @@ public class AnySongEditorWindow : EditorWindow
         _consoleLogTime = EditorApplication.timeSinceStartup;
     }
 
-    int _currentSection = 0;
 
     void HandleSections()
     {
@@ -97,13 +121,13 @@ public class AnySongEditorWindow : EditorWindow
         EditorGUILayout.LabelField("Sections", GUILayout.Width(100));
 
 
-        for (int i = 0; i < currentSong.Sections.Count; i++)
+        for (int i = 0; i < CurrentSong.Sections.Count; i++)
         {
-            GUI.backgroundColor = i == _currentSection ? _hilightedColor : Color.white;
+            GUI.backgroundColor = CurrentSection == CurrentSong.Sections[i] ? _hilightedColor : Color.white;
 
             if (GUILayout.Button("Section " + i))
             {
-                _currentSection = i;
+                CurrentSection = CurrentSong.Sections[i];
                 SetInspectorMode(InspectorModes.Sections);
             }
         }
@@ -115,44 +139,32 @@ public class AnySongEditorWindow : EditorWindow
         {
             var newSection = new AnySection();
             newSection.Init();
-            currentSong.Sections.Add(newSection);
+            CurrentSong.Sections.Add(newSection);
         }
 
         if (GUILayout.Button("-", GUILayout.Width(20)))
         {
-            currentSong.Sections.RemoveAt(_currentSection);
-            _currentSection = 0;
+            CurrentSong.Sections.Remove(CurrentSection);
+            CurrentSection = CurrentSong.Sections[^1];
         }
 
         EditorGUILayout.EndHorizontal();
     }
 
-    int _currentPattern = 0;
 
     void HandlePatterns()
     {
-        /*
-        AnySection.MusicVariation musicVariation = anySection.musicVariations[_currentVariation];
-        if (musicVariation.patterns == null || musicVariation.patterns.Count == 0)
-        {
-            Debug.Log("add pattern");
-            anySection.musicVariations[_currentVariation] =
-                new AnySection.MusicVariation(anySection.instruments);
-            musicVariation = anySection.musicVariations[_currentVariation];
-        }
-
-        _currentPattern = Mathf.Clamp(_currentPattern, 0, musicVariation.patterns.Count - 1);
-
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Patterns", GUILayout.Width(100));
 
-        for (var i = 0; i < musicVariation.patterns.Count; i++)
+        for (var i = 0; i < CurrentSection.tracks[_currentTrackIndex].patterns.Count; i++)
         {
-            GUI.backgroundColor = i == _currentPattern ? _hilightedColor : Color.white;
+            GUI.backgroundColor = CurrentPattern == CurrentSection.tracks[_currentTrackIndex].patterns[i]
+                ? _hilightedColor
+                : Color.white;
             if (GUILayout.Button("Pattern " + i))
             {
                 SetInspectorMode(InspectorModes.Pattern);
-                _currentPattern = i;
+                CurrentPattern = CurrentSection.tracks[_currentTrackIndex].patterns[i];
             }
         }
 
@@ -161,200 +173,153 @@ public class AnySongEditorWindow : EditorWindow
 
         if (GUILayout.Button("+", GUILayout.Width(20)))
         {
-            anySection.musicVariations[_currentVariation].patterns
-                .Add(new AnySection.MusicVariation.MusicPattern(anySection.instruments));
-            _currentPattern = anySection.musicVariations[_currentVariation].patterns.Count - 1;
+            var newPattern = new AnyPattern();
+            newPattern.Init();
+            CurrentSection.tracks[_currentTrackIndex].patterns.Add(newPattern);
+            CurrentPattern = CurrentSection.tracks[_currentTrackIndex].patterns[^1];
         }
 
         if (GUILayout.Button("-", GUILayout.Width(20)))
         {
-            anySection.musicVariations[_currentVariation].patterns.RemoveAt(_currentPattern);
-            _currentPattern = 0;
+            CurrentSection.tracks[_currentTrackIndex].patterns.Remove(CurrentPattern);
+            CurrentPattern = CurrentSection.tracks[_currentTrackIndex].patterns[^1];
         }
 
         EditorGUILayout.EndHorizontal();
-        */
     }
 
 
     void HandleTracks()
     {
+        EditorGUILayout.BeginVertical(GUILayout.Width(200));
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Tracks", GUILayout.Width(EditorGUIUtility.currentViewWidth - 53));
+        EditorGUILayout.LabelField("Tracks", GUILayout.Width(154));
         if (GUILayout.Button("+", GUILayout.Width(20)))
         {
-            var newTrack = new AnySection.AnyTrack();
+            var newTrack = new AnyTrack();
             newTrack.Init();
-            currentSong.Sections[_currentSection].tracks.Add(newTrack);
+            CurrentSection.tracks.Add(newTrack);
         }
 
         if (GUILayout.Button("-", GUILayout.Width(20)))
         {
-            currentSong.Sections[_currentSection].tracks.RemoveAt(_currentTrack);
+            CurrentSection.tracks.RemoveAt(_currentTrackIndex);
         }
 
         EditorGUILayout.EndHorizontal();
 
-        //var pattern = anySection.musicVariations[_currentSection].patterns[_currentPattern];
-        //if (pattern.tracks == null || pattern.tracks.Count == 0)
-        //{
-        //    
-        //    anySection.musicVariations[_currentSection].patterns[_currentPattern] =
-        //        new AnySection.MusicVariation.MusicPattern(anySection.instruments);
-//
-        //    pattern = anySection.musicVariations[_currentSection].patterns[_currentPattern];
-        //}
-//
-        //if (pattern.tracks.Count < anySection.instruments.Length)
-        //{
-        //    pattern.tracks.Add(new AnySection.MusicVariation.AnyTrack());
-        //}
 
-
-        for (var track = 0; track < currentSong.Sections[_currentSection].tracks.Count; track++)
+        for (var track = 0; track < CurrentSection.tracks.Count; track++)
         {
             EditorGUILayout.BeginHorizontal();
 
-            //if (pattern.tracks[track].steps == null || pattern.tracks[track].steps.Count == 0)
-            //{
-            //    anySection.musicVariations[_currentSection].patterns[_currentPattern] =
-            //        new AnySection.MusicVariation.MusicPattern(anySection.instruments);
-            //    pattern = anySection.musicVariations[_currentSection].patterns[_currentPattern];
-            //}
-
-            var thisTrack = currentSong.Sections[_currentSection].tracks[track];
+            var thisTrack = CurrentSection.tracks[track];
             var instrumentName = thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
-            if (GUILayout.Button(instrumentName, GUILayout.Width(100)))
+            if (GUILayout.Button(instrumentName, GUILayout.Width(200)))
             {
+                CurrentTrack = CurrentSection.tracks[track];
+                CurrentPattern = CurrentTrack.patterns[0];
+                CurrentStep = null;
                 SetInspectorMode(InspectorModes.Track);
+                _currentTrackIndex = track;
             }
 
-
-            //if (Event.current.isKey && Event.current.keyCode == KeyCode.A)
-            //{
-            //    _aDown = Event.current.type == EventType.KeyDown ? true : false;
-            //}
-//
-            //for (int step = 0; step < thisTrack.steps.Count; step++)
-            //{
-            //    var thisStep = thisTrack.steps[step];
-            //    var color = Color.white;
-            //    if (thisStep.noteOff) color = Color.red;
-            //    if (thisStep.noteOn) color = Color.green;
-            //    GUI.backgroundColor = step == _selectedPatternStep && _currentTrack == track
-            //        ? _hilightedColor
-            //        : Color.white;
-//
-//
-            //    GUI.color = color;
-            //    if (GUILayout.Button(""))
-            //    {
-            //        if (_aDown)
-            //        {
-            //            thisStep.noteOn = !thisStep.noteOn;
-            //        }
-//
-            //        _selectedPatternStep = step;
-            //        _currentTrack = track;
-            //        SetInspectorMode(InspectorModes.Step);
-            //    }
-            //}
 
             GUI.backgroundColor = Color.white;
             GUI.color = Color.white;
             EditorGUILayout.EndHorizontal();
         }
+
+        EditorGUILayout.EndHorizontal();
     }
 
-    //private AnySection.MusicVariation.MusicPattern _patternCopy;
+    void HandleSteps()
+    {
+        if (CurrentPattern == null) return;
+        if (Event.current.isKey && Event.current.keyCode == KeyCode.A)
+        {
+            _aDown = Event.current.type == EventType.KeyDown ? true : false;
+        }
+
+        GUILayout.BeginHorizontal();
+        for (int step = 0; step < CurrentPattern.steps.Count; step++)
+        {
+            var thisStep = CurrentPattern.steps[step];
+            var color = Color.white;
+            if (thisStep.noteOff) color = Color.red;
+            if (thisStep.noteOn) color = Color.green;
+            GUI.backgroundColor = thisStep == CurrentStep
+                ? _hilightedColor
+                : Color.white;
+
+            GUI.color = color;
+            if (GUILayout.Button(""))
+            {
+                if (_aDown)
+                {
+                    thisStep.noteOn = !thisStep.noteOn;
+                }
+
+                CurrentStep = thisStep;
+                SetInspectorMode(InspectorModes.Step);
+            }
+        }
+
+        GUILayout.EndHorizontal();
+    }
+
+    public static AnyPattern PatternCopy;
 
     void HandleInspector()
     {
-        /*
         GUILayout.Label("Inspector", EditorStyles.boldLabel);
 
         switch (_currentInspectorMode)
         {
-            case InspectorModes.Variation:
+            case InspectorModes.Sections:
                 break;
             case InspectorModes.Pattern:
-
-                var pattern = anySection.musicVariations[_currentVariation].patterns[_currentPattern];
-                pattern.patternFrequency = EditorGUILayout.IntField("Pattern frequency", pattern.patternFrequency);
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy", GUILayout.Width(60)))
-                {
-                    _patternCopy = pattern.Clone();
-                    ConsoleLog("copied pattern");
-                }
-
-                if (_patternCopy != null)
-                {
-                    if (GUILayout.Button("Paste", GUILayout.Width(60)))
-                    {
-                        anySection.musicVariations[_currentVariation].patterns[_currentPattern] = _patternCopy;
-                        ConsoleLog("pasted pattern");
-                    }
-                }
-
-                GUI.color = Color.red;
-                GUILayout.Space(20);
-                if (GUILayout.Button("Clear", GUILayout.Width(60)))
-                {
-                    anySection.musicVariations[_currentVariation].patterns[_currentPattern] =
-                        new AnySection.MusicVariation.MusicPattern(anySection.instruments);
-                }
-
-                GUI.color = Color.white;
-                GUILayout.EndHorizontal();
-
+                CurrentPattern.DrawInspector();
                 break;
             case InspectorModes.Track:
+                CurrentTrack.DrawInspector();
                 break;
             case InspectorModes.Step:
-                var step = anySection.musicVariations[_currentVariation].patterns[_currentPattern]
-                    .tracks[_currentTrack].steps[_selectedPatternStep];
-
-                step.noteOn = EditorGUILayout.Toggle("Note On", step.noteOn);
-                step.noteOff = EditorGUILayout.Toggle("Note Off", step.noteOff);
-                step.duration = EditorGUILayout.FloatField("Duration", step.duration);
-                step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
-                step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
-                step.expression = EditorGUILayout.Slider("Expression", step.expression, 0, 1);
-                step.mixWeight = EditorGUILayout.FloatField("Weight", step.mixWeight);
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
-                for (int i = 0; i < step.notes.Count; i++)
-                {
-                    step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
-                }
-
-                if (GUILayout.Button("+", GUILayout.Width(20)))
-                {
-                    step.notes.Add(new int());
-                }
-
-                if (GUILayout.Button("-", GUILayout.Width(20)))
-                {
-                    step.notes.RemoveAt(step.notes.Count - 1);
-                }
-
-                EditorGUILayout.EndHorizontal();
-                step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
-
-
+                CurrentStep.DrawInspector();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        */
     }
 
     void SetInspectorMode(InspectorModes newMode)
     {
         _currentInspectorMode = newMode;
         GUI.FocusControl(null);
+    }
+
+
+    public static void ClearCurrentPattern()
+    {
+        var newPattern = new AnyPattern();
+        newPattern.Init();
+        CurrentPattern = newPattern;
+    }
+
+    public static void CopyCurrentPattern()
+    {
+        AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+
+        PatternCopy = CurrentPattern.Clone();
+        window.ConsoleLog("copied pattern");
+    }
+
+    public static void PastePattern()
+    {
+        AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+        CurrentTrack.patterns[0] = PatternCopy;
+        CurrentPattern = PatternCopy;
+        PatternCopy = null;
+        window.ConsoleLog("pasted pattern");
     }
 }

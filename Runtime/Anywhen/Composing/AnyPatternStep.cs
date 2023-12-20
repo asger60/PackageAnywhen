@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+[Serializable]
+public class AnyPatternStep
+{
+    public bool noteOn;
+    public bool noteOff;
+    public float duration;
+    public float offset;
+    public float velocity;
+
+    [Range(0, 1f)] public float mixWeight;
+
+    public List<int> notes;
+    public int noteRandom;
+
+
+    [Range(0, 1f)] public float chance = 1;
+    [Range(0, 1f)] public float expression = 0;
+
+    public int GetNote()
+    {
+        return notes.Count > 1 ? notes[Random.Range(0, notes.Count)] : notes[0];
+    }
+
+    public int[] GetNotes()
+    {
+        int[] r = new int[notes.Count];
+        for (var i = 0; i < notes.Count; i++)
+        {
+            var note = notes[i];
+            r[i] = note + Random.Range(-noteRandom, noteRandom);
+        }
+
+        return r;
+    }
+
+
+    public void Init()
+    {
+        duration = 1;
+        expression = 1;
+        velocity = 1;
+        notes = new List<int> { 0 };
+        mixWeight = 0.5f;
+    }
+
+    public void TriggerStep(AnyTrack anyTrack)
+    {
+        if (noteOn)
+            anyTrack.TriggerNoteOn(this);
+    }
+
+
+    public AnyPatternStep Clone()
+    {
+        var clone = (AnyPatternStep)MemberwiseClone();
+        clone.notes = new List<int>();
+        foreach (var note in notes)
+        {
+            clone.notes.Add(note);
+        }
+
+
+        return clone;
+    }
+
+#if UNITY_EDITOR
+    public void DrawInspector()
+    {
+        var step = this;
+        step.noteOn = EditorGUILayout.Toggle("Note On", step.noteOn);
+        step.noteOff = EditorGUILayout.Toggle("Note Off", step.noteOff);
+        step.duration = EditorGUILayout.FloatField("Duration", step.duration);
+        step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
+        step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
+        step.expression = EditorGUILayout.Slider("Expression", step.expression, 0, 1);
+        step.mixWeight = EditorGUILayout.FloatField("Weight", step.mixWeight);
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
+        for (int i = 0; i < step.notes.Count; i++)
+        {
+            step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
+        }
+
+        if (GUILayout.Button("+", GUILayout.Width(20)))
+        {
+            step.notes.Add(new int());
+        }
+
+        if (GUILayout.Button("-", GUILayout.Width(20)))
+        {
+            step.notes.RemoveAt(step.notes.Count - 1);
+        }
+
+        EditorGUILayout.EndHorizontal();
+        step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
+    }
+#endif
+}

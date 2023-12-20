@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "AnySong", menuName = "Anywhen/AnySong", order = 1)]
+[CreateAssetMenu(fileName = "Anysong", menuName = "Anywhen/Anysong", order = 1)]
 
 public class AnySongObject : ScriptableObject
 {
