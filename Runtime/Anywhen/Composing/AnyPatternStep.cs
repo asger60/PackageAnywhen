@@ -17,10 +17,11 @@ public class AnyPatternStep
     public float velocity;
 
     [Range(0, 1f)] public float mixWeight;
-
+    public bool isChord;
     public List<int> notes;
-    public int noteRandom;
 
+    public bool addNoteRandom;
+    public int noteRandom;
 
     [Range(0, 1f)] public float chance = 1;
     [Range(0, 1f)] public float expression = 0;
@@ -52,10 +53,10 @@ public class AnyPatternStep
         mixWeight = 0.5f;
     }
 
-    public void TriggerStep(AnyTrack anyTrack)
+    public void TriggerStep(AnySongTrack track)
     {
         if (noteOn)
-            anyTrack.TriggerNoteOn(this);
+            track.TriggerNoteOn(this);
     }
 
 
@@ -81,28 +82,42 @@ public class AnyPatternStep
         step.duration = EditorGUILayout.FloatField("Duration", step.duration);
         step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
         step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
-        step.expression = EditorGUILayout.Slider("Expression", step.expression, 0, 1);
-        step.mixWeight = EditorGUILayout.FloatField("Weight", step.mixWeight);
+        step.chance = EditorGUILayout.Slider("Chance", step.chance, 0, 1);
+        //step.expression = EditorGUILayout.Slider("Expression", step.expression, 0, 1);
+        //step.mixWeight = EditorGUILayout.FloatField("Weight", step.mixWeight);
 
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
-        for (int i = 0; i < step.notes.Count; i++)
+        step.isChord = EditorGUILayout.Toggle("Is Chord", step.isChord);
+
+        if (step.isChord)
         {
-            step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
+            for (int i = 0; i < step.notes.Count; i++)
+            {
+                step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
+            }
+
+
+            if (GUILayout.Button("+", GUILayout.Width(20)))
+            {
+                step.notes.Add(new int());
+            }
+
+            if (GUILayout.Button("-", GUILayout.Width(20)))
+            {
+                step.notes.RemoveAt(step.notes.Count - 1);
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+        else
+        {
+            step.notes[0] = EditorGUILayout.IntField("Note", step.notes[0]);
         }
 
-        if (GUILayout.Button("+", GUILayout.Width(20)))
-        {
-            step.notes.Add(new int());
-        }
-
-        if (GUILayout.Button("-", GUILayout.Width(20)))
-        {
-            step.notes.RemoveAt(step.notes.Count - 1);
-        }
-
-        EditorGUILayout.EndHorizontal();
-        step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
+        step.addNoteRandom = EditorGUILayout.Toggle("Add Note Random", step.addNoteRandom);
+        if (step.addNoteRandom)
+            step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
     }
 #endif
 }

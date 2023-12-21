@@ -8,8 +8,8 @@ using Random = UnityEngine.Random;
 [Serializable]
 public class AnyPattern
 {
-    [FormerlySerializedAs("triggerBars")] public List<float> triggerChances = new List<float>();
-    public List<AnyPatternStep> steps;
+    public List<float> triggerChances = new List<float>();
+    [HideInInspector] public List<AnyPatternStep> steps;
 
     public void Init()
     {

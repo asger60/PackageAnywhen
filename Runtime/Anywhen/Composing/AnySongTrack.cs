@@ -6,53 +6,30 @@ using UnityEditor;
 using UnityEngine;
 
 [Serializable]
-public class AnyTrack
+public class AnySongTrack
 {
     [Range(0, 1f)] public float volume;
     public AnywhenInstrument instrument;
-    public List<AnyPattern> patterns;
-
     private NoteEvent _lastTrackNote;
+
 
     public void Init()
     {
         volume = 1;
-        patterns = new List<AnyPattern> { new AnyPattern() };
-        foreach (var pattern in patterns)
-        {
-            pattern.Init();
-        }
+        
     }
 
-    public AnyTrack Clone()
+    public AnySongTrack Clone()
     {
-        var clone = new AnyTrack
+        var clone = new AnySongTrack
         {
-            patterns = new List<AnyPattern>()
+            instrument = instrument,
+            volume = volume
         };
-        for (var i = 0; i < 16; i++)
-        {
-            clone.patterns.Add(patterns[i].Clone());
-        }
-
-        clone.volume = volume;
 
         return clone;
     }
-
-
     
-    public AnyPattern GetPattern(int currentBar)
-    {
-        var pattern = patterns[0];
-        foreach (var anyPattern in patterns)
-        {
-            if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
-        }
-
-        return pattern;
-    }
-
     public void TriggerNoteOn(AnyPatternStep anyPatternStep)
     {
         _lastTrackNote = new NoteEvent(NoteEvent.EventTypes.NoteOn, anyPatternStep.offset,
@@ -66,6 +43,8 @@ public class AnyTrack
 
         AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackNote, instrument);
     }
+
+    
 
 #if UNITY_EDITOR
     public void DrawInspector()
