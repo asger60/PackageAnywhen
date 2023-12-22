@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -58,7 +57,10 @@ public class AnysongEditorWindow : EditorWindow
     void OnGUI()
     {
         if (CurrentSong == null)
+        {
             CurrentSong = Selection.activeObject as AnySongObject;
+            return;
+        }
         if (CurrentSection == null && CurrentSong != null)
             CurrentSection = CurrentSong.Sections[0];
 
@@ -223,6 +225,7 @@ public class AnysongEditorWindow : EditorWindow
         for (var trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
         {
             EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = CurrentSongTrack == CurrentSong.Tracks[trackIndex] ? _hilightedColor : Color.white;
 
             var thisTrack = CurrentSong.Tracks[trackIndex];
             var instrumentName = thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
@@ -354,7 +357,7 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandleInspector()
     {
-        GUILayout.Label("Inspector", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Inspector", GUILayout.Width(154));
 
         switch (_currentInspectorMode)
         {

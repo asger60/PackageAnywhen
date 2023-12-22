@@ -25,13 +25,6 @@ public class AnysongPlayer : MonoBehaviour
         _loaded = true;
         _currentSong = anySong;
         _isRunning = true;
-
-        //_lastTrackNote = new NoteEvent[_instruments.Length];
-        //for (var i = 0; i < _lastTrackNote.Length; i++)
-        //{
-        //    _lastTrackNote[i] = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-        //}
-
         AnywhenMetronome.Instance.OnTick16 += OnTick16;
     }
 
@@ -59,6 +52,12 @@ public class AnysongPlayer : MonoBehaviour
     {
         if (!_isRunning) return;
 
+        if (_currentSong != songObject)
+        {
+            Release();
+            Load(songObject);
+        }
+        
         int step = AnywhenRuntime.Metronome.Sub16;
 
         _trackSteps.Clear();
@@ -95,29 +94,7 @@ public class AnysongPlayer : MonoBehaviour
         }
     }
 
-
-    //AnySection.AnyPatternStep GetStep(int sub16, int track)
-    //{
-    //    AnySection.AnyPatternStep step = new AnySection.AnyPatternStep();
-    //    float bestDistance = float.MaxValue;
-    //    for (var i = 0; i < _currentSong.Sections.Count; i++)
-    //    {
-    //        var pattern = _currentSong.Sections[i].GetPattern(AnywhenMetronome.Instance.CurrentBar, track);
-    //        
-    //        float selectorDistance = Mathf.Abs(
-    //            ((0.5f - pattern.tracks[track].steps[sub16].mixWeight) + i) -
-    //            _musicMixerPlayer.GetVariationValue());
-//
-    //        if (selectorDistance > 1) continue;
-    //        if (selectorDistance < bestDistance)
-    //        {
-    //            bestDistance = selectorDistance;
-    //            step = pattern.tracks[track].steps[sub16];
-    //        }
-    //    }
-//
-    //    return step;
-    //}
+    
 
 
     public void Release()

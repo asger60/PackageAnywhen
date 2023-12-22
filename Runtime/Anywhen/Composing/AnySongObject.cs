@@ -8,7 +8,9 @@ public class AnySongObject : ScriptableObject
     public int tempo;
     public List<AnySection> Sections;
     public List<AnySongTrack> Tracks;
-
+    public string coverGraphic;
+    public Color playerBackgroundColor;
+    
     [ContextMenu("Init")]
     void Init()
     {
