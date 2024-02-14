@@ -3,6 +3,7 @@ using System.Collections;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnitySynth.Runtime.Synth;
 
 namespace Anywhen
 {

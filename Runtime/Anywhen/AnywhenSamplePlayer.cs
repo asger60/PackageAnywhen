@@ -16,7 +16,7 @@ namespace Anywhen
         private bool _isInit;
         public bool IsInit => _isInit;
         public int activeSamplePlayers;
-        public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplePlayer;
+        public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplerHandler;
 
 
         private void Update()

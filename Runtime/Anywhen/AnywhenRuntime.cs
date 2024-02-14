@@ -18,9 +18,13 @@ namespace Anywhen
         private static AnywhenNoteClipPreviewer _previewer;
         
         static AnywhenEventFunnel _eventFunnel;
-        public static AnywhenSamplePlayer AnywhenSamplePlayer => _anywhenSamplePlayer;
+        public static AnywhenSamplePlayer AnywhenSamplerHandler => _anywhenSamplerHandler;
         
-        private static AnywhenSamplePlayer _anywhenSamplePlayer;
+        private static AnywhenSamplePlayer _anywhenSamplerHandler;
+        
+        
+        public static AnywhenSynthPlayer AnywhenSynthHandler => _anywhenSynthHandler;
+        private static AnywhenSynthPlayer _anywhenSynthHandler;
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
 
         
@@ -53,8 +57,9 @@ namespace Anywhen
         {
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
-            TryGetComponent(out _anywhenSamplePlayer);
+            TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
+            TryGetComponent(out _anywhenSynthHandler);
         }
     }
 }

@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 63826043}
   - component: {fileID: 63826050}
   - component: {fileID: 63826049}
+  - component: {fileID: 63826051}
   m_Layer: 0
   m_Name: Anywhen
   m_TagString: Untagged
@@ -350,6 +351,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &63826051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63826042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 706d4fd8aaf724007aa005e214e17b37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anywhenSynthPrefab: {fileID: -2880140179781689196, guid: 5eb0294d71ea24545b87e5d8209b15b9, type: 3}
+  numberOfSynths: 32
+  activeSynths: 0
 --- !u!1 &105811262
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,7 +450,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &122869347
 Transform:
   m_ObjectHideFlags: 0
@@ -874,7 +890,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1177897217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,6 +918,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1316919043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1316919045}
+  - component: {fileID: 1316919044}
+  m_Layer: 0
+  m_Name: SynthTester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1316919044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316919043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d96d4bb297014efd90197774df69155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synthPreset: {fileID: 11400000, guid: 549e1213dbc06401697be2ca01fb160b, type: 2}
+--- !u!4 &1316919045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316919043}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1683473673
 GameObject:

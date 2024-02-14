@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    public class ScalePlayer : MonoBehaviour
+    public class AnywhenScalePlayer : MonoBehaviour
     {
-        private static ScalePlayer _instance;
-        public static ScalePlayer Instance => _instance;
+        private static AnywhenScalePlayer _instance;
+        public static AnywhenScalePlayer Instance => _instance;
         private void Awake()
         {
             _instance = this;

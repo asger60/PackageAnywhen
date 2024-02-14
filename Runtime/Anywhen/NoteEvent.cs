@@ -48,6 +48,18 @@ namespace Anywhen
             velocity = 1;
             duration = -1;
         }
+        
+        public NoteEvent(int note, float duration)
+        {
+            this.state = EventTypes.NoteOn;
+            notes = new[] { note };
+            drift = 0;
+            chordStrum = new double[] { 0 };
+            expression1 = 0;
+            expression2 = 0;
+            velocity = 1;
+            this.duration = duration;
+        }
 
 
         public NoteEvent(int[] notes)
