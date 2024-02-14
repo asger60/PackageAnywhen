@@ -367,7 +367,7 @@ public class AnysongEditorWindow : EditorWindow
                 CurrentPattern.DrawInspector();
                 break;
             case InspectorModes.Track:
-                CurrentSongTrack.DrawInspector();
+                CurrentSongTrack?.DrawInspector();
                 break;
             case InspectorModes.Step:
                 CurrentStep.DrawInspector();

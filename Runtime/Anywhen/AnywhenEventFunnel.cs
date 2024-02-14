@@ -24,7 +24,6 @@ namespace Anywhen
             }
         }
         
-        [Obsolete("tickRate is deprecated, please use method without it instead.")]
         public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
             AudioMixerGroup mixerChannel = null)
         {

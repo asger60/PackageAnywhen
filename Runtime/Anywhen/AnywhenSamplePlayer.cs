@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -75,14 +76,57 @@ namespace Anywhen
         public void HandleEvent(NoteEvent e, AnywhenInstrument anywhenInstrumentSettings,
             AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
-            float drift = 0;
-
             switch (e.state)
             {
+                case NoteEvent.EventTypes.NoteOff:
+                    if (anywhenInstrumentSettings.instrumentType != AnywhenInstrument.InstrumentType.Sustained)
+                    {
+                        Debug.LogWarning("trying to stop an instrument that is not set to sustained");
+                        return;
+                    }
+
+                    foreach (var thisSampler in _allSamplers)
+                    {
+                        if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
+                        if (e.notes.Length == 1 && e.notes[0] == -1000)
+                        {
+                            double stopTime = rate == AnywhenMetronome.TickRate.None
+                                ? 0
+                                : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
+
+                            thisSampler.NoteOff(stopTime);
+                        }
+                        else
+                        {
+                            foreach (var note in e.notes)
+                            {
+                                if (thisSampler.CurrentNote == note)
+                                {
+                                    double stopTime = rate == AnywhenMetronome.TickRate.None
+                                        ? 0
+                                        : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
+
+                                    thisSampler.NoteOff(stopTime);
+                                }
+                            }
+                        }
+                    }
+                    
+                    break;
+
                 case NoteEvent.EventTypes.NoteOn:
+
+
                     for (int i = 0; i < e.notes.Length; i++)
                     {
                         var note = e.notes[i];
+                        foreach (var thisSampler in _allSamplers)
+                        {
+                            if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
+                            if (thisSampler.IsArmed && thisSampler.CurrentNote == note)
+                                return;
+                        }
+
                         AnywhenSampler anywhenSampler = GetSampler();
 
                         if (anywhenSampler == null)
@@ -96,56 +140,36 @@ namespace Anywhen
                         {
                             playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
                         }
+
                         playTime += e.chordStrum[i];
-                        
-                        
+
+
                         double stopTime = e.duration < 0
                             ? -1
                             : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
+
                         anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings,
                             mixerChannel);
                     }
 
-
                     break;
-                case NoteEvent.EventTypes.NoteOff:
-
-                    if (anywhenInstrumentSettings.instrumentType == AnywhenInstrument.InstrumentType.Sustained)
-                    {
-                        for (int i = 0; i < e.notes.Length; i++)
-                        {
-                            var note = e.notes[i];
-                            foreach (var thisSampler in _allSamplers)
-                            {
-                                if (thisSampler.Settings == anywhenInstrumentSettings && thisSampler.CurrentNote == note)
-                                {
-                                    double stopTime = rate == AnywhenMetronome.TickRate.None
-                                        ? 0
-                                        : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
-                                        
-                                    thisSampler.NoteOff(stopTime);
-                                }
-                            }
-                        }
-                    }
 
 
-                    break;
                 case NoteEvent.EventTypes.NoteDown:
 
-                    for (int i = 0; i < e.notes.Length; i++)
+                    foreach (var thisSampler in _allSamplers)
                     {
-                        var note = e.notes[i];
-                        foreach (var thisSampler in _allSamplers)
+                        if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
+                        foreach (var note in e.notes)
                         {
-                            if (thisSampler.Settings == anywhenInstrumentSettings && thisSampler.CurrentNote == note)
-                            {
+                            if (thisSampler.CurrentNote == note)
                                 thisSampler.SetPitch(e.expression1);
-                            }
                         }
                     }
 
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

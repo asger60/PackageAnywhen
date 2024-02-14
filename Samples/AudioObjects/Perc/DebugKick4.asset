@@ -14,7 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClips:
   - {fileID: 8300000, guid: d3cdda3b627084dde85971a65fc3347d, type: 3}
+  noteClips: []
   volume: 1
   stopDuration: 0.1
   instrumentType: 0
   clipSelectType: 1
+  clipType: 0
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
