@@ -26,8 +26,9 @@ namespace Anywhen.SettingsObjects
 
         public enum ClipSelectType
         {
-            PitchedNotes,
-            RandomVariations
+            ScalePitchedNotes,
+            RandomVariations,
+            UnscaledNotes
         }
 
         public enum ClipTypes
@@ -57,10 +58,8 @@ namespace Anywhen.SettingsObjects
             public bool enabled;
             public float attack;
             public float decay;
-            [Range(0,1f)]
-            public float sustain;
+            [Range(0, 1f)] public float sustain;
             public float release;
-
         }
 
         public EnvelopeSettings envelopeSettings;
@@ -75,7 +74,7 @@ namespace Anywhen.SettingsObjects
 
             switch (clipSelectType)
             {
-                case ClipSelectType.PitchedNotes:
+                case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     if (note >= noteClips.Length)
                     {
@@ -87,6 +86,10 @@ namespace Anywhen.SettingsObjects
 
                 case ClipSelectType.RandomVariations:
                     return noteClips[Random.Range(0, audioClips.Length)];
+
+                case ClipSelectType.UnscaledNotes:
+                    return noteClips[Mathf.Clamp(0, noteClips.Length, note)];
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -97,13 +100,16 @@ namespace Anywhen.SettingsObjects
             if (audioClips.Length == 0) return null;
             switch (clipSelectType)
             {
-                case ClipSelectType.PitchedNotes:
+                case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     if (note >= audioClips.Length) Debug.LogWarning("note out of clip range");
                     return note >= audioClips.Length ? null : audioClips[note];
 
                 case ClipSelectType.RandomVariations:
                     return audioClips[Random.Range(0, audioClips.Length)];
+                case ClipSelectType.UnscaledNotes:
+                    return audioClips[Mathf.Clamp(0, audioClips.Length, note)];
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -154,6 +160,6 @@ namespace Anywhen.SettingsObjects
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
-        #endif
+#endif
     }
 }
