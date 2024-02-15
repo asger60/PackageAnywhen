@@ -74,6 +74,17 @@ namespace Anywhen
             return _currentAnywhenScale.notes[(int)Mathf.Repeat(noteStep, _currentAnywhenScale.notes.Length)] + octave +
                    _rootNote;
         }
+        
+        public int[] GetScaledNotes(int[] notes)
+        {
+            int[] returnNotes = new int[notes.Length];
+            for (int i = 0; i < returnNotes.Length; i++)
+            {
+                returnNotes[i] = GetScaledNote(notes[i]);
+            }
+
+            return returnNotes;
+        }
 
         public void OverrideScale(AnywhenScaleObject newAnywhenScale)
         {

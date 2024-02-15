@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.AudioSystem
+namespace Anywhen.SettingsObjects
 {
     [CreateAssetMenu(fileName = "New synth preset", menuName = "UnitySynth/SynthPreset")]
-    public class AnywhenSynthPreset : AnywhenSettingsBase
+    public class AnywhenSynthPreset : AnywhenInstrument
     {
         public bool isInit;
 

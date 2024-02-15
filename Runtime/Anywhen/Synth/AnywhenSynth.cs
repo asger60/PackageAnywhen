@@ -19,6 +19,7 @@
 //  SOFTWARE."
 
 using System;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnitySynth.Runtime.AudioSystem;
 using UnitySynth.Runtime.Synth;
@@ -75,8 +76,8 @@ namespace Anywhen.Synth.Synth
         /// Public interface
         public bool HandleEventScheduled(NoteEvent noteEvent, double eventTime)
         {
-            print("handle event " + noteEvent.state);
             //queueLock = true;
+            
             bool result = _queue.Enqueue(noteEvent, eventTime);
             //queueLock = false;
             return result;

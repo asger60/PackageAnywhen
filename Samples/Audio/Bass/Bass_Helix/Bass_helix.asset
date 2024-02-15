@@ -12,6 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Bass_helix
   m_EditorClassIdentifier: 
+  envelopeSettings:
+    enabled: 0
+    attack: 0.03
+    decay: 0.86
+    sustain: 0.11
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 585
+    loopLength: 315
+    crossFadeDuration: 0
+  volume: 1
   audioClips:
   - {fileID: 8300000, guid: 8a27af862cb854bb5a9b365d9d4ca589, type: 3}
   - {fileID: 8300000, guid: ea365e6e29bc04484b7a3c4fbcd9e679, type: 3}
@@ -86,19 +98,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0fded4c6cec084554a89e6c0c125f105, type: 2}
   - {fileID: 11400000, guid: 64b278cd70dad46aeb32c3a61ef421a0, type: 2}
   - {fileID: 11400000, guid: 9279e516d204f43959a32e41af682bf5, type: 2}
-  volume: 1
   stopDuration: 0.1
   instrumentType: 0
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0.03
-    decay: 0.86
-    sustain: 0.11
-    release: 0
-  loopSettings:
-    enabled: 0
-    loopStart: 585
-    loopLength: 315
-    crossFadeDuration: 0

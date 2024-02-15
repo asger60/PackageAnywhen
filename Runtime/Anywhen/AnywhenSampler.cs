@@ -21,8 +21,8 @@ namespace Anywhen
 
 
         private AnywhenMetronome.TickRate _tickRate;
-        public AnywhenInstrument Instrument => _instrument;
-        private AnywhenInstrument _instrument;
+        public AnywhenSampleInstrument Instrument => _instrument;
+        private AnywhenSampleInstrument _instrument;
         public bool IsStopping => _isStopping;
         private bool _isStopping;
         private bool _playingNoteClip;
@@ -54,14 +54,14 @@ namespace Anywhen
         }
 
 
-        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenInstrument newSettings,
+        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument newSettings,
             AudioMixerGroup mixerChannel = null)
         {
             SetReady(false);
             _instrument = newSettings;
             if (_instrument == null)
             {
-                Debug.LogWarning("settings was null");
+                //Debug.Log("settings was null");
                 SetReady(true);
                 return;
             }
@@ -71,7 +71,7 @@ namespace Anywhen
             
             switch (_instrument.clipType)
             {
-                case AnywhenInstrument.ClipTypes.AudioClips:
+                case AnywhenSampleInstrument.ClipTypes.AudioClips:
                     var audioClip = _instrument.GetAudioClip(note);
 
                     if (audioClip != null)
@@ -93,7 +93,7 @@ namespace Anywhen
                     }
 
                     break;
-                case AnywhenInstrument.ClipTypes.NoteClips:
+                case AnywhenSampleInstrument.ClipTypes.NoteClips:
                     var noteClip = _instrument.GetNoteClip(note);
                     if (noteClip != null)
                     {
@@ -206,7 +206,7 @@ namespace Anywhen
         ADSR _adsr = new ADSR();
         private bool _useEnvelope;
 
-        private AnywhenInstrument.LoopSettings _currentLoopSettings;
+        private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
 
         //private bool _alternateBuffer;
         private float _buffer1Amp, _buffer2Amp;
@@ -241,7 +241,7 @@ namespace Anywhen
             _currentPitch = 1;
             _pitch = 1;
 
-            var currentEnvelopeSettings = new AnywhenInstrument.EnvelopeSettings();
+            var currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings();
 
             if (_instrument != null)
                 currentEnvelopeSettings = _instrument.envelopeSettings;
@@ -256,7 +256,7 @@ namespace Anywhen
                 SetEnvelope(currentEnvelopeSettings);
 
 
-            _currentLoopSettings = new AnywhenInstrument.LoopSettings();
+            _currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
             if (_instrument != null)
             {
                 _currentLoopSettings = _instrument.loopSettings;
@@ -276,7 +276,7 @@ namespace Anywhen
             _scheduledStopTime = -1;
         }
 
-        void SetEnvelope(AnywhenInstrument.EnvelopeSettings envelopeSettings)
+        void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
             _adsr.SetAttackRate(envelopeSettings.attack * AudioSettings.outputSampleRate);
             _adsr.SetDecayRate(envelopeSettings.decay * AudioSettings.outputSampleRate);

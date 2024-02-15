@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Anywhen;
-using Anywhen.SettingsObjects;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 [Serializable]
 public class AnySectionTrack

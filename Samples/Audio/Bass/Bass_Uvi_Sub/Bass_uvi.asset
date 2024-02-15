@@ -12,6 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Bass_uvi
   m_EditorClassIdentifier: 
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 0.829
   audioClips:
   - {fileID: 8300000, guid: 69a92c38c3d52466db7d51e39d452e21, type: 3}
   - {fileID: 8300000, guid: 73f626415118041348430ea4de05f454, type: 3}
@@ -49,7 +61,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4c20d63eca30743f1bcdb8027a0fbc42, type: 3}
   - {fileID: 8300000, guid: 750d2c1c3904741528a34e69cd3fbb54, type: 3}
   - {fileID: 8300000, guid: f538808b3bcdb4af9bf3d6b97a4d7edc, type: 3}
-  volume: 0.695
+  noteClips: []
   stopDuration: 0.1
   instrumentType: 0
   clipSelectType: 0
+  clipType: 0

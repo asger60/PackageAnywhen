@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnitySynth.Runtime.AudioSystem;
@@ -64,6 +65,10 @@ namespace Anywhen
                 {
                     playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
                 }
+
+                e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
+                
+                
 
                 thisSynth.HandleEventScheduled(e, playTime);
             }

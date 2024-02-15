@@ -7,10 +7,10 @@ namespace Anywhen.Editor
 {
     public class AudioInstrumentCreator : UnityEditor.Editor
     {
-        [MenuItem("Assets/Create/Rytmos/Instrument Object")]
+        [MenuItem("Assets/Create/Anywhen/Instrument Object")]
         public static void CreateInstrument()
         {
-            AnywhenInstrument asset = CreateInstance<AnywhenInstrument>();
+            AnywhenSampleInstrument asset = CreateInstance<AnywhenSampleInstrument>();
 
             var path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(Selection.objects[0]));
             Debug.Log("Create new InstrumentObject at path: " + path);

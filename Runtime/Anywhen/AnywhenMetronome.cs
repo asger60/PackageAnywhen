@@ -63,7 +63,7 @@ namespace Anywhen
         public struct DebugSettings
         {
             public bool debugBar, debug2, debug4, debug8, debug16;
-            public AnywhenInstrument debugAnywhenInstrument;
+            public AnywhenSampleInstrument debugAnywhenInstrument;
         }
 
         public DebugSettings debugSettings;

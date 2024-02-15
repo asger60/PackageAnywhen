@@ -4,6 +4,7 @@ using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
+
 public class AnysongPlayer : MonoBehaviour
 {
     public AnySongObject songObject;
@@ -25,6 +26,14 @@ public class AnysongPlayer : MonoBehaviour
         _loaded = true;
         _currentSong = anySong;
         _isRunning = true;
+        foreach (var track in anySong.Tracks)
+        {
+            if (track.instrument is AnywhenSynthPreset preset)
+            {
+                AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
+            }
+        }
+        
         AnywhenMetronome.Instance.OnTick16 += OnTick16;
     }
 

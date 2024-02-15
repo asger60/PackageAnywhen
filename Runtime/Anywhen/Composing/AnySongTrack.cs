@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Anywhen;
-using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
+
 
 [Serializable]
 public class AnySongTrack
@@ -16,7 +15,6 @@ public class AnySongTrack
     public void Init()
     {
         volume = 1;
-        
     }
 
     public AnySongTrack Clone()
@@ -29,22 +27,21 @@ public class AnySongTrack
 
         return clone;
     }
-    
+
     public void TriggerNoteOn(AnyPatternStep anyPatternStep)
     {
-        _lastTrackNote = new NoteEvent(NoteEvent.EventTypes.NoteOn, anyPatternStep.offset,
-            anyPatternStep.GetNotes(),
-            new double[] { 0, 0, 0 }, anyPatternStep.expression, 1,
-            anyPatternStep.velocity * instrument.volume * volume)
-        {
-            duration = anyPatternStep.duration
-        };
+        
+        //_lastTrackNote = new NoteEvent(anyPatternStep.GetNotes(), NoteEvent.EventTypes.NoteOn, anyPatternStep.velocity,
+        //    anyPatternStep.offset, new double[anyPatternStep.GetNotes().Length], anyPatternStep.expression , 1)
+        //{
+        //    duration = anyPatternStep.duration
+        //};
 
+        _lastTrackNote = anyPatternStep.GetEvent();
 
         AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackNote, instrument);
     }
 
-    
 
 #if UNITY_EDITOR
     public void DrawInspector()

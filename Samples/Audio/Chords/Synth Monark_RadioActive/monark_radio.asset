@@ -12,6 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: monark_radio
   m_EditorClassIdentifier: 
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 0.6
   audioClips:
   - {fileID: 8300000, guid: e28d39d28b1ea4ea78db36598c6e0163, type: 3}
   - {fileID: 8300000, guid: d86e651cc803a46ffb733f01aaae4ddd, type: 3}
@@ -49,8 +61,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e131dacd4e57440899b58bddd4643b40, type: 3}
   - {fileID: 8300000, guid: b8871459c0311447da5db2a0fb8eb091, type: 3}
   - {fileID: 8300000, guid: 81d2b80e48f994eb1b680800eb550be3, type: 3}
-  volume: 0.284
+  noteClips: []
   stopDuration: 0.1
-  noteClip: {fileID: 0}
   instrumentType: 0
   clipSelectType: 0
+  clipType: 0

@@ -7,12 +7,12 @@ namespace Anywhen
 {
     public class AnywhenEventFunnel : MonoBehaviour
     {
-        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings,
+        public void HandleNoteEvent(NoteEvent e, AnywhenInstrument anywhenSettings,
             AudioMixerGroup mixerChannel = null)
         {
             switch (anywhenSettings)
             {
-                case AnywhenInstrument instrumentObject:
+                case AnywhenSampleInstrument instrumentObject:
                     AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, AnywhenMetronome.TickRate.Sub16,
                         mixerChannel);
                     break;
@@ -31,7 +31,7 @@ namespace Anywhen
         {
             switch (anywhenSettings)
             {
-                case AnywhenInstrument instrumentObject:
+                case AnywhenSampleInstrument instrumentObject:
                     AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, tickRate, mixerChannel);
                     break;
 

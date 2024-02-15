@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Anywhen;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 [Serializable]
 public class AnyPatternStep
@@ -55,8 +54,22 @@ public class AnyPatternStep
 
     public void TriggerStep(AnySongTrack track)
     {
-        if (noteOn)
+        if (noteOn || noteOff)
             track.TriggerNoteOn(this);
+    }
+
+    public NoteEvent GetEvent()
+    {
+        NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
+        if (noteOff)
+            type = NoteEvent.EventTypes.NoteOff;
+
+        var e = new NoteEvent(GetNotes(), type, velocity,
+            offset, new double[GetNotes().Length], expression, 1)
+        {
+            duration = duration
+        };
+        return e;
     }
 
 

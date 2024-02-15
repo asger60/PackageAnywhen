@@ -73,15 +73,15 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenInstrument anywhenInstrumentSettings,
+        public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings,
             AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
             switch (e.state)
             {
                 case NoteEvent.EventTypes.NoteOff:
-                    if (anywhenInstrumentSettings.instrumentType != AnywhenInstrument.InstrumentType.Sustained)
+                    if (anywhenInstrumentSettings.instrumentType != AnywhenSampleInstrument.InstrumentType.Sustained)
                     {
-                        Debug.LogWarning("trying to stop an instrument that is not set to sustained");
+                        //Debug.LogWarning("trying to stop an instrument that is not set to sustained");
                         return;
                     }
 
@@ -141,7 +141,7 @@ namespace Anywhen
 
                         if (anywhenSampler == null)
                         {
-                            Debug.LogWarning("no available samplers ");
+                            //Debug.LogWarning("no available samplers ");
                             return;
                         }
 

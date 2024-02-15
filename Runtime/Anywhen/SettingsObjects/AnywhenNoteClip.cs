@@ -11,8 +11,8 @@ namespace Anywhen.SettingsObjects
         public float[] clipSamples;
         public int frequency;
         public int channels;
-        public AnywhenInstrument.EnvelopeSettings envelopeSettings;
-        public AnywhenInstrument.LoopSettings loopSettings;
+        public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;
+        public AnywhenSampleInstrument.LoopSettings loopSettings;
         internal void ReadAudioClip(AudioClip audioClip)
         {
             clipSamples = new float[audioClip.samples * audioClip.channels];
@@ -23,7 +23,6 @@ namespace Anywhen.SettingsObjects
         }
         #if UNITY_EDITOR
 
-        [MenuItem("Assets/Anywhen/Convert to NoteClip", false, 1)]
         private static void CreateNewAsset()
         {
             var activeObject = Selection.activeObject as AudioClip;
