@@ -132,7 +132,6 @@ namespace Anywhen
                                 if (thisSampler.IsArmed && thisSampler.CurrentNote == note &&
                                     thisSampler.ScheduledPlayTime == playTime)
                                 {
-                                    print("returning");
                                     return;
                                 }
                             }
