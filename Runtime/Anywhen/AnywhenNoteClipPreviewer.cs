@@ -11,7 +11,7 @@ namespace Anywhen
         public void PlayClip(AnywhenNoteClip clip)
         {
             Init(AnywhenMetronome.TickRate.None);
-            PlayScheduled(0, clip);
+            PlayScheduled( clip);
         }
 
         public void StopClip()

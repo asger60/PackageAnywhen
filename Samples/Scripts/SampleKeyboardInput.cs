@@ -29,6 +29,15 @@ namespace Samples.Scripts
             {
                 expression1 = 1
             };
+            AnywhenMetronome.Instance.OnTick16 += OnTick16;
+        }
+
+        private void OnTick16()
+        {
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(new NoteEvent(NoteEvent.EventTypes.NoteOff), anywhenInstrument,
+                AnywhenMetronome.TickRate.Sub16);
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(new NoteEvent(Random.Range(0, 10)), anywhenInstrument,
+                AnywhenMetronome.TickRate.Sub16);
         }
 
         private bool _noteDown;
@@ -56,12 +65,6 @@ namespace Samples.Scripts
                 SetKeyState(0, false);
                 _noteDown = false;
             }
-
-            //if (_noteDown)
-            //{
-            //    _e.expression1 = Mathf.MoveTowards(_e.expression1, 1.5f, Time.deltaTime * 0.5f);
-            //    AnywhenRuntime.EventFunnel.HandleNoteEvent(_e, anywhenInstrument, quantization);
-            //}
         }
 
         void SetKeyState(int keyIndex, bool state)

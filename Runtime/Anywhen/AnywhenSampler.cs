@@ -67,7 +67,8 @@ namespace Anywhen
             }
 
             _currentNote = note;
-
+            _scheduledPlayTime = playTime;
+            
             switch (_instrument.clipType)
             {
                 case AnywhenInstrument.ClipTypes.AudioClips:
@@ -83,7 +84,7 @@ namespace Anywhen
                         _audioSource.time = 0;
                         _audioSource.outputAudioMixerGroup = mixerChannel;
                         _playingNoteClip = false;
-                        _audioSource.PlayScheduled(playTime);
+                        _audioSource.PlayScheduled(_scheduledPlayTime);
                     }
                     else
                     {
@@ -100,7 +101,7 @@ namespace Anywhen
                         _isArmed = true;
                         _playingNoteClip = true;
                         _audioSource.Stop();
-                        PlayScheduled(playTime, noteClip);
+                        PlayScheduled(noteClip);
                         _hasScheduledStop = false;
                         if (stopTime > 0)
                         {
@@ -198,6 +199,7 @@ namespace Anywhen
 
         private bool _isPlaying;
         private bool _scheduledPlay;
+        public double ScheduledPlayTime => _scheduledPlayTime;
         private double _scheduledPlayTime = -1;
         private double _scheduledStopTime;
         private AnywhenNoteClip _noteClip;
@@ -222,7 +224,7 @@ namespace Anywhen
             _pitch = pitchValue;
         }
 
-        protected void PlayScheduled(double absolutePlayTime, AnywhenNoteClip clip)
+        protected void PlayScheduled(AnywhenNoteClip clip)
         {
             //_alternateBuffer = false;
             _buffer1Amp = 1;
@@ -234,7 +236,7 @@ namespace Anywhen
             _noteClip = clip;
 
             _scheduledPlay = true;
-            _scheduledPlayTime = absolutePlayTime;
+            
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _pitch = 1;

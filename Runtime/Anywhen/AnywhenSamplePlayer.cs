@@ -111,7 +111,7 @@ namespace Anywhen
                             }
                         }
                     }
-                    
+
                     break;
 
                 case NoteEvent.EventTypes.NoteOn:
@@ -119,12 +119,23 @@ namespace Anywhen
 
                     for (int i = 0; i < e.notes.Length; i++)
                     {
+                        double playTime = 0;
                         var note = e.notes[i];
-                        foreach (var thisSampler in _allSamplers)
+                        if (rate != AnywhenMetronome.TickRate.None)
                         {
-                            if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                            if (thisSampler.IsArmed && thisSampler.CurrentNote == note)
-                                return;
+                            playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
+                            playTime += e.chordStrum[i];
+                            
+                            foreach (var thisSampler in _allSamplers)
+                            {
+                                if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
+                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note &&
+                                    thisSampler.ScheduledPlayTime == playTime)
+                                {
+                                    print("returning");
+                                    return;
+                                }
+                            }
                         }
 
                         AnywhenSampler anywhenSampler = GetSampler();
@@ -135,14 +146,7 @@ namespace Anywhen
                             return;
                         }
 
-                        double playTime = 0;
-                        if (rate != AnywhenMetronome.TickRate.None)
-                        {
-                            playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
-                        }
-
-                        playTime += e.chordStrum[i];
-
+                        
 
                         double stopTime = e.duration < 0
                             ? -1
