@@ -85,10 +85,10 @@ namespace Anywhen.SettingsObjects
                     return note >= noteClips.Length ? null : noteClips[note];
 
                 case ClipSelectType.RandomVariations:
-                    return noteClips[Random.Range(0, audioClips.Length)];
+                    return noteClips[Random.Range(0, noteClips.Length)];
 
                 case ClipSelectType.UnscaledNotes:
-                    return noteClips[Mathf.Clamp(0, noteClips.Length, note)];
+                    return noteClips[Mathf.Clamp(note, 0, noteClips.Length)];
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -108,7 +108,7 @@ namespace Anywhen.SettingsObjects
                 case ClipSelectType.RandomVariations:
                     return audioClips[Random.Range(0, audioClips.Length)];
                 case ClipSelectType.UnscaledNotes:
-                    return audioClips[Mathf.Clamp(0, audioClips.Length, note)];
+                    return audioClips[Mathf.Clamp(note, 0, audioClips.Length)];
 
                 default:
                     throw new ArgumentOutOfRangeException();
