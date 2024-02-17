@@ -32,12 +32,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeb54228131024b7aac2468f5ee51a67, type: 3}
-  m_Name: New synth preset 1
+  m_Name: Synth Basic
   m_EditorClassIdentifier: 
   isInit: 1
   unison: 1
   voices: 3
-  voiceSpread: 0.04
+  voiceSpread: 0
   oscillatorSettings:
   - {fileID: 6811349930590322744}
   filterSettings:
@@ -58,10 +58,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
-  attack: 0.01
+  attack: 0.18
   decay: 0.5
   sustain: 0.844
-  release: 0.36
+  release: 0.8
   sendAmount: 100
 --- !u!114 &6811349930590322744
 MonoBehaviour:
@@ -75,8 +75,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c5d75eb90954545a59552f9b363791, type: 3}
   m_Name: Oscillator
   m_EditorClassIdentifier: 
-  tuning: 0
-  amplitude: 0.635
+  tuning: 24
+  amplitude: 0.178
   simpleOscillatorType: 1
   noiseType: 0
   waveTableOscillatorType: 0
