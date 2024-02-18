@@ -41,12 +41,14 @@ public class AnysongEditorWindow : EditorWindow
             if (songObject != null)
             {
                 AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+                
                 CurrentSong = songObject;
-                window.Show();
+                window.Show(true);
                 EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
                 Debug.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
             }
         }
+        
     }
 
 
@@ -70,15 +72,14 @@ public class AnysongEditorWindow : EditorWindow
             return;
         }
 
-        if (CurrentSection == null && CurrentSong != null)
-            CurrentSection = CurrentSong.Sections[0];
+
+        if (CurrentSection == null && CurrentSong != null) CurrentSection = CurrentSong.Sections[0];
 
         EditorGUI.BeginChangeCheck();
-
-
-        EditorGUILayout.BeginVertical();
+        
         GUILayout.Label(CurrentSong.name, EditorStyles.boldLabel);
         GUILayout.Space(20);
+
 
         //three columns start
         EditorGUILayout.BeginHorizontal();
@@ -103,10 +104,9 @@ public class AnysongEditorWindow : EditorWindow
 
         EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.EndVertical();
+        //three columns end
 
-
-        
+        //EditorGUILayout.EndVertical();
 
 
         if (EditorGUI.EndChangeCheck())
