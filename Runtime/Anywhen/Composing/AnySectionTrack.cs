@@ -6,11 +6,8 @@ using UnityEditor;
 public class AnySectionTrack
 {
     public List<AnyPattern> patterns;
-
     public AnySongTrack anySongTrack;
-
-    
-    
+    public AnyPattern EditorCurrentPattern;
     public void Init(AnySongTrack songSongTrack)
     {
         anySongTrack = songSongTrack;
@@ -19,8 +16,6 @@ public class AnySectionTrack
         {
             pattern.Init();
         }
-        
-        
     }
 
     public AnySectionTrack Clone()

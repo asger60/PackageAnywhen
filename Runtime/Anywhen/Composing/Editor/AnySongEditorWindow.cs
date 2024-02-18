@@ -12,7 +12,8 @@ public class AnysongEditorWindow : EditorWindow
     public static AnySongTrack CurrentSongTrack { get; private set; }
 
     public static AnySectionTrack CurrentSectionTrack { get; private set; }
-    public static AnyPattern CurrentPattern { get; private set; }
+
+    //public static AnyPattern CurrentPattern { get; private set; }
     public static AnyPatternStep CurrentStep { get; private set; }
 
     private Color _hilightedColor = new Color(0.8f, 0.9f, 1);
@@ -74,58 +75,38 @@ public class AnysongEditorWindow : EditorWindow
 
         EditorGUI.BeginChangeCheck();
 
+
         EditorGUILayout.BeginVertical();
         GUILayout.Label(CurrentSong.name, EditorStyles.boldLabel);
-        GUILayout.Space(10);
+        GUILayout.Space(20);
 
-
+        //three columns start
         EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.BeginVertical(GUILayout.Width(200));
         HandleSongTracks();
+        EditorGUILayout.EndVertical();
 
 
-        //EditorGUILayout.BeginVertical();
-
-
-        //HandleSections();
-
-        //GUILayout.BeginHorizontal();
         GUILayout.Space(10);
         GUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Sequences", GUILayout.Height(16));
-
-        foreach (var track in CurrentSection.tracks)
-        {
-            HandleTrackPatterns(track);
-            HandleSteps(track.patterns[0]);
-            GUILayout.Space(8);
-        }
-
-        //GUILayout.EndVertical();
-
-        //GUILayout.EndHorizontal();
-
-        //GUILayout.Space(10);
-
-
-        //GUILayout.Space(20);
+        HandleTrackSequences();
         EditorGUILayout.EndVertical();
-        
-        GUILayout.Space(10);
-        
-        
-        EditorGUILayout.BeginVertical(GUILayout.Width(300));
 
-        
+
+        GUILayout.Space(10);
+
+        EditorGUILayout.BeginVertical(GUILayout.Width(300));
         HandleInspector();
         HandleConsole();
-
         EditorGUILayout.EndVertical();
-
 
         EditorGUILayout.EndHorizontal();
-
-
+        
         EditorGUILayout.EndVertical();
+
+
+        
 
 
         if (EditorGUI.EndChangeCheck())
@@ -136,6 +117,22 @@ public class AnysongEditorWindow : EditorWindow
 
     private string _consoleMessage;
     private double _consoleLogTime;
+
+
+    void HandleTrackSequences()
+    {
+        EditorGUILayout.LabelField("Sequences", GUILayout.Height(16));
+        if (CurrentSection != null)
+        {
+            for (var i = 0; i < CurrentSection.tracks.Count; i++)
+            {
+                var track = CurrentSection.tracks[i];
+                HandleTrackPatterns(CurrentSection.tracks[i]);
+                HandleSteps(track.EditorCurrentPattern, i);
+                GUILayout.Space(8);
+            }
+        }
+    }
 
     void HandleConsole()
     {
@@ -172,7 +169,7 @@ public class AnysongEditorWindow : EditorWindow
                 CurrentSection = CurrentSong.Sections[i];
                 SetInspectorMode(InspectorModes.Sections);
                 CurrentSectionTrack = CurrentSection.tracks[0];
-                CurrentPattern = CurrentSectionTrack.patterns[0];
+                CurrentSectionTrack.EditorCurrentPattern = CurrentSectionTrack.patterns[0];
                 _currentTrackIndex = 0;
             }
         }
@@ -199,17 +196,19 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandleTrackPatterns(AnySectionTrack track)
     {
-        EditorGUILayout.BeginHorizontal();
         if (CurrentSectionTrack == null) return;
+
+        EditorGUILayout.BeginHorizontal();
         for (var i = 0; i < track.patterns.Count; i++)
         {
-            GUI.backgroundColor = CurrentPattern == track.patterns[i]
+            GUI.backgroundColor = CurrentSectionTrack.EditorCurrentPattern == track.patterns[i]
                 ? _hilightedColor
                 : Color.white;
+
             if (GUILayout.Button("Pattern " + i))
             {
                 SetInspectorMode(InspectorModes.Pattern);
-                CurrentPattern = track.patterns[i];
+                track.EditorCurrentPattern = track.patterns[i];
             }
         }
 
@@ -221,13 +220,13 @@ public class AnysongEditorWindow : EditorWindow
             var newPattern = new AnyPattern();
             newPattern.Init();
             track.patterns.Add(newPattern);
-            CurrentPattern = track.patterns[^1];
+            CurrentSectionTrack.EditorCurrentPattern = track.patterns[^1];
         }
 
         if (GUILayout.Button("-", GUILayout.Width(20)))
         {
-            track.patterns.Remove(CurrentPattern);
-            CurrentPattern = track.patterns[^1];
+            track.patterns.Remove(CurrentSectionTrack.EditorCurrentPattern);
+            CurrentSectionTrack.EditorCurrentPattern = track.patterns[^1];
         }
 
         EditorGUILayout.EndHorizontal();
@@ -236,14 +235,12 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandleSongTracks()
     {
-        EditorGUILayout.BeginVertical(GUILayout.Width(200));
-
         EditorGUILayout.LabelField("Tracks", GUILayout.Width(154));
 
 
         for (var trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
         {
-            EditorGUILayout.BeginHorizontal();
+            //EditorGUILayout.BeginHorizontal();
             GUI.backgroundColor = CurrentSongTrack == CurrentSong.Tracks[trackIndex] ? _hilightedColor : Color.white;
 
             var thisTrack = CurrentSong.Tracks[trackIndex];
@@ -253,7 +250,7 @@ public class AnysongEditorWindow : EditorWindow
                 CurrentSectionTrack = CurrentSection.tracks[trackIndex];
                 CurrentSongTrack = thisTrack;
 
-                CurrentPattern = CurrentSectionTrack.patterns[0];
+                CurrentSectionTrack.EditorCurrentPattern = CurrentSectionTrack.patterns[0];
                 CurrentStep = null;
                 SetInspectorMode(InspectorModes.Track);
                 _currentTrackIndex = trackIndex;
@@ -263,7 +260,7 @@ public class AnysongEditorWindow : EditorWindow
             GUI.backgroundColor = Color.white;
             GUI.color = Color.white;
 
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.EndHorizontal();
             GUILayout.Space(8);
         }
 
@@ -292,13 +289,11 @@ public class AnysongEditorWindow : EditorWindow
         }
 
         EditorGUILayout.EndHorizontal();
-        EditorGUILayout.EndHorizontal();
     }
 
-    void HandleSteps(AnyPattern pattern)
+    void HandleSteps(AnyPattern pattern, int row)
     {
-        if (CurrentPattern == null) return;
-
+        if (CurrentSectionTrack?.EditorCurrentPattern == null) return;
 
         GUILayout.BeginHorizontal();
         for (int step = 0; step < pattern.steps.Count; step++)
@@ -313,61 +308,77 @@ public class AnysongEditorWindow : EditorWindow
             GUI.backgroundColor = thisStep == CurrentStep ? _hilightedColor : Color.white;
             GUI.color = color;
 
-            if (GUILayout.Button(new GUIContent(thisStep.notes[0].ToString(), (step + 1).ToString())))
+            if (GUILayout.Button(new GUIContent(thisStep.notes[0].ToString(),
+                    (step + 1) + "." + (row).ToString())))
             {
                 CurrentStep = thisStep;
                 SetInspectorMode(InspectorModes.Step);
             }
         }
 
-        var hover = GUI.tooltip;
-        if (Event.current.isKey && Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.A)
+        var toolTip = GUI.tooltip;
+        if (string.IsNullOrEmpty(toolTip) || toolTip == "Error" || toolTip == "Warning")
         {
-            var thisStep = pattern.steps[Int32.Parse(hover) - 1];
-            CurrentStep = thisStep;
-            thisStep.noteOn = !thisStep.noteOn;
-
-            thisStep.isChord = false;
-            SetInspectorMode(InspectorModes.Step);
-            Repaint();
+            GUILayout.EndHorizontal();
+            GUI.color = Color.white;
+            return;
         }
 
-        if (Event.current.isKey && Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.UpArrow)
+        var str = toolTip.Split(".");
+        int thisButtonIndex = Int32.Parse(str[0]) - 1;
+        int thisRowIndex = Int32.Parse(str[1]);
+
+        if (thisRowIndex == row)
         {
-            var thisStep = pattern.steps[Int32.Parse(hover) - 1];
-            CurrentStep = thisStep;
-            for (var i = 0; i < thisStep.notes.Count; i++)
+            if (Event.current.isKey && Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.A)
             {
-                thisStep.notes[i]++;
+                var thisStep = pattern.steps[thisButtonIndex];
+                CurrentStep = thisStep;
+                thisStep.noteOn = !thisStep.noteOn;
+
+                thisStep.isChord = false;
+                SetInspectorMode(InspectorModes.Step);
+                Repaint();
             }
 
-            SetInspectorMode(InspectorModes.Step);
-            Repaint();
-        }
-
-        if (Event.current.isKey && Event.current.type == EventType.KeyDown &&
-            Event.current.keyCode == KeyCode.DownArrow)
-        {
-            var thisStep = CurrentPattern.steps[Int32.Parse(hover) - 1];
-            CurrentStep = thisStep;
-            for (var i = 0; i < thisStep.notes.Count; i++)
+            if (Event.current.isKey && Event.current.type == EventType.KeyDown &&
+                Event.current.keyCode == KeyCode.UpArrow)
             {
-                thisStep.notes[i]--;
+                var thisStep = pattern.steps[thisButtonIndex];
+                CurrentStep = thisStep;
+                for (var i = 0; i < thisStep.notes.Count; i++)
+                {
+                    thisStep.notes[i]++;
+                }
+
+                SetInspectorMode(InspectorModes.Step);
+                Repaint();
             }
 
-            SetInspectorMode(InspectorModes.Step);
-            Repaint();
-        }
+            if (Event.current.isKey && Event.current.type == EventType.KeyDown &&
+                Event.current.keyCode == KeyCode.DownArrow)
+            {
+                var thisStep = pattern.steps[thisButtonIndex];
+                CurrentStep = thisStep;
+                for (var i = 0; i < thisStep.notes.Count; i++)
+                {
+                    thisStep.notes[i]--;
+                }
 
-        if (Event.current.isKey && Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.C)
-        {
-            var thisStep = CurrentPattern.steps[Int32.Parse(hover) - 1];
-            CurrentStep = thisStep;
-            thisStep.noteOn = !thisStep.noteOn;
-            thisStep.isChord = true;
-            thisStep.notes = new List<int> { 0, 2, 4 };
-            SetInspectorMode(InspectorModes.Step);
-            Repaint();
+                SetInspectorMode(InspectorModes.Step);
+                Repaint();
+            }
+
+            if (Event.current.isKey && Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.C)
+            {
+                var thisStep = pattern.steps[thisButtonIndex];
+                CurrentStep = thisStep;
+                thisStep.noteOn = !thisStep.noteOn;
+                thisStep.isChord = true;
+                thisStep.notes = new List<int> { 0, 2, 4 };
+                SetInspectorMode(InspectorModes.Step);
+                Repaint();
+            }
         }
 
 
@@ -386,7 +397,7 @@ public class AnysongEditorWindow : EditorWindow
             case InspectorModes.Sections:
                 break;
             case InspectorModes.Pattern:
-                CurrentPattern.DrawInspector();
+                CurrentSectionTrack.EditorCurrentPattern.DrawInspector();
                 break;
             case InspectorModes.Track:
                 CurrentSongTrack.DrawInspector();
@@ -410,14 +421,14 @@ public class AnysongEditorWindow : EditorWindow
     {
         var newPattern = new AnyPattern();
         newPattern.Init();
-        CurrentPattern = newPattern;
+        CurrentSectionTrack.EditorCurrentPattern = newPattern;
     }
 
     public static void CopyCurrentPattern()
     {
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
 
-        PatternCopy = CurrentPattern.Clone();
+        PatternCopy = CurrentSectionTrack.EditorCurrentPattern.Clone();
         window.ConsoleLog("copied pattern");
     }
 
@@ -425,7 +436,7 @@ public class AnysongEditorWindow : EditorWindow
     {
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
         CurrentSectionTrack.patterns[0] = PatternCopy;
-        CurrentPattern = PatternCopy;
+        CurrentSectionTrack.EditorCurrentPattern = PatternCopy;
         PatternCopy = null;
         window.ConsoleLog("pasted pattern");
     }
