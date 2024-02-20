@@ -14,8 +14,8 @@ namespace Anywhen.SettingsObjects
         public bool unison;
         public int voices = 3;
         public float voiceSpread;
-        
-        
+
+
         public SynthSettingsObjectOscillator[] oscillatorSettings;
         public SynthSettingsObjectFilter[] filterSettings;
         public SynthSettingsObjectBase[] pitchModifiers;
@@ -35,7 +35,7 @@ namespace Anywhen.SettingsObjects
             if (_runtimeSynth != null)
                 _runtimeSynth.RebuildSynth();
         }
-
+#if UNITY_EDITOR
         [ContextMenu("Clean up preset object")]
         public void CleanUpPreset()
         {
@@ -74,6 +74,7 @@ namespace Anywhen.SettingsObjects
 
             return ofType;
         }
+#endif
 
         private void Reset()
         {

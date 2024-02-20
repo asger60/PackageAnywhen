@@ -1,7 +1,5 @@
 using System;
-using Synth;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UnitySynth.Runtime.Synth
 {

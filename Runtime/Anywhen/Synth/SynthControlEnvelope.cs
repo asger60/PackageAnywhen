@@ -1,4 +1,3 @@
-using Synth;
 using UnityEngine;
 
 namespace UnitySynth.Runtime.Synth

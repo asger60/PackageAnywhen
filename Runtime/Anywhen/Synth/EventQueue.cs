@@ -18,10 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE."
 
-using System;
-using System.Collections.Generic;
 using Anywhen;
-using UnitySynth.Runtime.AudioSystem;
 
 // empty     queue   queue     queue      pop
 // [ | | ]   [x| | ] [x|x| ]   [x|x|x]    [ |x|x]

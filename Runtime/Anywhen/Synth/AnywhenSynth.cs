@@ -21,7 +21,6 @@
 using System;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnitySynth.Runtime.AudioSystem;
 using UnitySynth.Runtime.Synth;
 using UnitySynth.Runtime.Synth.Filter;
 

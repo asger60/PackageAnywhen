@@ -1,7 +1,6 @@
 using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnitySynth.Runtime.AudioSystem;
 
 public class SynthTester : MonoBehaviour
 {
