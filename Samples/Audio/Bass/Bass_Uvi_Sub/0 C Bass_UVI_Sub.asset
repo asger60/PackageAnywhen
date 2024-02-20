@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: 0 C Bass_UVI_Sub
   m_EditorClassIdentifier: 
   sourceClip: {fileID: 8300000, guid: 69a92c38c3d52466db7d51e39d452e21, type: 3}
-  loopStart: 100
-  loopLength: 100
   clipSamples:
   - 0
   - 0
@@ -40018,3 +40016,14 @@ MonoBehaviour:
   - 0
   frequency: 44100
   channels: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0

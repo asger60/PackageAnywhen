@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Click_MS20_GlitchA_003
   m_EditorClassIdentifier: 
   sourceClip: {fileID: 8300000, guid: fb4dc51702e374adcb150f3da589efde, type: 3}
-  loopStart: 100
-  loopLength: 100
   clipSamples:
   - 0.0005493164
   - -0.017730713
@@ -3163,7 +3161,14 @@ MonoBehaviour:
   - 0.0008544922
   frequency: 44100
   channels: 1
-  attack: 1
-  decay: 10
-  sustain: 1
-  release: 10
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0

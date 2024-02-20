@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnitySynth.Runtime.Synth;
 using Random = UnityEngine.Random;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthOscillator : MonoBehaviour
     {
@@ -99,12 +99,6 @@ namespace UnitySynth.Runtime.Synth
                     {
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Sine:
                             return Sin() * settings.amplitude;
-                        //case SynthSettingsObjectOscillator.SimpleOscillatorTypes.SineTable:
-                        //    return SineTable();
-                        //case SynthSettingsObjectOscillator.SimpleOscillatorTypes.SineTaylor:
-                        //    return SineTaylor();
-                        //case SynthSettingsObjectOscillator.SimpleOscillatorTypes.SineChebyshev:
-                        //    return SineChebyshev();
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Saw:
                             return sawPolyBLEP() * settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Square:
@@ -137,19 +131,19 @@ namespace UnitySynth.Runtime.Synth
         {
             _isActive = true;
             _currentNote = note + settings.tuning;
-            set_freq(Anywhen.Synth.Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
         }
 
         public void SetPitchMod(float amount)
         {
             _pitchModAmount = Remap(amount, -1, 1, 0.5f, 2);
-            set_freq(Anywhen.Synth.Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
         }
 
         public void SetFineTuning(float amount)
         {
             _fineTune = amount;
-            set_freq(Anywhen.Synth.Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
         }
 
         float Remap(float value, float from1, float to1, float from2, float to2)
@@ -158,7 +152,7 @@ namespace UnitySynth.Runtime.Synth
         }
 
 
-        private void set_freq(float freq__hz, int sample_rate = 48000)
+        private void set_freq(float freq__hz, int sample_rate = 44100)
         {
             float freq__ppsmp = ((freq__hz * _pitchModAmount) + _fineTune) / sample_rate; // periods per sample
             _freqPhPSmp = (uint)(freq__ppsmp * PHASE_MAX);

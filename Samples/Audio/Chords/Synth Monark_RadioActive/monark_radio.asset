@@ -12,18 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: monark_radio
   m_EditorClassIdentifier: 
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
-  loopSettings:
-    enabled: 0
-    loopStart: 0
-    loopLength: 0
-    crossFadeDuration: 0
-  volume: 0.6
   audioClips:
   - {fileID: 8300000, guid: e28d39d28b1ea4ea78db36598c6e0163, type: 3}
   - {fileID: 8300000, guid: d86e651cc803a46ffb733f01aaae4ddd, type: 3}
@@ -61,8 +49,56 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e131dacd4e57440899b58bddd4643b40, type: 3}
   - {fileID: 8300000, guid: b8871459c0311447da5db2a0fb8eb091, type: 3}
   - {fileID: 8300000, guid: 81d2b80e48f994eb1b680800eb550be3, type: 3}
-  noteClips: []
+  noteClips:
+  - {fileID: 11400000, guid: e4efadd9407aa4d92829a57c7174a3da, type: 2}
+  - {fileID: 11400000, guid: e72da2187ed8c47e081aeb958b7a06b0, type: 2}
+  - {fileID: 11400000, guid: 3f5a9597c16c440ec9ba8a6b2af231c9, type: 2}
+  - {fileID: 11400000, guid: 489ae75ff0bd14e58a0ba28d8e79404f, type: 2}
+  - {fileID: 11400000, guid: 4cc6b5f658ac84a5c9cac8d243b6b5cb, type: 2}
+  - {fileID: 11400000, guid: a8b046a5d624c44e89befb81909f45c1, type: 2}
+  - {fileID: 11400000, guid: b316d3bebfab94680bfcf300f97383e6, type: 2}
+  - {fileID: 11400000, guid: 050dbfe390a6f40eb90a3e3f4ed83afa, type: 2}
+  - {fileID: 11400000, guid: c21b79169cbf54372a129935a167cafa, type: 2}
+  - {fileID: 11400000, guid: bc57aba02350d47c283b350db9acb198, type: 2}
+  - {fileID: 11400000, guid: 40095ac0e768b45c68af78d12c7c14f4, type: 2}
+  - {fileID: 11400000, guid: ff20556d506944fcf8859df7b989cc91, type: 2}
+  - {fileID: 11400000, guid: 810d77684bc284aefbac62cee8cb876e, type: 2}
+  - {fileID: 11400000, guid: 5fccee31e496047488311b738b77d64d, type: 2}
+  - {fileID: 11400000, guid: db1c2911a385d4125b1d7ac63fcd4636, type: 2}
+  - {fileID: 11400000, guid: 06e29cba744cf4f53b741372254f5c1e, type: 2}
+  - {fileID: 11400000, guid: d13d447531d854c1b89cfb03baa404c0, type: 2}
+  - {fileID: 11400000, guid: 6b69947b96aea4c39adf9197fcbcac70, type: 2}
+  - {fileID: 11400000, guid: 88cb18f5812364e6c8f9c5a089142660, type: 2}
+  - {fileID: 11400000, guid: 1e68db7b556db44208a6eb5476fa7d50, type: 2}
+  - {fileID: 11400000, guid: 9f5fc0301ad2f44cb841718245b11bc6, type: 2}
+  - {fileID: 11400000, guid: 6ad8e55970b67465e889a0777ac7b5cd, type: 2}
+  - {fileID: 11400000, guid: 14628375832954aa8a636f81c9fb433b, type: 2}
+  - {fileID: 11400000, guid: 7bb037af340a34ebe90ef3dcf3cdf40a, type: 2}
+  - {fileID: 11400000, guid: 1f42b225dacf042a0a2a82326bd2fb3e, type: 2}
+  - {fileID: 11400000, guid: 4fe82ed58ee6d4dfd9c6e0cd86ab2524, type: 2}
+  - {fileID: 11400000, guid: 7de80ad6b96884d80b9f176b578ae3f6, type: 2}
+  - {fileID: 11400000, guid: 0b3dab114e26547a5bc7a33b6f4ae100, type: 2}
+  - {fileID: 11400000, guid: dfc12752e9a9a498da5b0683c277a4be, type: 2}
+  - {fileID: 11400000, guid: b9e4f6fb5138a4396a52df2c2db1569d, type: 2}
+  - {fileID: 11400000, guid: 31e38f75522c54094bda32e9a0318604, type: 2}
+  - {fileID: 11400000, guid: c3211dde539d343fb936dfb8f3abca34, type: 2}
+  - {fileID: 11400000, guid: 1b13141ab45d94aaeb86a603ad51016e, type: 2}
+  - {fileID: 11400000, guid: a4f4261181a154b9e841979f33d5ce76, type: 2}
+  - {fileID: 11400000, guid: 8386da47b0a794f0290e141a65d324f0, type: 2}
+  - {fileID: 11400000, guid: 238ce6150d6c44b7d852c2bcf8146829, type: 2}
   stopDuration: 0.1
   instrumentType: 0
   clipSelectType: 0
-  clipType: 0
+  clipType: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 0.226
