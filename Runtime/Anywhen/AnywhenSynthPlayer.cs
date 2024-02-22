@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
+using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
@@ -46,7 +47,7 @@ namespace Anywhen
             {
                 if (synth.Preset == synthPreset) return synth;
             }
-            
+
 
             return null;
         }
@@ -58,7 +59,6 @@ namespace Anywhen
             var thisSynth = GetSynth(synthPreset);
             if (thisSynth)
             {
-                
                 double playTime = 0;
                 if (rate != AnywhenMetronome.TickRate.None)
                 {
@@ -66,13 +66,15 @@ namespace Anywhen
                 }
 
                 e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
-                
-                
 
                 thisSynth.HandleEventScheduled(e, playTime);
+                
+                if (e is { state: NoteEvent.EventTypes.NoteOn, duration: > 0 })
+                {
+                    var noteOff = new NoteEvent(NoteEvent.EventTypes.NoteOff);
+                    thisSynth.HandleEventScheduled(noteOff, playTime + e.duration);
+                }
             }
-
-            
         }
 
         public void RegisterPreset(AnywhenSynthPreset synthPreset)

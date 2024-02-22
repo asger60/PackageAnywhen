@@ -401,7 +401,6 @@ namespace Editor.AnySong
                     break;
                 case InspectorModes.Pattern:
                     AnyPatternEditor.DrawInspector( CurrentSectionTrack.EditorCurrentPattern);
-                    
                     //CurrentSectionTrack.EditorCurrentPattern.DrawInspector();
                     break;
                 case InspectorModes.Track:

@@ -73,13 +73,18 @@ namespace Anywhen.Synth.Synth
         public AnywhenSynthPreset Preset => _preset;
 
         /// Public interface
-        public bool HandleEventScheduled(NoteEvent noteEvent, double eventTime)
+        public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
             //queueLock = true;
-            
-            bool result = _queue.Enqueue(noteEvent, eventTime);
-            //queueLock = false;
-            return result;
+            if (noteEvent.state == NoteEvent.EventTypes.NoteOff)
+            {
+                noteEvent.velocity = _currentNoteEvent.velocity;
+
+                _eventIsWaiting = false;
+            }
+
+
+            _queue.Enqueue(noteEvent, scheduledPlayTime);
         }
 
 
@@ -149,7 +154,7 @@ namespace Anywhen.Synth.Synth
                         var newFilter = modGO.AddComponent<SynthFilterLowPass>();
                         newFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFilter;
-                        
+
 
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.BandPass:
@@ -159,7 +164,7 @@ namespace Anywhen.Synth.Synth
                         var newHPFilter = phFilterGO.AddComponent<SynthFilterBandPass>();
                         newHPFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newHPFilter;
-                        
+
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.Formant:
 
@@ -168,7 +173,7 @@ namespace Anywhen.Synth.Synth
                         var newFormantFilter = formantFilterGO.AddComponent<SynthFilterFormant>();
                         newFormantFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFormantFilter;
-                        
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -423,7 +428,7 @@ namespace Anywhen.Synth.Synth
 
             // Cache this for the entire buffer, we don't need to check for
             // every sample if new events have been enqueued.
-            // This assumes that no other metdods call GetFrontAndDequeue.
+            // This assumes that no other methods call GetFrontAndDequeue.
             int queueSize = _queue.GetSize();
 
             // Render loop
@@ -484,14 +489,12 @@ namespace Anywhen.Synth.Synth
                 }
 
 
-                // Render sample
-                float ampMod = 1;
+                float ampMod = _currentNoteEvent.velocity;
                 foreach (var ampModifier in amplitudeModifiers)
                 {
                     ampMod *= ampModifier.Process();
                 }
 
-                //ampMod /= 2f;
 
                 float voiceFreqMod = 1;
                 foreach (var frequencyModifier in _voiceFrequencyModifiers)

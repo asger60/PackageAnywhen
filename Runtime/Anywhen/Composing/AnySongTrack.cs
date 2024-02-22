@@ -9,7 +9,7 @@ namespace Anywhen.Composing
     {
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
-        private NoteEvent _lastTrackNote;
+        private NoteEvent _lastTrackEvent;
 
 
         public void Init()
@@ -28,10 +28,11 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public void TriggerNoteOn(AnyPatternStep anyPatternStep)
+        public void TriggerNoteOn(AnyPatternStep anyPatternStep, float volume)
         {
-            _lastTrackNote = anyPatternStep.GetEvent();
-            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackNote, instrument);
+            _lastTrackEvent = anyPatternStep.GetEvent();
+            _lastTrackEvent.velocity *= volume; 
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument);
         }
 
 

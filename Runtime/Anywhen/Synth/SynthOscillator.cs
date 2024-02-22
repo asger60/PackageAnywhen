@@ -161,7 +161,6 @@ namespace Anywhen.Synth
         /// Basic oscillators
         /// <returns></returns>
         // Library sine
-        // - possibly slow
         private float Sin()
         {
             float ph01 = _phase / PHASE_MAX;

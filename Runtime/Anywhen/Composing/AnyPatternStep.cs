@@ -56,7 +56,7 @@ public class AnyPatternStep
     public void TriggerStep(AnySongTrack track)
     {
         if (noteOn || noteOff)
-            track.TriggerNoteOn(this);
+            track.TriggerNoteOn(this, track.volume);
     }
 
     public NoteEvent GetEvent()

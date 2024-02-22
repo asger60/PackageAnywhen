@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class AnysongPlayer : MonoBehaviour
@@ -33,7 +34,7 @@ public class AnysongPlayer : MonoBehaviour
                 AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
             }
         }
-        
+
         AnywhenMetronome.Instance.OnTick16 += OnTick16;
     }
 
@@ -66,7 +67,7 @@ public class AnysongPlayer : MonoBehaviour
             Release();
             Load(songObject);
         }
-        
+
         int step = AnywhenRuntime.Metronome.Sub16;
 
         _trackSteps.Clear();
@@ -99,11 +100,10 @@ public class AnysongPlayer : MonoBehaviour
                 }
             }
 
-            bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
+            if (Random.Range(0, 1f) < bestStep.step.chance)
+                bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
         }
     }
-
-    
 
 
     public void Release()

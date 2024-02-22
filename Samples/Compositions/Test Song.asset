@@ -231,7 +231,7 @@ MonoBehaviour:
           notes: 0c000000
           addNoteRandom: 0
           noteRandom: 3
-          chance: 1
+          chance: 0.59
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -794,7 +794,7 @@ MonoBehaviour:
           notes: 000000000200000004000000
           addNoteRandom: 1
           noteRandom: 2
-          chance: 1
+          chance: 0.54
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -824,29 +824,29 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.42
           mixWeight: 0.2074292
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.76
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.4
           mixWeight: 0.44639486
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.75
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -870,7 +870,7 @@ MonoBehaviour:
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.49
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -924,13 +924,13 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.61
           mixWeight: 0.2802032
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.64
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -966,7 +966,7 @@ MonoBehaviour:
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.53
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -992,17 +992,17 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.28
           mixWeight: 0.30171624
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.77
           expression: 1
       anySongTrack:
         volume: 1
@@ -1023,29 +1023,29 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.42
           mixWeight: 0.2074292
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.76
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.4
           mixWeight: 0.44639486
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.75
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1069,7 +1069,7 @@ MonoBehaviour:
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.49
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1123,13 +1123,13 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.61
           mixWeight: 0.2802032
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.64
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1165,7 +1165,7 @@ MonoBehaviour:
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.53
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1191,17 +1191,17 @@ MonoBehaviour:
           noteRandom: 0
           chance: 1
           expression: 1
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.28
           mixWeight: 0.30171624
           isChord: 0
           notes: 00000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.77
           expression: 1
     - patterns:
       - triggerChances:
@@ -1313,7 +1313,7 @@ MonoBehaviour:
           notes: 04000000
           addNoteRandom: 0
           noteRandom: 1
-          chance: 1
+          chance: 0.58
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1361,7 +1361,7 @@ MonoBehaviour:
           notes: 07000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.6
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1512,7 +1512,7 @@ MonoBehaviour:
           notes: 04000000
           addNoteRandom: 0
           noteRandom: 1
-          chance: 1
+          chance: 0.58
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1560,7 +1560,7 @@ MonoBehaviour:
           notes: 07000000
           addNoteRandom: 0
           noteRandom: 0
-          chance: 1
+          chance: 0.6
           expression: 1
         - noteOn: 0
           noteOff: 0
@@ -1606,7 +1606,7 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.49
           mixWeight: 0.5
           isChord: 1
           notes: 0000000002000000
@@ -1750,7 +1750,7 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.29
+          velocity: 0.72
           mixWeight: 0.5
           isChord: 1
           notes: 0c0000000e00000010000000
@@ -1805,7 +1805,7 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.49
           mixWeight: 0.5
           isChord: 1
           notes: 0000000002000000
@@ -1949,7 +1949,7 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.29
+          velocity: 0.72
           mixWeight: 0.5
           isChord: 1
           notes: 0c0000000e00000010000000
@@ -1967,6 +1967,401 @@ MonoBehaviour:
           notes: 0c0000000a0000000e000000
           addNoteRandom: 1
           noteRandom: 4
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+    - patterns:
+      - triggerChances:
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+      anySongTrack:
+        volume: 1
+        instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
+      EditorCurrentPattern:
+        triggerChances:
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
           chance: 1
           expression: 1
         - noteOn: 0
@@ -3408,6 +3803,208 @@ MonoBehaviour:
       anySongTrack:
         volume: 1
         instrument: {fileID: 11400000, guid: 549e1213dbc06401697be2ca01fb160b, type: 2}
+      EditorCurrentPattern:
+        triggerChances: []
+        steps: []
+    - patterns:
+      - triggerChances:
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+      anySongTrack:
+        volume: 1
+        instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
       EditorCurrentPattern:
         triggerChances: []
         steps: []
@@ -5024,6 +5621,208 @@ MonoBehaviour:
       EditorCurrentPattern:
         triggerChances: []
         steps: []
+    - patterns:
+      - triggerChances:
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          isChord: 0
+          notes: 00000000
+          addNoteRandom: 0
+          noteRandom: 0
+          chance: 1
+          expression: 1
+      anySongTrack:
+        volume: 1
+        instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
+      EditorCurrentPattern:
+        triggerChances: []
+        steps: []
   Tracks:
   - volume: 1
     instrument: {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
@@ -5035,5 +5834,7 @@ MonoBehaviour:
     instrument: {fileID: 11400000, guid: f47bf2bd102ff46229e7f2cba82c5838, type: 2}
   - volume: 0.37
     instrument: {fileID: 11400000, guid: 549e1213dbc06401697be2ca01fb160b, type: 2}
+  - volume: 1
+    instrument: {fileID: 11400000, guid: 75303f44370e847bb8783f09f4a8e016, type: 2}
   coverGraphic: PlayerGraphic1
   playerBackgroundColor: {r: 0.95686275, g: 0.3372549, b: 0.3372549, a: 1}
