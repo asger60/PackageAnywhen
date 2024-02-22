@@ -31,7 +31,7 @@ namespace Anywhen.Composing
         public void TriggerNoteOn(AnyPatternStep anyPatternStep, float volume)
         {
             _lastTrackEvent = anyPatternStep.GetEvent();
-            _lastTrackEvent.velocity *= volume; 
+            _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument);
         }
 
@@ -42,7 +42,7 @@ namespace Anywhen.Composing
             var track = this;
             track.instrument = (AnywhenInstrument)EditorGUILayout.ObjectField("Instrument", track.instrument,
                 typeof(AnywhenInstrument));
-            track.volume = EditorGUILayout.FloatField("Volume", track.volume);
+            track.volume = EditorGUILayout.Slider("Volume", track.volume, 0, 1);
         }
 #endif
     }

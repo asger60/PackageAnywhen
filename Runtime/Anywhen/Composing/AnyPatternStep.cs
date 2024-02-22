@@ -97,8 +97,6 @@ public class AnyPatternStep
         step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
         step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
         step.chance = EditorGUILayout.Slider("Chance", step.chance, 0, 1);
-        //step.expression = EditorGUILayout.Slider("Expression", step.expression, 0, 1);
-        //step.mixWeight = EditorGUILayout.FloatField("Weight", step.mixWeight);
 
         step.isChord = EditorGUILayout.Toggle("Is Chord", step.isChord);
 
@@ -134,4 +132,8 @@ public class AnyPatternStep
             step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
     }
 #endif
+    public void ToggleNoteOn()
+    {
+        noteOn = !noteOn;
+    }
 }
