@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Anywhen.Composing;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Editor.AnySong
@@ -21,7 +24,7 @@ namespace Editor.AnySong
 
         private Event _currentEvent;
 
-        private Color _hilightedColor = new Color(0.8f, 0.9f, 1);
+        private Color _hilightedColor = new Color(0.8f, 0.9f, 0, 1);
 
         private enum InspectorModes
         {
@@ -51,10 +54,69 @@ namespace Editor.AnySong
                     window.Show(true);
                     EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
                     Debug.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
+                    window.titleContent = new GUIContent("Anysong window");
+                    window.minSize = new Vector2(450, 200);
+                    window.maxSize = new Vector2(1920, 720);
                 }
             }
         }
 
+        private VisualElement _mRightPane;
+        private VisualElement _tracksPanel;
+
+        public void CreateGUI()
+        {
+            // Get a list of all sprites in the project
+
+            if (CurrentSong == null)
+            {
+                CurrentSong = Selection.activeObject as AnySongObject;
+                if (CurrentSong == null)
+                {
+                    CurrentSong = AssetDatabase.LoadAssetAtPath<AnySongObject>(EditorPrefs.GetString("AnyLoadedSong"));
+                }
+            }
+
+            if (CurrentSection == null && CurrentSong != null) CurrentSection = CurrentSong.Sections[0];
+
+
+            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
+            rootVisualElement.Add(splitView);
+            _tracksPanel = new VisualElement();
+            splitView.Add(_tracksPanel);
+            _mRightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
+            splitView.Add(_mRightPane);
+            HandleSongTracks_visual();
+
+            //_tracksPanel.makeItem = () => new Label();
+            //_tracksPanel.bindItem = (item, index) => { ((Label)item).text = allObjects[index].name; };
+            //_tracksPanel.itemsSource = allObjects;
+            //
+            //_tracksPanel.selectionChanged += OnSpriteSelectionChange;
+            //_tracksPanel.selectedIndex = m_SelectedIndex;
+            //_tracksPanel.selectionChanged += (items) => { m_SelectedIndex = _tracksPanel.selectedIndex; };
+        }
+
+        public int m_SelectedIndex = -1;
+
+        private void OnSpriteSelectionChange(IEnumerable<object> selectedItems)
+        {
+            // Clear all previous content from the pane
+            _mRightPane.Clear();
+
+            // Get the selected sprite
+            var selectedSprite = selectedItems.First() as Sprite;
+            if (selectedSprite == null)
+                return;
+
+            // Add a new Image control and display the sprite
+            var spriteImage = new Image();
+            spriteImage.scaleMode = ScaleMode.ScaleToFit;
+            spriteImage.sprite = selectedSprite;
+
+            // Add the Image control to the right-hand pane
+            _mRightPane.Add(spriteImage);
+        }
 
         public static AnysongEditorWindow Create(Object asset)
         {
@@ -65,6 +127,7 @@ namespace Editor.AnySong
 
         void OnGUI()
         {
+            return;
             if (CurrentSong == null)
             {
                 CurrentSong = Selection.activeObject as AnySongObject;
@@ -237,6 +300,93 @@ namespace Editor.AnySong
             EditorGUILayout.EndHorizontal();
         }
 
+        void HandleSongTracks_visual()
+        {
+            _tracksPanel.Add(new Label("Tracks"));
+            var spacer = new ToolbarSpacer
+            {
+                style = { height = 8 }
+            };
+
+            for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+            {
+                var thisTrack = CurrentSong.Tracks[i];
+                var instrumentName =
+                    thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
+
+                var button = new Button
+                {
+                    name = i.ToString(),
+                    tabIndex = i,
+                    text = instrumentName,
+                    style =
+                    {
+                        height = 40,
+                        //backgroundColor = CurrentSongTrack == CurrentSong.Tracks[i] ? _hilightedColor : Color.black
+                    }
+                };
+                button.RegisterCallback((ClickEvent ev) =>
+                {
+                    if (ev.currentTarget is Button btn)
+                    {
+                        CurrentSectionTrack = CurrentSection.tracks[btn.tabIndex];
+                        _currentTrackIndex = btn.tabIndex;
+                        CurrentSectionTrack.EditorCurrentPattern = CurrentSectionTrack.patterns[0];
+                        CurrentSongTrack = thisTrack;
+                        CurrentStep = null;
+                        SetInspectorMode(InspectorModes.Track);
+                    }
+                });
+                _tracksPanel.Add(button);
+                _tracksPanel.Add(spacer);
+            }
+
+            var buttons = new VisualElement
+            {
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+
+
+            var addButton = new Button
+            {
+                text = "+"
+            };
+            addButton.RegisterCallback((ClickEvent ev) =>
+            {
+                var newTrack = new AnySongTrack();
+                newTrack.Init();
+                CurrentSong.Tracks.Add(newTrack);
+                foreach (var section in CurrentSong.Sections)
+                {
+                    section.AddSongTrack(newTrack);
+                }
+            });
+
+            var deleteButton = new Button
+            {
+                text = "-"
+            };
+            deleteButton.RegisterCallback((ClickEvent ev) =>
+            {
+                foreach (var section in CurrentSong.Sections)
+                {
+                    section.RemoveSongTrack(CurrentSong.Tracks[_currentTrackIndex]);
+                }
+
+                CurrentSong.Tracks.RemoveAt(_currentTrackIndex);
+
+                _currentTrackIndex = 0;
+            });
+            buttons.Add(addButton);
+            buttons.Add(deleteButton);
+            _tracksPanel.Add(buttons);
+
+            
+        }
 
         void HandleSongTracks()
         {
@@ -343,6 +493,7 @@ namespace Editor.AnySong
                         thisStep.notes[0] -= (int)e.delta.y;
                     }
                 }
+
                 buttonRect.height = 20;
                 GUI.Button(buttonRect, buttonText);
 
