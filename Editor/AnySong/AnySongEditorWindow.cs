@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Anywhen.Composing;
+using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -22,11 +21,15 @@ namespace Editor.AnySong
         //public static AnyPattern CurrentPattern { get; private set; }
         public static AnyPatternStep CurrentStep { get; private set; }
 
+        public static SerializedProperty CurrentStepProperty { get; private set; }
+
         private Event _currentEvent;
 
-        private Color _hilightedColor = new Color(0.8f, 0.9f, 0, 1);
+        public static Color ColorHilight1 = new Color(0.8f, 0.9f, 0, 1);
+        public static Color ColorHilight2 = new Color(0.8f, 0.4f, 0, 1);
+        public static Color ColorGrey = new Color(0.35f, 0.3f, 0.3f, 1);
 
-        private enum InspectorModes
+        public enum InspectorModes
         {
             Sections,
             Pattern,
@@ -61,13 +64,14 @@ namespace Editor.AnySong
             }
         }
 
-        private VisualElement _mRightPane;
+        private VisualElement _sequencesPanel;
         private VisualElement _tracksPanel;
+        private VisualElement _inspectorPanel;
 
         public void CreateGUI()
         {
             // Get a list of all sprites in the project
-
+            rootVisualElement.Clear();
             if (CurrentSong == null)
             {
                 CurrentSong = Selection.activeObject as AnySongObject;
@@ -80,43 +84,158 @@ namespace Editor.AnySong
             if (CurrentSection == null && CurrentSong != null) CurrentSection = CurrentSong.Sections[0];
 
 
-            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
-            rootVisualElement.Add(splitView);
-            _tracksPanel = new VisualElement();
-            splitView.Add(_tracksPanel);
-            _mRightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
-            splitView.Add(_mRightPane);
-            HandleSongTracks_visual();
+            VisualElement threeColumnsPanel = new VisualElement()
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row
+                }
+            };
 
-            //_tracksPanel.makeItem = () => new Label();
-            //_tracksPanel.bindItem = (item, index) => { ((Label)item).text = allObjects[index].name; };
-            //_tracksPanel.itemsSource = allObjects;
-            //
-            //_tracksPanel.selectionChanged += OnSpriteSelectionChange;
-            //_tracksPanel.selectedIndex = m_SelectedIndex;
-            //_tracksPanel.selectionChanged += (items) => { m_SelectedIndex = _tracksPanel.selectedIndex; };
+            rootVisualElement.Add(threeColumnsPanel);
+
+            //var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
+            //rootVisualElement.Add(splitView);
+            _tracksPanel = new ScrollView(ScrollViewMode.Vertical)
+            {
+                style = { width = 300, }
+            };
+
+            _inspectorPanel = new ScrollView(ScrollViewMode.Vertical)
+            {
+                style = { width = 500, }
+            };
+
+            _sequencesPanel = new ScrollView(ScrollViewMode.Vertical)
+            {
+                style = { flexBasis = new StyleLength(Length.Percent(100)) }
+            };
+
+            threeColumnsPanel.Add(_tracksPanel);
+            threeColumnsPanel.Add(_sequencesPanel);
+            threeColumnsPanel.Add(_inspectorPanel);
+
+
+            AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            AnysongInspectorView.Draw(_inspectorPanel);
+
+            HandleTracksLogic();
+            HandleSequencesLogic();
         }
 
-        public int m_SelectedIndex = -1;
-
-        private void OnSpriteSelectionChange(IEnumerable<object> selectedItems)
+        void HandleTracksLogic()
         {
-            // Clear all previous content from the pane
-            _mRightPane.Clear();
+            _tracksPanel.Query<Button>("TrackButton").ForEach(button =>
+            {
+                button.RegisterCallback((ClickEvent ev) =>
+                {
+                    if (ev.currentTarget is Button btn)
+                    {
+                        _currentTrackIndex = btn.tabIndex;
+                        CurrentSongTrack = CurrentSong.Tracks[btn.tabIndex];
+                        SetInspectorMode2(InspectorModes.Track);
+                    }
+                });
+            });
 
-            // Get the selected sprite
-            var selectedSprite = selectedItems.First() as Sprite;
-            if (selectedSprite == null)
-                return;
+            _tracksPanel.Q<Button>("AddTrackButton").RegisterCallback((ClickEvent ev) =>
+            {
+                var newTrack = new AnySongTrack();
+                newTrack.Init();
+                CurrentSong.Tracks.Add(newTrack);
+                foreach (var section in CurrentSong.Sections)
+                {
+                    section.AddSongTrack(newTrack);
+                }
 
-            // Add a new Image control and display the sprite
-            var spriteImage = new Image();
-            spriteImage.scaleMode = ScaleMode.ScaleToFit;
-            spriteImage.sprite = selectedSprite;
+                CreateGUI();
+            });
 
-            // Add the Image control to the right-hand pane
-            _mRightPane.Add(spriteImage);
+            _tracksPanel.Q<Button>("RemoveTrackButton").RegisterCallback((ClickEvent ev) =>
+            {
+                foreach (var section in CurrentSong.Sections)
+                {
+                    section.RemoveSongTrack(CurrentSong.Tracks[_currentTrackIndex]);
+                }
+
+                CurrentSong.Tracks.RemoveAt(_currentTrackIndex);
+                _currentTrackIndex = 0;
+                CreateGUI();
+            });
         }
+
+        void HandleSequencesLogic()
+        {
+            _sequencesPanel.Query<Button>("StepButton").ForEach(button =>
+            {
+        
+                button.RegisterCallback<PointerDownEvent>(OnPointerDownEvent, TrickleDown.TrickleDown);
+
+                
+                button.RegisterCallback((ClickEvent evt) =>
+                {
+                    Debug.Log("tap");
+                    if (evt.currentTarget is Button btn)
+                    {
+                        var str = btn.tooltip.Split("-");
+                        int stepIndex = Int32.Parse(str[0]);
+                        int trackIndex = Int32.Parse(str[1]);
+                        int patternIndex = Int32.Parse(str[2]);
+
+                        var song = new SerializedObject(CurrentSong);
+                        var section = song.FindProperty("Sections").GetArrayElementAtIndex(0);
+                        var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(trackIndex);
+                        var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(patternIndex);
+                        var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(stepIndex);
+
+                        CurrentStepProperty = step;
+
+                        CurrentStep = CurrentSong.Sections[0].tracks[trackIndex].patterns[patternIndex]
+                            .steps[stepIndex];
+                        SetInspectorMode2(InspectorModes.Step);
+                    }
+                });
+            });
+        }
+        
+        private void OnPointerDownEvent(PointerDownEvent evt)
+        {
+            Debug.Log($"Pointer LEAVE Event. Target: {(evt.target as VisualElement).name}");
+        }
+
+        void SetInspectorMode2(InspectorModes inspectorMode)
+        {
+            switch (inspectorMode)
+            {
+                case InspectorModes.Sections:
+                    break;
+                case InspectorModes.Pattern:
+                    break;
+                case InspectorModes.Track:
+                    AnysongInspectorView.DrawTrack(CurrentSongTrack);
+                    _inspectorPanel.Q<Slider>("Volume").RegisterCallback((ClickEvent ev) =>
+                    {
+                        if (ev.currentTarget is Slider slider)
+                        {
+                            Debug.Log(slider?.value);
+                            CurrentSongTrack.volume = slider.value;
+                        }
+                    });
+                    break;
+                case InspectorModes.Step:
+                    AnysongInspectorView.DrawStep(CurrentStepProperty,
+                        () =>
+                        {
+                            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+                            HandleSequencesLogic();
+                        });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(inspectorMode), inspectorMode, null);
+            }
+        }
+
 
         public static AnysongEditorWindow Create(Object asset)
         {
@@ -230,7 +349,7 @@ namespace Editor.AnySong
 
             for (int i = 0; i < CurrentSong.Sections.Count; i++)
             {
-                GUI.backgroundColor = CurrentSection == CurrentSong.Sections[i] ? _hilightedColor : Color.white;
+                GUI.backgroundColor = CurrentSection == CurrentSong.Sections[i] ? ColorHilight1 : Color.white;
 
                 if (GUILayout.Button("Section " + i))
                 {
@@ -270,7 +389,7 @@ namespace Editor.AnySong
             for (var i = 0; i < track.patterns.Count; i++)
             {
                 GUI.backgroundColor = CurrentSectionTrack.EditorCurrentPattern == track.patterns[i]
-                    ? _hilightedColor
+                    ? ColorHilight1
                     : Color.white;
 
                 if (GUILayout.Button("Pattern " + i))
@@ -300,93 +419,6 @@ namespace Editor.AnySong
             EditorGUILayout.EndHorizontal();
         }
 
-        void HandleSongTracks_visual()
-        {
-            _tracksPanel.Add(new Label("Tracks"));
-            var spacer = new ToolbarSpacer
-            {
-                style = { height = 8 }
-            };
-
-            for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-            {
-                var thisTrack = CurrentSong.Tracks[i];
-                var instrumentName =
-                    thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
-
-                var button = new Button
-                {
-                    name = i.ToString(),
-                    tabIndex = i,
-                    text = instrumentName,
-                    style =
-                    {
-                        height = 40,
-                        //backgroundColor = CurrentSongTrack == CurrentSong.Tracks[i] ? _hilightedColor : Color.black
-                    }
-                };
-                button.RegisterCallback((ClickEvent ev) =>
-                {
-                    if (ev.currentTarget is Button btn)
-                    {
-                        CurrentSectionTrack = CurrentSection.tracks[btn.tabIndex];
-                        _currentTrackIndex = btn.tabIndex;
-                        CurrentSectionTrack.EditorCurrentPattern = CurrentSectionTrack.patterns[0];
-                        CurrentSongTrack = thisTrack;
-                        CurrentStep = null;
-                        SetInspectorMode(InspectorModes.Track);
-                    }
-                });
-                _tracksPanel.Add(button);
-                _tracksPanel.Add(spacer);
-            }
-
-            var buttons = new VisualElement
-            {
-                style =
-                {
-                    alignItems = Align.Center,
-                    flexDirection = FlexDirection.Row
-                }
-            };
-
-
-            var addButton = new Button
-            {
-                text = "+"
-            };
-            addButton.RegisterCallback((ClickEvent ev) =>
-            {
-                var newTrack = new AnySongTrack();
-                newTrack.Init();
-                CurrentSong.Tracks.Add(newTrack);
-                foreach (var section in CurrentSong.Sections)
-                {
-                    section.AddSongTrack(newTrack);
-                }
-            });
-
-            var deleteButton = new Button
-            {
-                text = "-"
-            };
-            deleteButton.RegisterCallback((ClickEvent ev) =>
-            {
-                foreach (var section in CurrentSong.Sections)
-                {
-                    section.RemoveSongTrack(CurrentSong.Tracks[_currentTrackIndex]);
-                }
-
-                CurrentSong.Tracks.RemoveAt(_currentTrackIndex);
-
-                _currentTrackIndex = 0;
-            });
-            buttons.Add(addButton);
-            buttons.Add(deleteButton);
-            _tracksPanel.Add(buttons);
-
-            
-        }
 
         void HandleSongTracks()
         {
@@ -395,7 +427,7 @@ namespace Editor.AnySong
             for (var trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
             {
                 GUI.backgroundColor =
-                    CurrentSongTrack == CurrentSong.Tracks[trackIndex] ? _hilightedColor : Color.white;
+                    CurrentSongTrack == CurrentSong.Tracks[trackIndex] ? ColorHilight1 : Color.white;
 
                 var thisTrack = CurrentSong.Tracks[trackIndex];
                 var instrumentName =
@@ -469,7 +501,7 @@ namespace Editor.AnySong
 
                 if (thisStep.noteOn && thisStep.isChord) color = Color.blue;
 
-                GUI.backgroundColor = thisStep == CurrentStep ? _hilightedColor : Color.white;
+                GUI.backgroundColor = thisStep == CurrentStep ? ColorHilight1 : Color.white;
                 GUI.color = color;
 
                 Event e = Event.current;

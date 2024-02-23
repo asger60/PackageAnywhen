@@ -8,13 +8,15 @@ using Random = UnityEngine.Random;
 
 
 [Serializable]
-public class AnyPatternStep
+public class AnyPatternStep 
 {
     public bool noteOn;
     public bool noteOff;
-    public float duration;
-    public float offset;
-    public float velocity;
+    [Range(0, 10f)]public float duration;
+    [Range(-1, 1f)] public float offset;
+    [Range(0, 1f)]public float velocity;
+
+
 
     [Range(0, 1f)] public float mixWeight;
     public bool isChord;
@@ -25,6 +27,7 @@ public class AnyPatternStep
 
     [Range(0, 1f)] public float chance = 1;
     [Range(0, 1f)] public float expression = 0;
+
 
     public int GetNote()
     {

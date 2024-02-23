@@ -9,7 +9,7 @@ namespace Anywhen.Composing
     public class AnyPattern
     {
         public List<float> triggerChances = new List<float>();
-        [HideInInspector] public List<AnyPatternStep> steps;
+        public List<AnyPatternStep> steps;
 
         public void Init()
         {
@@ -98,4 +98,3 @@ namespace Anywhen.Composing
 #endif
     }
 }
-

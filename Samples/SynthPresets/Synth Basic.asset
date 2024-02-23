@@ -58,11 +58,28 @@ MonoBehaviour:
   - {fileID: 6811349930590322744}
   filterSettings:
   - {fileID: -3404739314560019365}
-  pitchModifiers: []
+  pitchModifiers:
+  - {fileID: 1153670296297723966}
   amplitudeModifiers:
   - {fileID: 6082009569404465041}
   filterModifiers:
   - {fileID: -3099369571112257952}
+--- !u!114 &1153670296297723966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2696701b9eb054b50aac1114417c9ed0, type: 3}
+  m_Name: Pitch LFO
+  m_EditorClassIdentifier: 
+  frequency: 5
+  fadeInDuration: 0.82
+  retrigger: 1
+  sendAmount: 5
 --- !u!114 &6082009569404465041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,10 +92,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
-  attack: 0.12
+  attack: 0.2
   decay: 0.16
-  sustain: 0.304
-  release: 0.25
+  sustain: 0.459
+  release: 0.88
   sendAmount: 100
 --- !u!114 &6811349930590322744
 MonoBehaviour:
