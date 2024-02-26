@@ -68,7 +68,7 @@ public class AnysongPlayer : MonoBehaviour
             Load(songObject);
         }
 
-        int step = AnywhenRuntime.Metronome.Sub16;
+        int stepIndex = AnywhenRuntime.Metronome.Sub16;
 
         _trackSteps.Clear();
 
@@ -79,28 +79,31 @@ public class AnysongPlayer : MonoBehaviour
             {
                 var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex].GetPattern(AnywhenMetronome.Instance.CurrentBar);
 
-                float dist = MathF.Abs(variation - (thisPattern.steps[step].mixWeight + sectionIndex));
-                _trackSteps.Add(new TrackStep(thisPattern.steps[step], dist, trackIndex));
+                float dist = MathF.Abs(variation - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
+                _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
             }
         }
 
 
         for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
         {
-            float bestDistance = float.MaxValue;
-            TrackStep bestStep = _trackSteps[0];
-            foreach (var trackStep in _trackSteps)
-            {
-                if (trackStep.trackIndex != trackIndex) continue;
-                if (trackStep.distance < bestDistance)
-                {
-                    bestDistance = trackStep.distance;
-                    bestStep = trackStep;
-                }
-            }
-
-            if (Random.Range(0, 1f) < bestStep.step.chance)
-                bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
+            //float bestDistance = float.MaxValue;
+            //TrackStep bestStep = _trackSteps[0];
+            //foreach (var trackStep in _trackSteps)
+            //{
+            //    if (trackStep.trackIndex != trackIndex) continue;
+            //    if (trackStep.distance < bestDistance)
+            //    {
+            //        bestDistance = trackStep.distance;
+            //        bestStep = trackStep;
+            //    }
+            //}
+            //if (Random.Range(0, 1f) < bestStep.step.chance)
+            //    bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
+            var track = _currentSong.Sections[0].tracks[trackIndex];
+            var step = track.patterns[track.currentEditPatternIndex].steps[stepIndex];
+            if (Random.Range(0, 1f) < step.chance)
+                step.TriggerStep(_currentSong.Tracks[trackIndex]);
         }
     }
 

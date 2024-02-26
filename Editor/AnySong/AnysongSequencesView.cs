@@ -7,11 +7,13 @@ namespace Editor.AnySong
 {
     public static class AnysongSequencesView
     {
-        private static List<VisualElement> _stepButtonsHolder = new List<VisualElement>();
+        private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
+        private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
 
         public static void Draw(VisualElement parent, AnySection currentSection)
         {
-            _stepButtonsHolder.Clear();
+            _stepButtonsHolders.Clear();
+            _patternButtonsHolders.Clear();
             parent.Clear();
             parent.Add(new Label("Sequences"));
             Debug.Log("draw sequences");
@@ -20,34 +22,57 @@ namespace Editor.AnySong
                 for (var i = 0; i < currentSection.tracks.Count; i++)
                 {
                     var track = currentSection.tracks[i];
-                    DrawTrackPattern(parent, track);
-                    DrawPatternSteps(parent, track, i, 0);
+                    DrawTrackPattern(parent, i);
+                    DrawPatternSteps(parent, track, i, track.currentEditPatternIndex);
                 }
             }
         }
 
-        public static void RefreshPatterns(AnySection currentSection)
+        public static void SetPatternIndex(int trackIndex)
         {
-            if (currentSection != null)
+            var thisTrack = AnysongEditorWindow.CurrentSong.Sections[0].tracks[trackIndex];
+
+            _patternButtonsHolders[trackIndex].Query<Button>("PatternButton").ForEach(button =>
             {
-                for (var i = 0; i < currentSection.tracks.Count; i++)
-                {
-                    var track = currentSection.tracks[i];
-                    RefreshPatternSteps(track, i, 0);
-                }
+                var str = button.tooltip.Split("-");
+
+                int patternIndex = Int32.Parse(str[2]);
+
+                button.style.backgroundColor =
+                    patternIndex == thisTrack.currentEditPatternIndex
+                        ? AnysongEditorWindow.ColorGreyDark
+                        : AnysongEditorWindow.ColorGreyDefault;
+            });
+
+
+            int i = 0;
+            _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
+            {
+                button.tooltip = i + "-" + trackIndex + "-" + thisTrack.currentEditPatternIndex;
+                i++;
+            });
+        }
+
+        public static void RefreshPatterns()
+        {
+            for (var i = 0; i < AnysongEditorWindow.CurrentSong.Sections[0].tracks.Count; i++)
+            {
+                RefreshPatternSteps(i, 0);
             }
         }
 
-        private static void DrawTrackPattern(VisualElement parent, AnySectionTrack track)
+        private static void DrawTrackPattern(VisualElement parent, int trackIndex)
         {
-            if (track == null) return;
-
             var addButton = new Button
             {
+                name = "AddButton",
+                tooltip = trackIndex.ToString(),
                 text = "+"
             };
             var removeButton = new Button
             {
+                name = "RemoveButton",
+                tooltip = trackIndex.ToString(),
                 text = "-"
             };
             var patternsButtonHolder = new VisualElement
@@ -58,19 +83,29 @@ namespace Editor.AnySong
                     flexDirection = FlexDirection.Row
                 }
             };
+
+            _patternButtonsHolders.Add(patternsButtonHolder);
+
             patternsButtonHolder.Add(addButton);
             patternsButtonHolder.Add(removeButton);
+            var thisTrack = AnysongEditorWindow.CurrentSong.Sections[0].tracks[trackIndex];
 
-            for (var i = 0; i < track.patterns.Count; i++)
+
+            for (var patternIndex = 0; patternIndex < thisTrack.patterns.Count; patternIndex++)
             {
                 var button = new Button
                 {
                     name = "PatternButton",
-                    tabIndex = i,
-                    text = "P" + i,
+                    tooltip = 0 + "-" + trackIndex + "-" + patternIndex,
+
+                    text = patternIndex.ToString(),
                     style =
                     {
-                        width = 100,
+                        width = 40,
+                        backgroundColor =
+                            patternIndex == thisTrack.currentEditPatternIndex
+                                ? AnysongEditorWindow.ColorGreyDark
+                                : AnysongEditorWindow.ColorGreyDefault,
                     }
                 };
                 patternsButtonHolder.Add(button);
@@ -82,7 +117,7 @@ namespace Editor.AnySong
         private static void DrawPatternSteps(VisualElement parent, AnySectionTrack currentSectionTrack, int trackIndex,
             int patternIndex)
         {
-            if (currentSectionTrack?.EditorCurrentPattern == null) return;
+            //if (currentSectionTrack?.EditorCurrentPattern == null) return;
 
             var stepButtonsHolder = new VisualElement
             {
@@ -94,7 +129,7 @@ namespace Editor.AnySong
                 }
             };
             parent.Add(stepButtonsHolder);
-            _stepButtonsHolder.Add(stepButtonsHolder);
+            _stepButtonsHolders.Add(stepButtonsHolder);
 
             for (int stepIndex = 0; stepIndex < currentSectionTrack.patterns[0].steps.Count; stepIndex++)
             {
@@ -119,10 +154,9 @@ namespace Editor.AnySong
         }
 
 
-        private static void RefreshPatternSteps(AnySectionTrack currentSectionTrack, int trackIndex, int patternIndex)
+        private static void RefreshPatternSteps(int trackIndex, int patternIndex)
         {
-            if (currentSectionTrack?.EditorCurrentPattern == null) return;
-            foreach (var stepButtonHolder in _stepButtonsHolder)
+            foreach (var stepButtonHolder in _stepButtonsHolders)
             {
                 stepButtonHolder.Query<Button>("StepButton").ForEach(button =>
                 {
@@ -139,7 +173,7 @@ namespace Editor.AnySong
         {
             if (thisStep.noteOn && thisStep.IsChord) return AnysongEditorWindow.ColorHilight1;
 
-            return !thisStep.noteOn ? AnysongEditorWindow.ColorHilight1 : AnysongEditorWindow.ColorGrey;
+            return !thisStep.noteOn ? AnysongEditorWindow.ColorHilight1 : AnysongEditorWindow.ColorGreyAccent;
         }
 
         static Color GetBackgroundColorFromButtonState(AnyPatternStep thisStep)
@@ -147,18 +181,18 @@ namespace Editor.AnySong
             if (thisStep.noteOn && thisStep.IsChord) return AnysongEditorWindow.ColorHilight3;
 
             return thisStep.noteOn ? AnysongEditorWindow.ColorHilight1 :
-                thisStep.noteOff ? AnysongEditorWindow.ColorHilight2 : AnysongEditorWindow.ColorGrey;
+                thisStep.noteOff ? AnysongEditorWindow.ColorHilight2 : AnysongEditorWindow.ColorGreyAccent;
         }
 
 
         public static void HilightStepIndex(int trackIndex, int stepIndex)
         {
-            _stepButtonsHolder[trackIndex].Query<Button>("StepButton").ForEach(button =>
+            _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
             {
                 var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
                 var str = button.tooltip.Split("-");
                 int buttonStep = Int32.Parse(str[0]); // todo - maybe figure out a better way to retrieve the index
-                
+
                 button.style.backgroundColor = buttonStep == stepIndex
                     ? Color.black
                     : GetBackgroundColorFromButtonState(thisStep);

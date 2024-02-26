@@ -20,12 +20,11 @@ public class AnyPatternStep
 
 
     public List<int> chordNotes = new List<int>();
-    
-  
+
+
     [Range(0, 1f)] public float chance = 1;
     [Range(0, 1f)] public float expression = 0;
 
-    
 
     public int rootNote;
 
@@ -51,7 +50,7 @@ public class AnyPatternStep
         duration = 1;
         expression = 1;
         velocity = 1;
-        chordNotes= new List<int> { 0 };
+        chordNotes = new List<int> { };
         mixWeight = 0.5f;
     }
 
@@ -134,5 +133,4 @@ public class AnyPatternStep
         //    step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
     }
 #endif
-
 }

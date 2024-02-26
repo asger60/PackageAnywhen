@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
-using UnityEditor;
 
 [Serializable]
 public class AnySectionTrack
 {
     public List<AnyPattern> patterns;
     public AnySongTrack anySongTrack;
-    public AnyPattern EditorCurrentPattern;
+
+    public int currentEditPatternIndex;
+    
+    
     public void Init(AnySongTrack songSongTrack)
     {
         anySongTrack = songSongTrack;
@@ -52,15 +54,4 @@ public class AnySectionTrack
     }
 
     
-
-#if UNITY_EDITOR
-    public void DrawInspector()
-    {
-        var track = this;
-        anySongTrack.instrument = (AnywhenInstrument)EditorGUILayout.ObjectField("Instrument",
-            anySongTrack.instrument,
-            typeof(AnywhenInstrument));
-        anySongTrack.volume = EditorGUILayout.FloatField("Volume", anySongTrack.volume);
-    }
-#endif
 }
