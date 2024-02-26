@@ -77,8 +77,7 @@ public class AnysongPlayer : MonoBehaviour
         {
             for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
             {
-                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
-                    .GetPattern(AnywhenMetronome.Instance.CurrentBar);
+                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex].GetPattern(AnywhenMetronome.Instance.CurrentBar);
 
                 float dist = MathF.Abs(variation - (thisPattern.steps[step].mixWeight + sectionIndex));
                 _trackSteps.Add(new TrackStep(thisPattern.steps[step], dist, trackIndex));
@@ -103,6 +102,11 @@ public class AnysongPlayer : MonoBehaviour
             if (Random.Range(0, 1f) < bestStep.step.chance)
                 bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
         }
+    }
+
+    public int GetStepForTrack(int trackIndex)
+    {
+        return AnywhenRuntime.Metronome.Sub16;
     }
 
 

@@ -55,50 +55,36 @@ namespace Editor.AnySong
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
+
             var boxNotes = new Box();
             boxNotes.Add(new Label("Note stuff"));
-            
-            bool isChord = step.FindPropertyRelative("isChord").boolValue;
-            //if (isChord)
+            var notesBox = new Box()
             {
-                var notesBox = new Box()
-                {
-                    style = { flexDirection = FlexDirection.Row }
-                };
-                var notesArray = step.FindPropertyRelative("notes");
-                var rootNoteBox = new IntegerField
-                {
-                    value = notesArray.GetArrayElementAtIndex(0).intValue,
-                    label = "Root note"
-                };
-                notesBox.Add(rootNoteBox);
+                style = { flexDirection = FlexDirection.Row }
+            };
 
-                for (int i = 1; i < notesArray.arraySize; i++)
-                {
-                    var noteBox = new IntegerField
-                    {
-                        value = notesArray.GetArrayElementAtIndex(i).intValue
-                    };
-                    notesBox.Add(noteBox);
-                }
+            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
+            
+            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), didUpdate));
+            
 
-                boxNotes.Add(notesBox);
-            }
+            boxNotes.Add(notesBox);
 
 
             _parent.Add(boxNotes);
         }
 
- 
+
         static PropertyField CreatePropertyFieldWithCallback(SerializedProperty property, Action didUpdate)
         {
             var propertyField = new PropertyField(property);
             propertyField.BindProperty(property);
-            propertyField.RegisterCallback<ChangeEvent<bool>>((ev) =>
-            {
-                if (ev.newValue != ev.previousValue)
-                    didUpdate?.Invoke();
-            });
+            propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
+            //propertyField.RegisterCallback<ChangeEvent<bool>>((ev) =>
+            //{
+            //    if (ev.newValue != ev.previousValue)
+            //        didUpdate?.Invoke();
+            //});
 
             return propertyField;
         }

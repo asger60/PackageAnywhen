@@ -2,48 +2,47 @@ using System;
 using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
-using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
 [Serializable]
-public class AnyPatternStep 
+public class AnyPatternStep
 {
     public bool noteOn;
     public bool noteOff;
-    [Range(0, 10f)]public float duration;
+    [Range(0, 10f)] public float duration;
     [Range(-1, 1f)] public float offset;
-    [Range(0, 1f)]public float velocity;
-
+    [Range(0, 1f)] public float velocity;
 
 
     [Range(0, 1f)] public float mixWeight;
-    public bool isChord;
-    public List<int> notes;
+    public bool IsChord => chordNotes.Count > 0;
 
-    public bool addNoteRandom;
-    public int noteRandom;
 
+    public List<int> chordNotes = new List<int>();
+    
+  
     [Range(0, 1f)] public float chance = 1;
     [Range(0, 1f)] public float expression = 0;
 
+    
 
-    public int GetNote()
-    {
-        return notes.Count > 1 ? notes[Random.Range(0, notes.Count)] : notes[0];
-    }
+    public int rootNote;
+
 
     public int[] GetNotes()
     {
-        int[] r = new int[notes.Count];
-        for (var i = 0; i < notes.Count; i++)
+        if (!IsChord)
+            return new[] { rootNote };
+
+        var chord = new int[chordNotes.Count + 1];
+        chord[0] = rootNote;
+        for (int i = 0; i < chordNotes.Count; i++)
         {
-            var note = notes[i];
-            r[i] = note + Random.Range(-noteRandom, noteRandom);
+            chord[i + 1] = rootNote + chordNotes[i];
         }
 
-        return r;
+        return chord;
     }
 
 
@@ -52,7 +51,7 @@ public class AnyPatternStep
         duration = 1;
         expression = 1;
         velocity = 1;
-        notes = new List<int> { 0 };
+        chordNotes= new List<int> { 0 };
         mixWeight = 0.5f;
     }
 
@@ -80,10 +79,10 @@ public class AnyPatternStep
     public AnyPatternStep Clone()
     {
         var clone = (AnyPatternStep)MemberwiseClone();
-        clone.notes = new List<int>();
-        foreach (var note in notes)
+        clone.chordNotes = new List<int>();
+        foreach (var note in chordNotes)
         {
-            clone.notes.Add(note);
+            clone.chordNotes.Add(note);
         }
 
 
@@ -93,50 +92,47 @@ public class AnyPatternStep
 #if UNITY_EDITOR
     public void DrawInspector()
     {
-        var step = this;
-        step.noteOn = EditorGUILayout.Toggle("Note On", step.noteOn);
-        step.noteOff = EditorGUILayout.Toggle("Note Off", step.noteOff);
-        step.duration = EditorGUILayout.FloatField("Duration", step.duration);
-        step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
-        step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
-        step.chance = EditorGUILayout.Slider("Chance", step.chance, 0, 1);
-
-        step.isChord = EditorGUILayout.Toggle("Is Chord", step.isChord);
-
-        if (step.isChord)
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
-            for (int i = 0; i < step.notes.Count; i++)
-            {
-                step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
-            }
-
-
-            if (GUILayout.Button("+", GUILayout.Width(20)))
-            {
-                step.notes.Add(new int());
-            }
-
-            if (GUILayout.Button("-", GUILayout.Width(20)))
-            {
-                step.notes.RemoveAt(step.notes.Count - 1);
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-        else
-        {
-            step.notes[0] = EditorGUILayout.IntField("Note", step.notes[0]);
-        }
-
-        step.addNoteRandom = EditorGUILayout.Toggle("Add Note Random", step.addNoteRandom);
-        if (step.addNoteRandom)
-            step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
+        //var step = this;
+        //step.noteOn = EditorGUILayout.Toggle("Note On", step.noteOn);
+        //step.noteOff = EditorGUILayout.Toggle("Note Off", step.noteOff);
+        //step.duration = EditorGUILayout.FloatField("Duration", step.duration);
+        //step.offset = EditorGUILayout.Slider("Nudge", step.offset, -1, 1);
+        //step.velocity = EditorGUILayout.Slider("Velocity", step.velocity, 0, 1);
+        //step.chance = EditorGUILayout.Slider("Chance", step.chance, 0, 1);
+//
+        ////step.IsChord = EditorGUILayout.Toggle("Is Chord", step.IsChord);
+//
+        //if (step.IsChord)
+        //{
+        //    EditorGUILayout.BeginHorizontal();
+        //    EditorGUILayout.LabelField("Notes", GUILayout.Width(150));
+        //    for (int i = 0; i < step.notes.Count; i++)
+        //    {
+        //        step.notes[i] = EditorGUILayout.IntField("", step.notes[i], GUILayout.Width(20));
+        //    }
+//
+//
+        //    if (GUILayout.Button("+", GUILayout.Width(20)))
+        //    {
+        //        step.notes.Add(new int());
+        //    }
+//
+        //    if (GUILayout.Button("-", GUILayout.Width(20)))
+        //    {
+        //        step.notes.RemoveAt(step.notes.Count - 1);
+        //    }
+//
+        //    EditorGUILayout.EndHorizontal();
+        //}
+        //else
+        //{
+        //    step.notes[0] = EditorGUILayout.IntField("Note", step.notes[0]);
+        //}
+//
+        //step.addNoteRandom = EditorGUILayout.Toggle("Add Note Random", step.addNoteRandom);
+        //if (step.addNoteRandom)
+        //    step.noteRandom = EditorGUILayout.IntField("Note random", step.noteRandom);
     }
 #endif
-    public void ToggleNoteOn()
-    {
-        noteOn = !noteOn;
-    }
+
 }
