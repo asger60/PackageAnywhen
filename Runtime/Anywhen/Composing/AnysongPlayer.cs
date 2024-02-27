@@ -101,9 +101,11 @@ public class AnysongPlayer : MonoBehaviour
             //if (Random.Range(0, 1f) < bestStep.step.chance)
             //    bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
             var track = _currentSong.Sections[0].tracks[trackIndex];
-            var step = track.patterns[track.currentEditPatternIndex].steps[stepIndex];
+            var step = track.GetPattern(AnywhenMetronome.Instance.CurrentBar).steps[stepIndex];
             if (Random.Range(0, 1f) < step.chance)
+            {
                 step.TriggerStep(_currentSong.Tracks[trackIndex]);
+            }
         }
     }
 

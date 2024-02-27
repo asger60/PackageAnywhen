@@ -27,6 +27,7 @@ namespace Anywhen
                 initialProgressionPattern =
                     Resources.Load<AnywhenProgressionPatternObject>("Progressions/BasicProgression");
             }
+
             if (anywhenScale == null)
             {
                 anywhenScale =
@@ -46,6 +47,9 @@ namespace Anywhen
 
         private void OnNextBar()
         {
+            _currentPatternStep++;
+            _currentPatternStep =
+                (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
             if (!_rootOverridden)
             {
                 _rootNote = _currentProgressionPattern == null
@@ -57,12 +61,6 @@ namespace Anywhen
             {
                 _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
             }
-
-            _currentPatternStep++;
-            _currentPatternStep =
-                (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
-            //if (_currentPatternStep >= _currentPattern.patternSteps.Length-1)
-            //    _currentPatternStep = 0;
         }
 
 
@@ -74,7 +72,7 @@ namespace Anywhen
             return _currentAnywhenScale.notes[(int)Mathf.Repeat(noteStep, _currentAnywhenScale.notes.Length)] + octave +
                    _rootNote;
         }
-        
+
         public int[] GetScaledNotes(int[] notes)
         {
             int[] returnNotes = new int[notes.Length];

@@ -9,6 +9,8 @@ public class AnySectionTrack
     public AnySongTrack anySongTrack;
 
     public int currentEditPatternIndex;
+
+
     
     
     public void Init(AnySongTrack songSongTrack)

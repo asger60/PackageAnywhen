@@ -22,6 +22,10 @@ namespace Editor.AnySong
         public static AnyPatternStep CurrentHoverStep { get; private set; }
 
         public static SerializedProperty CurrentStepProperty { get; private set; }
+        public static SerializedProperty CurrentPatternProperty { get; private set; }
+
+        private bool _currentPatternIsBase;
+        public static AnyPattern CurrentPattern { get; private set; }
 
         private Event _currentEvent;
 
@@ -211,7 +215,7 @@ namespace Editor.AnySong
                     {
                         _currentTrackIndex = btn.tabIndex;
                         CurrentSongTrack = CurrentSong.Tracks[btn.tabIndex];
-                        SetInspectorMode2(InspectorModes.Track);
+                        SetInspectorMode(InspectorModes.Track);
                     }
                 });
             });
@@ -268,6 +272,17 @@ namespace Editor.AnySong
 
                     AnysongSequencesView.SetPatternIndex(trackIndex);
                     AnysongSequencesView.RefreshPatterns();
+
+
+                    var song = new SerializedObject(CurrentSong);
+                    var section = song.FindProperty("Sections").GetArrayElementAtIndex(0);
+                    var trackProperty = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(trackIndex);
+                    var pattern = trackProperty.FindPropertyRelative("patterns").GetArrayElementAtIndex(patternIndex);
+
+                    CurrentPatternProperty = pattern;
+                    CurrentPattern = CurrentSong.Sections[0].tracks[trackIndex].patterns[patternIndex];
+                    _currentPatternIsBase = patternIndex == 0;
+                    SetInspectorMode(InspectorModes.Pattern);
                 });
             });
 
@@ -304,9 +319,7 @@ namespace Editor.AnySong
                     thisTrack.patterns.Remove(thisTrack.patterns[thisTrack.currentEditPatternIndex]);
                     thisTrack.currentEditPatternIndex -= 1;
                     AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
-                    
-                    //AnysongSequencesView.SetPatternIndex(trackIndex);
-                    //AnysongSequencesView.RefreshPatterns();
+
                     AnysongSequencesView.RefreshPatterns();
                     HandleSequencesLogic();
                     HandlePatternsLogic();
@@ -331,10 +344,10 @@ namespace Editor.AnySong
         private void OnPointerDownEvent(PointerDownEvent evt)
         {
             if (evt.currentTarget is not Button btn) return;
-            CurrentStepProperty = GetSerializedPropertyFromTooltip(btn.tooltip);
+            CurrentStepProperty = GetSerializedStepPropertyFromTooltip(btn.tooltip);
             CurrentStep = GetPatternStepFromTooltip(btn.tooltip);
 
-            SetInspectorMode2(InspectorModes.Step);
+            SetInspectorMode(InspectorModes.Step);
             if (evt.button == 0)
             {
                 CurrentStep.noteOn = !CurrentStep.noteOn;
@@ -357,7 +370,7 @@ namespace Editor.AnySong
         }
 
 
-        SerializedProperty GetSerializedPropertyFromTooltip(string tooltip)
+        SerializedProperty GetSerializedStepPropertyFromTooltip(string tooltip)
         {
             var str = tooltip.Split("-");
             int stepIndex = Int32.Parse(str[0]);
@@ -382,13 +395,14 @@ namespace Editor.AnySong
             return CurrentSong.Sections[0].tracks[trackIndex].patterns[patternIndex].steps[stepIndex];
         }
 
-        void SetInspectorMode2(InspectorModes inspectorMode)
+        void SetInspectorMode(InspectorModes inspectorMode)
         {
             switch (inspectorMode)
             {
                 case InspectorModes.Sections:
                     break;
                 case InspectorModes.Pattern:
+                    AnysongInspectorView.DrawPattern(CurrentPatternProperty, _currentPatternIsBase, null);
                     break;
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack(CurrentSongTrack);
@@ -402,8 +416,7 @@ namespace Editor.AnySong
                     });
                     break;
                 case InspectorModes.Step:
-                    AnysongInspectorView.DrawStep(CurrentStepProperty,
-                        AnysongSequencesView.RefreshPatterns);
+                    AnysongInspectorView.DrawStep(CurrentStepProperty, AnysongSequencesView.RefreshPatterns);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(inspectorMode), inspectorMode, null);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Anywhen.Composing
 {
@@ -10,11 +11,10 @@ namespace Anywhen.Composing
         public List<float> triggerChances = new List<float>();
         public List<AnyPatternStep> steps;
 
-        
 
         public void Init()
         {
-            triggerChances.Add(0);
+            triggerChances.AddRange(new[] { 0f, 0f, 0f, 0f });
 
             steps = new List<AnyPatternStep>();
             for (int i = 0; i < 16; i++)
@@ -44,9 +44,7 @@ namespace Anywhen.Composing
         {
             currentBar = (int)Mathf.Repeat(currentBar, triggerChances.Count);
 
-            return triggerChances[currentBar] > 0.5f;
+            return triggerChances[currentBar] > Random.Range(0, 100);
         }
-
-
     }
 }

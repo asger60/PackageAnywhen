@@ -1,5 +1,6 @@
 using System;
 using Anywhen.Composing;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -16,6 +17,114 @@ namespace Editor.AnySong
         {
             _parent = parent;
             _parent.Add(new Label("Inspector"));
+        }
+
+        static VisualElement Spacer()
+        {
+            var spacer = new VisualElement()
+            {
+                style = { minHeight = 10 }
+            };
+            return spacer;
+        }
+
+        public static void DrawPattern(SerializedProperty pattern, bool isBase, Action didUpdate)
+        {
+            _parent.Clear();
+            Draw(_parent);
+
+
+            
+            _parent.Add(Spacer());
+
+            var triggerRowLabel = new Label()
+            {
+                style = { width = 100, }
+            };
+
+            var barRowLabel = new Label()
+            {
+                style = { width = 100, }
+            };
+
+
+            var patternsBox = new Box();
+
+            var patternHeaderRow = new VisualElement()
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
+
+            var patternRow = new VisualElement()
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
+
+            barRowLabel.text = "";
+            patternHeaderRow.Add(barRowLabel);
+
+            triggerRowLabel.text = "Trigger chance";
+            patternRow.Add(triggerRowLabel);
+
+            var triggerArrayProperty = pattern.FindPropertyRelative("triggerChances");
+
+            for (var i = 0; i < triggerArrayProperty.arraySize; i++)
+            {
+                var property = triggerArrayProperty.GetArrayElementAtIndex(i);
+
+                var chanceField = new FloatField
+                {
+                    value = triggerArrayProperty.GetArrayElementAtIndex(i).floatValue,
+                    style = { minWidth = 30, },
+                    focusable = !isBase,
+                };
+                chanceField.BindProperty(property);
+
+                var barLabel = new Label()
+                {
+                    text = i.ToString(),
+                    style =
+                    {
+                        justifyContent = new StyleEnum<Justify>(Justify.Center),
+                        alignContent = new StyleEnum<Align>(Align.Center),
+                        minWidth = 37,
+                        paddingLeft = 11,
+                    },
+                };
+
+                patternHeaderRow.Add(barLabel);
+                patternRow.Add(chanceField);
+            }
+
+            patternsBox.Add(new Label("Triggering"));
+            patternsBox.Add(Spacer());
+            patternsBox.Add(patternHeaderRow);
+            patternsBox.Add(patternRow);
+            _parent.Add(patternsBox);
+
+
+            _parent.Add(Spacer());
+
+            var boxUtils = new Box()
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
+            var copyButton = new Button
+            {
+                name = "CopyButton",
+                text = "Copy"
+            };
+
+            var pasteButton = new Button
+            {
+                name = "PasteButton",
+                text = "Paste"
+            };
+
+            boxUtils.Add(new Label("Utils"));
+            boxUtils.Add(copyButton);
+            boxUtils.Add(pasteButton);
+            _parent.Add(boxUtils);
         }
 
 
@@ -64,12 +173,9 @@ namespace Editor.AnySong
             };
 
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
-            
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), didUpdate));
-            
 
             boxNotes.Add(notesBox);
-
 
             _parent.Add(boxNotes);
         }
@@ -80,12 +186,6 @@ namespace Editor.AnySong
             var propertyField = new PropertyField(property);
             propertyField.BindProperty(property);
             propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
-            //propertyField.RegisterCallback<ChangeEvent<bool>>((ev) =>
-            //{
-            //    if (ev.newValue != ev.previousValue)
-            //        didUpdate?.Invoke();
-            //});
-
             return propertyField;
         }
     }
