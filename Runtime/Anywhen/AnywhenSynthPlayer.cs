@@ -28,7 +28,7 @@ namespace Anywhen
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
 
@@ -83,6 +83,7 @@ namespace Anywhen
             {
                 if (synth.Preset == null)
                 {
+                    print("set synth " + synthPreset.name);
                     synth.SetPreset(synthPreset);
                     break;
                 }

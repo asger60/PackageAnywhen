@@ -54,7 +54,7 @@ public class AnyPatternStep
         mixWeight = 0.5f;
     }
 
-    public void TriggerStep(AnySongTrack track)
+    public void TriggerStep(AnysongTrack track)
     {
         if (noteOn || noteOff)
             track.TriggerNoteOn(this, track.volume);

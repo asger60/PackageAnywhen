@@ -43,7 +43,6 @@ namespace Anywhen.Composing
         public bool TriggerOnBar(int currentBar)
         {
             currentBar = (int)Mathf.Repeat(currentBar, triggerChances.Count);
-
             return triggerChances[currentBar] > Random.Range(0, 100);
         }
     }

@@ -10,7 +10,7 @@ namespace Editor.AnySong
         private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
         private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
 
-        public static void Draw(VisualElement parent, AnySection currentSection)
+        public static void Draw(VisualElement parent, AnysongSection currentSection)
         {
             _stepButtonsHolders.Clear();
             _patternButtonsHolders.Clear();
@@ -114,7 +114,7 @@ namespace Editor.AnySong
             parent.Add(patternsButtonHolder);
         }
 
-        private static void DrawPatternSteps(VisualElement parent, AnySectionTrack currentSectionTrack, int trackIndex,
+        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex,
             int patternIndex)
         {
             //if (currentSectionTrack?.EditorCurrentPattern == null) return;

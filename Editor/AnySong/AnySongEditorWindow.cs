@@ -10,12 +10,12 @@ namespace Editor.AnySong
 {
     public class AnysongEditorWindow : EditorWindow
     {
-        public static AnySongObject CurrentSong { get; private set; }
-        public static AnySection CurrentSection { get; private set; }
+        public static AnysongObject CurrentSong { get; private set; }
+        public static AnysongSection CurrentSection { get; private set; }
 
-        public static AnySongTrack CurrentSongTrack { get; private set; }
+        public static AnysongTrack CurrentSongTrack { get; private set; }
 
-        public static AnySectionTrack CurrentSectionTrack { get; private set; }
+        public static AnysongSectionTrack CurrentSectionTrack { get; private set; }
 
         public static AnyPatternStep CurrentStep { get; private set; }
 
@@ -55,10 +55,10 @@ namespace Editor.AnySong
         [MenuItem("Anywhen/Anysong Editor")]
         public static void ShowModuleWindow()
         {
-            Object[] selection = Selection.GetFiltered(typeof(AnySongObject), SelectionMode.Assets);
+            Object[] selection = Selection.GetFiltered(typeof(AnysongObject), SelectionMode.Assets);
             if (selection.Length > 0)
             {
-                AnySongObject songObject = selection[0] as AnySongObject;
+                AnysongObject songObject = selection[0] as AnysongObject;
                 if (songObject != null)
                 {
                     AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
@@ -84,10 +84,10 @@ namespace Editor.AnySong
             rootVisualElement.Clear();
             if (CurrentSong == null)
             {
-                CurrentSong = Selection.activeObject as AnySongObject;
+                CurrentSong = Selection.activeObject as AnysongObject;
                 if (CurrentSong == null)
                 {
-                    CurrentSong = AssetDatabase.LoadAssetAtPath<AnySongObject>(EditorPrefs.GetString("AnyLoadedSong"));
+                    CurrentSong = AssetDatabase.LoadAssetAtPath<AnysongObject>(EditorPrefs.GetString("AnyLoadedSong"));
                 }
             }
 
@@ -222,7 +222,7 @@ namespace Editor.AnySong
 
             _tracksPanel.Q<Button>("AddTrackButton").RegisterCallback((ClickEvent ev) =>
             {
-                var newTrack = new AnySongTrack();
+                var newTrack = new AnysongTrack();
                 newTrack.Init();
                 CurrentSong.Tracks.Add(newTrack);
                 foreach (var section in CurrentSong.Sections)
@@ -237,7 +237,7 @@ namespace Editor.AnySong
             {
                 foreach (var section in CurrentSong.Sections)
                 {
-                    section.RemoveSongTrack(CurrentSong.Tracks[_currentTrackIndex]);
+                    section.RemoveSongTrack(_currentTrackIndex);
                 }
 
                 CurrentSong.Tracks.RemoveAt(_currentTrackIndex);
@@ -354,7 +354,7 @@ namespace Editor.AnySong
             }
         }
 
-        public static AnySectionTrack GetTrackFromToolTip(string tooltip)
+        public static AnysongSectionTrack GetTrackFromToolTip(string tooltip)
         {
             var str = tooltip.Split("-");
             int trackIndex = Int32.Parse(str[1]);

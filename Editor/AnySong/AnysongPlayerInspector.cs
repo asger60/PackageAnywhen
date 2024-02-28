@@ -17,7 +17,7 @@ namespace Anywhen.Composing.Editor
         private float _currentWidth;
 
         AnimBool _showExtraFields;
-        private AnySongObject _currentSongObject;
+        private AnysongObject _currentSongObject;
 
         private void OnEnable()
         {
@@ -39,7 +39,7 @@ namespace Anywhen.Composing.Editor
                 new Rect(GetViewWidth() / 2f - (_currentWidth / 2), 30, _currentWidth,
                     _currentWidth / _textureAspect), _texture);
             _anysongPlayer.songObject =
-                (AnySongObject)EditorGUILayout.ObjectField("Song", _anysongPlayer.songObject, typeof(AnySongObject));
+                (AnysongObject)EditorGUILayout.ObjectField("Song", _anysongPlayer.songObject, typeof(AnysongObject));
 
 
             GUILayoutUtility.GetRect(_currentWidth, _currentWidth, 200, 300);

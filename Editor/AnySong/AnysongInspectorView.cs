@@ -128,14 +128,14 @@ namespace Editor.AnySong
         }
 
 
-        public static void DrawTrack(AnySongTrack track)
+        public static void DrawTrack(AnysongTrack track)
         {
             _parent.Clear();
             Draw(_parent);
 
             var fileField = new ObjectField("Instrument")
             {
-                objectType = typeof(AnywhenInspector),
+                objectType = typeof(AnywhenRuntimeInspector),
                 value = track.instrument
             };
 

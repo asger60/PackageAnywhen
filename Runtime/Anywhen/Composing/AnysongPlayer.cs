@@ -8,12 +8,12 @@ using Random = UnityEngine.Random;
 
 public class AnysongPlayer : MonoBehaviour
 {
-    public AnySongObject songObject;
+    public AnysongObject songObject;
     private AnywhenInstrument[] _instruments;
-    private AnySongObject _currentSong;
+    private AnysongObject _currentSong;
     private bool _isRunning;
-    private bool _loaded;
-
+    private bool _loaded = false;
+    public bool IsSongLoaded => _loaded;
     public float variation;
 
 
@@ -22,20 +22,18 @@ public class AnysongPlayer : MonoBehaviour
         Load(songObject);
     }
 
-    public void Load(AnySongObject anySong)
+    private void Load(AnysongObject anysong)
     {
         _loaded = true;
-        _currentSong = anySong;
-        _isRunning = true;
-        foreach (var track in anySong.Tracks)
+        _currentSong = anysong;
+
+        foreach (var track in anysong.Tracks)
         {
             if (track.instrument is AnywhenSynthPreset preset)
             {
                 AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
             }
         }
-
-        AnywhenMetronome.Instance.OnTick16 += OnTick16;
     }
 
     private NoteEvent[] _lastTrackNote;
@@ -77,7 +75,8 @@ public class AnysongPlayer : MonoBehaviour
         {
             for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
             {
-                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex].GetPattern(AnywhenMetronome.Instance.CurrentBar);
+                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
+                    .GetPattern(AnywhenMetronome.Instance.CurrentBar);
 
                 float dist = MathF.Abs(variation - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
                 _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
@@ -87,20 +86,10 @@ public class AnysongPlayer : MonoBehaviour
 
         for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
         {
-            //float bestDistance = float.MaxValue;
-            //TrackStep bestStep = _trackSteps[0];
-            //foreach (var trackStep in _trackSteps)
-            //{
-            //    if (trackStep.trackIndex != trackIndex) continue;
-            //    if (trackStep.distance < bestDistance)
-            //    {
-            //        bestDistance = trackStep.distance;
-            //        bestStep = trackStep;
-            //    }
-            //}
-            //if (Random.Range(0, 1f) < bestStep.step.chance)
-            //    bestStep.step.TriggerStep(_currentSong.Tracks[bestStep.trackIndex]);
             var track = _currentSong.Sections[0].tracks[trackIndex];
+            AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
+                .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
+
             var step = track.GetPattern(AnywhenMetronome.Instance.CurrentBar).steps[stepIndex];
             if (Random.Range(0, 1f) < step.chance)
             {
@@ -122,6 +111,10 @@ public class AnysongPlayer : MonoBehaviour
     }
 
 
+    public void SetMixIntensity(float value)
+    {
+    }
+
     public void Stop()
     {
         _isRunning = false;
@@ -134,5 +127,12 @@ public class AnysongPlayer : MonoBehaviour
         if (!_loaded) return;
         _isRunning = true;
         AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+    }
+
+    public float GetTrackProgress()
+    {
+        int trackLength = _currentSong.Sections[0].patternSteps.Length;
+        int currentBar = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
+        return (float)currentBar / trackLength;
     }
 }

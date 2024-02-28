@@ -7,7 +7,7 @@ namespace Anywhen
     {
         public int _rootNote = 0;
         public AnywhenScaleObject anywhenScale;
-        private AnywhenScaleObject _currentAnywhenScale;
+        public AnywhenScaleObject _currentAnywhenScale;
 
 
         public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
@@ -22,12 +22,12 @@ namespace Anywhen
 
         private void Start()
         {
-            if (initialProgressionPattern == null)
-            {
-                initialProgressionPattern =
-                    Resources.Load<AnywhenProgressionPatternObject>("Progressions/BasicProgression");
-            }
-
+            //if (initialProgressionPattern == null)
+            //{
+            //    initialProgressionPattern =
+            //        Resources.Load<AnywhenProgressionPatternObject>("Progressions/BasicProgression");
+            //}
+//
             if (anywhenScale == null)
             {
                 anywhenScale =
@@ -47,19 +47,21 @@ namespace Anywhen
 
         private void OnNextBar()
         {
-            _currentPatternStep++;
-            _currentPatternStep =
-                (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
-            if (!_rootOverridden)
+            if (_currentProgressionPattern)
             {
-                _rootNote = _currentProgressionPattern == null
-                    ? 0
-                    : _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
-            }
+                _currentPatternStep++;
+                _currentPatternStep =
+                    (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
+                
+                if (!_rootOverridden)
+                {
+                    _rootNote = _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
+                }
 
-            if (!_scaleOverridden)
-            {
-                _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
+                if (!_scaleOverridden)
+                {
+                    _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
+                }
             }
         }
 
@@ -100,6 +102,12 @@ namespace Anywhen
         {
             _rootNote = newRoot;
             _rootOverridden = true;
+        }
+
+        public void SetScaleProgression(AnywhenProgressionPatternObject.ProgressionStep step)
+        {
+            _currentAnywhenScale = step.anywhenScale;
+            _rootNote = step.rootNote;
         }
     }
 }
