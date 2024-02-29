@@ -22,33 +22,29 @@ namespace Editor.AnySong
                 for (var i = 0; i < currentSection.tracks.Count; i++)
                 {
                     var track = currentSection.tracks[i];
-                    DrawTrackPattern(parent, i);
-                    DrawPatternSteps(parent, track, i, track.currentEditPatternIndex);
+                    DrawTrackPattern(parent, i, 0);
+                    DrawPatternSteps(parent, track, i, 0);
                 }
             }
         }
 
-        public static void SetPatternIndex(int trackIndex)
+        public static void SetPatternIndexForTrack(int trackIndex, int patternIndex)
         {
-            var thisTrack = AnysongEditorWindow.CurrentSong.Sections[0].tracks[trackIndex];
-
             _patternButtonsHolders[trackIndex].Query<Button>("PatternButton").ForEach(button =>
             {
                 var str = button.tooltip.Split("-");
+                int thisPatternIndex = Int32.Parse(str[2]);
 
-                int patternIndex = Int32.Parse(str[2]);
-
-                button.style.backgroundColor =
-                    patternIndex == thisTrack.currentEditPatternIndex
-                        ? AnysongEditorWindow.ColorGreyDark
-                        : AnysongEditorWindow.ColorGreyDefault;
+                button.style.backgroundColor = thisPatternIndex == patternIndex
+                    ? AnysongEditorWindow.ColorGreyDark
+                    : AnysongEditorWindow.ColorGreyDefault;
             });
 
 
             int i = 0;
             _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
             {
-                button.tooltip = i + "-" + trackIndex + "-" + thisTrack.currentEditPatternIndex;
+                button.tooltip = i + "-" + trackIndex + "-" + patternIndex;
                 i++;
             });
         }
@@ -61,7 +57,7 @@ namespace Editor.AnySong
             }
         }
 
-        private static void DrawTrackPattern(VisualElement parent, int trackIndex)
+        private static void DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
         {
             var addButton = new Button
             {
@@ -103,7 +99,7 @@ namespace Editor.AnySong
                     {
                         width = 40,
                         backgroundColor =
-                            patternIndex == thisTrack.currentEditPatternIndex
+                            patternIndex == selectedPattern
                                 ? AnysongEditorWindow.ColorGreyDark
                                 : AnysongEditorWindow.ColorGreyDefault,
                     }
@@ -114,7 +110,8 @@ namespace Editor.AnySong
             parent.Add(patternsButtonHolder);
         }
 
-        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex,
+        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack,
+            int trackIndex,
             int patternIndex)
         {
             //if (currentSectionTrack?.EditorCurrentPattern == null) return;

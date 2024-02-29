@@ -24,7 +24,10 @@ MonoBehaviour:
     tracks:
     - patterns:
       - triggerChances:
-        - 0
+        - 100
+        - 100
+        - 100
+        - 100
         steps:
         - noteOn: 1
           noteOff: 0
@@ -189,7 +192,10 @@ MonoBehaviour:
       currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
-        - 0
+        - 100
+        - 100
+        - 100
+        - 100
         steps:
         - noteOn: 1
           noteOff: 0
@@ -354,7 +360,10 @@ MonoBehaviour:
       currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
-        - 0
+        - 100
+        - 100
+        - 100
+        - 100
         steps:
         - noteOn: 1
           noteOff: 0
@@ -519,7 +528,10 @@ MonoBehaviour:
       currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
-        - 0
+        - 100
+        - 100
+        - 100
+        - 100
         steps:
         - noteOn: 0
           noteOff: 0
@@ -684,7 +696,10 @@ MonoBehaviour:
       currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
-        - 0
+        - 100
+        - 100
+        - 100
+        - 100
         steps:
         - noteOn: 1
           noteOff: 0
@@ -758,6 +773,16 @@ MonoBehaviour:
           rootNote: 9
         - noteOn: 1
           noteOff: 0
+          duration: 0.59
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          chordNotes: 0200000003000000
+          chance: 0.807
+          expression: 1
+          rootNote: 5
+        - noteOn: 0
+          noteOff: 0
           duration: 0.04
           offset: 0
           velocity: 1
@@ -765,38 +790,28 @@ MonoBehaviour:
           chordNotes: 0200000003000000
           chance: 0.807
           expression: 1
-          rootNote: 9
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          chordNotes: 
-          chance: 1
-          expression: 1
-          rootNote: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          chordNotes: 
-          chance: 1
-          expression: 1
-          rootNote: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5
-          chordNotes: 
-          chance: 1
-          expression: 1
-          rootNote: 0
+          rootNote: 10
         - noteOn: 1
+          noteOff: 0
+          duration: 0.59
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          chordNotes: 0200000003000000
+          chance: 0.807
+          expression: 1
+          rootNote: 5
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 6
+        - noteOn: 0
           noteOff: 0
           duration: 0.15
           offset: 0
@@ -816,16 +831,16 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 6
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
-          duration: 1
+          duration: 0.59
           offset: 0
           velocity: 1
           mixWeight: 0.5
-          chordNotes: 
-          chance: 1
+          chordNotes: 0200000003000000
+          chance: 0.807
           expression: 1
-          rootNote: 0
+          rootNote: 9
         - noteOn: 1
           noteOff: 0
           duration: 0.27
@@ -838,14 +853,14 @@ MonoBehaviour:
           rootNote: 6
         - noteOn: 0
           noteOff: 0
-          duration: 1
+          duration: 0.15
           offset: 0
-          velocity: 1
+          velocity: 0.606
           mixWeight: 0.5
           chordNotes: 
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 2
       currentEditPatternIndex: 0
   Tracks:
   - volume: 0.782

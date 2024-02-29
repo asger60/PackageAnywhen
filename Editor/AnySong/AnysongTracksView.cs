@@ -16,13 +16,12 @@ namespace Editor.AnySong
             for (var i = 0; i < currentSong.Tracks.Count; i++)
             {
                 var thisTrack = currentSong.Tracks[i];
-                var instrumentName =
-                    thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
+                var instrumentName = thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
 
                 var button = new Button
                 {
                     name = "TrackButton",
-                    tabIndex = i,
+                    tooltip = 0 + "-" + i + "-" + 0,
                     text = instrumentName,
                     style =
                     {

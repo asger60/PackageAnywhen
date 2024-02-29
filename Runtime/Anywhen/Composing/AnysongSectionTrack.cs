@@ -7,8 +7,7 @@ public class AnysongSectionTrack
 {
     public List<AnyPattern> patterns;
 
-    public int currentEditPatternIndex;
-
+   
 
     
     

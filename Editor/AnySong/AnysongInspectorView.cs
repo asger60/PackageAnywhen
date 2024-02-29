@@ -1,6 +1,5 @@
 using System;
 using Anywhen.Composing;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -34,7 +33,6 @@ namespace Editor.AnySong
             Draw(_parent);
 
 
-            
             _parent.Add(Spacer());
 
             var triggerRowLabel = new Label()
@@ -105,49 +103,19 @@ namespace Editor.AnySong
 
             _parent.Add(Spacer());
 
-            var boxUtils = new Box()
-            {
-                style = { flexDirection = FlexDirection.Row }
-            };
-            var copyButton = new Button
-            {
-                name = "CopyButton",
-                text = "Copy"
-            };
 
-            var pasteButton = new Button
-            {
-                name = "PasteButton",
-                text = "Paste"
-            };
-
-            boxUtils.Add(new Label("Utils"));
-            boxUtils.Add(copyButton);
-            boxUtils.Add(pasteButton);
-            _parent.Add(boxUtils);
+            _parent.Add(CreateUtilsBox());
         }
 
 
-        public static void DrawTrack(AnysongTrack track)
+        public static void DrawTrack(SerializedProperty track)
         {
             _parent.Clear();
             Draw(_parent);
 
-            var fileField = new ObjectField("Instrument")
-            {
-                objectType = typeof(AnywhenRuntimeInspector),
-                value = track.instrument
-            };
+            _parent.Add(CreatePropertyFieldWithCallback(track.FindPropertyRelative("instrument"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(track.FindPropertyRelative("volume"), null));
 
-            var volumeSlider = new Slider(0, 1)
-            {
-                name = "Volume",
-                value = track.volume,
-                label = "Volume"
-            };
-
-            _parent.Add(fileField);
-            _parent.Add(volumeSlider);
         }
 
         public static void DrawStep(SerializedProperty step, Action didUpdate)
@@ -177,7 +145,37 @@ namespace Editor.AnySong
 
             boxNotes.Add(notesBox);
 
+
+            
+
+
             _parent.Add(boxNotes);
+            _parent.Add(Spacer());
+            _parent.Add(CreateUtilsBox());
+        }
+
+        static VisualElement CreateUtilsBox()
+        {
+            var utilsBox = new Box()
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
+            var copyButton = new Button
+            {
+                name = "CopyButton",
+                text = "Copy"
+            };
+
+            var pasteButton = new Button
+            {
+                name = "PasteButton",
+                text = "Paste"
+            };
+
+
+            utilsBox.Add(copyButton);
+            utilsBox.Add(pasteButton);
+            return utilsBox;
         }
 
 
