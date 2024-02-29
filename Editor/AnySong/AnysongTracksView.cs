@@ -7,6 +7,7 @@ namespace Editor.AnySong
     {
         public static void Draw(VisualElement parent, AnysongObject currentSong)
         {
+            parent.Clear();
             parent.Add(new Label("Tracks"));
             var spacer = new ToolbarSpacer
             {
@@ -64,5 +65,7 @@ namespace Editor.AnySong
 
             
         }
+
+        
     }
 }

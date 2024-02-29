@@ -82,6 +82,7 @@ namespace Editor.AnySong
                     window.titleContent = new GUIContent("Anysong window");
                     window.minSize = new Vector2(450, 200);
                     window.maxSize = new Vector2(1920, 720);
+                    window.CreateGUI();
                 }
             }
         }
@@ -92,7 +93,6 @@ namespace Editor.AnySong
 
         public void CreateGUI()
         {
-            // Get a list of all sprites in the project
             _currentSelection = new AnySelection
             {
                 CurrentPatternIndex = 0,
@@ -108,6 +108,24 @@ namespace Editor.AnySong
                 {
                     CurrentSong = AssetDatabase.LoadAssetAtPath<AnysongObject>(EditorPrefs.GetString("AnyLoadedSong"));
                 }
+            }
+
+
+            if (CurrentSong.tempo == 0)
+            {
+                Debug.Log("updating song tempo");
+                CurrentSong.tempo = 100;
+            }
+
+            if (CurrentSong.Sections.Count == 0)
+            {
+                CreateNewSection();
+            }
+
+
+            if (CurrentSong.Tracks.Count == 0)
+            {
+                CreateNewTrack();
             }
 
 
@@ -245,30 +263,47 @@ namespace Editor.AnySong
                 });
             });
 
-            _tracksPanel.Q<Button>("AddTrackButton").RegisterCallback((ClickEvent ev) =>
+            _tracksPanel.Q<Button>("AddTrackButton").RegisterCallback((ClickEvent ev) => { CreateNewTrack(); });
+            _tracksPanel.Q<Button>("RemoveTrackButton").RegisterCallback((ClickEvent ev) => { RemoveTrack(); });
+        }
+
+        void CreateNewTrack()
+        {
+            var newTrack = new AnysongTrack();
+            newTrack.Init();
+            CurrentSong.Tracks.Add(newTrack);
+            foreach (var section in CurrentSong.Sections)
             {
-                var newTrack = new AnysongTrack();
-                newTrack.Init();
-                CurrentSong.Tracks.Add(newTrack);
-                foreach (var section in CurrentSong.Sections)
-                {
-                    section.AddSongTrack(newTrack);
-                }
+                section.AddSongTrack(newTrack);
+            }
 
-                CreateGUI();
-            });
+            AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            HandleSequencesLogic();
+            HandleTracksLogic();
+        }
 
-            _tracksPanel.Q<Button>("RemoveTrackButton").RegisterCallback((ClickEvent ev) =>
+        void RemoveTrack()
+        {
+            foreach (var section in CurrentSong.Sections)
             {
-                foreach (var section in CurrentSong.Sections)
-                {
-                    section.RemoveSongTrack(_currentSelection.CurrentTrackIndex);
-                }
+                section.RemoveSongTrack(_currentSelection.CurrentTrackIndex);
+            }
 
-                CurrentSong.Tracks.RemoveAt(_currentSelection.CurrentTrackIndex);
-                _currentSelection.CurrentTrackIndex = 0;
-                CreateGUI();
-            });
+            CurrentSong.Tracks.RemoveAt(_currentSelection.CurrentTrackIndex);
+            _currentSelection.CurrentTrackIndex = 0;
+            
+            AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            HandleSequencesLogic();
+            HandleTracksLogic();
+        }
+
+        void CreateNewSection()
+        {
+            var newSection = new AnysongSection();
+            newSection.Init(CurrentSong.Tracks);
+            CurrentSong.Sections.Add(newSection);
         }
 
         void HandleSequencesLogic()
@@ -396,7 +431,7 @@ namespace Editor.AnySong
             selection.CurrentStepProperty = step;
             selection.CurrentSongTrackProperty = song.FindProperty("Tracks")
                 .GetArrayElementAtIndex(selection.CurrentTrackIndex);
-            
+
             return selection;
         }
 

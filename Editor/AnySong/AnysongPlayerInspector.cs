@@ -29,6 +29,7 @@ namespace Anywhen.Composing.Editor
         }
 
 
+        
         public override void OnInspectorGUI()
         {
             _currentWidth = Mathf.Min(_textureMaxWidth, GetViewWidth());

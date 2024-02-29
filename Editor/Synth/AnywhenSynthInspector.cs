@@ -18,14 +18,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE."
 
-using Synth;
 using UnityEditor;
 using UnityEngine;
 
 namespace UnitySynth.Runtime.Synth.Editor
 {
     [CustomEditor(typeof(Anywhen.Synth.Synth.AnywhenSynth)), CanEditMultipleObjects]
-    public class UnitySynthInspector : UnityEditor.Editor
+    public class AnywhenSynthInspector : UnityEditor.Editor
     {
         private enum OscilloscopeMode
         {
