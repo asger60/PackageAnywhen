@@ -11,7 +11,6 @@ namespace Anywhen.Composing
         public List<float> triggerChances = new List<float>();
         public List<AnyPatternStep> steps;
 
-
         public void Init()
         {
             triggerChances.AddRange(new[] { 0f, 0f, 0f, 0f });

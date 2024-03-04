@@ -52,11 +52,11 @@ namespace Anywhen.Composing.Editor
             GUI.backgroundColor = Color.black;
             if (_anysongPlayer.songObject != null)
             {
-                _anysongPlayer.variation =
-                    EditorGUILayout.Slider("Macro 1", _anysongPlayer.variation, 0,
+                _anysongPlayer.intensity =
+                    EditorGUILayout.Slider("Macro 1", _anysongPlayer.intensity, 0,
                         _anysongPlayer.songObject.Sections.Count - 1);
-                _anysongPlayer.variation =
-                    EditorGUILayout.Slider("Macro 2", _anysongPlayer.variation, 0,
+                _anysongPlayer.intensity =
+                    EditorGUILayout.Slider("Macro 2", _anysongPlayer.intensity, 0,
                         _anysongPlayer.songObject.Sections.Count - 1);
             }
 

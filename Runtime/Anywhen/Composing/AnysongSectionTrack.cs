@@ -1,51 +1,53 @@
 using System;
 using System.Collections.Generic;
-using Anywhen.Composing;
+using UnityEngine;
 
-[Serializable]
-public class AnysongSectionTrack
+namespace Anywhen.Composing
 {
-    public List<AnyPattern> patterns;
+    [Serializable]
+    public class AnysongSectionTrack
+    {
+        public List<AnyPattern> patterns;
 
-   
-
+        public AnimationCurve intensityMappingCurve;
     
     
-    public void Init(AnysongTrack songSongTrack)
-    {
-        patterns = new List<AnyPattern> { new() };
-        foreach (var pattern in patterns)
+        public void Init(AnysongTrack songSongTrack)
         {
-            pattern.Init();
-        }
-    }
-
-    public AnysongSectionTrack Clone()
-    {
-        var clone = new AnysongSectionTrack
-        {
-            patterns = new List<AnyPattern>()
-        };
-        for (var i = 0; i < 16; i++)
-        {
-            clone.patterns.Add(patterns[i].Clone());
+            patterns = new List<AnyPattern> { new() };
+            foreach (var pattern in patterns)
+            {
+                pattern.Init();
+            }
         }
 
-
-        return clone;
-    }
-
-
-    public AnyPattern GetPattern(int currentBar)
-    {
-        var pattern = patterns[0];
-        foreach (var anyPattern in patterns)
+        public AnysongSectionTrack Clone()
         {
-            if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
+            var clone = new AnysongSectionTrack
+            {
+                patterns = new List<AnyPattern>()
+            };
+            for (var i = 0; i < 16; i++)
+            {
+                clone.patterns.Add(patterns[i].Clone());
+            }
+
+
+            return clone;
         }
 
-        return pattern;
+
+        public AnyPattern GetPattern(int currentBar)
+        {
+            var pattern = patterns[0];
+            foreach (var anyPattern in patterns)
+            {
+                if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
+            }
+
+            return pattern;
+        }
+    
+    
     }
-    
-    
 }

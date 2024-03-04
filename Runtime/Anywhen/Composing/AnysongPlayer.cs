@@ -1,138 +1,144 @@
 using System;
 using System.Collections.Generic;
-using Anywhen;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
-public class AnysongPlayer : MonoBehaviour
+namespace Anywhen.Composing
 {
-    public AnysongObject songObject;
-    private AnywhenInstrument[] _instruments;
-    private AnysongObject _currentSong;
-    private bool _isRunning;
-    private bool _loaded = false;
-    public bool IsSongLoaded => _loaded;
-    public float variation;
-
-
-    private void Start()
+    public class AnysongPlayer : MonoBehaviour
     {
-        Load(songObject);
-    }
+        public AnysongObject songObject;
+        private AnywhenInstrument[] _instruments;
+        private AnysongObject _currentSong;
+        private bool _isRunning;
+        private bool _loaded = false;
+        public bool IsSongLoaded => _loaded;
+        public float intensity;
 
-    private void Load(AnysongObject anysong)
-    {
-        _loaded = true;
-        _currentSong = anysong;
 
-        foreach (var track in anysong.Tracks)
+        private void Start()
         {
-            if (track.instrument is AnywhenSynthPreset preset)
-            {
-                AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
-            }
-        }
-    }
-
-    private NoteEvent[] _lastTrackNote;
-
-
-    [Serializable]
-    struct TrackStep
-    {
-        public float distance;
-        public int trackIndex;
-        public AnyPatternStep step;
-
-        public TrackStep(AnyPatternStep step, float distance, int trackIndex)
-        {
-            this.distance = distance;
-            this.step = step;
-            this.trackIndex = trackIndex;
-        }
-    }
-
-    private List<TrackStep> _trackSteps = new List<TrackStep>();
-
-    private void OnTick16()
-    {
-        if (!_isRunning) return;
-
-        if (_currentSong != songObject)
-        {
-            Release();
             Load(songObject);
         }
 
-        int stepIndex = AnywhenRuntime.Metronome.Sub16;
-
-        _trackSteps.Clear();
-
-
-        for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+        private void Load(AnysongObject anysong)
         {
-            for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
-            {
-                var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
-                    .GetPattern(AnywhenMetronome.Instance.CurrentBar);
+            _loaded = true;
+            _currentSong = anysong;
 
-                float dist = MathF.Abs(variation - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
-                _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
+            foreach (var track in anysong.Tracks)
+            {
+                if (track.instrument is AnywhenSynthPreset preset)
+                {
+                    AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
+                }
             }
         }
 
+        private NoteEvent[] _lastTrackNote;
 
-        for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+
+        [Serializable]
+        struct TrackStep
         {
-            var track = _currentSong.Sections[0].tracks[trackIndex];
-            AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
-                .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
+            public float distance;
+            public int trackIndex;
+            public AnyPatternStep step;
 
-            var step = track.GetPattern(AnywhenMetronome.Instance.CurrentBar).steps[stepIndex];
-            if (Random.Range(0, 1f) < step.chance)
+            public TrackStep(AnyPatternStep step, float distance, int trackIndex)
             {
-                step.TriggerStep(_currentSong.Tracks[trackIndex]);
+                this.distance = distance;
+                this.step = step;
+                this.trackIndex = trackIndex;
             }
         }
-    }
 
-    public int GetStepForTrack(int trackIndex)
-    {
-        return AnywhenRuntime.Metronome.Sub16;
-    }
+        private List<TrackStep> _trackSteps = new List<TrackStep>();
+
+        private void OnTick16()
+        {
+            if (!_isRunning) return;
+
+            if (_currentSong != songObject)
+            {
+                Release();
+                Load(songObject);
+            }
+
+            int stepIndex = AnywhenRuntime.Metronome.Sub16;
+
+            _trackSteps.Clear();
 
 
-    public void Release()
-    {
-        _loaded = false;
-        AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-    }
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            {
+                for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
+                {
+                    var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
+                        .GetPattern(AnywhenMetronome.Instance.CurrentBar);
+
+                    float dist = MathF.Abs(intensity - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
+                    _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
+                }
+            }
 
 
-    public void SetMixIntensity(float value)
-    {
-    }
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            {
+                var track = _currentSong.Sections[0].tracks[trackIndex];
+                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
+                    .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
-    public void Stop()
-    {
-        _isRunning = false;
-        AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-    }
+                var step = track.GetPattern(AnywhenMetronome.Instance.CurrentBar).steps[stepIndex];
+                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(intensity));
+                float thisRnd = Random.Range(0, 1);
+                
+                if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                {
+                    step.TriggerStep(_currentSong.Tracks[trackIndex]);
+                }
+            }
+        }
 
-    public void Play()
-    {
-        if (_isRunning) return;
-        if (!_loaded) return;
-        _isRunning = true;
-        AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-    }
+        public int GetStepForTrack(int trackIndex)
+        {
+            return AnywhenRuntime.Metronome.Sub16;
+        }
 
-    public float GetTrackProgress()
-    {
-        int trackLength = _currentSong.Sections[0].patternSteps.Length;
-        int currentBar = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
-        return (float)currentBar / trackLength;
+
+        public void Release()
+        {
+            _loaded = false;
+            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+        }
+
+
+        public void SetMixIntensity(float value)
+        {
+        }
+
+        public void Stop()
+        {
+            _isRunning = false;
+            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+        }
+
+        public void Play()
+        {
+            if (_isRunning) return;
+            if (!_loaded) return;
+            _isRunning = true;
+            AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+        }
+
+        public float GetTrackProgress()
+        {
+            int trackLength = _currentSong.Sections[0].patternSteps.Length;
+            int currentBar = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
+            return (float)currentBar / trackLength;
+        }
     }
 }

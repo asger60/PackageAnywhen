@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -59,18 +60,18 @@ namespace Editor.AnySong
 
         private static void DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
         {
-            var addButton = new Button
-            {
-                name = "AddButton",
-                tooltip = trackIndex.ToString(),
-                text = "+"
-            };
-            var removeButton = new Button
-            {
-                name = "RemoveButton",
-                tooltip = trackIndex.ToString(),
-                text = "-"
-            };
+            //var addButton = new Button
+            //{
+            //    name = "AddButton",
+            //    tooltip = trackIndex.ToString(),
+            //    text = "+"
+            //};
+            //var removeButton = new Button
+            //{
+            //    name = "RemoveButton",
+            //    tooltip = trackIndex.ToString(),
+            //    text = "-"
+            //};
             var patternsButtonHolder = new VisualElement
             {
                 style =
@@ -81,9 +82,9 @@ namespace Editor.AnySong
             };
 
             _patternButtonsHolders.Add(patternsButtonHolder);
-
-            patternsButtonHolder.Add(addButton);
-            patternsButtonHolder.Add(removeButton);
+//
+            //patternsButtonHolder.Add(addButton);
+            //patternsButtonHolder.Add(removeButton);
             var thisTrack = AnysongEditorWindow.CurrentSong.Sections[0].tracks[trackIndex];
 
 
@@ -97,7 +98,7 @@ namespace Editor.AnySong
                     text = patternIndex.ToString(),
                     style =
                     {
-                        width = 40,
+                        width = 30,
                         backgroundColor =
                             patternIndex == selectedPattern
                                 ? AnysongEditorWindow.ColorGreyDark

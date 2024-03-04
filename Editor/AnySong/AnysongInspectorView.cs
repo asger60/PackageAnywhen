@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -32,6 +34,112 @@ namespace Editor.AnySong
 
             _parent.Add(Spacer());
 
+            //var triggerRowLabel = new Label()
+            //{
+            //    style = { width = 100, }
+            //};
+//
+            //var barRowLabel = new Label()
+            //{
+            //    style = { width = 100, }
+            //};
+//
+//
+            //var patternsBox = new Box();
+//
+            //var patternHeaderRow = new VisualElement()
+            //{
+            //    style = { flexDirection = FlexDirection.Row }
+            //};
+//
+            //var patternRow = new VisualElement()
+            //{
+            //    style = { flexDirection = FlexDirection.Row }
+            //};
+//
+            //barRowLabel.text = "";
+            //patternHeaderRow.Add(barRowLabel);
+//
+            //triggerRowLabel.text = "Trigger chance";
+            //patternRow.Add(triggerRowLabel);
+//
+            //var triggerArrayProperty = pattern.FindPropertyRelative("triggerChances");
+//
+            //for (var i = 0; i < triggerArrayProperty.arraySize; i++)
+            //{
+            //    var property = triggerArrayProperty.GetArrayElementAtIndex(i);
+//
+            //    var chanceField = new FloatField
+            //    {
+            //        value = triggerArrayProperty.GetArrayElementAtIndex(i).floatValue,
+            //        style = { minWidth = 30, },
+            //        focusable = !isBase,
+            //    };
+            //    chanceField.BindProperty(property);
+//
+            //    var barLabel = new Label()
+            //    {
+            //        text = i.ToString(),
+            //        style =
+            //        {
+            //            justifyContent = new StyleEnum<Justify>(Justify.Center),
+            //            alignContent = new StyleEnum<Align>(Align.Center),
+            //            minWidth = 37,
+            //            paddingLeft = 11,
+            //        },
+            //    };
+//
+            //    patternHeaderRow.Add(barLabel);
+            //    patternRow.Add(chanceField);
+            //}
+//
+            //patternsBox.Add(new Label("Triggering"));
+            //patternsBox.Add(Spacer());
+            //patternsBox.Add(patternHeaderRow);
+            //patternsBox.Add(patternRow);
+            //_parent.Add(patternsBox);
+//
+//
+            //_parent.Add(Spacer());
+
+
+            _parent.Add(CreateUtilsBox());
+
+            var utilsBox = new VisualElement()
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
+            var deleteButton = new Button
+            {
+                name = "DeleteButton",
+                text = "Delete pattern",
+                style =
+                {
+                    backgroundColor = new StyleColor(new Color(0.7f, 0.2f, 0.0f, 1))
+                }
+            };utilsBox.Add(deleteButton);
+            _parent.Add(Spacer());
+            _parent.Add(utilsBox);
+        }
+
+
+        public static void DrawTrack(AnysongEditorWindow.AnySelection selection)
+        {
+            _parent.Clear();
+            Draw(_parent);
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("instrument"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
+            
+        }
+
+        public static void DrawProgression(AnysongEditorWindow.AnySelection selection /*AnysongSectionTrack track, SerializedProperty trackProperty*/)
+        {
+            _parent.Clear();
+            Draw(_parent);
+            _parent.Add(Spacer());
+
             var triggerRowLabel = new Label()
             {
                 style = { width = 100, }
@@ -43,76 +151,99 @@ namespace Editor.AnySong
             };
 
 
-            var patternsBox = new Box();
 
             var patternHeaderRow = new VisualElement()
             {
                 style = { flexDirection = FlexDirection.Row }
             };
 
-            var patternRow = new VisualElement()
-            {
-                style = { flexDirection = FlexDirection.Row }
-            };
 
             barRowLabel.text = "";
             patternHeaderRow.Add(barRowLabel);
 
             triggerRowLabel.text = "Trigger chance";
-            patternRow.Add(triggerRowLabel);
+            //var barLabel = new Label()
+            //{
+            //    text = i.ToString(),
+            //    style =
+            //    {
+            //        justifyContent = new StyleEnum<Justify>(Justify.Center),
+            //        alignContent = new StyleEnum<Align>(Align.Center),
+            //        minWidth = 37,
+            //        paddingLeft = 11,
+            //    },
+            //};
 
-            var triggerArrayProperty = pattern.FindPropertyRelative("triggerChances");
 
-            for (var i = 0; i < triggerArrayProperty.arraySize; i++)
+            //List<SerializedProperty> propertyRows = new List<SerializedProperty>();
+            //for (var y = 0; y < track.patterns.Count; y++)
+            //{
+            //    var property = trackProperty.FindPropertyRelative("patterns").GetArrayElementAtIndex(y)
+            //        .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(0);
+            //    propertyRows.Add(property);
+            //}
+
+            var patternsHolder = new VisualElement();
+            for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
             {
-                var property = triggerArrayProperty.GetArrayElementAtIndex(i);
-
-                var chanceField = new FloatField
+                var pattern = selection.CurrentSectionTrack.patterns[y];
+                var patternRow = new VisualElement()
                 {
-                    value = triggerArrayProperty.GetArrayElementAtIndex(i).floatValue,
-                    style = { minWidth = 30, },
-                    focusable = !isBase,
+                    style = { flexDirection = FlexDirection.Row }
                 };
-                chanceField.BindProperty(property);
-
-                var barLabel = new Label()
+                var patternLabel = new Label
                 {
-                    text = i.ToString(),
+                    text = "Pattern " + y,
                     style =
                     {
-                        justifyContent = new StyleEnum<Justify>(Justify.Center),
-                        alignContent = new StyleEnum<Align>(Align.Center),
-                        minWidth = 37,
-                        paddingLeft = 11,
-                    },
+                        minWidth = 100,
+                        width = 100
+                    }
                 };
 
-                patternHeaderRow.Add(barLabel);
-                patternRow.Add(chanceField);
+                patternRow.Add(patternLabel);
+
+
+                for (int i = 0; i < pattern.triggerChances.Count; i++)
+                {
+                    var chanceField = new FloatField
+                    {
+                        value = pattern.triggerChances[i],
+                        style = { minWidth = 30, },
+                    };
+
+
+                    var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns").GetArrayElementAtIndex(y)
+                        .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
+                    chanceField.BindProperty(property);
+
+                    //chanceField.RegisterValueChangedCallback((evt) =>
+                    //{
+                    //    Debug.Log("value changed " + evt.newValue);
+                    //    EvaluateOtherTriggerChanced(propertyRows);
+                    //});
+
+                    patternRow.Add(chanceField);
+                }
+
+                patternsHolder.Add(patternRow);
             }
 
-            patternsBox.Add(new Label("Triggering"));
-            patternsBox.Add(Spacer());
-            patternsBox.Add(patternHeaderRow);
-            patternsBox.Add(patternRow);
-            _parent.Add(patternsBox);
+            _parent.Add(patternsHolder);
 
+            _parent.Add(AnysongEditorWindow.CreateAddRemoveButtons(true, false));
 
             _parent.Add(Spacer());
-
-
-            _parent.Add(CreateUtilsBox());
         }
 
 
-        public static void DrawTrack(SerializedProperty track)
+        static void EvaluateOtherTriggerChanced(List<SerializedProperty> properties)
         {
-            _parent.Clear();
-            Draw(_parent);
-
-            _parent.Add(CreatePropertyFieldWithCallback(track.FindPropertyRelative("instrument"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(track.FindPropertyRelative("volume"), null));
-
+            foreach (var property in properties)
+            {
+                Debug.Log(property.floatValue);
+                //property.floatValue = 0;
+            }
         }
 
         public static void DrawStep(SerializedProperty step, Action didUpdate)
@@ -141,9 +272,6 @@ namespace Editor.AnySong
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), didUpdate));
 
             boxNotes.Add(notesBox);
-
-
-            
 
 
             _parent.Add(boxNotes);

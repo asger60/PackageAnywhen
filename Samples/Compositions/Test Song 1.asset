@@ -18,11 +18,11 @@ MonoBehaviour:
     patternSteps:
     - rootNote: 0
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
-    - rootNote: 3
+    - rootNote: 0
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
-    - rootNote: 2
+    - rootNote: 1
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
-    - rootNote: 5
+    - rootNote: 4
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
     volume: 1
     tracks:
@@ -691,7 +691,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 100
@@ -1025,7 +1024,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 13
-      currentEditPatternIndex: 1
     - patterns:
       - triggerChances:
         - 100
@@ -1691,7 +1689,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 2
     - patterns:
       - triggerChances:
         - 100
@@ -2025,7 +2022,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 1
     - patterns:
       - triggerChances:
         - 100
@@ -2691,7 +2687,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 100
@@ -2796,9 +2791,9 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.5
           chordNotes: 
-          chance: 0.904
+          chance: 1
           expression: 1
-          rootNote: 7
+          rootNote: 6
         - noteOn: 1
           noteOff: 0
           duration: 1
@@ -3357,7 +3352,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 1
   - rootNote: 0
     patternSteps: []
     volume: 1
@@ -3526,7 +3520,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -3691,7 +3684,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -3856,7 +3848,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -4021,7 +4012,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -4186,7 +4176,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -4351,7 +4340,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -4516,7 +4504,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -4681,7 +4668,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
   - rootNote: 0
     patternSteps: []
     volume: 1
@@ -5013,7 +4999,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -5178,7 +5163,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -5343,7 +5327,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -5508,7 +5491,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -5673,7 +5655,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -5838,7 +5819,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -6003,7 +5983,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
     - patterns:
       - triggerChances:
         - 0
@@ -6168,7 +6147,6 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
-      currentEditPatternIndex: 0
   Tracks:
   - volume: 1
     instrument: {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
