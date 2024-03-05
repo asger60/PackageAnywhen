@@ -27,9 +27,9 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public void TriggerNoteOn(AnyPatternStep anyPatternStep, float volume)
+        public void TriggerNoteOn(AnyPatternStep anyPatternStep, AnyPattern pattern)
         {
-            _lastTrackEvent = anyPatternStep.GetEvent();
+            _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote);
             _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument);
         }

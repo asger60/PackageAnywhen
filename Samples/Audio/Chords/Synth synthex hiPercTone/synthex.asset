@@ -86,8 +86,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9857275b8aa45445f9d5dab3a265f750, type: 2}
   - {fileID: 11400000, guid: 2ca6e3d45fd0347f08370f11177e46e4, type: 2}
   - {fileID: 11400000, guid: 3a6dd7e9d1c95455584f13ce55efd8e1, type: 2}
-  volume: 0.128
   stopDuration: 0.1
-  forceUseNoteClips: 1
   instrumentType: 2
   clipSelectType: 0
+  clipType: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 0.128

@@ -38,7 +38,14 @@ namespace Anywhen.PerformerObjects
             //}
 
 
-            _currentEvent = new NoteEvent(0, GetTiming(), chord.notes, CreateStrum(chord), 0, 0, GetVolume());
+            _currentEvent = new NoteEvent
+            {
+                state = NoteEvent.EventTypes.NoteOn,
+                drift = GetTiming(),
+                notes = chord.notes,
+                chordStrum = CreateStrum(chord),
+                velocity = GetVolume()
+            };
 
             return _currentEvent;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 [Serializable]
@@ -29,16 +30,16 @@ public class AnyPatternStep
     public int rootNote;
 
 
-    public int[] GetNotes()
+    public int[] GetNotes(int patternRoot)
     {
         if (!IsChord)
-            return new[] { rootNote };
+            return new[] { rootNote + patternRoot };
 
         var chord = new int[chordNotes.Count + 1];
-        chord[0] = rootNote;
+        chord[0] = rootNote + patternRoot;
         for (int i = 0; i < chordNotes.Count; i++)
         {
-            chord[i + 1] = rootNote + chordNotes[i];
+            chord[i + 1] = rootNote + chordNotes[i] + patternRoot;
         }
 
         return chord;
@@ -51,23 +52,23 @@ public class AnyPatternStep
         expression = 1;
         velocity = 1;
         chordNotes = new List<int> { };
-        mixWeight = 0.5f;
+        mixWeight = Random.Range(0, 1f);
     }
 
-    public void TriggerStep(AnysongTrack track)
-    {
-        if (noteOn || noteOff)
-            track.TriggerNoteOn(this, track.volume);
-    }
+    //public void TriggerStep(AnysongTrack track, AnyPattern pattern)
+    //{
+    //    if (noteOn || noteOff)
+    //        track.TriggerNoteOn(this, pattern, track.volume);
+    //}
 
-    public NoteEvent GetEvent()
+    public NoteEvent GetEvent(int patternRoot)
     {
         NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
         if (noteOff)
             type = NoteEvent.EventTypes.NoteOff;
 
-        var e = new NoteEvent(GetNotes(), type, velocity,
-            offset, new double[GetNotes().Length], expression, 1)
+        var e = new NoteEvent(GetNotes(patternRoot), type, velocity,
+            offset, new double[GetNotes(patternRoot).Length], expression, 1)
         {
             duration = duration
         };

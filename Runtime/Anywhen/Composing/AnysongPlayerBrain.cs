@@ -12,6 +12,7 @@ namespace Anywhen.Composing
         AnysongPlayer _currentPlayer;
 
         private AnysongPlayer _nextUpPlayer;
+        [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
         public enum TransitionTypes
         {
@@ -41,6 +42,15 @@ namespace Anywhen.Composing
             _currentPlayer = songPlayers[0];
             _currentPlayer.Play();
         }
+
+        private void Update()
+        {
+            foreach (var anysongPlayer in songPlayers)
+            {
+                anysongPlayer.SetGlobalIntensity(globalIntensity);
+            }
+        }
+
 
         private void OnNextBar()
         {

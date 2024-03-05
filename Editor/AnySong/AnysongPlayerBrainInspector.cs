@@ -19,11 +19,19 @@ public class AnysongPlayerBrainInspector : UnityEditor.Editor
         var transitionProperty = serializedObject.FindProperty("transitionType");
         var transitionPropertyField = new PropertyField(transitionProperty);
         transitionPropertyField.BindProperty(transitionProperty);
+        
+        var globalIntensity = serializedObject.FindProperty("globalIntensity");
+        var globalIntensityField = new PropertyField(globalIntensity);
+        globalIntensityField.BindProperty(globalIntensity);
 
         // propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
 
         inspector.Add(playersPropertyField);
+        
+        inspector.Add(globalIntensityField);
+        
         inspector.Add(transitionPropertyField);
+        
 
 
         var playButtonsHolder = new VisualElement()

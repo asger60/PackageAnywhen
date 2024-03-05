@@ -102,7 +102,8 @@ namespace Editor.AnySong
 //
             //_parent.Add(Spacer());
 
-
+            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), null));
+            _parent.Add(Spacer());
             _parent.Add(CreateUtilsBox());
 
             var utilsBox = new VisualElement()
@@ -117,7 +118,8 @@ namespace Editor.AnySong
                 {
                     backgroundColor = new StyleColor(new Color(0.7f, 0.2f, 0.0f, 1))
                 }
-            };utilsBox.Add(deleteButton);
+            };
+            utilsBox.Add(deleteButton);
             _parent.Add(Spacer());
             _parent.Add(utilsBox);
         }
@@ -128,13 +130,18 @@ namespace Editor.AnySong
             _parent.Clear();
             Draw(_parent);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("instrument"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
-            
+            _parent.Add(
+                CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("instrument"),
+                    null));
+            _parent.Add(
+                CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
+                    null));
+            _parent.Add(CreatePropertyFieldWithCallback(
+                selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
         }
 
-        public static void DrawProgression(AnysongEditorWindow.AnySelection selection /*AnysongSectionTrack track, SerializedProperty trackProperty*/)
+        public static void DrawProgression(
+            AnysongEditorWindow.AnySelection selection /*AnysongSectionTrack track, SerializedProperty trackProperty*/)
         {
             _parent.Clear();
             Draw(_parent);
@@ -149,7 +156,6 @@ namespace Editor.AnySong
             {
                 style = { width = 100, }
             };
-
 
 
             var patternHeaderRow = new VisualElement()
@@ -213,7 +219,8 @@ namespace Editor.AnySong
                     };
 
 
-                    var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns").GetArrayElementAtIndex(y)
+                    var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
+                        .GetArrayElementAtIndex(y)
                         .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
                     chanceField.BindProperty(property);
 

@@ -10,6 +10,7 @@ namespace Anywhen.Composing
     {
         public List<float> triggerChances = new List<float>();
         public List<AnyPatternStep> steps;
+        public int rootNote = 0;
 
         public void Init()
         {

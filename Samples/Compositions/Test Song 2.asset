@@ -189,6 +189,31 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     - patterns:
       - triggerChances:
         - 100
@@ -356,6 +381,7 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
       - triggerChances:
         - 0
         - 100
@@ -522,6 +548,49 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0.023115687
+          outSlope: 0.023115687
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.23315644
+          value: 0.005389571
+          inSlope: 0.010126835
+          outSlope: 4.625487
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.06705153
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.49748603
+          value: 0.9994429
+          inSlope: 2.7138367
+          outSlope: -0.020219967
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.068962194
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0.0011086748
+          outSlope: 0.0011086748
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     - patterns:
       - triggerChances:
         - 100
@@ -689,6 +758,31 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     - patterns:
       - triggerChances:
         - 100
@@ -856,6 +950,49 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0.004290116
+          outSlope: 0.004290116
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.0754416
+          value: 0.00032365322
+          inSlope: 0.010126835
+          outSlope: 2.782383
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.06705153
+          outWeight: 0.04578463
+        - serializedVersion: 3
+          time: 0.49748603
+          value: 0.9994429
+          inSlope: 2.7138367
+          outSlope: -0.020219967
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.068962194
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0.0011086748
+          outSlope: 0.0011086748
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     - patterns:
       - triggerChances:
         - 100
@@ -1023,6 +1160,31 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 2
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     - patterns:
       - triggerChances:
         - 0
@@ -1190,6 +1352,7 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
       - triggerChances:
         - 0
         - 100
@@ -1356,6 +1519,259 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0.0033266107
+          outSlope: 0.0033266107
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.097292185
+          value: 0.00032365322
+          inSlope: 0.010126835
+          outSlope: 3.6734228
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.06705153
+          outWeight: 0.041706245
+        - serializedVersion: 3
+          time: 0.49748603
+          value: 0.9994429
+          inSlope: 2.7138367
+          outSlope: -0.020219967
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.068962194
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0.0011086748
+          outSlope: 0.0011086748
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.47896355
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06573069
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.91178477
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.039918303
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06361103
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23598278
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.15223551
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.509
+          mixWeight: 0.6761309
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.53225535
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0.008345002
+          outSlope: 0.008345002
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.49225068
+          value: 0.004107833
+          inSlope: 0.010126835
+          outSlope: 2.7134712
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.06705153
+          outWeight: 0.041473374
+        - serializedVersion: 3
+          time: 0.9587287
+          value: 0.9944113
+          inSlope: 2.7138367
+          outSlope: -0.020219967
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.068962194
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0.13541387
+          outSlope: 0.13541387
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   Tracks:
   - volume: 0.782
     instrument: {fileID: 11400000, guid: 9363db192e1b949dbad692a892e6e626, type: 2}
@@ -1369,5 +1785,7 @@ MonoBehaviour:
     instrument: {fileID: 11400000, guid: f9338f071cb3e4b24a424bb214887697, type: 2}
   - volume: 1
     instrument: {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
+  - volume: 0.789
+    instrument: {fileID: 11400000, guid: 49fc783065ca8418ca693ddab86d4692, type: 2}
   coverGraphic: PlayerGraphic2
   playerBackgroundColor: {r: 0.22352941, g: 0.22352941, b: 0.8862745, a: 1}

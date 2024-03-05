@@ -41,22 +41,22 @@ namespace Anywhen.Composing
         private NoteEvent[] _lastTrackNote;
 
 
-        [Serializable]
-        struct TrackStep
-        {
-            public float distance;
-            public int trackIndex;
-            public AnyPatternStep step;
-
-            public TrackStep(AnyPatternStep step, float distance, int trackIndex)
-            {
-                this.distance = distance;
-                this.step = step;
-                this.trackIndex = trackIndex;
-            }
-        }
-
-        private List<TrackStep> _trackSteps = new List<TrackStep>();
+        //[Serializable]
+        //struct TrackStep
+        //{
+        //    public float distance;
+        //    public int trackIndex;
+        //    public AnyPatternStep step;
+//
+        //    public TrackStep(AnyPatternStep step, float distance, int trackIndex)
+        //    {
+        //        this.distance = distance;
+        //        this.step = step;
+        //        this.trackIndex = trackIndex;
+        //    }
+        //}
+//
+        //private List<TrackStep> _trackSteps = new List<TrackStep>();
 
         private void OnTick16()
         {
@@ -70,35 +70,39 @@ namespace Anywhen.Composing
 
             int stepIndex = AnywhenRuntime.Metronome.Sub16;
 
-            _trackSteps.Clear();
-
-
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
-                {
-                    var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
-                        .GetPattern(AnywhenMetronome.Instance.CurrentBar);
-
-                    float dist = MathF.Abs(intensity - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
-                    _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
-                }
-            }
+            //_trackSteps.Clear();
+//
+//
+            //for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            //{
+            //    for (int sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
+            //    {
+            //        var thisPattern = _currentSong.Sections[sectionIndex].tracks[trackIndex]
+            //            .GetPattern(AnywhenMetronome.Instance.CurrentBar);
+//
+            //        float dist = MathF.Abs(intensity - (thisPattern.steps[stepIndex].mixWeight + sectionIndex));
+            //        _trackSteps.Add(new TrackStep(thisPattern.steps[stepIndex], dist, trackIndex));
+            //    }
+            //}
 
 
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[0].tracks[trackIndex];
+                var songTrack = _currentSong.Tracks[trackIndex];
                 AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
                     .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
-                var step = track.GetPattern(AnywhenMetronome.Instance.CurrentBar).steps[stepIndex];
+                var pattern = track.GetPattern(AnywhenMetronome.Instance.CurrentBar);
+                var step = pattern.steps[stepIndex];
                 float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(intensity));
+
                 float thisRnd = Random.Range(0, 1);
-                
+
                 if (thisRnd < step.chance && step.mixWeight < thisIntensity)
                 {
-                    step.TriggerStep(_currentSong.Tracks[trackIndex]);
+                    if (step.noteOn || step.noteOff)
+                        songTrack.TriggerNoteOn(step, pattern);
                 }
             }
         }
@@ -109,7 +113,7 @@ namespace Anywhen.Composing
         }
 
 
-        public void Release()
+        private void Release()
         {
             _loaded = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
@@ -139,6 +143,11 @@ namespace Anywhen.Composing
             int trackLength = _currentSong.Sections[0].patternSteps.Length;
             int currentBar = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
             return (float)currentBar / trackLength;
+        }
+
+        public void SetGlobalIntensity(float globalIntensity)
+        {
+            intensity = globalIntensity;
         }
     }
 }

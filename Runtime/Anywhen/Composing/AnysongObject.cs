@@ -32,7 +32,7 @@ public class AnysongObject : ScriptableObject
                 {
                     foreach (var step in pattern.steps)
                     {
-                        step.mixWeight = Random.Range(0, 0.5f);
+                        step.mixWeight = Random.Range(0, 1f);
                     }
                 }
             }
