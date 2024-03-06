@@ -8,7 +8,6 @@ namespace Anywhen.Composing
     {
         [SerializeField] private AnysongPlayer[] songPlayers;
 
-
         AnysongPlayer _currentPlayer;
 
         private AnysongPlayer _nextUpPlayer;
@@ -23,6 +22,13 @@ namespace Anywhen.Composing
         }
 
         public TransitionTypes transitionType;
+        private static AnysongPlayerBrain _instance;
+
+
+        private void Awake()
+        {
+            _instance = this;
+        }
 
         private void Start()
         {
@@ -72,8 +78,20 @@ namespace Anywhen.Composing
             }
         }
 
+        public static void TransitionTo(AnysongPlayer player)
+        {
+            _instance.StartToPlayer(player);
+        }
 
-        public void TransitionToPlayer(AnysongPlayer player)
+
+        public static void SetGlobalIntensity(float intensity)
+        {
+            intensity = Mathf.Clamp01(intensity);
+            _instance.globalIntensity = intensity;
+        }
+
+
+        private void StartToPlayer(AnysongPlayer player)
         {
             switch (transitionType)
             {

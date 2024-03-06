@@ -1,7 +1,6 @@
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [CustomEditor(typeof(AnysongPlayerBrain))]
@@ -51,7 +50,7 @@ public class AnysongPlayerBrainInspector : UnityEditor.Editor
                 };
                 playButton.RegisterCallback<ClickEvent>((evt) =>
                 {
-                    (target as AnysongPlayerBrain)?.TransitionToPlayer(songPlayer);
+                    AnysongPlayerBrain.TransitionTo(songPlayer);
                 });
                 playButtonsHolder.Add(playButton);
             }

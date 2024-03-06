@@ -39,12 +39,13 @@ namespace Anywhen.Synth
             {
                 case SynthSettingsObjectOscillator.OscillatorType.Simple:
                     _sine = new float[2048];
-                    
+
                     for (int i = 0; i < 2048; ++i)
                     {
                         float angle01 = ((float)i) / 2048;
-                        _sine[i] = Mathf.Sin(angle01 * 2 * Mathf.PI) ;
+                        _sine[i] = Mathf.Sin(angle01 * 2 * Mathf.PI);
                     }
+
                     break;
                 case SynthSettingsObjectOscillator.OscillatorType.WaveTable:
                     _sine8Bit = new float[_waveTableSize];
@@ -315,6 +316,12 @@ namespace Anywhen.Synth
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Saw8Bit:
                     return _saw8Bit[(int)(ph01 * _saw8Bit.Length)];
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Square8Bit:
+                    int val = (int)(ph01 * _square8Bit.Length);
+                    if (val != 0 && val != 1)
+                    {
+                        Debug.Log(val);
+                    }
+
                     return _square8Bit[(int)(ph01 * _square8Bit.Length)];
                 default:
                     throw new ArgumentOutOfRangeException();
