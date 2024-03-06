@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drums_BD_DNX
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: b10fa6b06e96c4c72bb30380f138673f, type: 3}
+  - {fileID: 8300000, guid: e0108d0fee8344e5da86489b53cd65ae, type: 3}
+  - {fileID: 8300000, guid: 94a08134d2408427f8451a334e60efed, type: 3}
+  - {fileID: 8300000, guid: 049b42ec48d4940ce983f98c200ac857, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: 02f0583ecc6a54200bff583defe0bab3, type: 2}
+  - {fileID: 11400000, guid: a7218753751f94d8394c42677f77e560, type: 2}
+  - {fileID: 11400000, guid: 7ef472a705c874714b2c95d3b03b52b2, type: 2}
+  - {fileID: 11400000, guid: eb8846de15d534b7c83dec04022768e1, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1

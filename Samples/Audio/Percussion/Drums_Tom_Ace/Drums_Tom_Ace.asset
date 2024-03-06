@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drums_Tom_Ace
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 302e1a5e92ea9430a9e5a0f2c73c6c3f, type: 3}
+  - {fileID: 8300000, guid: cb438a92ed20f48af8e4774229e510f9, type: 3}
+  - {fileID: 8300000, guid: ba8a6cc98ca4f43b4a53cc85c76461e2, type: 3}
+  - {fileID: 8300000, guid: c0e49073654c4416c8545f0c65c6a6f5, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: 3aa0cc97e7f6947fd89d4be8ad8f9a40, type: 2}
+  - {fileID: 11400000, guid: 0ff3002c0433a42debf7054f83813293, type: 2}
+  - {fileID: 11400000, guid: 1e55903e41c5045188d934d8a1e3bbb6, type: 2}
+  - {fileID: 11400000, guid: 88d7ff3d3866a490cab6fa33a4f9be6e, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1

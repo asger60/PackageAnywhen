@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drums_Snare_Ace
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: f9d88f977a6224c7e85289858cbad4a1, type: 3}
+  - {fileID: 8300000, guid: 2a7fa3f12233a4e7a9bee21cdbcabdc6, type: 3}
+  - {fileID: 8300000, guid: 46a89834928e2403a9b07d617d068cfe, type: 3}
+  - {fileID: 8300000, guid: 4670cc7220caa4caa99b092287cbb45e, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: de6f308763810427e8e4e5d3f129a7a5, type: 2}
+  - {fileID: 11400000, guid: dd0ba01eed3744c98b7a8f81e356acb4, type: 2}
+  - {fileID: 11400000, guid: 6d6102e2b289c4132b63f94b9a985800, type: 2}
+  - {fileID: 11400000, guid: 92836eca00b164b6ca524dc564bc73d0, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  envelopeSettings:
+    enabled: 0
+    attack: 0
+    decay: 0
+    sustain: 0
+    release: 0
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1
