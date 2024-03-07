@@ -14,7 +14,7 @@ namespace Anywhen.Composing
         private bool _loaded = false;
         public bool IsSongLoaded => _loaded;
         public float intensity;
-
+        public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
 
         private void Start()
         {
@@ -121,18 +121,23 @@ namespace Anywhen.Composing
         {
         }
 
-        public void Stop()
+        public void ReleaseFromMetronome()
         {
             _isRunning = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
         }
 
-        public void Play()
+        public void AttachToMetronome()
         {
             if (_isRunning) return;
             if (!_loaded) return;
             _isRunning = true;
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+        }
+
+        public void Play()
+        {
+            AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
         public float GetTrackProgress()

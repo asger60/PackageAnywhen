@@ -21,7 +21,7 @@ namespace Anywhen.Composing
             TrackEnd
         }
 
-        public TransitionTypes transitionType;
+        private TransitionTypes _nextTransitionType;
         private static AnysongPlayerBrain _instance;
 
 
@@ -46,7 +46,7 @@ namespace Anywhen.Composing
             }
 
             _currentPlayer = songPlayers[0];
-            _currentPlayer.Play();
+            _currentPlayer.AttachToMetronome();
         }
 
         private void Update()
@@ -62,7 +62,7 @@ namespace Anywhen.Composing
         {
             if (_nextUpPlayer != null)
             {
-                if (transitionType == TransitionTypes.TrackEnd)
+                if (_nextTransitionType == TransitionTypes.TrackEnd)
                 {
                     if (_currentPlayer.GetTrackProgress() == 0f)
                     {
@@ -78,10 +78,8 @@ namespace Anywhen.Composing
             }
         }
 
-        public static void TransitionTo(AnysongPlayer player)
-        {
-            _instance.StartToPlayer(player);
-        }
+        public static void TransitionTo(AnysongPlayer player, TransitionTypes transitionType) =>
+            _instance.HandleTransitionToPlayer(player, transitionType);
 
 
         public static void SetGlobalIntensity(float intensity)
@@ -91,7 +89,7 @@ namespace Anywhen.Composing
         }
 
 
-        private void StartToPlayer(AnysongPlayer player)
+        private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
         {
             switch (transitionType)
             {
@@ -103,7 +101,7 @@ namespace Anywhen.Composing
                     break;
                 case TransitionTypes.CrossFade:
                     _nextUpPlayer = player;
-                    _nextUpPlayer.Play();
+                    _nextUpPlayer.AttachToMetronome();
                     break;
                 case TransitionTypes.TrackEnd:
                     _nextUpPlayer = player;
@@ -111,6 +109,8 @@ namespace Anywhen.Composing
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            _nextTransitionType = transitionType;
         }
 
         void TransitionNow(AnysongPlayer newPlayer)
@@ -118,11 +118,11 @@ namespace Anywhen.Composing
             if (_currentPlayer != null)
             {
                 _currentPlayer.SetMixIntensity(0);
-                _currentPlayer.Stop();
+                _currentPlayer.ReleaseFromMetronome();
             }
 
             _currentPlayer = newPlayer;
-            _currentPlayer.Play();
+            _currentPlayer.AttachToMetronome();
         }
     }
 }

@@ -50,7 +50,7 @@ public class AnysongPlayerBrainInspector : UnityEditor.Editor
                 };
                 playButton.RegisterCallback<ClickEvent>((evt) =>
                 {
-                    AnysongPlayerBrain.TransitionTo(songPlayer);
+                    AnysongPlayerBrain.TransitionTo(songPlayer, AnysongPlayerBrain.TransitionTypes.Instant);
                 });
                 playButtonsHolder.Add(playButton);
             }
