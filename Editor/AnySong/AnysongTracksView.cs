@@ -1,21 +1,82 @@
+using System;
+using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
 {
     public static class AnysongTracksView
     {
+        private static VisualElement _parent;
+
         public static void Draw(VisualElement parent, AnysongObject currentSong)
         {
+            _parent = parent;
             parent.Clear();
             parent.Add(new Label("Tracks"));
+
+
             var spacer = new ToolbarSpacer
             {
                 style = { height = 8 }
             };
 
+
             for (var i = 0; i < currentSong.Tracks.Count; i++)
             {
+                var trackElement = new VisualElement
+                {
+                    style =
+                    {
+                        alignItems = Align.Center,
+                        flexDirection = FlexDirection.Row
+                    }
+                };
+                var soundControlElement = new VisualElement
+                {
+                    style = { width = 35 },
+                };
+
+                var muteButton = new Button()
+                {
+                    text = "M",
+                    name = "MuteButton",
+                    tooltip = i.ToString(),
+                    style = { width = 20 }
+
+                };
+
+
+
+
+                muteButton.RegisterCallback<ClickEvent>((evt) =>
+                {
+                    if (evt.currentTarget is not Button btn) return;
+                    MuteTrackAtIndex(btn.tooltip);
+                });
+
+
+                var soloButton = new Button
+                {
+                    text = "S",
+                    name = "SoloButton",
+                    tooltip = i.ToString(),
+                    style = { width = 20 }
+                };
+                soloButton.RegisterCallback<ClickEvent>((evt) =>
+                {
+                    if (evt.currentTarget is not Button btn) return;
+                    SoloTrackAtIndex(btn.tooltip);
+                });
+
+                soundControlElement.Add(muteButton);
+                soundControlElement.Add(soloButton);
+
+
+                trackElement.Add(soundControlElement);
+
+
                 var thisTrack = currentSong.Tracks[i];
                 var instrumentName =
                     thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
@@ -27,17 +88,82 @@ namespace Editor.AnySong
                     text = instrumentName,
                     style =
                     {
+                        width = new StyleLength(170),
                         height = 40,
-                        //backgroundColor = CurrentSongTrack == CurrentSong.Tracks[i] ? _hilightedColor : Color.black
                     }
                 };
 
 
-                parent.Add(button);
+                trackElement.Add(button);
+                parent.Add(trackElement);
                 parent.Add(spacer);
             }
 
             parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+        }
+
+        static void CheckMute(SerializedProperty property)
+        {
+            Debug.Log(property.boolValue);
+        }
+
+        static void UpdateSoloButtons()
+        {
+            int index = 0;
+            _parent.Query<Button>("SoloButton").ForEach((btn) =>
+            {
+                var state = AnysongEditorWindow.CurrentSong.Sections[0].tracks[index].isSolo;
+                btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
+                index++;
+            });
+        }
+        
+        static void UpdateMuteButtons()
+        {
+            int index = 0;
+            _parent.Query<Button>("MuteButton").ForEach((btn) =>
+            {
+                var state = AnysongEditorWindow.CurrentSong.Sections[0].tracks[index].isMuted;
+                btn.style.backgroundColor = state ? AnysongEditorWindow.ColorGreyDark : StyleKeyword.Null;
+                btn.text = "M";
+                index++;
+            });
+        }
+
+        static void MuteTrackAtIndex(string indexString)
+        {
+            var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
+            track.isMuted = !track.isMuted;
+            UpdateMuteButtons();
+        }
+
+        static void SoloTrackAtIndex(string indexString)
+        {
+            var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
+
+            bool unSolo = track.isSolo;
+
+
+            foreach (var sectionTrack in AnysongEditorWindow.CurrentSong.Sections[0].tracks)
+            {
+                sectionTrack.isSolo = false;
+                if (sectionTrack == track && !unSolo)
+                {
+                    sectionTrack.isSolo = true;
+                }
+
+                if (unSolo)
+                {
+                    sectionTrack.isMuted = false;
+                }
+                else
+                {
+                    sectionTrack.isMuted = sectionTrack != track;
+                }
+            }
+
+            UpdateSoloButtons();
+            UpdateMuteButtons();
         }
     }
 }

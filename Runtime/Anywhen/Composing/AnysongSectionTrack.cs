@@ -9,9 +9,12 @@ namespace Anywhen.Composing
     {
         public List<AnyPattern> patterns;
 
-        public AnimationCurve intensityMappingCurve;
-    
-    
+        public AnimationCurve intensityMappingCurve =
+            new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+
+        public bool isMuted;
+        public bool isSolo;
+
         public void Init(AnysongTrack songSongTrack)
         {
             patterns = new List<AnyPattern> { new() };
@@ -47,7 +50,5 @@ namespace Anywhen.Composing
 
             return pattern;
         }
-    
-    
     }
 }

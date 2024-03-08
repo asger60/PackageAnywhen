@@ -80,7 +80,6 @@ namespace Anywhen
             Playing = true;
             _currentBar = 0;
             _nextTime16 = AudioSettings.dspTime + bufferTime;
-            _nextTime16 = _nextTime16;
             _nextTime8 = _nextTime16;
             _nextTime4 = _nextTime16;
             _nextTime2 = _nextTime16;
@@ -123,11 +122,6 @@ namespace Anywhen
             if (!Playing) return;
             if (_isStopped) return;
             if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
-
-
-            //OnTick32?.Invoke();
-            //Sub32++;
-
 
             OnTick16?.Invoke();
             Sub16++;

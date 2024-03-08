@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Anywhen.Composing;
 using UnityEngine;
 
 [RequireComponent(typeof(AnysongPlayer))]
@@ -61,16 +60,19 @@ public class AnywhenSongTrigger : MonoBehaviour
     {
         if (!_anysongPlayer) return;
         _anysongPlayer.Play();
-        Ticker.Tween(1,
-            f =>
-            {
-                _materialPropertyBlock.SetColor("_Color", Color.Lerp(Color.white, _initialColor, f));
-                _renderer.SetPropertyBlock(_materialPropertyBlock);
-            });
+        Blink();
     }
 
-    async void LateInit()
+    async void Blink()
     {
-        await Task.Yield();
+        float f = 0;
+        float duration = 1;
+        while (f < duration)
+        {
+            _materialPropertyBlock.SetColor("_Color", Color.Lerp(Color.white, _initialColor, f));
+            _renderer.SetPropertyBlock(_materialPropertyBlock);
+            f += Time.deltaTime;
+            await Task.Yield();
+        }
     }
 }

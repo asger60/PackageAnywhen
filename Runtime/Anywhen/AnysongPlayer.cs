@@ -5,7 +5,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 
-
 public class AnysongPlayer : MonoBehaviour
 {
     public AnysongObject songObject;
@@ -87,6 +86,8 @@ public class AnysongPlayer : MonoBehaviour
         for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
         {
             var track = _currentSong.Sections[0].tracks[trackIndex];
+            if (track.isMuted) continue;
+            
             var songTrack = _currentSong.Tracks[trackIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
                 .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));

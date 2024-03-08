@@ -34,73 +34,6 @@ namespace Editor.AnySong
 
             _parent.Add(Spacer());
 
-            //var triggerRowLabel = new Label()
-            //{
-            //    style = { width = 100, }
-            //};
-//
-            //var barRowLabel = new Label()
-            //{
-            //    style = { width = 100, }
-            //};
-//
-//
-            //var patternsBox = new Box();
-//
-            //var patternHeaderRow = new VisualElement()
-            //{
-            //    style = { flexDirection = FlexDirection.Row }
-            //};
-//
-            //var patternRow = new VisualElement()
-            //{
-            //    style = { flexDirection = FlexDirection.Row }
-            //};
-//
-            //barRowLabel.text = "";
-            //patternHeaderRow.Add(barRowLabel);
-//
-            //triggerRowLabel.text = "Trigger chance";
-            //patternRow.Add(triggerRowLabel);
-//
-            //var triggerArrayProperty = pattern.FindPropertyRelative("triggerChances");
-//
-            //for (var i = 0; i < triggerArrayProperty.arraySize; i++)
-            //{
-            //    var property = triggerArrayProperty.GetArrayElementAtIndex(i);
-//
-            //    var chanceField = new FloatField
-            //    {
-            //        value = triggerArrayProperty.GetArrayElementAtIndex(i).floatValue,
-            //        style = { minWidth = 30, },
-            //        focusable = !isBase,
-            //    };
-            //    chanceField.BindProperty(property);
-//
-            //    var barLabel = new Label()
-            //    {
-            //        text = i.ToString(),
-            //        style =
-            //        {
-            //            justifyContent = new StyleEnum<Justify>(Justify.Center),
-            //            alignContent = new StyleEnum<Align>(Align.Center),
-            //            minWidth = 37,
-            //            paddingLeft = 11,
-            //        },
-            //    };
-//
-            //    patternHeaderRow.Add(barLabel);
-            //    patternRow.Add(chanceField);
-            //}
-//
-            //patternsBox.Add(new Label("Triggering"));
-            //patternsBox.Add(Spacer());
-            //patternsBox.Add(patternHeaderRow);
-            //patternsBox.Add(patternRow);
-            //_parent.Add(patternsBox);
-//
-//
-            //_parent.Add(Spacer());
 
             _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), null));
             _parent.Add(Spacer());
@@ -147,6 +80,21 @@ namespace Editor.AnySong
             Draw(_parent);
             _parent.Add(Spacer());
 
+
+            var patternStepArray = selection.CurrentSectionProperty.FindPropertyRelative("patternSteps");
+            var patternsField = new PropertyField(patternStepArray);
+            patternsField.BindProperty(patternStepArray);
+            _parent.Add(patternsField);
+            
+            //for (int i = 0; i < patternStepArray.arraySize; i++)
+            //{
+            //    var property = patternStepArray.GetArrayElementAtIndex(i).FindPropertyRelative("rootNote");
+            //    var propertyField = new PropertyField(property);
+            //    propertyField.BindProperty(property);
+            //    _parent.Add(propertyField);
+            //}
+
+
             var triggerRowLabel = new Label()
             {
                 style = { width = 100, }
@@ -167,27 +115,8 @@ namespace Editor.AnySong
             barRowLabel.text = "";
             patternHeaderRow.Add(barRowLabel);
 
+
             triggerRowLabel.text = "Trigger chance";
-            //var barLabel = new Label()
-            //{
-            //    text = i.ToString(),
-            //    style =
-            //    {
-            //        justifyContent = new StyleEnum<Justify>(Justify.Center),
-            //        alignContent = new StyleEnum<Align>(Align.Center),
-            //        minWidth = 37,
-            //        paddingLeft = 11,
-            //    },
-            //};
-
-
-            //List<SerializedProperty> propertyRows = new List<SerializedProperty>();
-            //for (var y = 0; y < track.patterns.Count; y++)
-            //{
-            //    var property = trackProperty.FindPropertyRelative("patterns").GetArrayElementAtIndex(y)
-            //        .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(0);
-            //    propertyRows.Add(property);
-            //}
 
             var patternsHolder = new VisualElement();
             for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
@@ -223,13 +152,6 @@ namespace Editor.AnySong
                         .GetArrayElementAtIndex(y)
                         .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
                     chanceField.BindProperty(property);
-
-                    //chanceField.RegisterValueChangedCallback((evt) =>
-                    //{
-                    //    Debug.Log("value changed " + evt.newValue);
-                    //    EvaluateOtherTriggerChanced(propertyRows);
-                    //});
-
                     patternRow.Add(chanceField);
                 }
 

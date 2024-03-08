@@ -20,7 +20,7 @@ namespace Editor.AnySong
         public static Color ColorHilight2 = new Color(0.8f, 0.4f, 0, 1);
         public static Color ColorHilight3 = new Color(0.2f, 0.4f, 0.8f, 1);
         public static Color ColorGreyDefault = new Color(0.35f, 0.35f, 0.35f, 1);
-        public static Color ColorGreyDark = new Color(0.2f, 0.2f, 0.2f, 1);
+        public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
         public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
         private AnysongPlayer _currentRuntimeSongPlayer;
@@ -35,6 +35,8 @@ namespace Editor.AnySong
             public AnysongSectionTrack CurrentSectionTrack;
             public AnyPatternStep CurrentStep;
             public AnyPattern CurrentPattern;
+            public SerializedProperty CurrentSectionProperty;
+
             public SerializedProperty CurrentSongTrackProperty;
             public SerializedProperty CurrentSectionTrackProperty;
 
@@ -493,6 +495,7 @@ namespace Editor.AnySong
             selection.CurrentSongTrackProperty = song.FindProperty("Tracks")
                 .GetArrayElementAtIndex(selection.CurrentTrackIndex);
 
+            selection.CurrentSectionProperty = song.FindProperty("Sections").GetArrayElementAtIndex(0);
             selection.CurrentSectionTrackProperty = track;
 
             return selection;

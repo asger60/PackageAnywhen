@@ -209,9 +209,9 @@ namespace Anywhen
         private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
 
         //private bool _alternateBuffer;
-        private float _buffer1Amp, _buffer2Amp;
+        //private float _buffer1Amp, _buffer2Amp;
         private float _bufferFadeValue, _buffer2FadeValue;
-        private double _bufferCrossFadeStepValue = 0.0025f;
+        //private double _bufferCrossFadeStepValue = 0.0025f;
 
         protected void StopScheduled(double absoluteTime)
         {
@@ -227,10 +227,10 @@ namespace Anywhen
         protected void PlayScheduled(AnywhenNoteClip clip)
         {
             //_alternateBuffer = false;
-            _buffer1Amp = 1;
-            _buffer2Amp = 0;
+            //_buffer1Amp = 1;
+            //_buffer2Amp = 0;
             _samplePosBuffer1 = 0;
-            _samplePosBuffer2 = 0;
+            //_samplePosBuffer2 = 0;
 
 
             _noteClip = clip;
@@ -267,7 +267,7 @@ namespace Anywhen
                 _currentLoopSettings = clip.loopSettings;
             }
 
-            _bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
+            //_bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
 
 
             _isLooping = _currentLoopSettings.enabled;
@@ -286,7 +286,7 @@ namespace Anywhen
         }
 
 
-        private double _samplePosBuffer1, _samplePosBuffer2;
+        private double _samplePosBuffer1/*, _samplePosBuffer2*/;
         private double _sampleStepFrac;
         private double _currentPitch;
         private float _pitch;

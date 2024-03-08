@@ -22,12 +22,23 @@ public class AnysongSection
         rootNote = 0;
         tracks = new List<AnysongSectionTrack>();
 
+        patternSteps = new AnywhenProgressionPatternObject.ProgressionStep[4];
+        for (var i = 0; i < patternSteps.Length; i++)
+        {
+            patternSteps[i] = new AnywhenProgressionPatternObject.ProgressionStep
+            {
+                rootNote = 0,
+                anywhenScale = AnywhenConductor.GetDefaultScale()
+            };
+        }
+
         foreach (var track in songTracks)
         {
             var newTrack = new AnysongSectionTrack();
             newTrack.Init(track);
             tracks.Add(newTrack);
         }
+        
     }
 
     public void UpdateTracks(List<AnysongTrack> songTracks)

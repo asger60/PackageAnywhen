@@ -109,5 +109,10 @@ namespace Anywhen
             _currentAnywhenScale = step.anywhenScale;
             _rootNote = step.rootNote;
         }
+
+        public static AnywhenScaleObject GetDefaultScale()
+        {
+            return Resources.Load<AnywhenScaleObject>("Scales/Major");
+        }
     }
 }
