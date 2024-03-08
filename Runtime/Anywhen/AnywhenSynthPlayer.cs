@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -15,29 +16,27 @@ namespace Anywhen
         public int numberOfSynths = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
-        public int activeSynths;
-
-
-        private void Update()
-        {
-            activeSynths = 0;
-            foreach (var sampler in _allSynths)
-            {
-                // if (!sampler.IsReady)
-                //     activeSynths++;
-            }
-        }
+ 
 
         private void Awake()
         {
-            if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
-
             for (int i = 0; i < numberOfSynths; i++)
             {
                 _allSynths.Add(Instantiate(anywhenSynthPrefab, transform));
             }
 
             _isInit = true;
+            LateInit();
+        }
+        
+        async void LateInit()
+        {
+            while (AnywhenMetronome.Instance == null)
+            {
+                await Task.Yield();
+            }
+            print("metronome init");
+
         }
 
 
