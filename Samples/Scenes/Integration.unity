@@ -1115,7 +1115,6 @@ MonoBehaviour:
   - {fileID: 181405239}
   - {fileID: 1296693582}
   globalIntensity: 0.557
-  transitionType: 0
 --- !u!4 &1023601001
 Transform:
   m_ObjectHideFlags: 0
@@ -1139,6 +1138,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
+      propertyPath: triggerTransitionsType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5538231729666420669, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15

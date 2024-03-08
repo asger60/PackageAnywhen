@@ -17,7 +17,7 @@ public class AnysongPlayerBrainInspector : UnityEditor.Editor
         
         var transitionProperty = serializedObject.FindProperty("transitionType");
         var transitionPropertyField = new PropertyField(transitionProperty);
-        transitionPropertyField.BindProperty(transitionProperty);
+        //transitionPropertyField.BindProperty(transitionProperty);
         
         var globalIntensity = serializedObject.FindProperty("globalIntensity");
         var globalIntensityField = new PropertyField(globalIntensity);
