@@ -25,8 +25,7 @@ public class AnywhenControl : Unit
             AnysongPlayerBrain.SetGlobalIntensity(flow.GetValue<float>(intensity));
             return null;
         });
-
-
+        
         intensity = ValueInput<float>("Intensity");
     }
     

@@ -14,7 +14,7 @@ public class AnywhenControlDescriptor : UnitDescriptor<AnywhenControl>
                 description.summary = "Trigger the sending of the intensity input.";
                 break;
             case "Intensity":
-                description.summary = "Set the global intensity in the AnysongPlayerBrain";
+                description.summary = "Set the global intensity in the AnysongPlayerBrain. Value should be between 0-1";
                 break;
         }
     }
