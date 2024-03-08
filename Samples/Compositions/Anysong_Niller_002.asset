@@ -1,0 +1,217 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
+  m_Name: Anysong_Niller_002
+  m_EditorClassIdentifier: 
+  tempo: 100
+  Sections:
+  - rootNote: 0
+    patternSteps: []
+    volume: 1
+    tracks:
+    - patterns:
+      - triggerChances:
+        - 100
+        - 100
+        - 100
+        - 100
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.57994455
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.99384737
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3966933
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.2035079
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.33469063
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.32224602
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.25141424
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.45113617
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.8541441
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.32782763
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.32147247
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.24588323
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.62004346
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9939848
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.19978046
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9566822
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+  Tracks:
+  - volume: 1
+    instrument: {fileID: 11400000, guid: b74aff5c141954be19f7c1e7ae637c2a, type: 2}
+  coverGraphic: 
+  playerBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
