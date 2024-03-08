@@ -47,7 +47,7 @@ namespace Editor.AnySong
 
         private float _scroll;
 
-        public enum InspectorModes
+        private enum InspectorModes
         {
             Sections,
             Pattern,
@@ -57,7 +57,6 @@ namespace Editor.AnySong
         }
 
 
-        private InspectorModes _currentInspectorMode = InspectorModes.Sections;
 
         [MenuItem("Anywhen/Anysong Editor")]
         public static void ShowModuleWindow()

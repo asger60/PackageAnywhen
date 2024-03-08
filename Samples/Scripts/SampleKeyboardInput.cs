@@ -39,7 +39,7 @@ namespace Samples.Scripts
                 AnywhenMetronome.TickRate.Sub16);
         }
 
-        private bool _noteDown;
+       // private bool _noteDown;
 
         void Update()
         {
@@ -56,13 +56,13 @@ namespace Samples.Scripts
             if (Input.GetKeyDown(KeyCode.A))
             {
                 SetKeyState(0, true);
-                _noteDown = true;
+                //_noteDown = true;
             }
 
             if (Input.GetKeyUp(KeyCode.A))
             {
                 SetKeyState(0, false);
-                _noteDown = false;
+                //_noteDown = false;
             }
         }
 

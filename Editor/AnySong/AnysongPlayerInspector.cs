@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Editor.Anysong
         private AnysongPlayer _anysongPlayer;
         Texture2D _texture;
         private float _textureAspect;
-        private float _textureMaxWidth = 800;
+        //private float _textureMaxWidth = 800;
         private float _currentWidth;
 
         AnimBool _showExtraFields;
@@ -21,7 +20,7 @@ namespace Editor.Anysong
         private void OnEnable()
         {
             _anysongPlayer = (AnysongPlayer)target;
-            _textureMaxWidth = 800;
+            //_textureMaxWidth = 800;
 
             _showExtraFields = new AnimBool(false);
             _showExtraFields.valueChanged.AddListener(Repaint);
