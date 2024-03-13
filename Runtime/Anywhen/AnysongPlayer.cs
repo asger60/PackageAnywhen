@@ -96,7 +96,7 @@ public class AnysongPlayer : MonoBehaviour
             var step = pattern.steps[stepIndex];
             float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(intensity));
 
-            float thisRnd = Random.Range(0, 1);
+            float thisRnd = Random.Range(0, 1f);
 
             if (thisRnd < step.chance && step.mixWeight < thisIntensity)
             {
