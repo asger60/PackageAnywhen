@@ -37,8 +37,44 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e60cb0039ae134c4fa1cdf3cc6c8f171, type: 3}
   - {fileID: 8300000, guid: bc7cdccc37ded4059a70c1f2f2bb767d, type: 3}
   - {fileID: 8300000, guid: 43103cbe7bc7142d8a141d1e825acc20, type: 3}
-  volume: 0.457
+  noteClips:
+  - {fileID: 11400000, guid: 8bfa3ba4f6de74997a31057034255de8, type: 2}
+  - {fileID: 11400000, guid: 163ca4ca5db3c4b54bb67aa0bae5ab81, type: 2}
+  - {fileID: 11400000, guid: 6cbee2c62cfca43a0a8616d4dea1f952, type: 2}
+  - {fileID: 11400000, guid: 5b148baa6a9dd4730a76e26c9f7de87e, type: 2}
+  - {fileID: 11400000, guid: 9d87bcf72dfa74e4ea97662a48339aac, type: 2}
+  - {fileID: 11400000, guid: 41bdae9f5ea8843479bf472ae66dd7b2, type: 2}
+  - {fileID: 11400000, guid: 0a297bbd00b344092b531885eff44d15, type: 2}
+  - {fileID: 11400000, guid: ecfda53cfd6304a78868aad9722f1a09, type: 2}
+  - {fileID: 11400000, guid: 6813fe85e1e0f451f8de5ffa61e9b537, type: 2}
+  - {fileID: 11400000, guid: 5293f3c1147fd4c68ad91e6b0e757967, type: 2}
+  - {fileID: 11400000, guid: deaec4cd9f35849dab5acd464906b23e, type: 2}
+  - {fileID: 11400000, guid: 0c1e88a0ab05b441baf010dde05dd99d, type: 2}
+  - {fileID: 11400000, guid: 70b6fd62d40e6423385bec6a0971e9d8, type: 2}
+  - {fileID: 11400000, guid: ac94de3992832444a9e7ec1d2cc67396, type: 2}
+  - {fileID: 11400000, guid: 0a892fc95a01e486fa709ebf200ebd57, type: 2}
+  - {fileID: 11400000, guid: f64ba42b223a54f78bab089bfb75b07d, type: 2}
+  - {fileID: 11400000, guid: ac270a3ed8d924b77a02be903f90a3b5, type: 2}
+  - {fileID: 11400000, guid: a27d4e72844cf47b39d66bda87b89b4f, type: 2}
+  - {fileID: 11400000, guid: c3203007d4ea547abac229e5cd336924, type: 2}
+  - {fileID: 11400000, guid: ed44415b830f343b3b137ce88a63ea81, type: 2}
+  - {fileID: 11400000, guid: 7c9b60db675224d3a92efe818f955b99, type: 2}
+  - {fileID: 11400000, guid: ff73dbd677b1d419bbd750faff1d503c, type: 2}
+  - {fileID: 11400000, guid: fc58e074458f04c23a96bf2dee6de12e, type: 2}
+  - {fileID: 11400000, guid: 69af4ac3e1f7b49b58740a2f9e324365, type: 2}
   stopDuration: 0.1
-  noteClip: {fileID: 0}
-  instrumentType: 0
+  instrumentType: 2
   clipSelectType: 0
+  clipType: 1
+  envelopeSettings:
+    enabled: 1
+    attack: 0.01
+    decay: 0
+    sustain: 0.88
+    release: 0.1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 0.457

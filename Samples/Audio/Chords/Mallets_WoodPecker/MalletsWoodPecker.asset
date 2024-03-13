@@ -86,19 +86,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e1255db45eda44c808cdccaa51c552c1, type: 2}
   - {fileID: 11400000, guid: cf156f9d9b44746b7b39577b65db5e8a, type: 2}
   - {fileID: 11400000, guid: f84f1425c8cbd45d3afeb1f69b8404d1, type: 2}
-  volume: 0.594
   stopDuration: 0.1
-  instrumentType: 0
+  instrumentType: 2
   clipSelectType: 0
   clipType: 1
   envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0.02
-    sustain: 0.096
-    release: 1.19
+    enabled: 1
+    attack: 0.1
+    decay: 0
+    sustain: 0.954
+    release: 0.1
   loopSettings:
     enabled: 0
     loopStart: 43
     loopLength: 4
     crossFadeDuration: 0
+  volume: 0.594

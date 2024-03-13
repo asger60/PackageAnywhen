@@ -87,15 +87,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f8c3dae9ed0674608b8ef64348816eab, type: 2}
   - {fileID: 11400000, guid: 65c29bf124adb492eb7d00a806e81968, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
+  instrumentType: 2
   clipSelectType: 0
   clipType: 1
   envelopeSettings:
-    enabled: 0
-    attack: 0
+    enabled: 1
+    attack: 0.1
     decay: 0
-    sustain: 0
-    release: 0
+    sustain: 0.84
+    release: 0.1
   loopSettings:
     enabled: 0
     loopStart: 0
