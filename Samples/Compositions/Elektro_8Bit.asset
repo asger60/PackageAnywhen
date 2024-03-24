@@ -960,10 +960,10 @@ MonoBehaviour:
       isSolo: 0
     - patterns:
       - triggerChances:
-        - 100
-        - 100
-        - 100
-        - 100
+        - 60
+        - 60
+        - 50
+        - 50
         steps:
         - noteOn: 0
           noteOff: 0
@@ -992,7 +992,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.484
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1022,7 +1022,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.573
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1052,7 +1052,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.532
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1082,7 +1082,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.573
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1112,7 +1112,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.685
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1159,7 +1159,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.685
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1249,7 +1249,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.532
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1356,7 +1356,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.605
           expression: 1
           rootNote: 7
         - noteOn: 0
@@ -1446,7 +1446,7 @@ MonoBehaviour:
           velocity: 1
           mixWeight: 0.37736827
           chordNotes: 
-          chance: 1
+          chance: 0.702
           expression: 1
           rootNote: 7
         - noteOn: 0
