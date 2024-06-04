@@ -1,0 +1,241 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
+  m_Name: Nikolaj sangen 2
+  m_EditorClassIdentifier: 
+  tempo: 100
+  Sections:
+  - rootNote: 0
+    patternSteps:
+    - rootNote: 2
+      anywhenScale: {fileID: 11400000, guid: 22699e01d936d44288290b37c18db75d, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+    volume: 1
+    tracks:
+    - patterns:
+      - triggerChances:
+        - 100
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.13180616
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 1
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.13180616
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23363832
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 3
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23363832
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23363832
+          chordNotes: 
+          chance: 0.881
+          expression: 1
+          rootNote: 3
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23363832
+          chordNotes: 07000000
+          chance: 1
+          expression: 1
+          rootNote: 3
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.36745405
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 5
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.36745405
+          chordNotes: 02000000
+          chance: 0.453
+          expression: 1
+          rootNote: 3
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.36745405
+          chordNotes: 
+          chance: 0.881
+          expression: 1
+          rootNote: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.00845021
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 3
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.21330574
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 4
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.30207118
+          chordNotes: 
+          chance: 1
+          expression: 1
+          rootNote: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.30207118
+          chordNotes: 
+          chance: 0.869
+          expression: 1
+          rootNote: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.30207118
+          chordNotes: 
+          chance: 0.422
+          expression: 1
+          rootNote: 1
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.30207118
+          chordNotes: 
+          chance: 0.391
+          expression: 1
+          rootNote: 2
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.30207118
+          chordNotes: 07000000
+          chance: 0.242
+          expression: 1
+          rootNote: 2
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0.023115687
+          outSlope: 0.023115687
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.23315644
+          value: 0.005389571
+          inSlope: 0.010126835
+          outSlope: 4.625487
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.06705153
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.49748603
+          value: 0.9994429
+          inSlope: 2.7138367
+          outSlope: -0.020219967
+          tangentMode: 1
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.068962194
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0.0011086748
+          outSlope: 0.0011086748
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 1
+  Tracks:
+  - volume: 0.173
+    instrument: {fileID: 11400000, guid: 79d9322e2e8054b0b819b4fdbca51031, type: 2}
+  coverGraphic: PlayerGraphic2
+  playerBackgroundColor: {r: 0.22352941, g: 0.22352941, b: 0.8862745, a: 1}
