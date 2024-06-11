@@ -71,6 +71,9 @@ namespace Editor.AnySong
                     null));
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
+            
+            _parent.Add(CreatePropertyFieldWithCallback(
+                selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
         }
 
         public static void DrawProgression(

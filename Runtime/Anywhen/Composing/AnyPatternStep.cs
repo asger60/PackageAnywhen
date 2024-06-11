@@ -12,7 +12,7 @@ public class AnyPatternStep
     public bool noteOn;
     public bool noteOff;
     [Range(0, 10f)] public float duration;
-    [Range(-1, 1f)] public float offset;
+    [Range(-0.5f, 0.5f)] public float offset;
     [Range(0, 1f)] public float velocity;
 
 
@@ -68,7 +68,7 @@ public class AnyPatternStep
             type = NoteEvent.EventTypes.NoteOff;
 
         var e = new NoteEvent(GetNotes(patternRoot), type, velocity,
-            offset, new double[GetNotes(patternRoot).Length], expression, 1)
+            offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16), new double[GetNotes(patternRoot).Length], expression, 1)
         {
             duration = duration
         };

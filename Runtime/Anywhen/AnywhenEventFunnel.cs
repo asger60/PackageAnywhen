@@ -1,3 +1,4 @@
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -7,13 +8,13 @@ namespace Anywhen
     public class AnywhenEventFunnel : MonoBehaviour
     {
         public void HandleNoteEvent(NoteEvent e, AnywhenInstrument anywhenSettings,
-            AudioMixerGroup mixerChannel = null)
+            AnysongTrack track = null)
         {
             switch (anywhenSettings)
             {
                 case AnywhenSampleInstrument instrumentObject:
                     AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, AnywhenMetronome.TickRate.Sub16,
-                        mixerChannel);
+                        track);
                     break;
                 case AnywhenSettingsScale settingsObjectScale:
                     AnywhenScalePlayer.Instance.HandleEvent(e, settingsObjectScale);
@@ -25,13 +26,12 @@ namespace Anywhen
         }
 
         public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings,
-            AnywhenMetronome.TickRate tickRate,
-            AudioMixerGroup mixerChannel = null)
+            AnywhenMetronome.TickRate tickRate)
         {
             switch (anywhenSettings)
             {
                 case AnywhenSampleInstrument instrumentObject:
-                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, tickRate, mixerChannel);
+                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, tickRate);
                     break;
 
                 case AnywhenSettingsScale settingsObjectScale:

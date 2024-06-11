@@ -1,4 +1,5 @@
 using System;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
 namespace Anywhen.Composing
@@ -9,6 +10,7 @@ namespace Anywhen.Composing
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         private NoteEvent _lastTrackEvent;
+        public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
 
 
         public void Init()
@@ -31,7 +33,7 @@ namespace Anywhen.Composing
         {
             _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote);
             _lastTrackEvent.velocity *= volume;
-            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument);
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, this);
         }
 
 

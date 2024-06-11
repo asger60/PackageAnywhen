@@ -14,6 +14,7 @@ namespace Anywhen.Composing
 
         public bool isMuted;
         public bool isSolo;
+        
 
         public void Init(AnysongTrack songSongTrack)
         {

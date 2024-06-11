@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -74,7 +75,7 @@ namespace Anywhen
 
 
         public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings,
-            AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
+            AnywhenMetronome.TickRate rate, AnysongTrack track = null)
         {
             switch (e.state)
             {
@@ -152,7 +153,7 @@ namespace Anywhen
                             : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
 
                         anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings,
-                            mixerChannel);
+                            track);
                     }
 
                     break;

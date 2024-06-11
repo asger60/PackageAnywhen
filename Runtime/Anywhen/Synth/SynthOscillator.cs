@@ -128,23 +128,23 @@ namespace Anywhen.Synth
             }
         }
 
-        public void SetNote(int note)
+        public void SetNote(int note, int sampleRate)
         {
             _isActive = true;
             _currentNote = note + settings.tuning;
-            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
-        public void SetPitchMod(float amount)
+        public void SetPitchMod(float amount, int sampleRate)
         {
             _pitchModAmount = Remap(amount, -1, 1, 0.5f, 2);
-            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
-        public void SetFineTuning(float amount)
+        public void SetFineTuning(float amount, int sampleRate)
         {
             _fineTune = amount;
-            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f]);
+            set_freq(Synth.AnywhenSynth.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
         float Remap(float value, float from1, float to1, float from2, float to2)
@@ -153,7 +153,7 @@ namespace Anywhen.Synth
         }
 
 
-        private void set_freq(float freq__hz, int sample_rate = 44100)
+        private void set_freq(float freq__hz, int sample_rate)
         {
             float freq__ppsmp = ((freq__hz * _pitchModAmount) + _fineTune) / sample_rate; // periods per sample
             _freqPhPSmp = (uint)(freq__ppsmp * PHASE_MAX);

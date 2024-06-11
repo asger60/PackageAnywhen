@@ -1,3 +1,4 @@
+using Anywhen.Synth.Synth;
 using UnityEngine;
 using UnitySynth.Runtime.Synth.Filter;
 
@@ -11,7 +12,7 @@ namespace UnitySynth.Runtime.Synth
             _q = 5;
         }
 
-        float _sampleRate = 44100; // Sample rate
+        float _sampleRate; // Sample rate
 
         // // DSP variables
         private float _vF, _vD, _vZ1, _vZ2, _vZ3;
@@ -31,7 +32,7 @@ namespace UnitySynth.Runtime.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            Init(44100);
+            Init(AnywhenSynth.SampleRate);
             _q = 5;
             settings = newSettings;
         }
