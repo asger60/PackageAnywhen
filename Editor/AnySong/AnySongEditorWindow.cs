@@ -529,8 +529,7 @@ namespace Editor.AnySong
 
                     break;
                 case InspectorModes.Step:
-                    AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty,
-                        AnysongSequencesView.RefreshPatterns);
+                    AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, AnysongSequencesView.RefreshPatterns);
                     HandleStepUtilsLogic();
                     break;
                 case InspectorModes.Progression:

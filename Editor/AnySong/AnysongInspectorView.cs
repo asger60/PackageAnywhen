@@ -71,7 +71,7 @@ namespace Editor.AnySong
                     null));
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
-            
+
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
         }
@@ -88,7 +88,7 @@ namespace Editor.AnySong
             var patternsField = new PropertyField(patternStepArray);
             patternsField.BindProperty(patternStepArray);
             _parent.Add(patternsField);
-            
+
             //for (int i = 0; i < patternStepArray.arraySize; i++)
             //{
             //    var property = patternStepArray.GetArrayElementAtIndex(i).FindPropertyRelative("rootNote");
@@ -192,6 +192,16 @@ namespace Editor.AnySong
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
+            var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);
+            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("stepRepeats"),
+                () =>
+                {
+                    didUpdate?.Invoke();
+                    s.visible = step.FindPropertyRelative("stepRepeats").intValue > 0;
+                }));
+
+
+            _parent.Add(s);
 
             var boxNotes = new Box();
             boxNotes.Add(new Label("Note stuff"));
@@ -202,6 +212,12 @@ namespace Editor.AnySong
 
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), didUpdate));
+            if (step.FindPropertyRelative("chordNotes").arraySize > 1)
+            {
+                boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
+                boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
+            }
+
 
             boxNotes.Add(notesBox);
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Anywhen;
-using Anywhen.Composing;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
@@ -21,7 +21,12 @@ public class AnyPatternStep
 
 
     public List<int> chordNotes = new List<int>();
+    [Range(0, 1f)] public float strumAmount;
 
+    [Range(0, 1f)] public float strumRandom;
+
+
+    [Range(0, 4)] public int stepRepeats;
 
     [Range(0, 1f)] public float chance = 1;
     [Range(0, 1f)] public float expression = 0;
@@ -29,6 +34,14 @@ public class AnyPatternStep
 
     public int rootNote;
 
+    public enum RepeatRates
+    {
+        ThirtyTwo,
+        FourtyEight,
+        SixtyFour
+    }
+
+    public RepeatRates repeatRate;
 
     public int[] GetNotes(int patternRoot)
     {
@@ -55,11 +68,6 @@ public class AnyPatternStep
         mixWeight = Random.Range(0, 1f);
     }
 
-    //public void TriggerStep(AnysongTrack track, AnyPattern pattern)
-    //{
-    //    if (noteOn || noteOff)
-    //        track.TriggerNoteOn(this, pattern, track.volume);
-    //}
 
     public NoteEvent GetEvent(int patternRoot)
     {
@@ -68,13 +76,56 @@ public class AnyPatternStep
             type = NoteEvent.EventTypes.NoteOff;
 
         var e = new NoteEvent(GetNotes(patternRoot), type, velocity,
-            offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16), new double[GetNotes(patternRoot).Length], expression, 1)
+            offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16),
+            CreateStrum(GetNotes(patternRoot).Length), expression, 1)
         {
             duration = duration
         };
         return e;
     }
 
+    public NoteEvent[] GetRepeats(int patternRoot, float trackVolume)
+    {
+        NoteEvent[] events = new NoteEvent[stepRepeats];
+
+        for (int i = 0; i < stepRepeats; i++)
+        {
+            NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
+            if (noteOff)
+                type = NoteEvent.EventTypes.NoteOff;
+
+            var e = new NoteEvent(GetNotes(patternRoot), type, velocity * trackVolume,
+                offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16) +
+                (AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16) / ((int)repeatRate + 2) *
+                 (i + 1)),
+                CreateStrum(GetNotes(patternRoot).Length), expression, 1)
+            {
+                duration = duration
+            };
+            events[i] = e;
+        }
+
+
+        return events;
+    }
+
+    double[] CreateStrum(int count)
+    {
+        if (count == 1)
+        {
+            return new double[] { 0 };
+        }
+
+        var notes = new double[count];
+        var maxLength = AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16);
+        for (int i = 0; i < notes.Length; i++)
+        {
+            notes[i] = (maxLength * (strumAmount) * (float)i / (count - 1))
+                       + maxLength * Random.Range(0, strumRandom);
+        }
+
+        return notes;
+    }
 
     public AnyPatternStep Clone()
     {
@@ -88,5 +139,4 @@ public class AnyPatternStep
 
         return clone;
     }
-
 }

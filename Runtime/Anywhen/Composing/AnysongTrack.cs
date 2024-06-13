@@ -34,9 +34,10 @@ namespace Anywhen.Composing
             _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote);
             _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, this);
+            foreach (var repeat in anyPatternStep.GetRepeats(pattern.rootNote, volume))
+            {
+                AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, this);
+            }
         }
-
-
-
     }
 }
