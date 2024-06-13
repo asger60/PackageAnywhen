@@ -71,6 +71,7 @@ namespace Anywhen.Synth.Synth
         private bool _eventIsWaiting = false;
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
+        public static int SampleRate;
 
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
@@ -277,8 +278,8 @@ namespace Anywhen.Synth.Synth
                         for (int i = 0; i < voice._oscillators.Length; i++)
                         {
                             var osc = voice._oscillators[i];
-                            osc.SetNote(_currentNoteEvent.notes[0]);
-                            osc.SetFineTuning(i * _preset.voiceSpread);
+                            osc.SetNote(_currentNoteEvent.notes[0], SampleRate);
+                            osc.SetFineTuning(i * _preset.voiceSpread, SampleRate);
                         }
                     }
                 }
@@ -297,8 +298,8 @@ namespace Anywhen.Synth.Synth
                             int currentNote = _currentNoteEvent.notes[i];
 
 
-                            osc.SetFineTuning(i * _preset.voiceSpread);
-                            osc.SetNote(currentNote);
+                            osc.SetFineTuning(i * _preset.voiceSpread, SampleRate);
+                            osc.SetNote(currentNote, SampleRate);
                         }
                     }
                 }
@@ -386,6 +387,7 @@ namespace Anywhen.Synth.Synth
         /// Internal
         private void Init()
         {
+            SampleRate = AudioSettings.outputSampleRate;
             if (FreqTab == null)
             {
                 _freqTabTest = new float[128];
@@ -511,7 +513,7 @@ namespace Anywhen.Synth.Synth
                     {
                         if (!synthOscillator.IsActive) break;
 
-                        synthOscillator.SetPitchMod(voiceFreqMod);
+                        synthOscillator.SetPitchMod(voiceFreqMod, SampleRate);
                         oscillatorOutput += synthOscillator.Process();
                         numOsc++;
                     }

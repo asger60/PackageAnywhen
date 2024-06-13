@@ -55,13 +55,15 @@ namespace Anywhen.SettingsObjects
         public struct EnvelopeSettings
         {
             public bool enabled;
-            public float attack;
-            public float decay;
+            [Range(0, 10f)] public float attack;
+            [Range(0, 5f)] public float decay;
             [Range(0, 1f)] public float sustain;
-            public float release;
+            [Range(0, 10f)] public float release;
+
+           
         }
 
-        public EnvelopeSettings envelopeSettings;
+        //public EnvelopeSettings envelopeSettings;
         public LoopSettings loopSettings;
         [Range(0, 1f)] public float volume = 1;
         public AnywhenNoteClip GetNoteClip(int note)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -29,7 +30,7 @@ namespace Anywhen
         public int CurrentNote => _currentNote;
         private int _currentNote;
         private float _volume;
-
+        private AnysongTrack _track;
         public void Init(AnywhenMetronome.TickRate tickRate)
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
@@ -55,7 +56,7 @@ namespace Anywhen
 
 
         public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument newSettings,
-            AudioMixerGroup mixerChannel = null)
+           AnysongTrack track = null)
         {
             SetReady(false);
             _instrument = newSettings;
@@ -68,7 +69,7 @@ namespace Anywhen
 
             _currentNote = note;
             _scheduledPlayTime = playTime;
-            
+            _track = track;
             switch (_instrument.clipType)
             {
                 case AnywhenSampleInstrument.ClipTypes.AudioClips:
@@ -82,7 +83,7 @@ namespace Anywhen
                         _audioSource.Stop();
                         _audioSource.volume = volume * _instrument.volume;
                         _audioSource.time = 0;
-                        _audioSource.outputAudioMixerGroup = mixerChannel;
+                        //_audioSource.outputAudioMixerGroup = mixerChannel;
                         _playingNoteClip = false;
                         _audioSource.PlayScheduled(_scheduledPlayTime);
                     }
@@ -244,7 +245,9 @@ namespace Anywhen
             var currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings();
 
             if (_instrument != null)
-                currentEnvelopeSettings = _instrument.envelopeSettings;
+            {
+                currentEnvelopeSettings = _track.trackEnvelope;
+            }
 
             if (clip.envelopeSettings.enabled)
             {

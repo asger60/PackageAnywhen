@@ -1,3 +1,4 @@
+using Anywhen.Synth.Synth;
 using UnityEngine;
 
 namespace UnitySynth.Runtime.Synth
@@ -30,16 +31,15 @@ namespace UnitySynth.Runtime.Synth
 
         
 
-        private int _sampleRate = 44100;
         public SynthSettingsObjectEnvelope settings;
 
         public override void NoteOn()
         {
             if (settings == null) return;
-            SetAttackRate(settings.attack * _sampleRate);
-            SetDecayRate(settings.decay * _sampleRate);
+            SetAttackRate(settings.attack * AnywhenSynth.SampleRate);
+            SetDecayRate(settings.decay * AnywhenSynth.SampleRate);
             SetSustainLevel(settings.sustain);
-            SetReleaseRate(settings.release * _sampleRate);
+            SetReleaseRate(settings.release * AnywhenSynth.SampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_attack;

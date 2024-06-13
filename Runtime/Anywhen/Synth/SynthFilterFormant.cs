@@ -1,3 +1,4 @@
+using Anywhen.Synth.Synth;
 using UnityEngine;
 using UnitySynth.Runtime.Synth.Filter;
 
@@ -122,7 +123,7 @@ namespace UnitySynth.Runtime.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             settings = newSettings;
-            Init(44100);
+            Init(AnywhenSynth.SampleRate);
         }
 
 

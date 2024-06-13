@@ -88,6 +88,7 @@
 //  He also suggests a half sample delay as phase compensation, which
 //  is not implemented yet.
 
+using Anywhen.Synth.Synth;
 using UnitySynth.Runtime.Synth.Filter;
 using static System.Math;
 
@@ -143,7 +144,7 @@ namespace UnitySynth.Runtime.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            Fs = 44100;
+            Fs = AnywhenSynth.SampleRate;
             v = V_t * 0.5f; // 1/2V_t
             settings = newSettings;
         }
