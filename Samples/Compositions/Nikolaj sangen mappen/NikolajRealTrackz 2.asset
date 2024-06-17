@@ -17,7 +17,29 @@ MonoBehaviour:
   - rootNote: 0
     patternSteps:
     - rootNote: 0
-      anywhenScale: {fileID: 11400000, guid: c7b626326b43c4b83bd09ea7820be224, type: 2}
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 563ccdf9397de43d1b29a412f01687fa, type: 2}
+    - rootNote: 8
+      anywhenScale: {fileID: 11400000, guid: 8b531814933cc4fab8181d3d47aca802, type: 2}
+    - rootNote: 8
+      anywhenScale: {fileID: 11400000, guid: 8b531814933cc4fab8181d3d47aca802, type: 2}
+    - rootNote: 8
+      anywhenScale: {fileID: 11400000, guid: 8b531814933cc4fab8181d3d47aca802, type: 2}
+    - rootNote: 8
+      anywhenScale: {fileID: 11400000, guid: 8b531814933cc4fab8181d3d47aca802, type: 2}
     volume: 1
     tracks:
     - patterns:
@@ -4772,7 +4794,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -5437,14 +5459,14 @@ MonoBehaviour:
       decay: 4.58
       sustain: 0.01
       release: 10
-  - volume: 0.568
-    instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
+  - volume: 0.872
+    instrument: {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
     trackEnvelope:
-      enabled: 0
-      attack: 0
-      decay: 0
-      sustain: 0
-      release: 0
+      enabled: 1
+      attack: 1.8
+      decay: 2.58
+      sustain: 1
+      release: 10
   - volume: 0.65999997
     instrument: {fileID: 11400000, guid: e588850ab7ca94569ad0f43990be8b87, type: 2}
     trackEnvelope:
