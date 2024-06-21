@@ -1459,7 +1459,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       isMuted: 0
-      isSolo: 1
+      isSolo: 0
     - patterns:
       - triggerChances:
         - 0
@@ -3199,7 +3199,7 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 0.5083313
+          time: 0.50198364
           value: 1
           inSlope: 0
           outSlope: 0
@@ -3688,7 +3688,7 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 2.9951782
+          time: 1.0031433
           value: 1
           inSlope: 0
           outSlope: 0
@@ -3754,7 +3754,7 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.928
+          velocity: 0.488
           mixWeight: 0.6174492
           chordNotes: 
           strumAmount: 0
@@ -3937,8 +3937,8 @@ MonoBehaviour:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
-          time: -0.0054151714
-          value: 0.09418273
+          time: 0.001157552
+          value: 0.143255
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3976,7 +3976,7 @@ MonoBehaviour:
       decay: 3.53
       sustain: 0
       release: 1.2
-  - volume: 0.56
+  - volume: 0.632
     instrument: {fileID: 11400000, guid: 02d5be10edc13484089ab8c6ba9bd8d4, type: 2}
     trackEnvelope:
       enabled: 1
@@ -3992,7 +3992,7 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.544
+  - volume: 0.624
     instrument: {fileID: 11400000, guid: fea6c0c2b48b44addb5282bdce9bf6b5, type: 2}
     trackEnvelope:
       enabled: 1
@@ -4000,7 +4000,7 @@ MonoBehaviour:
       decay: 0.4
       sustain: 0
       release: 0
-  - volume: 0.6
+  - volume: 0.536
     instrument: {fileID: 11400000, guid: 778ae75e6773248de9eb1aa3cae701d7, type: 2}
     trackEnvelope:
       enabled: 1
@@ -4008,7 +4008,7 @@ MonoBehaviour:
       decay: 0.2
       sustain: 0
       release: 3.8
-  - volume: 0.768
+  - volume: 0.832
     instrument: {fileID: 11400000, guid: 82f89c1bcf16942898d5752019c55f81, type: 2}
     trackEnvelope:
       enabled: 1
@@ -4016,7 +4016,7 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.472
+  - volume: 0.664
     instrument: {fileID: 11400000, guid: 7cab16d8242c64beba5599a81f3bd0ea, type: 2}
     trackEnvelope:
       enabled: 1
@@ -4024,12 +4024,12 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.96
+  - volume: 0.992
     instrument: {fileID: 11400000, guid: eb7b85d0f2a6444e2bb31a4e65b53bfa, type: 2}
     trackEnvelope:
       enabled: 1
       attack: 0
-      decay: 0.47
+      decay: 0.84
       sustain: 0
       release: 1.3
   coverGraphic: PlayerGraphic2
