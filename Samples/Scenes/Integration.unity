@@ -284,7 +284,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 5a167ddd89649394da83b49b61cdae51, type: 2}
+      objectReference: {fileID: 11400000, guid: d80796a9faa0da24dbd29f77a7513928, type: 2}
     - target: {fileID: 2169488734655937669, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -960,7 +960,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 5a167ddd89649394da83b49b61cdae51, type: 2}
+      objectReference: {fileID: 11400000, guid: d80796a9faa0da24dbd29f77a7513928, type: 2}
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: triggerTransitionsType
       value: 1
@@ -1650,6 +1650,10 @@ PrefabInstance:
     - target: {fileID: 5480952876350075817, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
       propertyPath: m_Name
       value: Anywhen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873088227468636864, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
+      propertyPath: Bpm
+      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
