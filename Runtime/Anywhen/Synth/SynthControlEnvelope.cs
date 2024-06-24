@@ -36,6 +36,7 @@ namespace UnitySynth.Runtime.Synth
         public override void NoteOn()
         {
             if (settings == null) return;
+            //Reset();
             SetAttackRate(settings.attack * AnywhenSynth.SampleRate);
             SetDecayRate(settings.decay * AnywhenSynth.SampleRate);
             SetSustainLevel(settings.sustain);

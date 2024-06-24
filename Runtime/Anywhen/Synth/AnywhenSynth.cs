@@ -76,12 +76,22 @@ namespace Anywhen.Synth.Synth
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
-            //queueLock = true;
+          
+            if (noteEvent.state == NoteEvent.EventTypes.NoteOn && _eventIsWaiting)
+            {
+                if (_nextEvent.NoteEvent.state == NoteEvent.EventTypes.NoteOff)
+                {
+                    _eventIsWaiting = false;
+                }
+            }
+            
+            
             if (noteEvent.state == NoteEvent.EventTypes.NoteOff)
             {
-                noteEvent.velocity = _currentNoteEvent.velocity;
+                
 
-                _eventIsWaiting = false;
+                noteEvent.velocity = _currentNoteEvent.velocity;
+                //   _eventIsWaiting = false;
             }
 
 
@@ -264,6 +274,48 @@ namespace Anywhen.Synth.Synth
             _isInitialized = true;
         }
 
+        void HandleQueue(int queueSize)
+        {
+            // Event handling
+            // This is sample accurate event handling.
+            // If it's too slow, we can decide to only handle 1 event per buffer and
+            // move this code outside the loop.
+            while (true)
+            {
+                if (_eventIsWaiting == false && queueSize > 0)
+                {
+                    //queueLock = true;
+                    if (_queue.GetFrontAndDequeue(ref _nextEvent))
+                    {
+                        _eventIsWaiting = true;
+                        queueSize--;
+                    }
+                    //queueLock = false;
+                }
+
+                if (_eventIsWaiting)
+                {
+                    //if (nextEvent.time_smp <= time_smp)
+                    if (_nextEvent.eventTime <= AudioSettings.dspTime)
+                    {
+                        HandleEventNow(_nextEvent);
+                        _eventIsWaiting = false;
+                    }
+                    else
+                    {
+                        // we assume that queued events are in order, so if it's not
+                        // now, we stop getting events from the queue
+                        break;
+                    }
+                }
+                else
+                {
+                    // no more events
+                    break;
+                }
+            }
+        }
+
         // This should only be called from OnAudioFilterRead
         private void HandleEventNow(EventQueue.QueuedEvent currentEvent)
         {
@@ -427,53 +479,16 @@ namespace Anywhen.Synth.Synth
             int smp = 0;
             int bufferIndex = 0;
 
-
             // Cache this for the entire buffer, we don't need to check for
             // every sample if new events have been enqueued.
             // This assumes that no other methods call GetFrontAndDequeue.
             int queueSize = _queue.GetSize();
 
+
             // Render loop
             for (; smp < sampleFrames; ++smp)
             {
-                // Event handling
-                // This is sample accurate event handling.
-                // If it's too slow, we can decide to only handle 1 event per buffer and
-                // move this code outside the loop.
-                while (true)
-                {
-                    if (_eventIsWaiting == false && queueSize > 0)
-                    {
-                        //queueLock = true;
-                        if (_queue.GetFrontAndDequeue(ref _nextEvent))
-                        {
-                            _eventIsWaiting = true;
-                            queueSize--;
-                        }
-                        //queueLock = false;
-                    }
-
-                    if (_eventIsWaiting)
-                    {
-                        //if (nextEvent.time_smp <= time_smp)
-                        if (_nextEvent.eventTime <= AudioSettings.dspTime)
-                        {
-                            HandleEventNow(_nextEvent);
-                            _eventIsWaiting = false;
-                        }
-                        else
-                        {
-                            // we assume that queued events are in order, so if it's not
-                            // now, we stop getting events from the queue
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // no more events
-                        break;
-                    }
-                }
+                HandleQueue(queueSize);
 
                 foreach (var frequencyModifier in _voiceFrequencyModifiers)
                 {

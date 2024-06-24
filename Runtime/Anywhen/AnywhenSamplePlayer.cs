@@ -152,8 +152,7 @@ namespace Anywhen
                             ? -1
                             : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
 
-                        anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings,
-                            track);
+                        anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings, track);
                     }
 
                     break;
