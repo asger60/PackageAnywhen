@@ -54,6 +54,7 @@ namespace Synth.Editor
 
             GUILayout.EndVertical();
             GUILayout.Space(10);
+            
         }
 
         private static void SetCurveLinear(AnimationCurve curve)

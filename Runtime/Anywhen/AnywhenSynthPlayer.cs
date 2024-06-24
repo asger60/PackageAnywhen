@@ -16,7 +16,7 @@ namespace Anywhen
         public int numberOfSynths = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
- 
+
 
         private void Awake()
         {
@@ -28,15 +28,15 @@ namespace Anywhen
             _isInit = true;
             LateInit();
         }
-        
+
         async void LateInit()
         {
             while (AnywhenMetronome.Instance == null)
             {
                 await Task.Yield();
             }
-            print("metronome init");
 
+            print("metronome init");
         }
 
 
@@ -59,6 +59,7 @@ namespace Anywhen
             if (thisSynth)
             {
                 double playTime = 0;
+
                 if (rate != AnywhenMetronome.TickRate.None)
                 {
                     playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
@@ -67,11 +68,14 @@ namespace Anywhen
                 e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
 
                 thisSynth.HandleEventScheduled(e, playTime);
-                
+
                 if (e is { state: NoteEvent.EventTypes.NoteOn, duration: > 0 })
                 {
                     var noteOff = new NoteEvent(NoteEvent.EventTypes.NoteOff);
-                    thisSynth.HandleEventScheduled(noteOff, playTime + e.duration);
+                    double stopTime = playTime;
+                    decimal dec = new decimal(e.duration);
+                    stopTime += (double)dec;
+                    thisSynth.HandleEventScheduled(noteOff, stopTime);
                 }
             }
         }

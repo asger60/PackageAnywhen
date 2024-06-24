@@ -11,6 +11,7 @@ namespace UnitySynth.Runtime.Synth.Editor
     public class SynthSettingsInspector : UnityEditor.Editor
     {
         private AnywhenSynthPreset _settingsObject;
+        public AnywhenSynthPreset SettingsObject => _settingsObject;
         private bool _showFilterMods => EditorPrefs.GetBool("Filter Modifiers");
         private bool _showAmpMods => EditorPrefs.GetBool("Amplitude Modifiers");
         private bool _showPitchMods => EditorPrefs.GetBool("Pitch Modifiers");
@@ -21,6 +22,8 @@ namespace UnitySynth.Runtime.Synth.Editor
 
         public override void OnInspectorGUI()
         {
+            EditorGUI.BeginChangeCheck();
+            
             _sectionHeaderStyle = new GUIStyle(EditorStyles.foldout)
             {
                 fontStyle = FontStyle.Bold,
@@ -190,6 +193,11 @@ namespace UnitySynth.Runtime.Synth.Editor
                 //GUILayout.EndVertical();
                 EditorGUI.indentLevel = 0;
                 GUILayout.Space(10);
+            }
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(SettingsObject);
             }
         }
 
