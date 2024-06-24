@@ -15,6 +15,7 @@ public class AnysongSection
     [Range(0, 1f)] public float volume = 0.85f;
 
     public List<AnysongSectionTrack> tracks;
+    public int sectionLength = 4;
 
     public void Init(List<AnysongTrack> songTracks)
     {
