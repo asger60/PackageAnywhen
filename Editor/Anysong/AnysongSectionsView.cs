@@ -1,5 +1,6 @@
 using Anywhen.Composing;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -39,7 +40,7 @@ namespace Editor.AnySong
                         flexDirection = FlexDirection.Row
                     }
                 };
-                
+
 
                 var button = new Button
                 {
@@ -58,22 +59,41 @@ namespace Editor.AnySong
                 parent.Add(sectionElement);
                 parent.Add(spacer);
             }
-            
+
             var lockButton = new Button
             {
                 name = "SectionLockButton",
-                text = "Lock ",
+                text = "Lock",
                 style =
                 {
-                    width = new StyleLength(60),
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row,
+                    width = new StyleLength(35),
                     height = 20,
+                    backgroundColor = IsSectionLocked()
+                        ? AnysongEditorWindow.ColorGreyDark
+                        : AnysongEditorWindow.ColorGreyDefault,
                 }
             };
-            
 
             parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
-            
-            parent.Add(lockButton);
+
+            var lockElement = new VisualElement
+            {
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+            parent.Add(lockElement);
+            lockElement.Add(lockButton);
+        }
+
+        static bool IsSectionLocked()
+        {
+            Debug.Log(AnysongEditorWindow.CurrentSectionLockIndex);
+            return AnysongEditorWindow.CurrentSectionLockIndex > -1;
         }
     }
 }

@@ -18,8 +18,7 @@ namespace Anywhen
         public float intensity;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
-
-
+        
         private void Start()
         {
             Load(songObject);
@@ -45,8 +44,10 @@ namespace Anywhen
         private void OnBar()
         {
             if (!_isRunning) return;
+            _currentBar++;
             var thisSection = _currentSong.Sections[_currentSectionIndex];
-            int progress = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, thisSection.sectionLength);
+            int progress = (int)Mathf.Repeat(_currentBar, thisSection.sectionLength);
+            print(progress);
             if (progress == 0)
             {
                 NextSection();
@@ -91,6 +92,7 @@ namespace Anywhen
 
         void NextSection()
         {
+            _currentBar = 0;
             if (AnysongPlayerBrain.SectionLockIndex > -1)
             {
                 _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;

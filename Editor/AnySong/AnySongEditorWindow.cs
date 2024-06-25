@@ -27,6 +27,9 @@ namespace Editor.AnySong
         private AnysongPlayer _currentRuntimeSongPlayer;
         private AnyPatternStep _stepCopy;
 
+        private AnysongSection _sectionCopy;
+        AnyPattern _patternCopy;
+
 
         public struct AnySelection
         {
@@ -300,9 +303,6 @@ namespace Editor.AnySong
             _sectionsPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreateNewSection(); });
             _sectionsPanel.Q<Button>("RemoveButton").RegisterCallback((ClickEvent ev) => { DeleteSection(); });
             _sectionsPanel.Q<Button>("SectionLockButton").RegisterCallback((ClickEvent ev) => { ToggleSectionLock(); });
-            
-
-            
         }
 
 
@@ -426,7 +426,7 @@ namespace Editor.AnySong
             HandleTracksLogic();
             HandleSectionsLogic();
         }
-        
+
         void CopySection()
         {
             Debug.Log("CopySection");
@@ -434,32 +434,38 @@ namespace Editor.AnySong
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
             HandleSectionsLogic();
         }
-        
+
         void PasteSection()
         {
             Debug.Log("PasteSection");
 
 
             CurrentSong.Sections[_currentSelection.CurrentSectionIndex] = _sectionCopy.Clone();
-            
+
             AnysongSequencesView.RefreshPatterns();
-        
-            
-            
+
+
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
             HandleSectionsLogic();
         }
 
+        public static int CurrentSectionLockIndex;
+
         void ToggleSectionLock()
         {
-            if (AnysongPlayerBrain.SectionLockIndex >= 0)
+            if (CurrentSectionLockIndex >= 0)
             {
-                AnysongPlayerBrain.SetSectionLock(-1);
+                CurrentSectionLockIndex = -1;
+                AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
             }
             else
             {
-                AnysongPlayerBrain.SetSectionLock(_currentSelection.CurrentSectionIndex);
+                CurrentSectionLockIndex = _currentSelection.CurrentSectionIndex;
+                AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
             }
+
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
+            HandleSectionsLogic();
         }
 
 
@@ -602,7 +608,7 @@ namespace Editor.AnySong
             {
                 case InspectorModes.Sections:
                     AnysongInspectorView.DrawSection(_currentSelection.CurrentSectionProperty, false, null);
-                    
+
                     _inspectorPanel.Q<Button>("CopyButton").RegisterCallback((ClickEvent ev) => { CopySection(); });
                     _inspectorPanel.Q<Button>("PasteButton").RegisterCallback((ClickEvent ev) => { PasteSection(); });
                     break;
@@ -698,9 +704,6 @@ namespace Editor.AnySong
             _consoleMessage = message;
             _consoleLogTime = EditorApplication.timeSinceStartup;
         }
-
-        private AnysongSection _sectionCopy;
-        AnyPattern _patternCopy;
 
 
         void ClearPattern()
