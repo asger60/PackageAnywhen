@@ -21,6 +21,7 @@ public class AnysongSection
     {
         volume = 1f;
         rootNote = 0;
+        sectionLength = 4;
         tracks = new List<AnysongSectionTrack>();
 
         patternSteps = new AnywhenProgressionPatternObject.ProgressionStep[4];
@@ -65,5 +66,21 @@ public class AnysongSection
     public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar)
     {
         return patternSteps[(int)Mathf.Repeat(currentBar, patternSteps.Length)];
+    }
+    
+    public AnysongSection Clone()
+    {
+        var clone = new AnysongSection
+        {
+            tracks = new List<AnysongSectionTrack>()
+        };
+        
+        for (var i = 0; i < tracks.Count; i++)
+        {
+            clone.tracks.Add(tracks[i].Clone());
+        }
+
+
+        return clone;
     }
 }

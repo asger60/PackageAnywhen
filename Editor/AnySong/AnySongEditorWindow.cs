@@ -1,6 +1,7 @@
 using System;
 using Anywhen;
 using Anywhen.Composing;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -26,25 +27,26 @@ namespace Editor.AnySong
         private AnysongPlayer _currentRuntimeSongPlayer;
         private AnyPatternStep _stepCopy;
 
+
         public struct AnySelection
         {
+            public int CurrentSectionIndex;
             public int CurrentStepIndex;
             public int CurrentPatternIndex;
             public int CurrentTrackIndex;
             public AnysongTrack CurrentSongTrack;
+            public AnysongSection CurrentSection;
             public AnysongSectionTrack CurrentSectionTrack;
             public AnyPatternStep CurrentStep;
             public AnyPattern CurrentPattern;
             public SerializedProperty CurrentSectionProperty;
-
             public SerializedProperty CurrentSongTrackProperty;
             public SerializedProperty CurrentSectionTrackProperty;
-
             public SerializedProperty CurrentStepProperty;
             public SerializedProperty CurrentPatternProperty;
         }
 
-        private AnySelection _currentSelection = new AnySelection();
+        private static AnySelection _currentSelection = new AnySelection();
         private AnySelection _currentHover;
 
         private float _scroll;
@@ -57,7 +59,6 @@ namespace Editor.AnySong
             Progression,
             Step
         }
-
 
 
         [MenuItem("Anywhen/Anysong Editor")]
@@ -84,6 +85,7 @@ namespace Editor.AnySong
         }
 
         private VisualElement _sequencesPanel;
+        private VisualElement _sectionsPanel;
         private VisualElement _tracksPanel;
         private VisualElement _inspectorPanel;
         private VisualElement _progressionPanel;
@@ -126,6 +128,16 @@ namespace Editor.AnySong
                 CreateNewTrack();
             }
 
+            _sectionsPanel = new VisualElement()
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    height = 30,
+                }
+            };
+
+            rootVisualElement.Add(_sectionsPanel);
 
             VisualElement columnsPanel = new VisualElement()
             {
@@ -139,7 +151,7 @@ namespace Editor.AnySong
 
             _tracksPanel = new ScrollView(ScrollViewMode.Vertical)
             {
-                style = { width = 300, }
+                style = { width = new StyleLength(300), }
             };
 
 
@@ -165,11 +177,13 @@ namespace Editor.AnySong
             columnsPanel.Add(_inspectorPanel);
 
 
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
             AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
-            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             AnysongInspectorView.Draw(_inspectorPanel);
 
+            HandleSectionsLogic();
             HandleTracksLogic();
             HandleProgressionLogic();
             HandleSequencesLogic();
@@ -265,6 +279,33 @@ namespace Editor.AnySong
             }
         }
 
+        void HandleSectionsLogic()
+        {
+            _sectionsPanel.Query<Button>("SectionButton").ForEach(button =>
+            {
+                button.RegisterCallback((ClickEvent ev) =>
+                {
+                    if (ev.currentTarget is Button btn)
+                    {
+                        _currentSelection = GetSectionFromTooltip(btn.tooltip);
+                        SetInspectorMode(InspectorModes.Sections);
+                        AnysongSequencesView.Draw(_sequencesPanel, _currentSelection.CurrentSection, _currentSelection.CurrentSectionIndex);
+                        AnysongSequencesView.RefreshPatterns();
+                        HandleSequencesLogic();
+                        HandlePatternsLogic();
+                    }
+                });
+            });
+
+            _sectionsPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreateNewSection(); });
+            _sectionsPanel.Q<Button>("RemoveButton").RegisterCallback((ClickEvent ev) => { DeleteSection(); });
+            _sectionsPanel.Q<Button>("SectionLockButton").RegisterCallback((ClickEvent ev) => { ToggleSectionLock(); });
+            
+
+            
+        }
+
+
         void HandleTracksLogic()
         {
             _tracksPanel.Query<Button>("TrackButton").ForEach(button =>
@@ -308,8 +349,7 @@ namespace Editor.AnySong
             _currentSelection.CurrentSectionTrack.patterns.Add(newPattern);
             _currentSelection.CurrentPatternIndex = _currentSelection.CurrentSectionTrack.patterns.Count - 1;
 
-            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
-
+            AnysongSequencesView.Draw(_sequencesPanel, _currentSelection.CurrentSection, _currentSelection.CurrentSectionIndex);
             AnysongSequencesView.RefreshPatterns();
             HandleSequencesLogic();
             HandlePatternsLogic();
@@ -323,7 +363,8 @@ namespace Editor.AnySong
             var thisTrack = CurrentSong.Sections[0].tracks[_currentSelection.CurrentTrackIndex];
             thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
             _currentSelection.CurrentPatternIndex -= 1;
-            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[_currentSelection.CurrentSectionIndex],
+                _currentSelection.CurrentSectionIndex);
 
             AnysongSequencesView.RefreshPatterns();
             HandleSequencesLogic();
@@ -341,7 +382,7 @@ namespace Editor.AnySong
             }
 
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
-            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             HandleSequencesLogic();
             HandleTracksLogic();
         }
@@ -357,17 +398,70 @@ namespace Editor.AnySong
             _currentSelection.CurrentTrackIndex = 0;
 
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
-            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             HandleSequencesLogic();
             HandleTracksLogic();
         }
 
         void CreateNewSection()
         {
+            Debug.Log("create new section");
             var newSection = new AnysongSection();
             newSection.Init(CurrentSong.Tracks);
             CurrentSong.Sections.Add(newSection);
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
+            HandleSectionsLogic();
         }
+
+        void DeleteSection()
+        {
+            CurrentSong.Sections.RemoveAt(_currentSelection.CurrentSectionIndex);
+            _currentSelection.CurrentSectionIndex = CurrentSong.Sections.Count - 1;
+
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
+            AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+            AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[_currentSelection.CurrentSectionIndex],
+                _currentSelection.CurrentSectionIndex);
+            HandleSequencesLogic();
+            HandleTracksLogic();
+            HandleSectionsLogic();
+        }
+        
+        void CopySection()
+        {
+            Debug.Log("CopySection");
+            _sectionCopy = _currentSelection.CurrentSection;
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
+            HandleSectionsLogic();
+        }
+        
+        void PasteSection()
+        {
+            Debug.Log("PasteSection");
+
+
+            CurrentSong.Sections[_currentSelection.CurrentSectionIndex] = _sectionCopy.Clone();
+            
+            AnysongSequencesView.RefreshPatterns();
+        
+            
+            
+            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong);
+            HandleSectionsLogic();
+        }
+
+        void ToggleSectionLock()
+        {
+            if (AnysongPlayerBrain.SectionLockIndex >= 0)
+            {
+                AnysongPlayerBrain.SetSectionLock(-1);
+            }
+            else
+            {
+                AnysongPlayerBrain.SetSectionLock(_currentSelection.CurrentSectionIndex);
+            }
+        }
+
 
         void HandleSequencesLogic()
         {
@@ -388,55 +482,13 @@ namespace Editor.AnySong
                     if (evt.currentTarget is not Button btn) return;
                     _currentSelection = GetSelectionFromTooltip(btn.tooltip);
 
-                    AnysongSequencesView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex,
-                        _currentSelection.CurrentPatternIndex);
+                    AnysongSequencesView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
                     AnysongSequencesView.RefreshPatterns();
 
                     _currentPatternIsBase = _currentSelection.CurrentPatternIndex == 0;
                     SetInspectorMode(InspectorModes.Pattern);
                 });
             });
-
-
-            //_sequencesPanel.Query<Button>("AddButton").ForEach(button =>
-            //{
-            //    button.RegisterCallback<ClickEvent>((evt) =>
-            //    {
-            //        Debug.Log("new pattern");
-            //        if (evt.currentTarget is not Button btn) return;
-            //        var newPattern = new AnyPattern();
-            //        newPattern.Init();
-            //        int trackIndex = Int32.Parse(btn.tooltip);
-            //        var thisTrack = CurrentSong.Sections[0].tracks[trackIndex];
-            //        thisTrack.patterns.Add(newPattern);
-            //        _currentSelection.CurrentPatternIndex = thisTrack.patterns.Count - 1;
-//
-            //        AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
-//
-            //        AnysongSequencesView.RefreshPatterns();
-            //        HandleSequencesLogic();
-            //        HandlePatternsLogic();
-            //    });
-            //});
-//
-            //_sequencesPanel.Query<Button>("RemoveButton").ForEach(button =>
-            //{
-            //    button.RegisterCallback<ClickEvent>((evt) =>
-            //    {
-            //        Debug.Log("remove pattern");
-            //        if (evt.currentTarget is not Button btn) return;
-//
-            //        int trackIndex = Int32.Parse(btn.tooltip);
-            //        var thisTrack = CurrentSong.Sections[0].tracks[trackIndex];
-            //        thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
-            //        _currentSelection.CurrentPatternIndex -= 1;
-            //        AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0]);
-//
-            //        AnysongSequencesView.RefreshPatterns();
-            //        HandleSequencesLogic();
-            //        HandlePatternsLogic();
-            //    });
-            //});
         }
 
         private void OnPointerEnterEvent(PointerEnterEvent evt)
@@ -467,35 +519,67 @@ namespace Editor.AnySong
             }
         }
 
+        AnySelection GetSectionFromTooltip(string tooltip)
+        {
+            var str = tooltip.Split("-");
+            var selection = new AnySelection
+            {
+                CurrentSectionIndex = Int32.Parse(str[0]),
+            };
+            _currentSelection.CurrentSectionIndex = selection.CurrentSectionIndex;
+            _currentSelection.CurrentSection = CurrentSong.Sections[_currentSelection.CurrentSectionIndex];
+            _currentSelection.CurrentSectionTrack = _currentSelection.CurrentSection.tracks[_currentSelection.CurrentTrackIndex];
+            _currentSelection.CurrentPattern = _currentSelection.CurrentSectionTrack.patterns[_currentSelection.CurrentPatternIndex];
+            _currentSelection.CurrentStep = _currentSelection.CurrentPattern.steps[_currentSelection.CurrentStepIndex];
+            _currentSelection.CurrentSongTrack = CurrentSong.Tracks[_currentSelection.CurrentTrackIndex];
+
+
+            var song = new SerializedObject(CurrentSong);
+            var section = song.FindProperty("Sections").GetArrayElementAtIndex(_currentSelection.CurrentSectionIndex);
+            Debug.Log("set section to  " + _currentSelection.CurrentSectionIndex);
+            var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(_currentSelection.CurrentTrackIndex);
+            var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(_currentSelection.CurrentPatternIndex);
+            var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(_currentSelection.CurrentStepIndex);
+
+            _currentSelection.CurrentSectionProperty = section;
+            _currentSelection.CurrentPatternProperty = pattern;
+            _currentSelection.CurrentStepProperty = step;
+            _currentSelection.CurrentSongTrackProperty = song.FindProperty("Tracks").GetArrayElementAtIndex(_currentSelection.CurrentTrackIndex);
+            _currentSelection.CurrentSectionTrackProperty = track;
+
+            return _currentSelection;
+        }
 
         AnySelection GetSelectionFromTooltip(string tooltip)
         {
             var str = tooltip.Split("-");
-            var selection = new AnySelection();
-            selection.CurrentStepIndex = Int32.Parse(str[0]);
-            selection.CurrentTrackIndex = Int32.Parse(str[1]);
-            selection.CurrentPatternIndex = Int32.Parse(str[2]);
+            var selection = new AnySelection
+            {
+                CurrentStepIndex = Int32.Parse(str[0]),
+                CurrentTrackIndex = Int32.Parse(str[1]),
+                CurrentPatternIndex = Int32.Parse(str[2])
+            };
 
-            selection.CurrentSectionTrack = CurrentSong.Sections[0].tracks[selection.CurrentTrackIndex];
-            selection.CurrentPattern =
-                selection.CurrentSectionTrack.patterns[selection.CurrentPatternIndex];
+            selection.CurrentSectionIndex = _currentSelection.CurrentSectionIndex;
+
+            selection.CurrentSection = _currentSelection.CurrentSection;
+            selection.CurrentSectionTrack = _currentSelection.CurrentSection.tracks[selection.CurrentTrackIndex];
+            selection.CurrentPattern = selection.CurrentSectionTrack.patterns[selection.CurrentPatternIndex];
             selection.CurrentStep = selection.CurrentPattern.steps[selection.CurrentStepIndex];
             selection.CurrentSongTrack = CurrentSong.Tracks[selection.CurrentTrackIndex];
 
             var song = new SerializedObject(CurrentSong);
-            var section = song.FindProperty("Sections").GetArrayElementAtIndex(0);
-            var track = section.FindPropertyRelative("tracks")
-                .GetArrayElementAtIndex(selection.CurrentTrackIndex);
-            var pattern = track.FindPropertyRelative("patterns")
-                .GetArrayElementAtIndex(selection.CurrentPatternIndex);
+
+            var section = song.FindProperty("Sections").GetArrayElementAtIndex(selection.CurrentSectionIndex);
+            var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(selection.CurrentTrackIndex);
+            var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(selection.CurrentPatternIndex);
             var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(selection.CurrentStepIndex);
 
             selection.CurrentPatternProperty = pattern;
             selection.CurrentStepProperty = step;
-            selection.CurrentSongTrackProperty = song.FindProperty("Tracks")
-                .GetArrayElementAtIndex(selection.CurrentTrackIndex);
+            selection.CurrentSongTrackProperty = song.FindProperty("Tracks").GetArrayElementAtIndex(selection.CurrentTrackIndex);
 
-            selection.CurrentSectionProperty = song.FindProperty("Sections").GetArrayElementAtIndex(0);
+            selection.CurrentSectionProperty = section;
             selection.CurrentSectionTrackProperty = track;
 
             return selection;
@@ -508,7 +592,8 @@ namespace Editor.AnySong
             int stepIndex = Int32.Parse(str[0]);
             int trackIndex = Int32.Parse(str[1]);
             int patternIndex = Int32.Parse(str[2]);
-            return CurrentSong.Sections[0].tracks[trackIndex].patterns[patternIndex].steps[stepIndex];
+
+            return CurrentSong.Sections[_currentSelection.CurrentSectionIndex].tracks[trackIndex].patterns[patternIndex].steps[stepIndex];
         }
 
         void SetInspectorMode(InspectorModes inspectorMode)
@@ -516,10 +601,13 @@ namespace Editor.AnySong
             switch (inspectorMode)
             {
                 case InspectorModes.Sections:
+                    AnysongInspectorView.DrawSection(_currentSelection.CurrentSectionProperty, false, null);
+                    
+                    _inspectorPanel.Q<Button>("CopyButton").RegisterCallback((ClickEvent ev) => { CopySection(); });
+                    _inspectorPanel.Q<Button>("PasteButton").RegisterCallback((ClickEvent ev) => { PasteSection(); });
                     break;
                 case InspectorModes.Pattern:
-                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, _currentPatternIsBase,
-                        null);
+                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, _currentPatternIsBase, null);
                     _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) => { DeletePattern(); });
 
                     HandlePatternUtilsLogic();
@@ -545,19 +633,13 @@ namespace Editor.AnySong
 
         void HandlePatternUtilsLogic()
         {
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-            {
-                CopyPattern(_currentSelection.CurrentPattern);
-            });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 
         void HandleStepUtilsLogic()
         {
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-            {
-                CopyStep(_currentSelection.CurrentStep);
-            });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyStep(_currentSelection.CurrentStep); });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) =>
             {
                 PasteStep(_currentSelection.CurrentPattern, _currentSelection.CurrentStep);
@@ -617,7 +699,7 @@ namespace Editor.AnySong
             _consoleLogTime = EditorApplication.timeSinceStartup;
         }
 
-
+        private AnysongSection _sectionCopy;
         AnyPattern _patternCopy;
 
 

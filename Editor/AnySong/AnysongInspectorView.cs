@@ -26,6 +26,17 @@ namespace Editor.AnySong
             return spacer;
         }
 
+
+        public static void DrawSection(SerializedProperty section, bool isBase, Action didUpdate)
+        {
+            _parent.Clear();
+            Draw(_parent);
+            _parent.Add(Spacer());
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("patternSteps"), null));
+            _parent.Add(CreateUtilsBox());
+        }
+
         public static void DrawPattern(SerializedProperty pattern, bool isBase, Action didUpdate)
         {
             _parent.Clear();
@@ -82,20 +93,6 @@ namespace Editor.AnySong
             _parent.Clear();
             Draw(_parent);
             _parent.Add(Spacer());
-
-
-            var patternStepArray = selection.CurrentSectionProperty.FindPropertyRelative("patternSteps");
-            var patternsField = new PropertyField(patternStepArray);
-            patternsField.BindProperty(patternStepArray);
-            _parent.Add(patternsField);
-
-            //for (int i = 0; i < patternStepArray.arraySize; i++)
-            //{
-            //    var property = patternStepArray.GetArrayElementAtIndex(i).FindPropertyRelative("rootNote");
-            //    var propertyField = new PropertyField(property);
-            //    propertyField.BindProperty(property);
-            //    _parent.Add(propertyField);
-            //}
 
 
             var triggerRowLabel = new Label()

@@ -9,8 +9,6 @@ namespace Anywhen.Composing
         public int tempo;
         public List<AnysongSection> Sections;
         public List<AnysongTrack> Tracks;
-        //public string coverGraphic;
-        //public Color playerBackgroundColor;
     
         [ContextMenu("Init")]
         void Init()

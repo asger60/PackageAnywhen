@@ -10,14 +10,15 @@ namespace Editor.AnySong
     {
         private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
         private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
-
-        public static void Draw(VisualElement parent, AnysongSection currentSection)
+        private static int _currentSectionIndex;
+        public static void Draw(VisualElement parent, AnysongSection currentSection, int currentSectionIndex)
         {
+            _currentSectionIndex = currentSectionIndex;
             _stepButtonsHolders.Clear();
             _patternButtonsHolders.Clear();
             parent.Clear();
             parent.Add(new Label("Sequences"));
-            Debug.Log("draw sequences");
+            
             if (currentSection != null)
             {
                 for (var i = 0; i < currentSection.tracks.Count; i++)
@@ -52,7 +53,7 @@ namespace Editor.AnySong
 
         public static void RefreshPatterns()
         {
-            for (var i = 0; i < AnysongEditorWindow.CurrentSong.Sections[0].tracks.Count; i++)
+            for (var i = 0; i < AnysongEditorWindow.CurrentSong.Sections[_currentSectionIndex].tracks.Count; i++)
             {
                 RefreshPatternSteps(i, 0);
             }
@@ -60,18 +61,6 @@ namespace Editor.AnySong
 
         private static void DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
         {
-            //var addButton = new Button
-            //{
-            //    name = "AddButton",
-            //    tooltip = trackIndex.ToString(),
-            //    text = "+"
-            //};
-            //var removeButton = new Button
-            //{
-            //    name = "RemoveButton",
-            //    tooltip = trackIndex.ToString(),
-            //    text = "-"
-            //};
             var patternsButtonHolder = new VisualElement
             {
                 style =
@@ -82,10 +71,8 @@ namespace Editor.AnySong
             };
 
             _patternButtonsHolders.Add(patternsButtonHolder);
-//
-            //patternsButtonHolder.Add(addButton);
-            //patternsButtonHolder.Add(removeButton);
-            var thisTrack = AnysongEditorWindow.CurrentSong.Sections[0].tracks[trackIndex];
+            
+            var thisTrack = AnysongEditorWindow.CurrentSong.Sections[_currentSectionIndex].tracks[trackIndex];
 
 
             for (var patternIndex = 0; patternIndex < thisTrack.patterns.Count; patternIndex++)
@@ -111,12 +98,9 @@ namespace Editor.AnySong
             parent.Add(patternsButtonHolder);
         }
 
-        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack,
-            int trackIndex,
-            int patternIndex)
+        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
         {
-            //if (currentSectionTrack?.EditorCurrentPattern == null) return;
-
+           
             var stepButtonsHolder = new VisualElement
             {
                 name = "StepButtonsHolder",

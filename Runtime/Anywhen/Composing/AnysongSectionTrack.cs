@@ -31,7 +31,7 @@ namespace Anywhen.Composing
             {
                 patterns = new List<AnyPattern>()
             };
-            for (var i = 0; i < 16; i++)
+            for (var i = 0; i < patterns.Count; i++)
             {
                 clone.patterns.Add(patterns[i].Clone());
             }

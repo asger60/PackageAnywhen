@@ -13,6 +13,8 @@ namespace Anywhen.Composing
         private AnysongPlayer _nextUpPlayer;
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
+
+        public static int SectionLockIndex;
         public enum TransitionTypes
         {
             Instant,
@@ -123,6 +125,11 @@ namespace Anywhen.Composing
 
             _currentPlayer = newPlayer;
             _currentPlayer.AttachToMetronome();
+        }
+
+        public static void SetSectionLock(int index)
+        {
+            SectionLockIndex = index;
         }
     }
 }

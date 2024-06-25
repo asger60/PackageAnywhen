@@ -36,7 +36,12 @@ namespace Editor.AnySong
                 };
                 var soundControlElement = new VisualElement
                 {
-                    style = { width = 35 },
+                    style =
+                    {
+                        width = 20,
+                        minWidth = 20,
+                    },
+                    
                 };
 
                 var muteButton = new Button()
@@ -90,6 +95,7 @@ namespace Editor.AnySong
                     style =
                     {
                         width = new StyleLength(170),
+                        
                         height = 40,
                     }
                 };

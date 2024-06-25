@@ -18,7 +18,7 @@ namespace Anywhen
         public float intensity;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
-        
+
 
         private void Start()
         {
@@ -87,15 +87,19 @@ namespace Anywhen
                         songTrack.TriggerNoteOn(step, pattern);
                 }
             }
-
-        
         }
 
         void NextSection()
         {
-            print("next section");
-            _currentSectionIndex++;
-            _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+            if (AnysongPlayerBrain.SectionLockIndex > -1)
+            {
+                _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
+            }
+            else
+            {
+                _currentSectionIndex++;
+                _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+            }
         }
 
         public int GetStepForTrack(int trackIndex)
