@@ -4720,6 +4720,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
+    sectionLength: 4
   Tracks:
   - volume: 0.288
     instrument: {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
@@ -4729,7 +4730,7 @@ MonoBehaviour:
       decay: 2.83
       sustain: 0.19
       release: 9.2
-  - volume: 0.342
+  - volume: 0.976
     instrument: {fileID: 11400000, guid: 585c747de88004f61bdae9f79dc6bb6d, type: 2}
     trackEnvelope:
       enabled: 0
@@ -4793,14 +4794,14 @@ MonoBehaviour:
       decay: 0.67
       sustain: 0
       release: 2.6
-  - volume: 0.784
-    instrument: {fileID: 11400000, guid: 43d87a66235a84132906d915b168c23b, type: 2}
+  - volume: 0.621
+    instrument: {fileID: 11400000, guid: 371a07805ba6c45bf8a83c1f70fa70dd, type: 2}
     trackEnvelope:
       enabled: 1
       attack: 0.1
-      decay: 3.94
-      sustain: 0.47
-      release: 4.8
+      decay: 0.3
+      sustain: 0
+      release: 1.8
   - volume: 0.408
     instrument: {fileID: 11400000, guid: 4bfba893bec414981b57b2d6293a71c9, type: 2}
     trackEnvelope:
@@ -4809,5 +4810,3 @@ MonoBehaviour:
       decay: 1.28
       sustain: 0.08
       release: 3.2
-  coverGraphic: PlayerGraphic2
-  playerBackgroundColor: {r: 0.40000004, g: 0.40000004, b: 0.40000004, a: 1}

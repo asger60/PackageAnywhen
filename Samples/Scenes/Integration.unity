@@ -284,7 +284,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 11f3e7009ab28ee45935d419ec250301, type: 2}
+      objectReference: {fileID: 11400000, guid: de6c6c533e8fed946b48416b11992162, type: 2}
     - target: {fileID: 2169488734655937669, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -960,7 +960,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 11f3e7009ab28ee45935d419ec250301, type: 2}
+      objectReference: {fileID: 11400000, guid: de6c6c533e8fed946b48416b11992162, type: 2}
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: triggerTransitionsType
       value: 1
@@ -1653,7 +1653,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5873088227468636864, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
       propertyPath: Bpm
-      value: 120
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873088227468636864, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
+      propertyPath: Playing
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
