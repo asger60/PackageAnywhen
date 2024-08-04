@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
-  m_Name: NGBornholmerambient 4
+  m_Name: NGSelectsleepymode
   m_EditorClassIdentifier: 
-  tempo: 105
+  tempo: 80
   Sections:
   - rootNote: 0
     patternSteps:
@@ -20,9 +20,17 @@ MonoBehaviour:
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
     - rootNote: 0
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
-    - rootNote: 2
+    - rootNote: 0
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
-    - rootNote: 2
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+    - rootNote: 4
+      anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
+    - rootNote: 4
       anywhenScale: {fileID: 11400000, guid: 2a0bbf423257446659d93087fdc38617, type: 2}
     volume: 1
     tracks:
@@ -30,99 +38,29 @@ MonoBehaviour:
       - triggerChances:
         - 100
         - 0
-        - 100
+        - 0
         - 0
         steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5700337
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.79263234
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.047983766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5941482
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.15923321
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5241472
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
         - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.23601997
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.090197206
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -131,13 +69,111 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.23601997
+          mixWeight: 0.93915844
           chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 1
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.69691956
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.43322462
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
@@ -150,7 +186,63 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5397704
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 9
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -164,21 +256,97 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.4328789
+          mixWeight: 0.93666375
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 1
+          rootNote: 2
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6637405
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.4328789
+          mixWeight: 0.5170091
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -192,7 +360,21 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5397704
+          mixWeight: 0.41538197
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -206,21 +388,21 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.08904636
+          mixWeight: 0.40030688
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 2
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.56221324
+          mixWeight: 0.24846649
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -234,7 +416,21 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5397704
+          mixWeight: 0.3315224
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -248,7 +444,35 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5397704
+          mixWeight: 0.79947627
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.023093462
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -257,19 +481,12 @@ MonoBehaviour:
           expression: 1
           rootNote: 6
           repeatRate: 0
-        rootNote: 0
-      - triggerChances:
-        - 0
-        - 100
-        - 0
-        - 100
-        steps:
         - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5700337
+          mixWeight: 0.91722476
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -282,204 +499,22 @@ MonoBehaviour:
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
-          mixWeight: 0.79263234
+          velocity: 0.829
+          mixWeight: 0.2821234
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.047983766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5941482
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.15923321
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5241472
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
+          rootNote: 6
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
-          mixWeight: 0.23601997
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.23601997
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5397704
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.4328789
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.4328789
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5397704
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.08904636
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.56221324
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5397704
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5397704
+          velocity: 0.829
+          mixWeight: 0.2821234
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -518,18 +553,2259 @@ MonoBehaviour:
     - patterns:
       - triggerChances:
         - 100
-        - 100
         - 0
-        - 100
+        - 0
+        - 0
         steps:
         - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.025
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 14
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.090197206
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 1
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.69691956
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.43322462
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93915844
+          chordNotes: 04000000
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 16
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 3
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.93666375
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6637405
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5170091
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 1
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.41538197
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.24846649
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3315224
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.79947627
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.023093462
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.40030688
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.91722476
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 0.829
+          mixWeight: 0.2821234
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3563637
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.25047356
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.89867616
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.62557364
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6360235
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9612181
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.29510778
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6549556
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.22721648
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.72037065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.744257
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.42475456
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4262964
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.10969341
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.116286874
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6653565
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5906413
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.08313787
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.7728567
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.63289595
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.70920587
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.50605637
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.6024775
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 100
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.11807644
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.86249566
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.584101
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.22401392
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4005639
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.52259296
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.26872796
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3700704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9214866
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.88602686
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        rootNote: 0
+      - triggerChances:
+        - 0
+        - 100
+        - 0
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.11807644
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.86249566
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.584101
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.22401392
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4005639
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.52259296
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.26872796
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3700704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9214866
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.88602686
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        rootNote: 0
+      - triggerChances:
+        - 0
+        - 0
+        - 100
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.11807644
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.86249566
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.584101
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.22401392
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4005639
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.52259296
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.26872796
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3700704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9214866
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.88602686
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        rootNote: 0
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 100
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.11807644
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.86249566
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.584101
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.52259296
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3700704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.88602686
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4515373
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.24751782
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.06612098
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5700337
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.79263234
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.047983766
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5941482
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5241472
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23601997
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.9568409
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 6
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5397704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 3
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5397704
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 3
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.4328789
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.23330593
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.62923145
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.08904636
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.56221324
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.59789103
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.3371976
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        rootNote: 0
+      intensityMappingCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      isMuted: 0
+      isSolo: 0
+    - patterns:
+      - triggerChances:
+        - 0
+        - 0
+        - 0
+        - 0
+        steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.0031741858
+          chordNotes: 
+          strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
@@ -550,40 +2826,12 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.7293991
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
         - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.7293991
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.09189987
+          mixWeight: 0.28012568
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -592,33 +2840,61 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.017
-          strumRandom: 0.017
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 6
-          repeatRate: 0
         - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.017
-          strumRandom: 0.017
+          mixWeight: 0.95071065
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 6
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5241472
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 4
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.7293991
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 11
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.33695763
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -639,14 +2915,14 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.361
-          strumRandom: 0.966
+          mixWeight: 0.7293991
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 6
+          rootNote: 13
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -681,28 +2957,14 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.361
-          strumRandom: 0.966
+          mixWeight: 0.7293991
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 8
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.05
-          strumRandom: 0.084
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
+          rootNote: 9
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -718,444 +2980,12 @@ MonoBehaviour:
           expression: 1
           rootNote: 8
           repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.067
-          strumRandom: 0.067
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
         - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.65307117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 0
-        - 0
-        - 0
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.361
-          strumRandom: 0.79
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 3
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5986844
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.588
-          strumRandom: 0.874
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.76782024
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.361
-          strumRandom: 0.966
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 5
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 0300000005000000
-          strumAmount: 0.017
-          strumRandom: 0.017
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 6
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.78184986
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5235271
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.37434453
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.790792
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.45667344
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.98642206
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.4990726
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5053033
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 100
-        - 0
-        - 100
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.38893336
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5986844
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.76782024
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.9214865
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.7575748
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.78184986
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
+          mixWeight: 0.7293991
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1169,63 +2999,21 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.5235271
+          mixWeight: 0.7293991
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 14
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
-          mixWeight: 0.37434453
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 0.612
-          expression: 1
-          rootNote: 4
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 0.719
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
+          velocity: 0.829
+          mixWeight: 0.2821234
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1234,292 +3022,6 @@ MonoBehaviour:
           expression: 1
           rootNote: 6
           repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 0.793
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2856117
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 0
-        - 0
-        - 0
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2428062
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36838228
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2600333
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.6324214
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.47227842
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.47906452
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 3
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.12803757
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 5
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.26962632
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 3
-          repeatRate: 0
         rootNote: 0
       intensityMappingCurve:
         serializedVersion: 2
@@ -1559,7 +3061,49 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.63344336
+          mixWeight: 0.7380841
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.2933975
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.11145973
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.7673192
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1573,7 +3117,49 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.53269964
+          mixWeight: 0.30120856
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.5987856
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.8850894
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.36859304
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1587,7 +3173,49 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.052240133
+          mixWeight: 0.08507371
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.89994156
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.41450983
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.95786977
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1601,105 +3229,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.17477572
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.16736591
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.31587857
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.97498214
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.48892456
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06592357
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 2
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.95674455
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 3
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5126944
+          mixWeight: 0.25320822
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1713,7 +3243,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.6225632
+          mixWeight: 0.56244594
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1727,21 +3257,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.33786005
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.95674455
+          mixWeight: 0.5931439
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -1755,279 +3271,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.2674932
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.3666671
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 0
-        - 0
-        - 0
-        - 0
-        steps:
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.63344336
-          chordNotes: 03000000
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 7
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.53269964
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.052240133
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.17477572
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.16736591
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.31587857
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.97498214
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.48892456
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 1
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06592357
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 2
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.95674455
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 3
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5126944
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.6225632
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.33786005
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2674932
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.2674932
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.3666671
+          mixWeight: 0.58286756
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2075,7 +3319,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.8545166
+          mixWeight: 0.012909055
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2089,7 +3333,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.53189176
+          mixWeight: 0.59213454
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2103,7 +3347,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.04487908
+          mixWeight: 0.9672204
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2117,49 +3361,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.675267
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5770387
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.18569255
+          mixWeight: 0.42821878
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2173,209 +3375,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.9312458
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.32350034
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.40008992
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.7855127
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.87966025
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 0
-        - 0
-        - 0
-        - 0
-        steps:
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 15
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 16
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 17
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
+          mixWeight: 0.44160873
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2389,63 +3389,7 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.35720128
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.46356028
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 20
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 20
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.6000268
+          mixWeight: 0.79327273
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2459,21 +3403,21 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.36624342
+          mixWeight: 0.44160873
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 18
+          rootNote: 14
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.36624342
+          mixWeight: 0.44160873
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2482,68 +3426,26 @@ MonoBehaviour:
           expression: 1
           rootNote: 17
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.36624342
+          mixWeight: 0.44160873
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 16
+          rootNote: 17
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 15
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 14
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.36624342
+          mixWeight: 0.44160873
           chordNotes: 
           strumAmount: 0
           strumRandom: 0
@@ -2551,6 +3453,90 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 11
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.44160873
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 11
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.025050998
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.44160873
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 10
+          repeatRate: 0
+        - noteOn: 1
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.44160873
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 7
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.24233556
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.15140879
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 0
           repeatRate: 0
         rootNote: 0
       intensityMappingCurve:
@@ -2579,1036 +3565,93 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
-      - triggerChances:
-        - 100
-        - 0
-        - 0
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.920624
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.73335516
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.61426693
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06331766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.80499315
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5067027
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.8462126
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.26781112
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.745947
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 14
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 15
-          repeatRate: 0
-        rootNote: 0
-      - triggerChances:
-        - 0
-        - 100
-        - 0
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.920624
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.73335516
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.61426693
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06331766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.80499315
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5067027
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.8462126
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.26781112
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.745947
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 14
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 15
-          repeatRate: 0
-        rootNote: 0
-      - triggerChances:
-        - 0
-        - 0
-        - 100
-        - 0
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.920624
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.73335516
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.61426693
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06331766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.80499315
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5067027
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.8462126
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.26781112
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.745947
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 14
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 15
-          repeatRate: 0
-        rootNote: 0
-      - triggerChances:
-        - 0
-        - 0
-        - 0
-        - 100
-        steps:
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.920624
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.73335516
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.61426693
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.06331766
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.80499315
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.5067027
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.8462126
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.26781112
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.745947
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 0
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 10
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 11
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 13
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 14
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
-          mixWeight: 0.44279546
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 16
-          repeatRate: 0
-        rootNote: 0
-      intensityMappingCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      isMuted: 0
-      isSolo: 0
-    sectionLength: 12
+    sectionLength: 16
   Tracks:
-  - volume: 1
-    instrument: {fileID: 11400000, guid: ab91b5700f4824e9db4e0bb7042f21e6, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0
-      decay: 5
-      sustain: 0.02
-      release: 10
-  - volume: 0.421
+  - volume: 0.628
     instrument: {fileID: 11400000, guid: e2c7e3af5dbce4d67863dbd1df233c6d, type: 2}
     trackEnvelope:
       enabled: 1
       attack: 0
-      decay: 4.84
-      sustain: 0.32
-      release: 9.8
-  - volume: 0.59
+      decay: 5
+      sustain: 0.26
+      release: 10
+  - volume: 0.165
+    instrument: {fileID: 11400000, guid: 9471a63a2bd2a4e79b1fa63cc086982c, type: 2}
+    trackEnvelope:
+      enabled: 0
+      attack: 0
+      decay: 0
+      sustain: 0
+      release: 0
+  - volume: 0.083
+    instrument: {fileID: 11400000, guid: ab1c05c9c1d464386a38369e63c9f7fe, type: 2}
+    trackEnvelope:
+      enabled: 1
+      attack: 0.7
+      decay: 5
+      sustain: 0.96
+      release: 10
+  - volume: 0.413
+    instrument: {fileID: 11400000, guid: 9363db192e1b949dbad692a892e6e626, type: 2}
+    trackEnvelope:
+      enabled: 0
+      attack: 0
+      decay: 0.7
+      sustain: 0
+      release: 5.6
+  - volume: 0.207
+    instrument: {fileID: 11400000, guid: 9471a63a2bd2a4e79b1fa63cc086982c, type: 2}
+    trackEnvelope:
+      enabled: 0
+      attack: 0
+      decay: 1.15
+      sustain: 0
+      release: 6
+  - volume: 1
     instrument: {fileID: 11400000, guid: 490d3c6c876bf4d44abc91ee139439b5, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0.8
-      decay: 5
-      sustain: 0.68
-      release: 10
-  - volume: 0.364
-    instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
-    trackEnvelope:
-      enabled: 0
       attack: 0.1
-      decay: 3.9
-      sustain: 0.99
-      release: 7.9
-  - volume: 0.545
-    instrument: {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0
-      decay: 0.99
-      sustain: 0.023919348
-      release: 3.1000001
-  - volume: 0.736
-    instrument: {fileID: 11400000, guid: f47bf2bd102ff46229e7f2cba82c5838, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0
-      decay: 1.26
-      sustain: 0
-      release: 0
-  - volume: 0.116
-    instrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0.1
-      decay: 2.25
-      sustain: 0.54
-      release: 7.9
-  - volume: 0.273
-    instrument: {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0.3
-      decay: 2.75
-      sustain: 0.16
-      release: 3.6
-  - volume: 0.488
-    instrument: {fileID: 11400000, guid: a015cb615646142a2a37463adeeb1292, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 0
-      decay: 2.14
-      sustain: 0.41
-      release: 10
-  - volume: 0.19999999
-    instrument: {fileID: 11400000, guid: 0cf1820c4944a44c7b302c2496c39243, type: 2}
-    trackEnvelope:
-      enabled: 1
-      attack: 2
       decay: 5
       sustain: 1
       release: 10
+  - volume: 0.43
+    instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
+    trackEnvelope:
+      enabled: 1
+      attack: 0
+      decay: 4.56
+      sustain: 1
+      release: 9.7
+  - volume: 0.537
+    instrument: {fileID: 11400000, guid: a015cb615646142a2a37463adeeb1292, type: 2}
+    trackEnvelope:
+      enabled: 0
+      attack: 0
+      decay: 0
+      sustain: 0
+      release: 0
+  - volume: 0.388
+    instrument: {fileID: 11400000, guid: ab91b5700f4824e9db4e0bb7042f21e6, type: 2}
+    trackEnvelope:
+      enabled: 0
+      attack: 0
+      decay: 4.03
+      sustain: 0.72
+      release: 6.8
+  - volume: 0.38
+    instrument: {fileID: 11400000, guid: d55d1869f871141ef9ce51909b2bbd99, type: 2}
+    trackEnvelope:
+      enabled: 1
+      attack: 0
+      decay: 0.22
+      sustain: 0
+      release: 0
+  - volume: 0.058
+    instrument: {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
+    trackEnvelope:
+      enabled: 1
+      attack: 0
+      decay: 4.51
+      sustain: 0.42
+      release: 8.4
