@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Perc_KazioTone_Rim
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: ab576e7b8d22943f7a817519fa940616, type: 3}
+  - {fileID: 8300000, guid: 0b783085f77184c0a82fc34aa82c85a2, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: c731020bac1fc4fdebe41e6a5934b5f2, type: 2}
+  - {fileID: 11400000, guid: b6d379e7b73f848cca96cfd150af889d, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1

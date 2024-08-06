@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drum_808_Snare_thin
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 441b7e7f8c1d74c279015d1d97e03dc9, type: 3}
+  - {fileID: 8300000, guid: be019f3963a6647adad0ce71f0b57c36, type: 3}
+  - {fileID: 8300000, guid: b6724618e138d4a97ae5fa686fa2217d, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: 4cb1ccff98a164a11b556fe4b7349130, type: 2}
+  - {fileID: 11400000, guid: 1c5b805efa30f4c22be80a44f8204640, type: 2}
+  - {fileID: 11400000, guid: 167438eb86350486bbdf8b0e81eb39c6, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1

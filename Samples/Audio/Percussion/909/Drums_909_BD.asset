@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drums_909_BD
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: e731b3ecb09324dd1a64901a1a711acc, type: 3}
+  - {fileID: 8300000, guid: a59f69f6b09194c9e926e37d7f3bdb53, type: 3}
+  - {fileID: 8300000, guid: 9e51af860f2fd48c9aef1627bdf9803b, type: 3}
+  - {fileID: 8300000, guid: bf283131e0d0e4fb8be23073cecd510a, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: 2527a9d764ffd4bc7a99994390ebe210, type: 2}
+  - {fileID: 11400000, guid: 3487a96af4ad5433591a09782c0455e9, type: 2}
+  - {fileID: 11400000, guid: 560e10b214d5b40cb8b1a85f981e9c9a, type: 2}
+  - {fileID: 11400000, guid: 71ac77dcde99e405fafa922f7b091809, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1
