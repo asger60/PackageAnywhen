@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: Drum_HiHat_E
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: ba05f76b9b4ba49358f7dbf42b1afe44, type: 3}
+  - {fileID: 8300000, guid: c3c7fdce560a14278ad942b214292e36, type: 3}
+  - {fileID: 8300000, guid: dc8e9d020a21c469c82a709d8998b8e6, type: 3}
+  - {fileID: 8300000, guid: 496defd6fb0d04e56ad76579d9a9896c, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: 621529e6ee44948bc915e82d22e89a6a, type: 2}
+  - {fileID: 11400000, guid: 2490c906f786a440995380564ac970ad, type: 2}
+  - {fileID: 11400000, guid: 9b2d7980ad94d4c65b903a677e1e2084, type: 2}
+  - {fileID: 11400000, guid: 6bb125d6f74e040528c02744185b9993, type: 2}
+  stopDuration: 0.1
+  instrumentType: 0
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1
