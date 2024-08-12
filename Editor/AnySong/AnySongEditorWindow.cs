@@ -296,6 +296,8 @@ namespace Editor.AnySong
                         AnysongSequencesView.RefreshPatterns();
                         HandleSequencesLogic();
                         HandlePatternsLogic();
+                        RefreshSectionLockIndex();
+                        AnysongTracksView.UpdateMuteSoleState();
                     }
                 });
             });
@@ -451,6 +453,24 @@ namespace Editor.AnySong
 
         public static int CurrentSectionLockIndex;
 
+        public static AnysongSection GetCurrentSection()
+        {
+            if (CurrentSectionLockIndex > -1)
+                return CurrentSong.Sections[CurrentSectionLockIndex];
+
+            return CurrentSong.Sections[0];
+        }
+
+        void RefreshSectionLockIndex()
+        {
+            if (!AnysongSectionsView.IsSectionLocked()) return;
+
+            CurrentSectionLockIndex = _currentSelection.CurrentSectionIndex;
+            Debug.Log("set locked section to  " + _currentSelection.CurrentSectionIndex);
+            AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
+        }
+
+
         void ToggleSectionLock()
         {
             if (CurrentSectionLockIndex >= 0)
@@ -543,6 +563,8 @@ namespace Editor.AnySong
             var song = new SerializedObject(CurrentSong);
             var section = song.FindProperty("Sections").GetArrayElementAtIndex(_currentSelection.CurrentSectionIndex);
             Debug.Log("set section to  " + _currentSelection.CurrentSectionIndex);
+
+
             var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(_currentSelection.CurrentTrackIndex);
             var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(_currentSelection.CurrentPatternIndex);
             var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(_currentSelection.CurrentStepIndex);
@@ -563,12 +585,11 @@ namespace Editor.AnySong
             {
                 CurrentStepIndex = Int32.Parse(str[0]),
                 CurrentTrackIndex = Int32.Parse(str[1]),
-                CurrentPatternIndex = Int32.Parse(str[2])
+                CurrentPatternIndex = Int32.Parse(str[2]),
+                CurrentSectionIndex = _currentSelection.CurrentSectionIndex,
+                CurrentSection = _currentSelection.CurrentSection
             };
 
-            selection.CurrentSectionIndex = _currentSelection.CurrentSectionIndex;
-
-            selection.CurrentSection = _currentSelection.CurrentSection;
             selection.CurrentSectionTrack = _currentSelection.CurrentSection.tracks[selection.CurrentTrackIndex];
             selection.CurrentPattern = selection.CurrentSectionTrack.patterns[selection.CurrentPatternIndex];
             selection.CurrentStep = selection.CurrentPattern.steps[selection.CurrentStepIndex];

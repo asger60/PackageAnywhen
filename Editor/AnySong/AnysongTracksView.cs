@@ -50,7 +50,6 @@ namespace Editor.AnySong
                     name = "MuteButton",
                     tooltip = i.ToString(),
                     style = { width = 20 }
-
                 };
 
 
@@ -70,6 +69,7 @@ namespace Editor.AnySong
                     tooltip = i.ToString(),
                     style = { width = 20 }
                 };
+                
                 soloButton.RegisterCallback<ClickEvent>((evt) =>
                 {
                     if (evt.currentTarget is not Button btn) return;
@@ -106,6 +106,7 @@ namespace Editor.AnySong
                 parent.Add(spacer);
             }
 
+         
             parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
         }
 
@@ -114,12 +115,18 @@ namespace Editor.AnySong
             Debug.Log(property.boolValue);
         }
 
+
+        public static void UpdateMuteSoleState()
+        {
+            UpdateMuteButtons();
+            UpdateSoloButtons();
+        }
         static void UpdateSoloButtons()
         {
             int index = 0;
             _parent.Query<Button>("SoloButton").ForEach((btn) =>
             {
-                var state = AnysongEditorWindow.CurrentSong.Sections[0].tracks[index].isSolo;
+                var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isSolo;
                 btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
                 index++;
             });
@@ -130,7 +137,7 @@ namespace Editor.AnySong
             int index = 0;
             _parent.Query<Button>("MuteButton").ForEach((btn) =>
             {
-                var state = AnysongEditorWindow.CurrentSong.Sections[0].tracks[index].isMuted;
+                var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isMuted;
                 btn.style.backgroundColor = state ? AnysongEditorWindow.ColorGreyDark : StyleKeyword.Null;
                 btn.text = "M";
                 index++;
@@ -146,12 +153,11 @@ namespace Editor.AnySong
 
         static void SoloTrackAtIndex(string indexString)
         {
-            var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
+            var track = AnysongEditorWindow.GetCurrentSection().tracks[Int32.Parse(indexString)];
 
             bool unSolo = track.isSolo;
 
-
-            foreach (var sectionTrack in AnysongEditorWindow.CurrentSong.Sections[0].tracks)
+            foreach (var sectionTrack in AnysongEditorWindow.GetCurrentSection().tracks)
             {
                 sectionTrack.isSolo = false;
                 if (sectionTrack == track && !unSolo)

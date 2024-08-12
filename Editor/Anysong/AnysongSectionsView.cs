@@ -90,9 +90,8 @@ namespace Editor.AnySong
             lockElement.Add(lockButton);
         }
 
-        static bool IsSectionLocked()
+        public static bool IsSectionLocked()
         {
-            Debug.Log(AnysongEditorWindow.CurrentSectionLockIndex);
             return AnysongEditorWindow.CurrentSectionLockIndex > -1;
         }
     }
