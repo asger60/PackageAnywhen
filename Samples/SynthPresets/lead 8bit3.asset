@@ -1,22 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7936258322191970824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
-  m_Name: Amplitude Envelope
-  m_EditorClassIdentifier: 
-  attack: 0.1
-  decay: 0.1
-  sustain: 0.001
-  release: 0.37
-  sendAmount: 100
 --- !u!114 &-3404739314560019365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   filterType: 0
   lowPassSettings:
-    oversampling: 4
-    cutoffFrequency: 1700
-    resonance: 0.31
+    oversampling: 1
+    cutoffFrequency: 12357
+    resonance: 0.132
   bandPassSettings:
     frequency: 1000
     bandWidth: 10
@@ -51,10 +34,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2696701b9eb054b50aac1114417c9ed0, type: 3}
   m_Name: Filter LFO
   m_EditorClassIdentifier: 
-  frequency: 88.1
-  fadeInDuration: 1.56
+  frequency: 0.1
+  fadeInDuration: 0.001
   retrigger: 0
-  sendAmount: 29
+  sendAmount: -100
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,7 +61,7 @@ MonoBehaviour:
   pitchModifiers:
   - {fileID: 1153670296297723966}
   amplitudeModifiers:
-  - {fileID: -7936258322191970824}
+  - {fileID: 5106769641769680989}
   filterModifiers:
   - {fileID: -3099369571112257952}
 --- !u!114 &1153670296297723966
@@ -97,6 +80,23 @@ MonoBehaviour:
   fadeInDuration: 0.4
   retrigger: 1
   sendAmount: 64
+--- !u!114 &5106769641769680989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
+  m_Name: Amplitude Envelope
+  m_EditorClassIdentifier: 
+  attack: 0.01
+  decay: 1.44
+  sustain: 0.001
+  release: 0.5
+  sendAmount: 100
 --- !u!114 &6811349930590322744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,9 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c5d75eb90954545a59552f9b363791, type: 3}
   m_Name: Oscillator
   m_EditorClassIdentifier: 
-  tuning: 12
-  amplitude: 0.141
+  tuning: 24
+  amplitude: 1
   simpleOscillatorType: 2
   noiseType: 0
   waveTableOscillatorType: 1
-  oscillatorType: 1
+  oscillatorType: 0

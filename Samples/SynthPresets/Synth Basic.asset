@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
   attack: 0.01
-  decay: 0.5
+  decay: 3.04
   sustain: 0.001
-  release: 0.5
+  release: 1.52
   sendAmount: 100
 --- !u!114 &-3404739314560019365
 MonoBehaviour:
@@ -31,8 +31,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   filterType: 0
   lowPassSettings:
-    oversampling: 3
-    cutoffFrequency: 12228
+    oversampling: 1
+    cutoffFrequency: 19486
     resonance: 0.156
   bandPassSettings:
     frequency: 1000
@@ -54,7 +54,7 @@ MonoBehaviour:
   frequency: 54.2
   fadeInDuration: 5.13
   retrigger: 0
-  sendAmount: 14
+  sendAmount: 4
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,10 +93,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2696701b9eb054b50aac1114417c9ed0, type: 3}
   m_Name: Pitch LFO
   m_EditorClassIdentifier: 
-  frequency: 6.3
-  fadeInDuration: 0.4
-  retrigger: 1
-  sendAmount: 6
+  frequency: 0.1
+  fadeInDuration: 0.001
+  retrigger: 0
+  sendAmount: 0
 --- !u!114 &6811349930590322744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: Oscillator
   m_EditorClassIdentifier: 
   tuning: 24
-  amplitude: 0.174
+  amplitude: 0.958
   simpleOscillatorType: 2
   noiseType: 0
   waveTableOscillatorType: 1
