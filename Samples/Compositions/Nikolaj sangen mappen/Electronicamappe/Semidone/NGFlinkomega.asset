@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
-  m_Name: NGAmbinetpuzzling
+  m_Name: NGFlinkomega
   m_EditorClassIdentifier: 
-  tempo: 75
+  tempo: 80
   Sections:
   - rootNote: 0
     patternSteps:
@@ -12349,7 +12349,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    sectionLength: 4
+    sectionLength: 8
   - rootNote: 0
     patternSteps: []
     volume: 0.85
@@ -19210,7 +19210,7 @@ MonoBehaviour:
       decay: 5
       sustain: 1
       release: 10
-  - volume: 0.25
+  - volume: 0.15
     instrument: {fileID: 11400000, guid: e2c7e3af5dbce4d67863dbd1df233c6d, type: 2}
     trackEnvelope:
       enabled: 0
@@ -19218,7 +19218,7 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.417
+  - volume: 0.342
     instrument: {fileID: 11400000, guid: ab1c05c9c1d464386a38369e63c9f7fe, type: 2}
     trackEnvelope:
       enabled: 1
@@ -19234,7 +19234,7 @@ MonoBehaviour:
       decay: 4.67
       sustain: 1
       release: 10
-  - volume: 0.917
+  - volume: 1
     instrument: {fileID: 11400000, guid: ab91b5700f4824e9db4e0bb7042f21e6, type: 2}
     trackEnvelope:
       enabled: 0
@@ -19242,7 +19242,7 @@ MonoBehaviour:
       decay: 2.64
       sustain: 0.58
       release: 9.5
-  - volume: 0.808
+  - volume: 0.842
     instrument: {fileID: 11400000, guid: 8f0340ca48ea5439ea33c73c4e0c4417, type: 2}
     trackEnvelope:
       enabled: 1
@@ -19266,7 +19266,7 @@ MonoBehaviour:
       decay: 1.61
       sustain: 0
       release: 0
-  - volume: 0.167
+  - volume: 0.233
     instrument: {fileID: 11400000, guid: 9471a63a2bd2a4e79b1fa63cc086982c, type: 2}
     trackEnvelope:
       enabled: 1
@@ -19274,7 +19274,7 @@ MonoBehaviour:
       decay: 2.17
       sustain: 0
       release: 0
-  - volume: 0.583
+  - volume: 0.625
     instrument: {fileID: 11400000, guid: a015cb615646142a2a37463adeeb1292, type: 2}
     trackEnvelope:
       enabled: 0
@@ -19282,7 +19282,7 @@ MonoBehaviour:
       decay: 5
       sustain: 0.67
       release: 9.5
-  - volume: 0.1
+  - volume: 0
     instrument: {fileID: 11400000, guid: dfdbcb78cd7d54813b74d3d49f87ec9b, type: 2}
     trackEnvelope:
       enabled: 0
@@ -19290,23 +19290,23 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.217
-    instrument: {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
+  - volume: 0.2
+    instrument: {fileID: 11400000, guid: 260cebcf128264aec81210fdc8acd1a9, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0
-      decay: 0.33
+      attack: 0.1
+      decay: 1
       sustain: 0
       release: 10
-  - volume: 0.13
+  - volume: 0.19999999
     instrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0.2
+      attack: 0
       decay: 1.22
       sustain: 0.81
       release: 9.4
-  - volume: 0.292
+  - volume: 0.283
     instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
     trackEnvelope:
       enabled: 0
