@@ -37,6 +37,7 @@ namespace UnitySynth.Runtime.Synth.Editor
         int t = 0;
         const int bufSize = 1024;
         private float[] testBuf = null;
+
         float[] bufCopy = null;
         //string[] sourceNames = null;
         //string[] targetNames = null;
@@ -53,15 +54,16 @@ namespace UnitySynth.Runtime.Synth.Editor
             //serializedObject.Update();
 
             DrawDefaultInspector();
-
+            return;
             GUILayout.Space(8);
             GUILayout.Label("Visualization", EditorStyles.boldLabel);
             int modeInt = EditorPrefs.GetInt("MoogSynth:oscMode");
-            oscilloscopeMode = (OscilloscopeMode) EditorGUILayout.EnumPopup("Oscilloscope", (OscilloscopeMode)modeInt);
+            oscilloscopeMode = (OscilloscopeMode)EditorGUILayout.EnumPopup("Oscilloscope", (OscilloscopeMode)modeInt);
             if (((int)oscilloscopeMode) != modeInt)
             {
                 EditorPrefs.SetInt("MoogSynth:oscMode", (int)oscilloscopeMode);
             }
+
             parent.SetDebugBufferEnabled(oscilloscopeMode != OscilloscopeMode.None);
 
             if (oscilloscopeMode != OscilloscopeMode.None)
@@ -82,10 +84,12 @@ namespace UnitySynth.Runtime.Synth.Editor
                         {
                             bufCopy = new float[bufSize];
                         }
+
                         lock (parent.GetBufferMutex())
                         {
                             System.Array.Copy(parent.GetLastBuffer(), bufCopy, bufSize);
                         }
+
                         buf = bufCopy;
                     }
                     else
@@ -98,6 +102,7 @@ namespace UnitySynth.Runtime.Synth.Editor
                                 testBuf[x] = 0.0f; // Mathf.Sin(((float)x) / oscWidth * Mathf.PI * 2.0f);
                             }
                         }
+
                         buf = testBuf;
                     }
 
@@ -143,12 +148,13 @@ namespace UnitySynth.Runtime.Synth.Editor
             int offset = 0;
             for (int i = 0; i < bufSize; ++i)
             {
-                float valueNew = buf[i*stride];
+                float valueNew = buf[i * stride];
                 if (valueOld < 0 && valueNew > 0)
                 {
                     offset = i;
                     break;
                 }
+
                 valueOld = valueNew;
             }
 
@@ -163,14 +169,17 @@ namespace UnitySynth.Runtime.Synth.Editor
                     float oscValue = -1.0f;
                     if ((x + offset) < bufSize)
                     {
-                        oscValue = buf[(x+offset)*stride]; // stereo interleaved
+                        oscValue = buf[(x + offset) * stride]; // stereo interleaved
                     }
+
                     float intensity = Mathf.Pow(1.0f - Mathf.Abs(oscValue - yNorm), lineFocus);
                     col = new Color(intensity, intensity, intensity);
                     tex.SetPixel(x, y, col);
                 }
+
                 t++;
             }
+
             tex.Apply(false);
         }
 
@@ -188,6 +197,7 @@ namespace UnitySynth.Runtime.Synth.Editor
             {
                 GUILayout.Label(targets[x], GUILayout.Width(guiWidth));
             }
+
             EditorGUILayout.EndHorizontal();
             for (int y = 0; y < height; ++y)
             {
@@ -195,8 +205,10 @@ namespace UnitySynth.Runtime.Synth.Editor
                 GUILayout.Label(sources[y], GUILayout.Width(guiWidth));
                 for (int x = 0; x < width; ++x)
                 {
-                    matrix[y*width+x] = EditorGUILayout.FloatField(matrix[y*width+x], GUILayout.Width(guiWidth));
+                    matrix[y * width + x] =
+                        EditorGUILayout.FloatField(matrix[y * width + x], GUILayout.Width(guiWidth));
                 }
+
                 EditorGUILayout.EndHorizontal();
             }
         }

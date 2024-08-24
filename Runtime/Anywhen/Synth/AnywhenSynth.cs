@@ -67,8 +67,12 @@ namespace Anywhen.Synth.Synth
         private bool _debugBufferEnabled = false;
 
         private EventQueue.QueuedEvent _nextEvent;
+        private EventQueue.QueuedEvent _offEvent;
+        
         private NoteEvent _currentNoteEvent;
-        private bool _eventIsWaiting = false;
+        private bool _noteOnWaiting = false;
+        private bool _noteOffWaiting = false;
+
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
         public static int SampleRate;
@@ -76,26 +80,14 @@ namespace Anywhen.Synth.Synth
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
-          
-            if (noteEvent.state == NoteEvent.EventTypes.NoteOn && _eventIsWaiting)
+            if (noteEvent.state == NoteEvent.EventTypes.NoteOn)
+                _queue.Enqueue(noteEvent, scheduledPlayTime);
+            else
             {
-                if (_nextEvent.NoteEvent.state == NoteEvent.EventTypes.NoteOff)
-                {
-                    _eventIsWaiting = false;
-                }
+                _offEvent = new EventQueue.QueuedEvent();
+                _offEvent.Set(noteEvent, scheduledPlayTime);
+                _noteOffWaiting = true;
             }
-            
-            
-            if (noteEvent.state == NoteEvent.EventTypes.NoteOff)
-            {
-                
-
-                noteEvent.velocity = _currentNoteEvent.velocity;
-                //   _eventIsWaiting = false;
-            }
-
-
-            _queue.Enqueue(noteEvent, scheduledPlayTime);
         }
 
 
@@ -282,24 +274,30 @@ namespace Anywhen.Synth.Synth
             // move this code outside the loop.
             while (true)
             {
-                if (_eventIsWaiting == false && queueSize > 0)
+                if (_noteOffWaiting && _offEvent.EventTime <= AudioSettings.dspTime)
+                {
+                    HandleEventNow(_offEvent);
+                    _noteOffWaiting = false;
+                }
+                
+                if (_noteOnWaiting == false && queueSize > 0)
                 {
                     //queueLock = true;
                     if (_queue.GetFrontAndDequeue(ref _nextEvent))
                     {
-                        _eventIsWaiting = true;
+                        _noteOnWaiting = true;
                         queueSize--;
                     }
                     //queueLock = false;
                 }
 
-                if (_eventIsWaiting)
+                if (_noteOnWaiting)
                 {
                     //if (nextEvent.time_smp <= time_smp)
-                    if (_nextEvent.eventTime <= AudioSettings.dspTime)
+                    if (_nextEvent.EventTime <= AudioSettings.dspTime)
                     {
                         HandleEventNow(_nextEvent);
-                        _eventIsWaiting = false;
+                        _noteOnWaiting = false;
                     }
                     else
                     {
@@ -483,13 +481,12 @@ namespace Anywhen.Synth.Synth
             // every sample if new events have been enqueued.
             // This assumes that no other methods call GetFrontAndDequeue.
             int queueSize = _queue.GetSize();
+            HandleQueue(queueSize);
 
 
             // Render loop
             for (; smp < sampleFrames; ++smp)
             {
-                HandleQueue(queueSize);
-
                 foreach (var frequencyModifier in _voiceFrequencyModifiers)
                 {
                     frequencyModifier.DoUpdate();

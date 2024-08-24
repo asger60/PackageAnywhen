@@ -26,51 +26,45 @@ using Anywhen;
 //  F                           F
 public class EventQueue
 {
-    public enum EventType
-    {
-        None = 0,
-        Note_on = 1,
-        Note_off = 2,
-    };
 
     public struct QueuedEvent
     {
-        public double eventTime;
+        public double EventTime;
         public NoteEvent NoteEvent;
 
         public void Set(NoteEvent noteEvent, double eventTime)
         {
-            this.NoteEvent = noteEvent;
-            this.eventTime = eventTime;
+            NoteEvent = noteEvent;
+            EventTime = eventTime;
         }
         
     }
 
     /// State
-    private QueuedEvent[] events;
+    public QueuedEvent[] events;
 
-    private int back = 0;
-    private int front = 0;
-    private int size = 0;
-    private int capacity = -1;
-    private object mutexLock = new object();
+    private int _back = 0;
+    private int _front = 0;
+    private int _size = 0;
+    private int _capacity = -1;
+    private object _mutexLock = new object();
 
     public EventQueue(int capacity)
     {
         events = new QueuedEvent[capacity];
-        this.capacity = capacity;
+        this._capacity = capacity;
     }
 
     public bool Enqueue(NoteEvent noteEvent, double eventTime)
     {
         bool didEnqueue = false;
-        lock (mutexLock)
+        lock (_mutexLock)
         {
-            if (size < capacity)
+            if (_size < _capacity)
             {
-                events[back].Set(noteEvent, eventTime);
-                back = (back + 1) % capacity;
-                size++;
+                events[_back].Set(noteEvent, eventTime);
+                _back = (_back + 1) % _capacity;
+                _size++;
                 didEnqueue = true;
             }
         }
@@ -82,34 +76,34 @@ public class EventQueue
 
     public void Dequeue()
     {
-        lock (mutexLock)
+        lock (_mutexLock)
         {
-            if (size > 0)
+            if (_size > 0)
             {
-                front = (front + 1) % capacity;
-                --size;
+                _front = (_front + 1) % _capacity;
+                --_size;
             }
         }
     }
 
     public bool GetFront(ref QueuedEvent result)
     {
-        if (size == 0)
+        if (_size == 0)
             return false;
-        result = events[front];
+        result = events[_front];
         return true;
     }
 
     public bool GetFrontAndDequeue(ref QueuedEvent result)
     {
-        if (size == 0)
+        if (_size == 0)
             return false;
 
-        lock (mutexLock)
+        lock (_mutexLock)
         {
-            result = events[front];
-            front = (front + 1) % capacity;
-            --size;
+            result = events[_front];
+            _front = (_front + 1) % _capacity;
+            --_size;
         }
 
         return true;
@@ -117,18 +111,18 @@ public class EventQueue
 
     public void Clear()
     {
-        front = 0;
-        back = 0;
-        size = 0;
+        _front = 0;
+        _back = 0;
+        _size = 0;
     }
 
     public bool IsEmpty
     {
-        get { return size == 0; }
+        get { return _size == 0; }
     }
 
     public int GetSize()
     {
-        return size;
+        return _size;
     }
 }
