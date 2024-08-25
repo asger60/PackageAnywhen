@@ -48,13 +48,13 @@ namespace UnitySynth.Runtime.Synth.Editor
             switch (settings.oscillatorType)
             {
                 case SynthSettingsObjectOscillator.OscillatorType.Simple:
-                    settings.tuning = (int)EditorGUILayout.Slider("Tuning", settings.tuning, -24, 24);
+                    settings.tuning = (int)EditorGUILayout.Slider("Tuning", settings.tuning, -48, 48);
                     settings.simpleOscillatorType =
                         (SynthSettingsObjectOscillator.SimpleOscillatorTypes)EditorGUILayout.EnumPopup(
                             "Waveform", settings.simpleOscillatorType);
                     break;
                 case SynthSettingsObjectOscillator.OscillatorType.WaveTable:
-                    settings.tuning = (int)EditorGUILayout.Slider("Tuning", settings.tuning, -24, 24);
+                    settings.tuning = (int)EditorGUILayout.Slider("Tuning", settings.tuning, -48, 48);
                     EditorGUILayout.Slider("Resolution", 32, 8, 128);
                     settings.waveTableOscillatorType =
                         (SynthSettingsObjectOscillator.WaveTableOscillatorTypes)EditorGUILayout.EnumPopup(

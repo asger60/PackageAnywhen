@@ -65,12 +65,12 @@ namespace Anywhen
                     playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
                 }
 
-                e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
-
-                thisSynth.HandleEventScheduled(e, playTime);
 
                 if (e is { state: NoteEvent.EventTypes.NoteOn, duration: > 0 })
                 {
+                    e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
+                    thisSynth.HandleEventScheduled(e, playTime);
+                    
                     var noteOff = new NoteEvent(NoteEvent.EventTypes.NoteOff);
                     double stopTime = playTime;
                     decimal dec = new decimal(e.duration);
