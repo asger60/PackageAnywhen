@@ -1,14 +1,16 @@
-using System;
 using UnityEngine;
 
-public class SampleCameraController : MonoBehaviour
+namespace Samples
 {
-    [SerializeField] private Transform followTarget;
-    [SerializeField] private float followSpeed;
-
-    private void Update()
+    public class SampleCameraController : MonoBehaviour
     {
-        transform.position = Vector3.Lerp(transform.position, followTarget.position, Time.deltaTime * followSpeed);
-        transform.rotation = Quaternion.Lerp(transform.rotation, followTarget.rotation, Time.deltaTime * followSpeed);
+        [SerializeField] private Transform followTarget;
+        [SerializeField] private float followSpeed;
+
+        private void Update()
+        {
+            //transform.position = Vector3.Lerp(transform.position, followTarget.position, Time.deltaTime * followSpeed);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, followTarget.rotation, Time.deltaTime * followSpeed);
+        }
     }
 }
