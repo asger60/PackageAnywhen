@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
-  m_Name: NGmyspace 2
+  m_Name: NGmyspace 3
   m_EditorClassIdentifier: 
   tempo: 40
   Sections:
@@ -7077,7 +7077,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.842
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -7091,7 +7091,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.9
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -7175,7 +7175,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.767
           expression: 1
           rootNote: 8
           repeatRate: 0
@@ -7203,7 +7203,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.875
           expression: 1
           rootNote: 7
           repeatRate: 0
@@ -7231,7 +7231,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.867
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -7287,7 +7287,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.917
           expression: 1
           rootNote: 10
           repeatRate: 0
@@ -7392,7 +7392,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.883
           expression: 1
           rootNote: 8
           repeatRate: 0
@@ -7406,7 +7406,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.892
           expression: 1
           rootNote: 8
           repeatRate: 0
@@ -7434,7 +7434,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.95
           expression: 1
           rootNote: 7
           repeatRate: 0
@@ -7462,7 +7462,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.883
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -7882,7 +7882,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -10527,7 +10527,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.908
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -10625,7 +10625,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.833
           expression: 1
           rootNote: 8
           repeatRate: 0
@@ -10653,7 +10653,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.85
           expression: 1
           rootNote: 7
           repeatRate: 0
@@ -10723,7 +10723,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.867
           expression: 1
           rootNote: 10
           repeatRate: 0
@@ -10758,7 +10758,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.808
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -10842,7 +10842,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.833
           expression: 1
           rootNote: 8
           repeatRate: 0
@@ -10884,7 +10884,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.817
           expression: 1
           rootNote: 7
           repeatRate: 0
@@ -10912,7 +10912,7 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 1
+          chance: 0.808
           expression: 1
           rootNote: 9
           repeatRate: 0
@@ -37312,15 +37312,15 @@ MonoBehaviour:
       decay: 3.67
       sustain: 1
       release: 10
-  - volume: 0.225
+  - volume: 0.1
     instrument: {fileID: 11400000, guid: ebf060f2eb88845a1ad498133a513734, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0.3
+      attack: 0
       decay: 4.56
       sustain: 0.72
       release: 9.6
-  - volume: 0.142
+  - volume: 0.092
     instrument: {fileID: 11400000, guid: 0d152f2cee7b04588aa848e0714f1334, type: 2}
     trackEnvelope:
       enabled: 1
@@ -37384,7 +37384,7 @@ MonoBehaviour:
       decay: 5
       sustain: 0
       release: 10
-  - volume: 0.26
+  - volume: 0.125
     instrument: {fileID: 11400000, guid: f47bf2bd102ff46229e7f2cba82c5838, type: 2}
     trackEnvelope:
       enabled: 1
@@ -37424,7 +37424,7 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.292
+  - volume: 0.258
     instrument: {fileID: 11400000, guid: 167e2c8a56cf84a77a83a673486dfc9e, type: 2}
     trackEnvelope:
       enabled: 1
@@ -37440,7 +37440,7 @@ MonoBehaviour:
       decay: 2.44
       sustain: 0
       release: 10
-  - volume: 0.22999999
+  - volume: 0.192
     instrument: {fileID: 11400000, guid: 83747fcfac741444b828bc7e372d4b83, type: 2}
     trackEnvelope:
       enabled: 1
@@ -37448,7 +37448,7 @@ MonoBehaviour:
       decay: 5
       sustain: 0.37
       release: 10
-  - volume: 0.06
+  - volume: 0.05
     instrument: {fileID: 11400000, guid: 60ccbc51f34d5478fa5dac05cd19e84c, type: 2}
     trackEnvelope:
       enabled: 0

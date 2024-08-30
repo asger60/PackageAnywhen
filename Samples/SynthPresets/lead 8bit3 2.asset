@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
   attack: 0.01
-  decay: 0.5
+  decay: 1.67
   sustain: 0.001
   release: 0.5
   sendAmount: 100
@@ -33,7 +33,7 @@ MonoBehaviour:
   lowPassSettings:
     oversampling: 3
     cutoffFrequency: 12228
-    resonance: 0.156
+    resonance: 0.281
   bandPassSettings:
     frequency: 1000
     bandWidth: 10
@@ -54,7 +54,7 @@ MonoBehaviour:
   frequency: 54.2
   fadeInDuration: 5.13
   retrigger: 0
-  sendAmount: 14
+  sendAmount: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,9 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c5d75eb90954545a59552f9b363791, type: 3}
   m_Name: Oscillator
   m_EditorClassIdentifier: 
-  tuning: 24
-  amplitude: 0.174
-  simpleOscillatorType: 2
+  tuning: 48
+  amplitude: 0.864
+  simpleOscillatorType: 1
   noiseType: 0
   waveTableOscillatorType: 1
-  oscillatorType: 1
+  oscillatorType: 0
