@@ -76,7 +76,7 @@ namespace Anywhen
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                var pattern = track.GetPattern();
+                var pattern = track.GetPlayingPattern();
                var step = pattern.GetCurrentStep();
                pattern.Advance();
 

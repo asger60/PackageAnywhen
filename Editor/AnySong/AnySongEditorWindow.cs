@@ -313,7 +313,9 @@ namespace Editor.AnySong
                 {
                     if (ev.currentTarget is Button btn)
                     {
+                        _currentSelection.CurrentPatternIndex = 0;
                         _currentSelection = GetSectionFromTooltip(btn.tooltip);
+                        
                         SetInspectorMode(InspectorModes.Sections);
                         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
                         AnysongSequencesView.Draw(_sequencesPanel, _currentSelection.CurrentSection, _currentSelection.CurrentSectionIndex);
@@ -585,7 +587,7 @@ namespace Editor.AnySong
             _currentSelection.CurrentSectionIndex = selection.CurrentSectionIndex;
             _currentSelection.CurrentSection = CurrentSong.Sections[_currentSelection.CurrentSectionIndex];
             _currentSelection.CurrentSectionTrack = _currentSelection.CurrentSection.tracks[_currentSelection.CurrentTrackIndex];
-            _currentSelection.CurrentPattern = _currentSelection.CurrentSectionTrack.patterns[_currentSelection.CurrentPatternIndex];
+            _currentSelection.CurrentPattern = _currentSelection.CurrentSectionTrack.GetPattern(_currentSelection.CurrentPatternIndex);
             _currentSelection.CurrentStep = _currentSelection.CurrentPattern.steps[_currentSelection.CurrentStepIndex];
             _currentSelection.CurrentSongTrack = CurrentSong.Tracks[_currentSelection.CurrentTrackIndex];
 
@@ -646,7 +648,7 @@ namespace Editor.AnySong
         public static AnyPattern GetCurrentPlayingPatternForTrack(int trackIndex)
         {
             return CurrentSong.Sections[_currentRuntimeSongPlayer.CurrentSectionIndex].tracks[trackIndex]
-                .GetPattern();
+                .GetPlayingPattern();
         }
 
         public static AnyPattern GetPatternFromTooltip(string tooltip)

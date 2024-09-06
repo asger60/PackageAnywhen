@@ -40,8 +40,15 @@ namespace Anywhen.Composing
             return clone;
         }
 
+        public AnyPattern GetPattern(int index)
+        {
+            if (index >= patterns.Count)
+                return patterns[0];
+            
+            return patterns[index];
+        }
 
-        public AnyPattern GetPattern()
+        public AnyPattern GetPlayingPattern()
         {
             var pattern = patterns[0];
             foreach (var anyPattern in patterns)
