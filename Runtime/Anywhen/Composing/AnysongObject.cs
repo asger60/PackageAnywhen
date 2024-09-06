@@ -36,5 +36,18 @@ namespace Anywhen.Composing
                 }
             }
         }
+
+        public void Reset()
+        {
+            foreach (var track in Tracks)
+            {
+                track.Reset();
+            }
+
+            foreach (var section in Sections)
+            {
+                section.Reset();
+            }
+        }
     }
 }

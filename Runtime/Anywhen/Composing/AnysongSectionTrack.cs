@@ -41,15 +41,23 @@ namespace Anywhen.Composing
         }
 
 
-        public AnyPattern GetPattern(int currentBar)
+        public AnyPattern GetPattern()
         {
             var pattern = patterns[0];
             foreach (var anyPattern in patterns)
             {
-                if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
+                if (anyPattern.TriggerOnBar(AnywhenMetronome.Instance.CurrentBar)) pattern = anyPattern;
             }
 
             return pattern;
+        }
+
+        public void Reset()
+        {
+            foreach (var pattern in patterns)
+            {
+                pattern.Reset();
+            }
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Anywhen
         private int _currentNote;
         private float _volume;
         private AnysongTrack _track;
+
         public void Init(AnywhenMetronome.TickRate tickRate)
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
@@ -56,7 +57,7 @@ namespace Anywhen
 
 
         public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument newSettings,
-           AnysongTrack track = null)
+            AnysongTrack track = null)
         {
             SetReady(false);
             _instrument = newSettings;
@@ -237,7 +238,7 @@ namespace Anywhen
             _noteClip = clip;
 
             _scheduledPlay = true;
-            
+
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _pitch = 1;
@@ -246,7 +247,10 @@ namespace Anywhen
 
             if (_instrument != null)
             {
-                currentEnvelopeSettings = _track.trackEnvelope;
+                if (_track != null)
+                    currentEnvelopeSettings = _track.trackEnvelope;
+                else
+                    currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings(0,1,1,0);
             }
 
             if (clip.envelopeSettings.enabled)
@@ -289,7 +293,7 @@ namespace Anywhen
         }
 
 
-        private double _samplePosBuffer1/*, _samplePosBuffer2*/;
+        private double _samplePosBuffer1 /*, _samplePosBuffer2*/;
         private double _sampleStepFrac;
         private double _currentPitch;
         private float _pitch;
@@ -311,7 +315,7 @@ namespace Anywhen
             }
 
             if (!_isPlaying) return;
-            
+
             if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
             {
                 _scheduledStopTime = -1;
@@ -386,7 +390,6 @@ namespace Anywhen
                 _isArmed = false;
                 _currentNote = -1000;
                 _isPlaying = false;
-                
             }
         }
     }
