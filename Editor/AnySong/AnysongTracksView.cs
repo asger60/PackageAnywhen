@@ -1,8 +1,6 @@
 using System;
 using Anywhen.Composing;
-using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -31,7 +29,8 @@ namespace Editor.AnySong
                     style =
                     {
                         alignItems = Align.Center,
-                        flexDirection = FlexDirection.Row
+                        flexDirection = FlexDirection.Row, 
+                        height = 45,
                     }
                 };
                 var soundControlElement = new VisualElement
@@ -41,7 +40,6 @@ namespace Editor.AnySong
                         width = 20,
                         minWidth = 20,
                     },
-                    
                 };
 
                 var muteButton = new Button()
@@ -51,8 +49,6 @@ namespace Editor.AnySong
                     tooltip = i.ToString(),
                     style = { width = 20 }
                 };
-
-
 
 
                 muteButton.RegisterCallback<ClickEvent>((evt) =>
@@ -69,7 +65,7 @@ namespace Editor.AnySong
                     tooltip = i.ToString(),
                     style = { width = 20 }
                 };
-                
+
                 soloButton.RegisterCallback<ClickEvent>((evt) =>
                 {
                     if (evt.currentTarget is not Button btn) return;
@@ -94,8 +90,7 @@ namespace Editor.AnySong
                     text = instrumentName,
                     style =
                     {
-                        width = new StyleLength(170),
-                        
+                        width = new StyleLength(210),
                         height = 40,
                     }
                 };
@@ -106,13 +101,8 @@ namespace Editor.AnySong
                 parent.Add(spacer);
             }
 
-         
-            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
-        }
 
-        static void CheckMute(SerializedProperty property)
-        {
-            Debug.Log(property.boolValue);
+            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
         }
 
 
@@ -121,6 +111,7 @@ namespace Editor.AnySong
             UpdateMuteButtons();
             UpdateSoloButtons();
         }
+
         static void UpdateSoloButtons()
         {
             int index = 0;
@@ -131,7 +122,7 @@ namespace Editor.AnySong
                 index++;
             });
         }
-        
+
         static void UpdateMuteButtons()
         {
             int index = 0;

@@ -24,7 +24,7 @@ namespace Editor.AnySong
         public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
         public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
-        public static AnysongPlayer _currentRuntimeSongPlayer;
+        private static AnysongPlayer _currentRuntimeSongPlayer;
         private AnyPatternStep _stepCopy;
 
         private AnysongSection _sectionCopy;
@@ -87,6 +87,7 @@ namespace Editor.AnySong
             }
         }
 
+        private VisualElement _mainViewPanel;
         private VisualElement _sequencesPanel;
         private VisualElement _sectionsPanel;
         private VisualElement _tracksPanel;
@@ -136,7 +137,7 @@ namespace Editor.AnySong
                 style =
                 {
                     flexDirection = FlexDirection.Row,
-                    height = 30,
+                    height = 60,
                 }
             };
 
@@ -151,14 +152,26 @@ namespace Editor.AnySong
             };
 
             rootVisualElement.Add(columnsPanel);
+            
+            var mainContent = new VisualElement()
+            {
+                style =
+                {
+                    flexBasis = new StyleLength(Length.Percent(100)),
+                    flexDirection = FlexDirection.Row,
+                }
+            };
 
-            _tracksPanel = new ScrollView(ScrollViewMode.Vertical)
+            _mainViewPanel = new ScrollView(ScrollViewMode.Vertical);
+            
+
+            _tracksPanel = new VisualElement()
             {
                 style = { width = new StyleLength(300), }
             };
 
 
-            _progressionPanel = new ScrollView(ScrollViewMode.Vertical)
+            _progressionPanel = new VisualElement()
             {
                 style = { width = 80, }
             };
@@ -169,14 +182,18 @@ namespace Editor.AnySong
                 style = { width = 500, }
             };
 
-            _sequencesPanel = new ScrollView(ScrollViewMode.Vertical)
+            _sequencesPanel = new VisualElement()
             {
                 style = { flexBasis = new StyleLength(Length.Percent(100)) }
             };
 
-            columnsPanel.Add(_tracksPanel);
-            columnsPanel.Add(_progressionPanel);
-            columnsPanel.Add(_sequencesPanel);
+
+            mainContent.Add(_tracksPanel);
+            mainContent.Add(_progressionPanel);
+            mainContent.Add(_sequencesPanel);
+            _mainViewPanel.Add(mainContent);
+            
+            columnsPanel.Add(_mainViewPanel);
             columnsPanel.Add(_inspectorPanel);
 
 
@@ -205,7 +222,6 @@ namespace Editor.AnySong
                 {
                     if (sPlayer.AnysongObject == CurrentSong)
                     {
-                        
                         _currentRuntimeSongPlayer = sPlayer;
                         AnywhenRuntime.Metronome.OnTick16 += OnTick16;
                         AnywhenRuntime.Metronome.OnNextBar += OnBar;
@@ -315,7 +331,7 @@ namespace Editor.AnySong
                     {
                         _currentSelection.CurrentPatternIndex = 0;
                         _currentSelection = GetSectionFromTooltip(btn.tooltip);
-                        
+
                         SetInspectorMode(InspectorModes.Sections);
                         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
                         AnysongSequencesView.Draw(_sequencesPanel, _currentSelection.CurrentSection, _currentSelection.CurrentSectionIndex);
@@ -682,7 +698,8 @@ namespace Editor.AnySong
                     _inspectorPanel.Q<Button>("PasteButton").RegisterCallback((ClickEvent ev) => { PasteSection(); });
                     break;
                 case InspectorModes.Pattern:
-                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, _currentPatternIsBase, AnysongSequencesView.RefreshPatterns);
+                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, _currentPatternIsBase,
+                        AnysongSequencesView.RefreshPatterns);
                     _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) => { DeletePattern(); });
                     _inspectorPanel.Q<Button>("ScrubForward").RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
                     _inspectorPanel.Q<Button>("ScrubBack").RegisterCallback((ClickEvent ev) => { ScrubPattern(1); });
