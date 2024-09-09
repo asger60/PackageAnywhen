@@ -40,16 +40,31 @@ namespace Anywhen.Composing
             return clone;
         }
 
+        public AnyPattern GetPattern(int index)
+        {
+            if (index >= patterns.Count)
+                return patterns[0];
+            
+            return patterns[index];
+        }
 
-        public AnyPattern GetPattern(int currentBar)
+        public AnyPattern GetPlayingPattern()
         {
             var pattern = patterns[0];
             foreach (var anyPattern in patterns)
             {
-                if (anyPattern.TriggerOnBar(currentBar)) pattern = anyPattern;
+                if (anyPattern.TriggerOnBar(AnywhenMetronome.Instance.CurrentBar)) pattern = anyPattern;
             }
 
             return pattern;
+        }
+
+        public void Reset()
+        {
+            foreach (var pattern in patterns)
+            {
+                pattern.Reset();
+            }
         }
     }
 }

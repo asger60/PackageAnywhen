@@ -47,7 +47,7 @@ public class AnysongPlayerBrainInspector : UnityEditor.Editor
             {
                 var playButton = new Button()
                 {
-                    text = songPlayer.songObject.name
+                    text = songPlayer.AnysongObject.name
                 };
                 playButton.RegisterCallback<ClickEvent>((evt) =>
                 {

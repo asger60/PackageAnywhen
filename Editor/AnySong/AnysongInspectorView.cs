@@ -46,7 +46,29 @@ namespace Editor.AnySong
             _parent.Add(Spacer());
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), didUpdate));
+            _parent.Add(Spacer());
+
+   
+            
+            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), didUpdate));
+            _parent.Add(Spacer());
+            
+            
+            var scrubForwardButton = new Button
+            {
+                name = "ScrubForward",
+                text = "Scrub +",
+            };
+            var scrubBackButton = new Button
+            {
+                name = "ScrubBack",
+                text = "Scrub -",
+            };
+            _parent.Add(scrubBackButton);
+            
+            _parent.Add(scrubForwardButton);
+            
             _parent.Add(Spacer());
             _parent.Add(CreateUtilsBox());
 

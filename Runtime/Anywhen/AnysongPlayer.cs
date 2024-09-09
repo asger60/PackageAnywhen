@@ -9,7 +9,8 @@ namespace Anywhen
 {
     public class AnysongPlayer : MonoBehaviour
     {
-        public AnysongObject songObject;
+        [SerializeField] private AnysongObject songObject;
+        public AnysongObject AnysongObject => songObject;
         private AnywhenInstrument[] _instruments;
         private AnysongObject _currentSong;
         private bool _isRunning;
@@ -18,6 +19,7 @@ namespace Anywhen
         public float intensity;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
+        public int CurrentSectionIndex => _currentSectionIndex;
 
         private void Start()
         {
@@ -36,6 +38,7 @@ namespace Anywhen
                     AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
                 }
             }
+
         }
 
         private NoteEvent[] _lastTrackNote;
@@ -49,6 +52,7 @@ namespace Anywhen
             {
                 _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
             }
+
             var thisSection = _currentSong.Sections[_currentSectionIndex];
             int progress = (int)Mathf.Repeat(_currentBar, thisSection.sectionLength);
 
@@ -67,23 +71,24 @@ namespace Anywhen
                 Release();
                 Load(songObject);
             }
-
-            int stepIndex = AnywhenRuntime.Metronome.Sub16;
-
+            
 
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                var pattern = track.GetPlayingPattern();
+               var step = pattern.GetCurrentStep();
+               pattern.Advance();
+
+
                 if (track.isMuted) continue;
 
+                
                 var songTrack = _currentSong.Tracks[trackIndex];
-                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
-                    .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
+                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0].GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
-                var pattern = track.GetPattern(AnywhenMetronome.Instance.CurrentBar);
-                var step = pattern.steps[stepIndex];
+
                 float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(intensity));
-
                 float thisRnd = Random.Range(0, 1f);
 
                 if (thisRnd < step.chance && step.mixWeight < thisIntensity)
@@ -96,6 +101,8 @@ namespace Anywhen
 
         void NextSection()
         {
+            Debug.Log("next section");
+            _currentSong.Reset();
             _currentBar = 0;
             if (AnysongPlayerBrain.SectionLockIndex > -1)
             {
@@ -107,12 +114,7 @@ namespace Anywhen
                 _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
             }
         }
-
-        public int GetStepForTrack(int trackIndex)
-        {
-            return AnywhenRuntime.Metronome.Sub16;
-        }
-
+        
 
         private void Release()
         {
@@ -129,6 +131,7 @@ namespace Anywhen
         {
             _isRunning = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+            AnywhenRuntime.Metronome.OnNextBar -= OnBar;
         }
 
         public void AttachToMetronome()
@@ -138,6 +141,8 @@ namespace Anywhen
             _isRunning = true;
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
+            _currentSong.Reset();
+
         }
 
         public void Play()

@@ -83,4 +83,12 @@ public class AnysongSection
 
         return clone;
     }
+
+    public void Reset()
+    {
+        foreach (var track in tracks)
+        {
+            track.Reset();
+        }
+    }
 }

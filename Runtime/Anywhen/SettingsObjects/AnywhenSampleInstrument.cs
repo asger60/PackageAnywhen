@@ -60,7 +60,13 @@ namespace Anywhen.SettingsObjects
             [Range(0, 1f)] public float sustain;
             [Range(0, 10f)] public float release;
 
-           
+            public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
+            {
+                this.attack = attack;
+                this.decay = decay;
+                this.sustain = sustain;
+                this.release = release;
+            }
         }
 
         //public EnvelopeSettings envelopeSettings;

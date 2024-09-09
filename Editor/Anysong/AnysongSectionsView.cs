@@ -1,6 +1,7 @@
+using System;
+using System.Drawing;
 using Anywhen.Composing;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -9,7 +10,7 @@ namespace Editor.AnySong
     {
         private static VisualElement _parent;
 
-        public static void Draw(VisualElement parent, AnysongObject currentSong)
+        public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
         {
             _parent = parent;
             parent.Clear();
@@ -46,11 +47,14 @@ namespace Editor.AnySong
                 {
                     name = "SectionButton",
                     tooltip = i.ToString(),
-                    text = "Section " + i.ToString(),
+                    text = "Section " + i,
                     style =
                     {
                         width = new StyleLength(170),
                         height = 20,
+                        backgroundColor = i == currentSelectionIndex
+                            ? AnysongEditorWindow.ColorGreyDark
+                            : AnysongEditorWindow.ColorGreyDefault,
                     }
                 };
 
@@ -93,6 +97,26 @@ namespace Editor.AnySong
         public static bool IsSectionLocked()
         {
             return AnysongEditorWindow.CurrentSectionLockIndex > -1;
+        }
+
+        public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
+        {
+            _parent.Query<Button>("SectionButton").ForEach(button =>
+            {
+                int thisIndex = Int32.Parse(button.tooltip);
+                if (thisIndex == currentSectionIndex)
+                {
+                    button.style.backgroundColor = AnysongEditorWindow.ColorHilight1;
+                    button.style.color = AnysongEditorWindow.ColorGreyDark;
+                }
+                else
+                {
+                    button.style.color = UnityEngine.Color.white;
+                    button.style.backgroundColor = thisIndex == currentSelectionIndex
+                        ? AnysongEditorWindow.ColorGreyDark
+                        : AnysongEditorWindow.ColorGreyDefault;
+                }
+            });
         }
     }
 }

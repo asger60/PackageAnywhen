@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 namespace Editor.AnySong
 {
@@ -11,6 +12,7 @@ namespace Editor.AnySong
         private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
         private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
         private static int _currentSectionIndex;
+
         public static void Draw(VisualElement parent, AnysongSection currentSection, int currentSectionIndex)
         {
             _currentSectionIndex = currentSectionIndex;
@@ -18,7 +20,7 @@ namespace Editor.AnySong
             _patternButtonsHolders.Clear();
             parent.Clear();
             parent.Add(new Label("Sequences"));
-            
+
             if (currentSection != null)
             {
                 for (var i = 0; i < currentSection.tracks.Count; i++)
@@ -53,9 +55,9 @@ namespace Editor.AnySong
 
         public static void RefreshPatterns()
         {
-            for (var i = 0; i < AnysongEditorWindow.CurrentSong.Sections[_currentSectionIndex].tracks.Count; i++)
+            //for (var i = 0; i < AnysongEditorWindow.CurrentSong.Sections[_currentSectionIndex].tracks.Count; i++)
             {
-                RefreshPatternSteps(i, 0);
+                RefreshPatternSteps();
             }
         }
 
@@ -71,7 +73,7 @@ namespace Editor.AnySong
             };
 
             _patternButtonsHolders.Add(patternsButtonHolder);
-            
+
             var thisTrack = AnysongEditorWindow.CurrentSong.Sections[_currentSectionIndex].tracks[trackIndex];
 
 
@@ -100,7 +102,6 @@ namespace Editor.AnySong
 
         private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
         {
-           
             var stepButtonsHolder = new VisualElement
             {
                 name = "StepButtonsHolder",
@@ -113,9 +114,9 @@ namespace Editor.AnySong
             parent.Add(stepButtonsHolder);
             _stepButtonsHolders.Add(stepButtonsHolder);
 
-            for (int stepIndex = 0; stepIndex < currentSectionTrack.patterns[0].steps.Count; stepIndex++)
+            for (int stepIndex = 0; stepIndex < 16; stepIndex++)
             {
-                var thisStep = currentSectionTrack.patterns[0].steps[stepIndex];
+                var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
 
                 var button = new Button
                 {
@@ -128,7 +129,9 @@ namespace Editor.AnySong
                     {
                         minWidth = 50,
                         color = GetTextColorFromButtonState(thisStep),
-                        backgroundColor = GetBackgroundColorFromButtonState(thisStep)
+                        backgroundColor = stepIndex > currentSectionTrack.patterns[patternIndex].patternLength
+                            ? Color.clear
+                            : GetBackgroundColorFromButtonState(thisStep)
                     }
                 };
                 stepButtonsHolder.Add(button);
@@ -136,16 +139,30 @@ namespace Editor.AnySong
         }
 
 
-        private static void RefreshPatternSteps(int trackIndex, int patternIndex)
+        private static void RefreshPatternSteps()
         {
+            var selection = AnysongEditorWindow.GetCurrentSelection();
+
             foreach (var stepButtonHolder in _stepButtonsHolders)
             {
+                int index = 0;
                 stepButtonHolder.Query<Button>("StepButton").ForEach(button =>
                 {
                     var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
                     button.text = thisStep.rootNote.ToString();
                     button.style.backgroundColor = GetBackgroundColorFromButtonState(thisStep);
                     button.style.color = GetTextColorFromButtonState(thisStep);
+
+                    var str = button.tooltip.Split("-");
+                    int buttonTrackIndex = Int32.Parse(str[1]); // todo - maybe figure out a better way to retrieve the index
+                    int buttonPatternIndex = Int32.Parse(str[2]); // todo - maybe figure out a better way to retrieve the index
+                    index++;
+                    var pattern = selection.CurrentSection.tracks[buttonTrackIndex].patterns[buttonPatternIndex];
+
+                    if (index > pattern.patternLength)
+                    {
+                        button.style.backgroundColor = Color.clear;
+                    }
                 });
             }
         }
@@ -167,20 +184,33 @@ namespace Editor.AnySong
         }
 
 
-        public static void HilightStepIndex(int trackIndex, int stepIndex)
+        public static void HilightStepIndex(int trackIndex)
         {
+            int index = 0;
+            var pattern = AnysongEditorWindow.GetCurrentPlayingPatternForTrack(trackIndex);
+
             _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
             {
                 var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
                 var str = button.tooltip.Split("-");
                 int buttonStep = Int32.Parse(str[0]); // todo - maybe figure out a better way to retrieve the index
 
-                button.style.backgroundColor = buttonStep == stepIndex
+                button.style.backgroundColor = buttonStep == pattern.InternalIndex
                     ? Color.black
                     : GetBackgroundColorFromButtonState(thisStep);
-                button.style.color = buttonStep == stepIndex
+
+                button.style.color = buttonStep == pattern.InternalIndex
                     ? GetBackgroundColorFromButtonState(thisStep)
                     : GetTextColorFromButtonState(thisStep);
+
+
+                index++;
+
+
+                if (index > pattern.patternLength)
+                {
+                    button.style.backgroundColor = Color.clear;
+                }
             });
         }
     }

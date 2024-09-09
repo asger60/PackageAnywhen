@@ -39,5 +39,10 @@ namespace Anywhen.Composing
                 AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, this);
             }
         }
+
+        public void Reset()
+        {
+            
+        }
     }
 }

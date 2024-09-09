@@ -124,6 +124,18 @@ namespace Anywhen
             if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
 
             OnTick16?.Invoke();
+            
+            if (Sub16 == 0)
+            {
+                _currentBar++;
+                OnNextBar?.Invoke();
+                if (debugSettings.debugBar)
+                {
+                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+                }
+            }
+            
             Sub16++;
             if (debugSettings.debug16)
             {
@@ -169,16 +181,7 @@ namespace Anywhen
                 }
             }
 
-            if (Sub16 == 16)
-            {
-                _currentBar++;
-                OnNextBar?.Invoke();
-                if (debugSettings.debugBar)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-                }
-            }
+            
 
             // reset
             if (Sub16 == 16)
