@@ -449,6 +449,7 @@ namespace Editor.AnySong
             HandleSequencesLogic();
             HandleTracksLogic();
             EditorUtility.SetDirty(CurrentSong);
+            Debug.Log("delete track");
         }
 
         void CreateNewSection()
