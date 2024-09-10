@@ -314,7 +314,7 @@ namespace Anywhen.Synth
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Sine8Bit:
                     return _sine8Bit[(int)(ph01 * _sine8Bit.Length)];
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Saw8Bit:
-                    return _saw8Bit[(int)(ph01 * _saw8Bit.Length)];
+                    return _saw8Bit[(int)(ph01 * (_saw8Bit.Length - 1))];
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Square8Bit:
                     int val = (int)(ph01 * _square8Bit.Length);
                     if (val != 0 && val != 1)

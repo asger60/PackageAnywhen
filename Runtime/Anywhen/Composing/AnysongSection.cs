@@ -1,94 +1,97 @@
 using System;
 using System.Collections.Generic;
-using Anywhen;
-using Anywhen.Composing;
+using UnityEditor;
 using UnityEngine;
 
-[Serializable]
-public class AnysongSection
+namespace Anywhen.Composing
 {
-    public int rootNote;
-
-
-    public AnywhenProgressionPatternObject.ProgressionStep[] patternSteps;
-
-    [Range(0, 1f)] public float volume = 0.85f;
-
-    public List<AnysongSectionTrack> tracks;
-    public int sectionLength = 4;
-
-    public void Init(List<AnysongTrack> songTracks)
+    [Serializable]
+    public class AnysongSection
     {
-        volume = 1f;
-        rootNote = 0;
-        sectionLength = 4;
-        tracks = new List<AnysongSectionTrack>();
+        public int rootNote;
 
-        patternSteps = new AnywhenProgressionPatternObject.ProgressionStep[4];
-        for (var i = 0; i < patternSteps.Length; i++)
+
+        public AnywhenProgressionPatternObject.ProgressionStep[] patternSteps;
+
+        [Range(0, 1f)] public float volume = 0.85f;
+
+        public List<AnysongSectionTrack> tracks;
+        public int sectionLength = 4;
+
+        public void Init(List<AnysongTrack> songTracks)
         {
-            patternSteps[i] = new AnywhenProgressionPatternObject.ProgressionStep
+            volume = 1f;
+            rootNote = 0;
+            sectionLength = 4;
+            tracks = new List<AnysongSectionTrack>();
+
+            patternSteps = new AnywhenProgressionPatternObject.ProgressionStep[4];
+            for (var i = 0; i < patternSteps.Length; i++)
             {
-                rootNote = 0,
-                anywhenScale = AnywhenConductor.GetDefaultScale()
-            };
+                patternSteps[i] = new AnywhenProgressionPatternObject.ProgressionStep
+                {
+                    rootNote = 0,
+                    anywhenScale = AnywhenConductor.GetDefaultScale()
+                };
+            }
+
+            foreach (var track in songTracks)
+            {
+                var newTrack = new AnysongSectionTrack();
+                newTrack.Init(track);
+                tracks.Add(newTrack);
+            }
+        
         }
 
-        foreach (var track in songTracks)
+        public void UpdateTracks(List<AnysongTrack> songTracks)
+        {
+            foreach (var songTrack in songTracks)
+            {
+            }
+        }
+
+
+        public void AddSongTrack(AnysongTrack songTrack)
         {
             var newTrack = new AnysongSectionTrack();
-            newTrack.Init(track);
+            newTrack.Init(songTrack);
             tracks.Add(newTrack);
+            
         }
-        
-    }
 
-    public void UpdateTracks(List<AnysongTrack> songTracks)
-    {
-        foreach (var songTrack in songTracks)
+        public void RemoveSongTrack(int trackIndex)
         {
+            tracks.RemoveAt(trackIndex);
         }
-    }
 
-
-    public void AddSongTrack(AnysongTrack songTrack)
-    {
-        var newTrack = new AnysongSectionTrack();
-        newTrack.Init(songTrack);
-        tracks.Add(newTrack);
-    }
-
-    public void RemoveSongTrack(int trackIndex)
-    {
-        tracks.RemoveAt(trackIndex);
-    }
-
-    public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar)
-    {
-        return patternSteps[(int)Mathf.Repeat(currentBar, patternSteps.Length)];
-    }
+        public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar)
+        {
+            return patternSteps[(int)Mathf.Repeat(currentBar, patternSteps.Length)];
+        }
     
-    public AnysongSection Clone()
-    {
-        var clone = new AnysongSection
+        public AnysongSection Clone()
         {
-            tracks = new List<AnysongSectionTrack>()
-        };
+            var clone = new AnysongSection
+            {
+                tracks = new List<AnysongSectionTrack>()
+            };
         
-        for (var i = 0; i < tracks.Count; i++)
-        {
-            clone.tracks.Add(tracks[i].Clone());
+            for (var i = 0; i < tracks.Count; i++)
+            {
+                clone.tracks.Add(tracks[i].Clone());
+            }
+
+
+            return clone;
         }
 
-
-        return clone;
-    }
-
-    public void Reset()
-    {
-        foreach (var track in tracks)
+        public void Reset()
         {
-            track.Reset();
+            foreach (var track in tracks)
+            {
+                track.Reset();
+            }
         }
     }
 }

@@ -151,7 +151,7 @@ namespace Editor.AnySong
             };
 
             rootVisualElement.Add(columnsPanel);
-            
+
             var mainContent = new VisualElement()
             {
                 style =
@@ -162,7 +162,7 @@ namespace Editor.AnySong
             };
 
             _mainViewPanel = new ScrollView(ScrollViewMode.Vertical);
-            
+
 
             _tracksPanel = new VisualElement()
             {
@@ -191,7 +191,7 @@ namespace Editor.AnySong
             mainContent.Add(_progressionPanel);
             mainContent.Add(_sequencesPanel);
             _mainViewPanel.Add(mainContent);
-            
+
             columnsPanel.Add(_mainViewPanel);
             columnsPanel.Add(_inspectorPanel);
 
@@ -430,6 +430,8 @@ namespace Editor.AnySong
             AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             HandleSequencesLogic();
             HandleTracksLogic();
+
+            EditorUtility.SetDirty(CurrentSong);
         }
 
         void DeleteTrack()
@@ -446,6 +448,7 @@ namespace Editor.AnySong
             AnysongSequencesView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             HandleSequencesLogic();
             HandleTracksLogic();
+            EditorUtility.SetDirty(CurrentSong);
         }
 
         void CreateNewSection()
