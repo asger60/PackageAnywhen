@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
-  attack: 1.12
-  decay: 1.41
-  sustain: 0.079
-  release: 1.17
-  sendAmount: 86
+  attack: 0.01
+  decay: 0.49
+  sustain: 0.001
+  release: 1.42
+  sendAmount: 100
 --- !u!114 &-3404739314560019365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32,13 +32,30 @@ MonoBehaviour:
   filterType: 0
   lowPassSettings:
     oversampling: 1
-    cutoffFrequency: 5079
-    resonance: 0.093
+    cutoffFrequency: 3851
+    resonance: 0
   bandPassSettings:
     frequency: 1000
     bandWidth: 10
   formantSettings:
-    vowel: 1
+    vowel: 4
+--- !u!114 &-777727829421208034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174af51d63c184d1f96a4c2f77f33139, type: 3}
+  m_Name: Filter Envelope
+  m_EditorClassIdentifier: 
+  attack: 0.01
+  decay: 1.64
+  sustain: 0.108
+  release: 1.99
+  sendAmount: 42
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,7 +66,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeb54228131024b7aac2468f5ee51a67, type: 3}
-  m_Name: Synthpad
+  m_Name: Dyb bass
   m_EditorClassIdentifier: 
   isInit: 1
   unison: 0
@@ -62,7 +79,8 @@ MonoBehaviour:
   pitchModifiers: []
   amplitudeModifiers:
   - {fileID: -7936258322191970824}
-  filterModifiers: []
+  filterModifiers:
+  - {fileID: -777727829421208034}
 --- !u!114 &6811349930590322744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,9 +93,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c5d75eb90954545a59552f9b363791, type: 3}
   m_Name: Oscillator
   m_EditorClassIdentifier: 
-  tuning: 48
-  amplitude: 0.094
+  tuning: 12
+  amplitude: 0.165
   simpleOscillatorType: 1
   noiseType: 0
-  waveTableOscillatorType: 0
+  waveTableOscillatorType: 2
   oscillatorType: 1
