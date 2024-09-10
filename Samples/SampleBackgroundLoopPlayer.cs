@@ -17,10 +17,8 @@ namespace Samples
         IEnumerator WaitAndPlay()
         {
             yield return new WaitForSeconds(1);
-
             _source.Play();
             _source.time = Random.Range(0, _source.clip.length);
-            print("play");
         }
     }
 }

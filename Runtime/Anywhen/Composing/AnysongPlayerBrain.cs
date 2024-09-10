@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace Anywhen.Composing
 
 
         public static int SectionLockIndex;
+
         public enum TransitionTypes
         {
             Instant,
@@ -34,22 +36,35 @@ namespace Anywhen.Composing
 
         private void Start()
         {
-            LateInit();
+            SectionLockIndex = 0;
+            StartCoroutine(LateInit());
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
 
 
-        async void LateInit()
+        IEnumerator LateInit()
         {
-            foreach (var player in songPlayers)
+            bool allLoaded = false;
+            while (!allLoaded)
             {
-                if (!player.IsSongLoaded)
-                    await Task.Yield();
+                foreach (var player in songPlayers)
+                {
+                    if (!player.IsSongLoaded)
+                    {
+                        yield return 0;
+                        break;
+                    }
+                }
+
+                allLoaded = true;
             }
+
 
             _currentPlayer = songPlayers[0];
             _currentPlayer.AttachToMetronome();
+            print("late init");
         }
+
 
         private void Update()
         {
