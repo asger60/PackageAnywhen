@@ -71,7 +71,7 @@ namespace Anywhen
 
         private void Awake()
         {
-            if (Instance != null) DestroyImmediate(this);
+          //  if (Instance != null) DestroyImmediate(this);
         }
 
         private void Start()
@@ -122,9 +122,8 @@ namespace Anywhen
             if (!Playing) return;
             if (_isStopped) return;
             if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
-
             OnTick16?.Invoke();
-            
+
             if (Sub16 == 0)
             {
                 _currentBar++;
@@ -135,7 +134,7 @@ namespace Anywhen
                     AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
                 }
             }
-            
+
             Sub16++;
             if (debugSettings.debug16)
             {
@@ -181,7 +180,6 @@ namespace Anywhen
                 }
             }
 
-            
 
             // reset
             if (Sub16 == 16)

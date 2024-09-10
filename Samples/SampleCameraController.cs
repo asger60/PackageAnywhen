@@ -9,8 +9,8 @@ namespace Samples
 
         private void Update()
         {
-            //transform.position = Vector3.Lerp(transform.position, followTarget.position, Time.deltaTime * followSpeed);
-            //transform.rotation = Quaternion.Lerp(transform.rotation, followTarget.rotation, Time.deltaTime * followSpeed);
+            transform.position = Vector3.Lerp(transform.position, followTarget.position, Time.deltaTime * followSpeed);
+            transform.rotation = Quaternion.Lerp(transform.rotation, followTarget.rotation, Time.deltaTime * followSpeed);
         }
     }
 }

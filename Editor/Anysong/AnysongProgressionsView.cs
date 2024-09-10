@@ -15,8 +15,19 @@ namespace Editor.AnySong
                 style = { height = 8 }
             };
 
+
             for (var i = 0; i < currentSong.Tracks.Count; i++)
             {
+                var trackElement = new VisualElement
+                {
+                    style =
+                    {
+                        alignItems = Align.Center,
+                        flexDirection = FlexDirection.Row,
+                        height = 45,
+                        width = 60
+                    }
+                };
                 var button = new Button
                 {
                     name = "ProgressionButton",
@@ -25,18 +36,14 @@ namespace Editor.AnySong
                     style =
                     {
                         height = 40,
+                        width = 60
                     }
                 };
 
-                
-                parent.Add(button);
-                parent.Add(spacer);
+
+                trackElement.Add(button);
+                parent.Add(trackElement);
             }
-            
-
-            
         }
-
-        
     }
 }

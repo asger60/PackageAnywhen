@@ -1,6 +1,5 @@
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
-using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -38,7 +37,6 @@ namespace Anywhen
                     AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
                 }
             }
-
         }
 
         private NoteEvent[] _lastTrackNote;
@@ -71,19 +69,19 @@ namespace Anywhen
                 Release();
                 Load(songObject);
             }
-            
+
 
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
                 var pattern = track.GetPlayingPattern();
-               var step = pattern.GetCurrentStep();
-               pattern.Advance();
+                var step = pattern.GetCurrentStep();
+                pattern.Advance();
 
 
                 if (track.isMuted) continue;
 
-                
+
                 var songTrack = _currentSong.Tracks[trackIndex];
                 AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0].GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
@@ -114,7 +112,7 @@ namespace Anywhen
                 _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
             }
         }
-        
+
 
         private void Release()
         {
@@ -142,11 +140,12 @@ namespace Anywhen
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
             _currentSong.Reset();
-
+            print("attach to metro " + songObject.name);
         }
 
         public void Play()
         {
+            print("play " + songObject.name);
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Random = UnityEngine.Random;
 
 namespace Editor.AnySong
 {
@@ -20,14 +19,30 @@ namespace Editor.AnySong
             _patternButtonsHolders.Clear();
             parent.Clear();
             parent.Add(new Label("Sequences"));
-
+            var spacer = new VisualElement
+            {
+                style =
+                {
+                    height = 1
+                }
+            };
+            parent.Add(spacer);
             if (currentSection != null)
             {
                 for (var i = 0; i < currentSection.tracks.Count; i++)
                 {
+                    var trackElement = new VisualElement
+                    {
+                        style =
+                        {
+                            height = 45,
+                        }
+                    };
+
                     var track = currentSection.tracks[i];
-                    DrawTrackPattern(parent, i, 0);
-                    DrawPatternSteps(parent, track, i, 0);
+                    trackElement.Add(DrawTrackPattern(parent, i, 0));
+                    trackElement.Add(DrawPatternSteps(parent, track, i, 0));
+                    parent.Add(trackElement);
                 }
             }
         }
@@ -61,7 +76,7 @@ namespace Editor.AnySong
             }
         }
 
-        private static void DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
+        private static VisualElement DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
         {
             var patternsButtonHolder = new VisualElement
             {
@@ -97,10 +112,10 @@ namespace Editor.AnySong
                 patternsButtonHolder.Add(button);
             }
 
-            parent.Add(patternsButtonHolder);
+            return patternsButtonHolder;
         }
 
-        private static void DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
+        private static VisualElement DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
         {
             var stepButtonsHolder = new VisualElement
             {
@@ -111,7 +126,7 @@ namespace Editor.AnySong
                     flexDirection = FlexDirection.Row
                 }
             };
-            parent.Add(stepButtonsHolder);
+            //parent.Add(stepButtonsHolder);
             _stepButtonsHolders.Add(stepButtonsHolder);
 
             for (int stepIndex = 0; stepIndex < 16; stepIndex++)
@@ -136,6 +151,8 @@ namespace Editor.AnySong
                 };
                 stepButtonsHolder.Add(button);
             }
+
+            return stepButtonsHolder;
         }
 
 

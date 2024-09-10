@@ -1,35 +1,37 @@
-using Anywhen.Composing;
 using UnityEngine;
 
-public class SamplePlayerControls : MonoBehaviour
+namespace Samples
 {
-    [SerializeField] float moveSpeed;
-    [SerializeField] float rotateSpeed;
-
-
-    private Vector3 _velocity;
-    Vector3 _prevPosition;
-
-    void Start()
+    public class SamplePlayerControls : MonoBehaviour
     {
-    }
+        [SerializeField] float moveSpeed;
+        [SerializeField] float rotateSpeed;
 
-    void Update()
-    {
-        _prevPosition = transform.position;
-        if (Mathf.Abs(Input.GetAxis("Vertical")) > 0)
+
+        private Vector3 _velocity;
+
+        private float _vertical, _horizontal;
+        public void SetVerticalMovement(float value)
         {
-            transform.position += transform.forward * (Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed);
+            _vertical = value;
         }
 
-        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
+        public void SetHorizontalMovement(float value)
         {
-            transform.Rotate(Vector3.up,
-                (Input.GetAxis("Horizontal") * Mathf.Sign(Input.GetAxis("Vertical")) * Time.deltaTime * rotateSpeed));
+            _horizontal = value;
         }
+        void Update()
+        {
+            if (Mathf.Abs(_vertical) > 0)
+            {
+                transform.position += transform.forward * (_vertical * Time.deltaTime * moveSpeed);
+            }
 
-        //_velocity = (transform.position - _prevPosition) / Time.deltaTime; 
-        
-        //AnysongPlayerBrain.SetGlobalIntensity(_velocity.magnitude);
+            if (Mathf.Abs(_horizontal) > 0)
+            {
+                transform.Rotate(Vector3.up,
+                    (_horizontal * Mathf.Sign(_vertical) * Time.deltaTime * rotateSpeed));
+            }
+        }
     }
 }

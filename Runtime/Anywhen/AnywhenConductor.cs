@@ -5,9 +5,9 @@ namespace Anywhen
 {
     public class AnywhenConductor : MonoBehaviour
     {
-        public int _rootNote = 0;
-        public AnywhenScaleObject anywhenScale;
-        public AnywhenScaleObject _currentAnywhenScale;
+        [SerializeField] int _rootNote = 0;
+        [SerializeField] AnywhenScaleObject anywhenScale;
+        [SerializeField] AnywhenScaleObject _currentAnywhenScale;
 
 
         public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
@@ -22,12 +22,6 @@ namespace Anywhen
 
         private void Start()
         {
-            //if (initialProgressionPattern == null)
-            //{
-            //    initialProgressionPattern =
-            //        Resources.Load<AnywhenProgressionPatternObject>("Progressions/BasicProgression");
-            //}
-//
             if (anywhenScale == null)
             {
                 anywhenScale =
@@ -52,7 +46,7 @@ namespace Anywhen
                 _currentPatternStep++;
                 _currentPatternStep =
                     (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
-                
+
                 if (!_rootOverridden)
                 {
                     _rootNote = _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
