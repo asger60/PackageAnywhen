@@ -97,7 +97,6 @@ namespace Anywhen
             {
                 if (!synth.Preset)
                 {
-                    print("set synth " + synthPreset.name);
                     synth.SetPreset(synthPreset);
                     break;
                 }

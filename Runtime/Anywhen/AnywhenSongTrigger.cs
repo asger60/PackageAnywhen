@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -7,9 +8,7 @@ namespace Anywhen
     public class AnywhenSongTrigger : MonoBehaviour
     {
         private AnysongPlayer _anysongPlayer;
-        private MaterialPropertyBlock _materialPropertyBlock;
-        private Renderer _renderer;
-        private Color _initialColor;
+        public Action OnTrigger;
 
         public enum TriggerTypes
         {
@@ -26,21 +25,25 @@ namespace Anywhen
             CollisionExit2D,
             ObjectEnable,
             ObjectDisable,
-            MouseEnter,
-            MouseExit,
-            MouseDown,
-            MouseUp,
+            //MouseEnter,
+            //MouseExit,
+            //MouseDown,
+            //MouseUp,
         }
+
+        [SerializeField] private GameObject targetObject;
 
         public TriggerTypes triggerType;
 
         void Start()
         {
             TryGetComponent(out _anysongPlayer);
-            TryGetComponent(out _renderer);
-            _materialPropertyBlock = new MaterialPropertyBlock();
-            _initialColor = _renderer.sharedMaterial.color;
             if (triggerType == TriggerTypes.ObjectStart) Trigger();
+        }
+
+        private void OnDestroy()
+        {
+            if (triggerType == TriggerTypes.ObjectDestroy) Trigger();
         }
 
         private void OnEnable()
@@ -48,34 +51,66 @@ namespace Anywhen
             if (triggerType == TriggerTypes.ObjectEnable) Trigger();
         }
 
+        private void OnDisable()
+        {
+            if (triggerType == TriggerTypes.ObjectDisable) Trigger();
+        }
+
         private void OnTriggerEnter(Collider other)
         {
+            if (targetObject != null && other.gameObject != targetObject) return;
             if (triggerType == TriggerTypes.TriggerEnter) Trigger();
         }
 
+
         private void OnTriggerExit(Collider other)
         {
+            if (targetObject != null && other.gameObject != targetObject) return;
             if (triggerType == TriggerTypes.TriggerExit) Trigger();
         }
 
-        void Trigger()
+        private void OnCollisionEnter(Collision other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.CollisionEnter) Trigger();
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.CollisionExit) Trigger();
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.TriggerEnter2D) Trigger();
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.TriggerExit2D) Trigger();
+        }
+
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.CollisionEnter2D) Trigger();
+        }
+
+        private void OnCollisionExit2D(Collision2D other)
+        {
+            if (targetObject != null && other.gameObject != targetObject) return;
+            if (triggerType == TriggerTypes.CollisionExit2D) Trigger();
+        }
+
+
+        private void Trigger()
         {
             if (!_anysongPlayer) return;
             _anysongPlayer.Play();
-            Blink();
-        }
-
-        async void Blink()
-        {
-            float f = 0;
-            float duration = 1;
-            while (f < duration)
-            {
-                _materialPropertyBlock.SetColor("_Color", Color.Lerp(Color.white, _initialColor, f));
-                _renderer.SetPropertyBlock(_materialPropertyBlock);
-                f += Time.deltaTime;
-                await Task.Yield();
-            }
+            OnTrigger?.Invoke();
         }
     }
 }
