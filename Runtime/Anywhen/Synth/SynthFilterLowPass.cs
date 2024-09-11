@@ -88,11 +88,10 @@
 //  He also suggests a half sample delay as phase compensation, which
 //  is not implemented yet.
 
-using Anywhen.Synth.Synth;
-using UnitySynth.Runtime.Synth.Filter;
-using static System.Math;
+using Anywhen.Synth.Filter;
+using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthFilterLowPass : SynthFilterBase
     {
@@ -100,27 +99,23 @@ namespace UnitySynth.Runtime.Synth
         const float C = 1.0f; // ????
 
         const float V_t = 1.22070313f; // From Diakopoulos
+        private float _cutoffMod = 1;
 
         /// Config
-        float reso, Fs;
+        float _reso, _fs;
 
-        int oversampling = 1; // 1 means don't oversample
+        int _oversampling = 1; // 1 means don't oversample
 
         /// State
-        double y_a, y_b, y_c, y_d;
+        float y_a, y_b, y_c, y_d;
 
-        double w_a, w_b, w_c;
+        float w_a, w_b, w_c;
 
         /// Cache
-        double s, v;
+        float _s, _v;
 
-        float cutoff;
-
-        public SynthFilterLowPass(float sampleRate)
-        {
-            Fs = sampleRate;
-            v = V_t * 0.5f; // 1/2V_t
-        }
+        float _cutOff;
+        
 
 
         public override void SetExpression(float data)
@@ -130,12 +125,11 @@ namespace UnitySynth.Runtime.Synth
         public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
         {
             settings = settingsObjectFilter;
-            reso = settings.lowPassSettings.resonance;
-            SetCutoff(settings.lowPassSettings.cutoffFrequency);
+            _reso = settings.lowPassSettings.resonance;
+            SetCutOff(settings.lowPassSettings.cutoffFrequency);
             SetOversampling(settings.lowPassSettings.oversampling);
         }
 
-        private float _cutoffMod = 1;
 
         public override void HandleModifiers(float mod1)
         {
@@ -144,65 +138,62 @@ namespace UnitySynth.Runtime.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            Fs = AnywhenSynth.SampleRate;
-            v = V_t * 0.5f; // 1/2V_t
+            _fs = AnywhenSynth.SampleRate;
+            _v = V_t * 0.5f; // 1/2V_t
+            _cutoffMod = 1;
             settings = newSettings;
-        }
-
-        public override void process_mono_stride(float[] samples, int sampleCount, int offset, int stride)
-        {
-            int idx = offset;
-            for (int i = 0; i < sampleCount; ++i)
-            {
-                float x = samples[idx]; // x = input sample
-                for (int j = 0; j < oversampling; ++j)
-                {
-                    y_a += s * (Tanh(x - 4 * reso * y_d * v) - w_a);
-                    w_a = Tanh(y_a * v);
-                    y_b += s * (w_a - w_b);
-                    w_b = Tanh(y_b * v);
-                    y_c += s * (w_b - w_c);
-                    w_c = Tanh(y_c * v);
-                    y_d += s * (w_c - Tanh(y_d * v));
-                }
-
-                samples[idx] = (float)y_d; // y_d = output sample
-                idx += stride;
-            }
         }
 
 
         public override float Process(float sample)
         {
-            float x = sample; // x = input sample
-            for (int j = 0; j < oversampling; ++j)
+
+            for (int j = 0; j < _oversampling; ++j)
             {
-                y_a += s * (Tanh(x - 4 * reso * y_d * v) - w_a);
-                w_a = Tanh(y_a * v);
-                y_b += s * (w_a - w_b);
-                w_b = Tanh(y_b * v);
-                y_c += s * (w_b - w_c);
-                w_c = Tanh(y_c * v);
-                y_d += s * (w_c - Tanh(y_d * v));
+                y_a += _s * (FastTanh(sample - 4 * _reso * y_d * _v) - w_a);
+                w_a = FastTanh(y_a * _v);
+                y_b += _s * (w_a - w_b);
+                w_b = FastTanh(y_b * _v);
+                y_c += _s * (w_b - y_c);
+                w_c = FastTanh(y_c * _v);
+                y_d += _s * (w_c - FastTanh(y_d * _v));
             }
 
-            return (float)y_d; // y_d = output sample
-            //idx += stride;
+            return Clamp(y_d, -1f, 1f); // Ensure float clamping
+        }
+        
+
+
+        // Fast approximation of Tanh
+        private static float FastTanh(float x)
+        {
+            if (x < -3) return -1;
+            if (x > 3) return 1;
+
+
+            float x2 = x * x;
+            return x * (27 + x2) / (27 + 9 * x2);
+        }
+
+        // Clamp function for floats
+        private static float Clamp(float value, float min, float max)
+        {
+            return value < min ? min : value > max ? max : value;
         }
 
 
-        private void SetCutoff(float c)
+        private void SetCutOff(float c)
         {
-            cutoff = c;
-            s = c / C / Fs / oversampling * 6.28318530717959f * _cutoffMod;
+            _cutOff = c;
+            _s = c / C / _fs / _oversampling * 6.28318530717959f * _cutoffMod;
         }
 
-        public void SetOversampling(int iterationCount)
+        private void SetOversampling(int iterationCount)
         {
-            oversampling = iterationCount;
-            if (oversampling < 1)
-                oversampling = 1;
-            SetCutoff(cutoff);
+            _oversampling = iterationCount;
+            if (_oversampling < 1)
+                _oversampling = 1;
+            //SetCutOff(_cutOff);
         }
     }
 }

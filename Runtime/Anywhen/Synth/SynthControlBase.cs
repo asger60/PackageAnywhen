@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthControlBase : MonoBehaviour
     {

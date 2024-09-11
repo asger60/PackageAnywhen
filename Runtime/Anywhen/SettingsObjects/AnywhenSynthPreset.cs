@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Anywhen.Synth;
 using UnityEditor;
 using UnityEngine;
 using UnitySynth.Runtime.Synth;
@@ -23,9 +24,9 @@ namespace Anywhen.SettingsObjects
         public SynthSettingsObjectBase[] filterModifiers;
 
 
-        private Anywhen.Synth.Synth.AnywhenSynth _runtimeSynth;
+        private AnywhenSynth _runtimeSynth;
 
-        public void BindToRuntime(Anywhen.Synth.Synth.AnywhenSynth synth)
+        public void BindToRuntime(AnywhenSynth synth)
         {
             _runtimeSynth = synth;
         }

@@ -1,7 +1,7 @@
-using Anywhen.Synth.Synth;
 using UnityEngine;
+using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthControlEnvelope : SynthControlBase
     {
@@ -29,7 +29,6 @@ namespace UnitySynth.Runtime.Synth
         private float _decayBase;
         private float _releaseBase;
 
-        
 
         public SynthSettingsObjectEnvelope settings;
 
@@ -48,6 +47,9 @@ namespace UnitySynth.Runtime.Synth
 
         public override void NoteOff()
         {
+            SetReleaseRate(settings.release * AnywhenSynth.SampleRate);
+            SetTargetRatioA(0.3f);
+            SetTargetRatioDr(0.3f);
             _state = EnvState.env_release;
         }
 
@@ -147,12 +149,12 @@ namespace UnitySynth.Runtime.Synth
                     break;
             }
 
-            return _output * (settings.sendAmount / 100f);
+            return Mathf.Clamp01(_output * (settings.sendAmount / 100f));
         }
 
         public void UpdateSettings(SynthSettingsObjectEnvelope newSettings)
         {
-            this.settings = newSettings;
+            settings = newSettings;
         }
     }
 }

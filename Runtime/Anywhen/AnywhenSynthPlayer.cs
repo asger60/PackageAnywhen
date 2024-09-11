@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
 using UnityEngine;
 using UnityEngine.Audio;
-using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
     public class AnywhenSynthPlayer : MonoBehaviour
     {
-        public Synth.Synth.AnywhenSynth anywhenSynthPrefab;
+        public AnywhenSynth anywhenSynthPrefab;
 
-        private readonly List<Synth.Synth.AnywhenSynth> _allSynths = new();
+        [SerializeField] private List<AnywhenSynth> _allSynths = new();
         public int numberOfSynths = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
@@ -26,25 +26,32 @@ namespace Anywhen
             }
 
             _isInit = true;
-            LateInit();
         }
 
-        async void LateInit()
+
+        [ContextMenu("CreateSynths")]
+        void CreateSynths()
         {
-            while (AnywhenMetronome.Instance == null)
+            _allSynths.Clear();
+
+
+            foreach (var synth in transform.GetComponentsInChildren<AnywhenSynth>())
             {
-                await Task.Yield();
+                if (synth.gameObject == gameObject) continue;
+                DestroyImmediate(synth.gameObject);
             }
 
-            print("metronome init");
+            for (int i = 0; i < numberOfSynths; i++)
+            {
+                _allSynths.Add(Instantiate(anywhenSynthPrefab, transform));
+            }
         }
 
-
-        private Synth.Synth.AnywhenSynth GetSynth(AnywhenSynthPreset synthPreset)
+        private AnywhenSynth GetSynth(AnywhenSynthPreset synthPreset)
         {
             foreach (var synth in _allSynths)
             {
-                if (synth.Preset == synthPreset) return synth;
+                if (synth.Preset.name == synthPreset.name) return synth;
             }
 
 
@@ -52,10 +59,10 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenSynthPreset synthPreset,
-            AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
+        public void HandleEvent(NoteEvent e, AnywhenSynthPreset synthPreset, AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
         {
             var thisSynth = GetSynth(synthPreset);
+
             if (thisSynth)
             {
                 double playTime = 0;
@@ -70,7 +77,7 @@ namespace Anywhen
                 {
                     e.notes = AnywhenConductor.Instance.GetScaledNotes(e.notes);
                     thisSynth.HandleEventScheduled(e, playTime);
-                    
+
                     var noteOff = new NoteEvent(NoteEvent.EventTypes.NoteOff);
                     double stopTime = playTime;
                     decimal dec = new decimal(e.duration);
@@ -78,13 +85,17 @@ namespace Anywhen
                     thisSynth.HandleEventScheduled(noteOff, stopTime);
                 }
             }
+            else
+            {
+                Debug.Log("failed to get synth");
+            }
         }
 
         public void RegisterPreset(AnywhenSynthPreset synthPreset)
         {
             foreach (var synth in _allSynths)
             {
-                if (synth.Preset == null)
+                if (!synth.Preset)
                 {
                     print("set synth " + synthPreset.name);
                     synth.SetPreset(synthPreset);

@@ -116,13 +116,7 @@ public class EventQueue
         _size = 0;
     }
 
-    public bool IsEmpty
-    {
-        get { return _size == 0; }
-    }
+    public bool IsEmpty => _size == 0;
 
-    public int GetSize()
-    {
-        return _size;
-    }
+    public int GetSize() => _size;
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.Synth.Filter
+namespace Anywhen.Synth.Filter
 {
     public abstract class SynthFilterBase : MonoBehaviour
     {

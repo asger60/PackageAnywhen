@@ -1,8 +1,8 @@
-using Anywhen.Synth.Synth;
+using Anywhen.Synth.Filter;
 using UnityEngine;
-using UnitySynth.Runtime.Synth.Filter;
+using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthFilterFormant : SynthFilterBase
     {
@@ -178,30 +178,7 @@ namespace UnitySynth.Runtime.Synth
         {
         }
 
-        public override void process_mono_stride(float[] samples, int sampleCount, int offset, int stride)
-        {
-            float[] mix1 = new float[samples.Length];
-            float[] mix2 = new float[samples.Length];
-            float[] mix3 = new float[samples.Length];
-            samples.CopyTo(mix1, 0);
-            samples.CopyTo(mix2, 0);
-            samples.CopyTo(mix3, 0);
 
-
-            _synthFilterBandPass1.process_mono_stride(mix1, sampleCount, offset, stride);
-            _synthFilterBandPass2.process_mono_stride(mix2, sampleCount, offset, stride);
-            _synthFilterBandPass3.process_mono_stride(mix3, sampleCount, offset, stride);
-
-            int idx = offset;
-            for (int i = 0; i < sampleCount; ++i)
-            {
-                samples[idx] = ((mix1[idx] * _currentVowel.GetBand(0).gain) +
-                                (mix2[idx] * _currentVowel.GetBand(1).gain) +
-                                (mix3[idx] * _currentVowel.GetBand(2).gain))
-                               / 3f;
-                idx += stride;
-            }
-        }
 
         public override float Process(float sample)
         {

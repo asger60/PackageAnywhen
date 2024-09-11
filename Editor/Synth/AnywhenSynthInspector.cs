@@ -18,12 +18,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE."
 
+using Anywhen.Synth;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnitySynth.Runtime.Synth.Editor
+namespace Editor.Synth
 {
-    [CustomEditor(typeof(Anywhen.Synth.Synth.AnywhenSynth)), CanEditMultipleObjects]
+    [CustomEditor(typeof(AnywhenSynth)), CanEditMultipleObjects]
     public class AnywhenSynthInspector : UnityEditor.Editor
     {
         private enum OscilloscopeMode
@@ -47,92 +48,7 @@ namespace UnitySynth.Runtime.Synth.Editor
         private static OscilloscopeMode oscilloscopeMode = OscilloscopeMode.None;
 
 
-        public override void OnInspectorGUI()
-        {
-            Anywhen.Synth.Synth.AnywhenSynth parent = target as Anywhen.Synth.Synth.AnywhenSynth;
-
-            //serializedObject.Update();
-
-            DrawDefaultInspector();
-            return;
-            GUILayout.Space(8);
-            GUILayout.Label("Visualization", EditorStyles.boldLabel);
-            int modeInt = EditorPrefs.GetInt("MoogSynth:oscMode");
-            oscilloscopeMode = (OscilloscopeMode)EditorGUILayout.EnumPopup("Oscilloscope", (OscilloscopeMode)modeInt);
-            if (((int)oscilloscopeMode) != modeInt)
-            {
-                EditorPrefs.SetInt("MoogSynth:oscMode", (int)oscilloscopeMode);
-            }
-
-            parent.SetDebugBufferEnabled(oscilloscopeMode != OscilloscopeMode.None);
-
-            if (oscilloscopeMode != OscilloscopeMode.None)
-            {
-                if (Event.current.type == EventType.Repaint)
-                {
-                    int oscHeight = 256;
-                    int oscWidth = 512;
-                    if (oscilloscopeMode == OscilloscopeMode.Small)
-                    {
-                        oscHeight = 64;
-                    }
-
-                    float[] buf = null;
-                    if (Application.isPlaying)
-                    {
-                        if (bufCopy == null)
-                        {
-                            bufCopy = new float[bufSize];
-                        }
-
-                        lock (parent.GetBufferMutex())
-                        {
-                            System.Array.Copy(parent.GetLastBuffer(), bufCopy, bufSize);
-                        }
-
-                        buf = bufCopy;
-                    }
-                    else
-                    {
-                        if (testBuf == null || testBuf.Length < bufSize)
-                        {
-                            testBuf = new float[bufSize];
-                            for (int x = 0; x < bufSize; ++x)
-                            {
-                                testBuf[x] = 0.0f; // Mathf.Sin(((float)x) / oscWidth * Mathf.PI * 2.0f);
-                            }
-                        }
-
-                        buf = testBuf;
-                    }
-
-                    RenderBuffer(buf, ref tex, oscWidth, oscHeight, 1);
-                }
-
-                GUILayout.Box(tex);
-            }
-
-            //if (targetNames == null)
-            //{
-            //    targetNames = System.Enum.GetNames(typeof(MoogSynth.Parameters));
-            //    sourceNames = System.Enum.GetNames(typeof(MoogSynth.Modulators));
-            //}
-            //int matrixsize = targetNames.Length * sourceNames.Length;
-            //if (parent.modulationMatrix == null)
-            //{
-            //    parent.modulationMatrix = new float[matrixsize];
-            //}
-            //else if (parent.modulationMatrix.Length < matrixsize)
-            //{
-            //    System.Array.Resize(ref parent.modulationMatrix, matrixsize);
-            //}
-            //ModulationMatrix(parent.modulationMatrix, sourceNames, targetNames);
-
-            if (GUILayout.Button("Reset Cache"))
-            {
-                tex = null;
-            }
-        }
+      
 
         private void RenderBuffer(float[] buf, ref Texture2D tex, int width, int height, int stride)
         {

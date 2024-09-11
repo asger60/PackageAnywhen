@@ -99,7 +99,6 @@ namespace Anywhen
 
         void NextSection()
         {
-            Debug.Log("next section");
             _currentSong.Reset();
             _currentBar = 0;
             if (AnysongPlayerBrain.SectionLockIndex > -1)

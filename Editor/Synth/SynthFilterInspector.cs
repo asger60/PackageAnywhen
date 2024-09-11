@@ -1,9 +1,10 @@
 using System;
-using Synth.Editor;
 using UnityEditor;
 using UnityEngine;
+using UnitySynth.Runtime.Synth;
+using UnitySynth.Runtime.Synth.Editor;
 
-namespace UnitySynth.Runtime.Synth.Editor
+namespace Editor.Synth
 {
     public class SynthFilterInspector : UnityEditor.Editor
     {

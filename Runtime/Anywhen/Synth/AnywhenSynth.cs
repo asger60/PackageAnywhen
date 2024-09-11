@@ -20,11 +20,11 @@
 
 using System;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth.Filter;
 using UnityEngine;
 using UnitySynth.Runtime.Synth;
-using UnitySynth.Runtime.Synth.Filter;
 
-namespace Anywhen.Synth.Synth
+namespace Anywhen.Synth
 {
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenSynth : MonoBehaviour
@@ -42,9 +42,7 @@ namespace Anywhen.Synth.Synth
 
 
         private SynthControlBase[] _voiceFrequencyModifiers;
-
-        SynthControlBase[] amplitudeModifiers;
-
+        private SynthControlBase[] _amplitudeModifiers;
         private SynthControlBase[] _filterModifiers;
 
 
@@ -55,33 +53,37 @@ namespace Anywhen.Synth.Synth
         // Current MIDI evt
         private int _currentVelocity;
 
-        private EventQueue _queue;
+        private EventQueue _noteOnQueue;
 
 
         public static float[] FreqTab;
         private float[] _freqTabTest;
 
-        private const int QueueCapacity = 320;
+        private const int QueueCapacity = 16;
         private readonly float[] _lastBuffer = new float[2048];
         private readonly object _bufferMutex = new object();
         private bool _debugBufferEnabled = false;
 
         private EventQueue.QueuedEvent _nextEvent;
         private EventQueue.QueuedEvent _offEvent;
-        
+
         private NoteEvent _currentNoteEvent;
-        private bool _noteOnWaiting = false;
-        private bool _noteOffWaiting = false;
+        private bool _noteOnWaiting;
+        private bool _noteOffWaiting;
 
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
         public static int SampleRate;
+        private int _noteOnCount;
 
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
             if (noteEvent.state == NoteEvent.EventTypes.NoteOn)
-                _queue.Enqueue(noteEvent, scheduledPlayTime);
+            {
+                _noteOnQueue.Enqueue(noteEvent, scheduledPlayTime);
+                _noteOnCount++;
+            }
             else
             {
                 _offEvent = new EventQueue.QueuedEvent();
@@ -91,17 +93,14 @@ namespace Anywhen.Synth.Synth
         }
 
 
-        public void ClearQueue()
-        {
-            _queue.Clear();
-        }
-
-
         public void SetPreset(AnywhenSynthPreset preset)
         {
             _preset = preset;
             _preset.BindToRuntime(this);
             RebuildSynth();
+            var source = GetComponent<AudioSource>();
+            source.clip = Resources.Load<AudioClip>("AudioClips/DebugClick");
+            source.Play();
         }
 
         public void RebuildSynth()
@@ -124,7 +123,7 @@ namespace Anywhen.Synth.Synth
 
             _voices = new SynthVoiceGroup[_preset.oscillatorSettings.Length];
             _voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
-            amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
+            _amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
             _filterModifiers = new SynthControlBase[_preset.filterModifiers.Length];
             _filters = new SynthFilterBase[_preset.filterSettings.Length];
 
@@ -221,7 +220,7 @@ namespace Anywhen.Synth.Synth
                         modGO.transform.SetParent(transform);
                         var newController = modGO.AddComponent<SynthControlLFO>();
                         newController.UpdateSettings(lfo);
-                        amplitudeModifiers[i] = newController;
+                        _amplitudeModifiers[i] = newController;
                         print("create lfo");
                         break;
                     }
@@ -231,7 +230,7 @@ namespace Anywhen.Synth.Synth
                         modGO.transform.SetParent(transform);
                         var newController = modGO.AddComponent<SynthControlEnvelope>();
                         newController.UpdateSettings(envelope);
-                        amplitudeModifiers[i] = newController;
+                        _amplitudeModifiers[i] = newController;
                         break;
                     }
                 }
@@ -262,6 +261,8 @@ namespace Anywhen.Synth.Synth
                     }
                 }
             }
+            
+            
 
             _isInitialized = true;
         }
@@ -276,24 +277,22 @@ namespace Anywhen.Synth.Synth
             {
                 if (_noteOffWaiting && _offEvent.EventTime <= AudioSettings.dspTime)
                 {
+                    _offEvent.NoteEvent.velocity = _currentNoteEvent.velocity;
                     HandleEventNow(_offEvent);
                     _noteOffWaiting = false;
                 }
-                
-                if (_noteOnWaiting == false && queueSize > 0)
+
+                if (!_noteOnWaiting && _noteOnCount > 0)
                 {
-                    //queueLock = true;
-                    if (_queue.GetFrontAndDequeue(ref _nextEvent))
+                    if (_noteOnQueue.GetFrontAndDequeue(ref _nextEvent))
                     {
                         _noteOnWaiting = true;
-                        queueSize--;
+                        _noteOnCount--;
                     }
-                    //queueLock = false;
                 }
 
                 if (_noteOnWaiting)
                 {
-                    //if (nextEvent.time_smp <= time_smp)
                     if (_nextEvent.EventTime <= AudioSettings.dspTime)
                     {
                         HandleEventNow(_nextEvent);
@@ -355,7 +354,7 @@ namespace Anywhen.Synth.Synth
                 }
 
 
-                foreach (var ampModifier in amplitudeModifiers)
+                foreach (var ampModifier in _amplitudeModifiers)
                 {
                     ampModifier.NoteOn();
                 }
@@ -372,7 +371,7 @@ namespace Anywhen.Synth.Synth
             }
             else if (currentEvent.NoteEvent.state == NoteEvent.EventTypes.NoteOff)
             {
-                foreach (var ampModifier in amplitudeModifiers)
+                foreach (var ampModifier in _amplitudeModifiers)
                 {
                     ampModifier.NoteOff();
                 }
@@ -390,23 +389,23 @@ namespace Anywhen.Synth.Synth
         }
 
 
-        /// Debug
-        public void SetDebugBufferEnabled(bool enabled)
-        {
-            this._debugBufferEnabled = enabled;
-        }
-
-        public float[] GetLastBuffer()
-        {
-            return _lastBuffer;
-        }
-
-        public object GetBufferMutex()
-        {
-            return _bufferMutex;
-        }
+        //public float[] GetLastBuffer()
+        //{
+        //    return _lastBuffer;
+        //}
+//
+        //public object GetBufferMutex()
+        //{
+        //    return _bufferMutex;
+        //}
 
         /// Unity
+        ///
+        private void Awake()
+        {
+            SampleRate = AudioSettings.outputSampleRate;
+        }
+
         private void Start()
         {
             Init();
@@ -417,8 +416,15 @@ namespace Anywhen.Synth.Synth
         {
             if (_isInitialized)
             {
+                //Debug.Log("running");
                 if (channels == 2)
                 {
+                    // Cache this for the entire buffer, we don't need to check for
+                    // every sample if new events have been enqueued.
+                    // This assumes that no other methods call GetFrontAndDequeue.
+                    HandleQueue(_noteOnQueue.GetSize());
+
+
                     int sampleFrames = data.Length / 2;
 
                     RenderFloat32StereoInterleaved(data, sampleFrames);
@@ -437,7 +443,6 @@ namespace Anywhen.Synth.Synth
         /// Internal
         private void Init()
         {
-            SampleRate = AudioSettings.outputSampleRate;
             if (FreqTab == null)
             {
                 _freqTabTest = new float[128];
@@ -450,9 +455,9 @@ namespace Anywhen.Synth.Synth
                 }
             }
 
-            _queue = new EventQueue(QueueCapacity);
-
-
+            _noteOnQueue = new EventQueue(QueueCapacity);
+            
+            
             ResetVoices();
         }
 
@@ -469,19 +474,12 @@ namespace Anywhen.Synth.Synth
             }
         }
 
-
         private void RenderFloat32StereoInterleaved(float[] buffer, int sampleFrames)
         {
             if (!_isInitialized) return;
 
             int smp = 0;
             int bufferIndex = 0;
-
-            // Cache this for the entire buffer, we don't need to check for
-            // every sample if new events have been enqueued.
-            // This assumes that no other methods call GetFrontAndDequeue.
-            int queueSize = _queue.GetSize();
-            HandleQueue(queueSize);
 
 
             // Render loop
@@ -492,7 +490,7 @@ namespace Anywhen.Synth.Synth
                     frequencyModifier.DoUpdate();
                 }
 
-                foreach (var amplitudeModifier in amplitudeModifiers)
+                foreach (var amplitudeModifier in _amplitudeModifiers)
                 {
                     amplitudeModifier.DoUpdate();
                 }
@@ -503,12 +501,14 @@ namespace Anywhen.Synth.Synth
                 }
 
 
-                float ampMod = _currentNoteEvent.velocity;
-                foreach (var ampModifier in amplitudeModifiers)
+                float ampMod = 1;
+                foreach (var ampModifier in _amplitudeModifiers)
                 {
                     ampMod *= ampModifier.Process();
                 }
-
+                
+                ampMod *= _currentNoteEvent.velocity;
+                
 
                 float voiceFreqMod = 1;
                 foreach (var frequencyModifier in _voiceFrequencyModifiers)
@@ -567,15 +567,6 @@ namespace Anywhen.Synth.Synth
                     audioFilterBase.HandleModifiers(currentMod);
                 }
             }
-
-
-            // Filter entire buffer
-            //for (var i = 0; i < _filters.Length; i++)
-            //{
-            //    var audioFilterBase = _filters[i];
-            //    audioFilterBase.SetParameters(_preset.filterSettings[i / 2]);
-            //    audioFilterBase.process_mono_stride(buffer, sampleFrames, i % 2, 2);
-            //}
         }
 
 

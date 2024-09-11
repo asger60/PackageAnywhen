@@ -4,7 +4,6 @@ using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace Anywhen
 {
@@ -12,13 +11,14 @@ namespace Anywhen
     {
         public AnywhenSampler anywhenSamplerPrefab;
 
-        private readonly List<AnywhenSampler> _allSamplers = new();
+        [SerializeField] private List<AnywhenSampler> _allSamplers = new();
         public int numberOfSamplers = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
         public int activeSamplePlayers;
         public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplerHandler;
 
+        private bool _didCreateSamplers;
 
         private void Update()
         {
@@ -33,15 +33,29 @@ namespace Anywhen
         private void Start()
         {
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
+            _isInit = true;
+            for (int i = 0; i < numberOfSamplers; i++)
+            {
+                _allSamplers[i].Init(AnywhenMetronome.TickRate.Sub16);
+            }
+        }
 
-
+        [ContextMenu("CreateSamplers")]
+        void CreateSamplers()
+        {
+            _allSamplers.Clear();
+            foreach (var sampler in transform.GetComponentsInChildren<AnywhenSampler>())
+            {
+                if(sampler.gameObject == gameObject) continue;
+                DestroyImmediate(sampler.gameObject);
+            }
+            
             for (int i = 0; i < numberOfSamplers; i++)
             {
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
-                _allSamplers.Last().Init(AnywhenMetronome.TickRate.Sub16);
             }
 
-            _isInit = true;
+            _didCreateSamplers = true;
         }
 
 
@@ -126,7 +140,7 @@ namespace Anywhen
                         {
                             playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.drift;
                             playTime += e.chordStrum[i];
-                            
+
                             foreach (var thisSampler in _allSamplers)
                             {
                                 if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
@@ -146,7 +160,6 @@ namespace Anywhen
                             return;
                         }
 
-                        
 
                         double stopTime = e.duration < 0
                             ? -1

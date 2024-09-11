@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Amplitude Envelope
   m_EditorClassIdentifier: 
   attack: 0.01
-  decay: 0.04
+  decay: 0.03
   sustain: 0.001
   release: 0.01
   sendAmount: 100
@@ -32,11 +32,11 @@ MonoBehaviour:
   filterType: 1
   lowPassSettings:
     oversampling: 1
-    cutoffFrequency: 6300
-    resonance: 0
+    cutoffFrequency: 20314
+    resonance: 0.103
   bandPassSettings:
-    frequency: 16674
-    bandWidth: 10.8
+    frequency: 1284
+    bandWidth: 4.9
   formantSettings:
     vowel: 1
 --- !u!114 &11400000

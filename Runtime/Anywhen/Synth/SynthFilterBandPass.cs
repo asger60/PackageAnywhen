@@ -1,8 +1,8 @@
-using Anywhen.Synth.Synth;
+using Anywhen.Synth.Filter;
 using UnityEngine;
-using UnitySynth.Runtime.Synth.Filter;
+using UnitySynth.Runtime.Synth;
 
-namespace UnitySynth.Runtime.Synth
+namespace Anywhen.Synth
 {
     public class SynthFilterBandPass : SynthFilterBase
     {
@@ -60,29 +60,7 @@ namespace UnitySynth.Runtime.Synth
             _frequencyMod = mod1;
         }
 
-
-        public override void process_mono_stride(float[] samples, int sampleCount, int offset, int stride)
-        {
-            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / _sampleRate);
-            _vD = 1f / _q;
-            _vF = (1.85f - 0.75f * _vD * f) * f;
-
-            int idx = offset;
-            for (int i = 0; i < sampleCount; ++i)
-            {
-                var si = samples[idx];
-
-                var _vZ1 = 0.5f * si;
-                var _vZ3 = this._vZ2 * _vF + this._vZ3;
-                var _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
-                samples[idx] = _vZ2;
-                this._vZ1 = _vZ1;
-                this._vZ2 = _vZ2;
-                this._vZ3 = _vZ3;
-
-                idx += stride;
-            }
-        }
+        
 
         public override float Process(float sample)
         {
@@ -91,16 +69,16 @@ namespace UnitySynth.Runtime.Synth
             _vF = (1.85f - 0.75f * _vD * f) * f;
             
 
-            var _vZ1 = 0.5f * sample;
-            var _vZ3 = this._vZ2 * _vF + this._vZ3;
-            var _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
+            _vZ1 = 0.5f * sample;
+            _vZ3 = this._vZ2 * _vF + this._vZ3;
+            _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
             
-            sample = _vZ2;
-            this._vZ1 = _vZ1;
-            this._vZ2 = _vZ2;
-            this._vZ3 = _vZ3;
+            //sample = _vZ2;
+            //this._vZ1 = vZ1;
+            //this._vZ2 = vZ2;
+            //this._vZ3 = vZ3;
 
-            return sample;
+            return _vZ2;
         }
     }
 }
