@@ -4,7 +4,7 @@ using Anywhen.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Anywhen.Editor.PropertyDrawers
+namespace Editor.PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(MinMaxAttribute))]
     public class MinMaxDrawer : PropertyDrawer
@@ -41,11 +41,7 @@ namespace Anywhen.Editor.PropertyDrawers
                 // Do we have a special mode flagged? time to draw lines!
                 if (minMax.ShowDebugValues || minMax.ShowEditRange)
                 {
-                    bool isEditable = false;
-                    if (minMax.ShowEditRange)
-                    {
-                        isEditable = true;
-                    }
+                    bool isEditable = false || minMax.ShowEditRange;
 
                     if (!isEditable)
                         GUI.enabled = false; // if were just in debug mode and not edit mode, make sure all the UI is read only!

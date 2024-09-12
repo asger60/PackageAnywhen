@@ -31,7 +31,6 @@ namespace Editor.Anysong
             //inspector.Add(playersPropertyField);
         
             inspector.Add(globalIntensityField);
-        
             inspector.Add(transitionPropertyField);
         
 
