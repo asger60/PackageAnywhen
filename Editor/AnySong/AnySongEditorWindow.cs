@@ -241,7 +241,7 @@ namespace Editor.AnySong
         {
             if (_currentSelection.CurrentSectionIndex == _currentRuntimeSongPlayer.CurrentSectionIndex)
             {
-                int index = (int)Mathf.Repeat(AnywhenRuntime.Metronome.Sub16, 16);
+                //int index = (int)Mathf.Repeat(AnywhenRuntime.Metronome.Sub16, 16);
                 for (var i = 0; i < CurrentSong.Tracks.Count; i++)
                 {
                     AnysongSequencesView.HilightStepIndex(i);

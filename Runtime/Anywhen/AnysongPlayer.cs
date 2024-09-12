@@ -15,14 +15,15 @@ namespace Anywhen
         private bool _isRunning;
         private bool _loaded = false;
         public bool IsSongLoaded => _loaded;
-        public float intensity;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
-
+        [SerializeField] private AnywhenTrigger trigger;
+ 
         private void Start()
         {
             Load(songObject);
+            trigger.OnTrigger += Play;
         }
 
         private void Load(AnysongObject anysong)
@@ -86,7 +87,8 @@ namespace Anywhen
                 AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0].GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
 
-                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(intensity));
+                
+                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
                 float thisRnd = Random.Range(0, 1f);
 
                 if (thisRnd < step.chance && step.mixWeight < thisIntensity)
@@ -139,7 +141,6 @@ namespace Anywhen
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
             _currentSong.Reset();
-            print("attach to metro " + songObject.name);
         }
 
         public void Play()
@@ -153,12 +154,6 @@ namespace Anywhen
             int trackLength = _currentSong.Sections[_currentSectionIndex].patternSteps.Length;
             int progress = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
             return (float)progress / trackLength;
-        }
-
-
-        public void SetGlobalIntensity(float globalIntensity)
-        {
-            intensity = globalIntensity;
         }
     }
 }

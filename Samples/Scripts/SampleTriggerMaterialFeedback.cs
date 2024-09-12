@@ -1,35 +1,39 @@
-using System;
 using System.Threading.Tasks;
 using Anywhen;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Samples
+namespace Samples.Scripts
 {
     public class SampleTriggerMaterialFeedback : MonoBehaviour
     {
         private MaterialPropertyBlock _materialPropertyBlock;
         private Renderer _renderer;
         private Color _initialColor;
-        private AnywhenSongTrigger _anywhenSongTrigger;
+
+        [FormerlySerializedAs("_anywhenTrigger")] [SerializeField]
+        private AnywhenTrigger anywhenTrigger;
+
         private static readonly int Color1 = Shader.PropertyToID("_Color");
 
         private void Start()
         {
-            TryGetComponent(out _anywhenSongTrigger);
-            if (_anywhenSongTrigger)
+            if (!anywhenTrigger)
+                TryGetComponent(out anywhenTrigger);
+            if (anywhenTrigger)
             {
                 TryGetComponent(out _renderer);
                 _materialPropertyBlock = new MaterialPropertyBlock();
                 _initialColor = _renderer.sharedMaterial.color;
-                _anywhenSongTrigger.OnTrigger += Blink;
+                anywhenTrigger.OnTrigger += Blink;
             }
         }
 
         private void OnDestroy()
         {
-            if (_anywhenSongTrigger)
+            if (anywhenTrigger)
             {
-                _anywhenSongTrigger.OnTrigger -= Blink;
+                anywhenTrigger.OnTrigger -= Blink;
             }
         }
 

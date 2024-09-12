@@ -7,7 +7,6 @@ namespace Anywhen.Composing
 {
     public class AnysongPlayerBrain : MonoBehaviour
     {
-        [SerializeField] private AnysongPlayer[] songPlayers;
 
         AnysongPlayer _currentPlayer;
 
@@ -16,6 +15,7 @@ namespace Anywhen.Composing
 
 
         public static int SectionLockIndex;
+        public static Action<float> OnIntensityChanged;
 
         public enum TransitionTypes
         {
@@ -27,6 +27,7 @@ namespace Anywhen.Composing
 
         private TransitionTypes _nextTransitionType;
         private static AnysongPlayerBrain _instance;
+        public static float GlobalIntensity => _instance.globalIntensity;
 
 
         private void Awake()
@@ -36,43 +37,13 @@ namespace Anywhen.Composing
 
         private void Start()
         {
+            SetGlobalIntensity(1);
             SectionLockIndex = 0;
-            StartCoroutine(LateInit());
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
 
 
-        IEnumerator LateInit()
-        {
-            bool allLoaded = false;
-            while (!allLoaded)
-            {
-                foreach (var player in songPlayers)
-                {
-                    if (!player.IsSongLoaded)
-                    {
-                        yield return 0;
-                        break;
-                    }
-                }
 
-                allLoaded = true;
-            }
-
-
-            _currentPlayer = songPlayers[0];
-            _currentPlayer.AttachToMetronome();
-            print("late init");
-        }
-
-
-        private void Update()
-        {
-            foreach (var anysongPlayer in songPlayers)
-            {
-                anysongPlayer.SetGlobalIntensity(globalIntensity);
-            }
-        }
 
 
         private void OnNextBar()
@@ -101,8 +72,17 @@ namespace Anywhen.Composing
 
         public static void SetGlobalIntensity(float intensity)
         {
+            Debug.Log("intensity " + intensity);
             intensity = Mathf.Clamp01(intensity);
             _instance.globalIntensity = intensity;
+            OnIntensityChanged?.Invoke(_instance.globalIntensity);
+        }
+
+        public static void ModifyGlobalIntensity(float amount)
+        {
+            _instance.globalIntensity += amount;
+            _instance.globalIntensity = Mathf.Clamp01(_instance.globalIntensity);
+            OnIntensityChanged?.Invoke(_instance.globalIntensity);
         }
 
 

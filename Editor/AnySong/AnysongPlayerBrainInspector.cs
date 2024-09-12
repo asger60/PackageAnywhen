@@ -13,9 +13,9 @@ namespace Editor.Anysong
         {
             VisualElement inspector = new VisualElement();
 
-            var songPlayersProperty = serializedObject.FindProperty("songPlayers");
-            var playersPropertyField = new PropertyField(songPlayersProperty);
-            playersPropertyField.BindProperty(songPlayersProperty);
+            //var songPlayersProperty = serializedObject.FindProperty("songPlayers");
+            //var playersPropertyField = new PropertyField(songPlayersProperty);
+            //playersPropertyField.BindProperty(songPlayersProperty);
         
         
             var transitionProperty = serializedObject.FindProperty("transitionType");
@@ -28,7 +28,7 @@ namespace Editor.Anysong
 
             // propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
 
-            inspector.Add(playersPropertyField);
+            //inspector.Add(playersPropertyField);
         
             inspector.Add(globalIntensityField);
         
@@ -41,23 +41,23 @@ namespace Editor.Anysong
                 style = { flexDirection = FlexDirection.Row }
             };
 
-            for (int i = 0; i < songPlayersProperty.arraySize; i++)
-            {
-                var songPlayer = songPlayersProperty.GetArrayElementAtIndex(i).objectReferenceValue as AnysongPlayer;
-
-                if (songPlayer != null)
-                {
-                    var playButton = new Button()
-                    {
-                        text = songPlayer.AnysongObject.name
-                    };
-                    playButton.RegisterCallback<ClickEvent>((evt) =>
-                    {
-                        AnysongPlayerBrain.TransitionTo(songPlayer, AnysongPlayerBrain.TransitionTypes.Instant);
-                    });
-                    playButtonsHolder.Add(playButton);
-                }
-            }
+            //for (int i = 0; i < songPlayersProperty.arraySize; i++)
+            //{
+            //    var songPlayer = songPlayersProperty.GetArrayElementAtIndex(i).objectReferenceValue as AnysongPlayer;
+//
+            //    if (songPlayer != null)
+            //    {
+            //        var playButton = new Button()
+            //        {
+            //            text = songPlayer.AnysongObject.name
+            //        };
+            //        playButton.RegisterCallback<ClickEvent>((evt) =>
+            //        {
+            //            AnysongPlayerBrain.TransitionTo(songPlayer, AnysongPlayerBrain.TransitionTypes.Instant);
+            //        });
+            //        playButtonsHolder.Add(playButton);
+            //    }
+            //}
 
             inspector.Add(playButtonsHolder);
 

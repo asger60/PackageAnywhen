@@ -1,3 +1,4 @@
+using Samples.Scripts;
 using UnityEngine;
 
 namespace Samples

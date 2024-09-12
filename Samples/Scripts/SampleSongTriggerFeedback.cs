@@ -7,7 +7,7 @@ public class SampleSongTriggerFeedback : MonoBehaviour
 {
 
     [SerializeField] private TextMeshProUGUI triggerTypeText, songNameText;
-    private AnywhenSongTrigger _anywhenSongTrigger;
+    private AnywhenTrigger _anywhenTrigger;
     private AnysongPlayer _anysongPlayer;
     
 
@@ -15,9 +15,9 @@ public class SampleSongTriggerFeedback : MonoBehaviour
     void Update()
     {
         if (!_anysongPlayer) _anysongPlayer = GetComponentInParent<AnysongPlayer>();
-        if (!_anywhenSongTrigger) _anywhenSongTrigger = GetComponentInParent<AnywhenSongTrigger>();
+        if (!_anywhenTrigger) _anywhenTrigger = GetComponentInParent<AnywhenTrigger>();
         
-        triggerTypeText.SetText(_anywhenSongTrigger.triggerType.ToString());
+        triggerTypeText.SetText(_anywhenTrigger.triggerType.ToString());
         
         songNameText.SetText(_anysongPlayer.AnysongObject ? _anysongPlayer.AnysongObject.name : "no song selected");
 

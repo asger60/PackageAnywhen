@@ -312,17 +312,17 @@ namespace Anywhen.Synth
             switch (settings.waveTableOscillatorType)
             {
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Sine8Bit:
-                    return _sine8Bit[(int)(ph01 * (_sine8Bit.Length-1))];
+                    return _sine8Bit[(int)(ph01 * (_sine8Bit.Length - 1))];
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Saw8Bit:
                     return _saw8Bit[(int)(ph01 * (_saw8Bit.Length - 1))];
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Square8Bit:
-                    int val = (int)(ph01 * (_square8Bit.Length-1));
+                    int val = (int)(ph01 * (_square8Bit.Length - 1));
                     if (val != 0 && val != 1)
                     {
                         Debug.Log(val);
                     }
 
-                    return _square8Bit[(int)(ph01 * (_square8Bit.Length-1))];
+                    return _square8Bit[(int)(ph01 * (_square8Bit.Length - 1))];
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -331,7 +331,7 @@ namespace Anywhen.Synth
         float Noise()
         {
             float ph01 = _phase / PHASE_MAX;
-            return _noiseWhite[(int)(ph01 * _noiseWhite.Length)];
+            return _noiseWhite[(int)(ph01 * (_noiseWhite.Length - 1))];
         }
 
         public void UpdateSettings(SynthSettingsObjectOscillator newSettings)

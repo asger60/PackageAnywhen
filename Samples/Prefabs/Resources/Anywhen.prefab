@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5604494718384798635}
   - component: {fileID: 7029180010513868431}
   - component: {fileID: 4653660404794104161}
+  - component: {fileID: -1999655492125657864}
   m_Layer: 0
   m_Name: Anywhen
   m_TagString: Untagged
@@ -119,6 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
+  _allSamplers: []
   numberOfSamplers: 64
   activeSamplePlayers: 0
 --- !u!82 &5604494718384798635
@@ -242,4 +244,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anywhenSynthPrefab: {fileID: -2880140179781689196, guid: 5eb0294d71ea24545b87e5d8209b15b9, type: 3}
+  _allSynths: []
   numberOfSynths: 32
+--- !u!114 &-1999655492125657864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5480952876350075817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e2eb16ef4c24a268f71b64493793f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  songPlayers: []
+  globalIntensity: 1

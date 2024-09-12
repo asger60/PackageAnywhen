@@ -1,13 +1,10 @@
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Anywhen
 {
-    [RequireComponent(typeof(AnysongPlayer))]
-    public class AnywhenSongTrigger : MonoBehaviour
+    public class AnywhenTrigger : MonoBehaviour
     {
-        private AnysongPlayer _anysongPlayer;
         public Action OnTrigger;
 
         public enum TriggerTypes
@@ -35,9 +32,9 @@ namespace Anywhen
 
         public TriggerTypes triggerType;
 
+
         void Start()
         {
-            TryGetComponent(out _anysongPlayer);
             if (triggerType == TriggerTypes.ObjectStart) Trigger();
         }
 
@@ -108,8 +105,6 @@ namespace Anywhen
 
         private void Trigger()
         {
-            if (!_anysongPlayer) return;
-            _anysongPlayer.Play();
             OnTrigger?.Invoke();
         }
     }
