@@ -72,7 +72,6 @@ namespace Anywhen.Composing
 
         public static void SetGlobalIntensity(float intensity)
         {
-            Debug.Log("intensity " + intensity);
             intensity = Mathf.Clamp01(intensity);
             _instance.globalIntensity = intensity;
             OnIntensityChanged?.Invoke(_instance.globalIntensity);

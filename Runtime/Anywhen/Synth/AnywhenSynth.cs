@@ -79,7 +79,6 @@ namespace Anywhen.Synth
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
-            Debug.Log("handle event");
             if (noteEvent.state == NoteEvent.EventTypes.NoteOn)
             {
                 _noteOnQueue.Enqueue(noteEvent, scheduledPlayTime);
