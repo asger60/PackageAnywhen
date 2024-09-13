@@ -27,50 +27,24 @@ namespace Editor.PropertyDrawers
                     flexDirection = FlexDirection.Row
                 }
             };
+
             
-            
-            //Label label = new Label(property.displayName)
-            //{
-            //    style =
-            //    {
-            //        minWidth = EditorGUIUtility.labelWidth // Match Unity's label width
-            //    }
-            //};
-//
-            //container.Add(label);
-            Debug.Log(EditorGUI.indentLevel);
-            ObjectField objectField = new ObjectField(property.displayName)
+
+            PropertyField propertyField = new PropertyField(property)
             {
-                labelElement =
-                {
-                    style =
-                    {
-                        width = 200
-                    }
-                },
-                objectType = typeof(AnywhenTrigger),
-                allowSceneObjects = true,
                 style =
                 {
-                    flexGrow = 1,
+                    flexGrow = 1
                 }
             };
-            //objectField.RegisterValueChangedCallback(evt =>
-            //{
-            //    property.serializedObject.ApplyModifiedProperties(); // Apply changes to the serialized object
-            //});
-
-
-            objectField.BindProperty(property);
-            
-            
-            container.Add(objectField);
+            container.Add(propertyField);
+            propertyField.BindProperty(property);
 
             if (property.objectReferenceValue == null)
             {
                 var button = new Button
                 {
-                    text = "FIX",
+                    text = "Locate",
                     style =
                     {
                         width = 100,
@@ -84,7 +58,6 @@ namespace Editor.PropertyDrawers
                     {
                         property.objectReferenceValue = trigger;
                         property.serializedObject.ApplyModifiedProperties();
-                        Debug.Log("fix " + trigger);
                         CreatePropertyGUI(property);
                         container.Remove(button);
                     }

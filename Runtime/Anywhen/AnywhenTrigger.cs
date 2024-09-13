@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
@@ -28,7 +29,23 @@ namespace Anywhen
             //MouseUp,
         }
 
-        [SerializeField] private GameObject targetObject;
+        public enum TriggerObjectTypes
+        {
+            Any,
+            GameObject,
+            Tag,
+            Name,
+        }
+
+        [FormerlySerializedAs("targetObject")] [SerializeField]
+        private GameObject triggerObject;
+
+        [FormerlySerializedAs("targetObjectType")] [SerializeField]
+        private TriggerObjectTypes triggerObjectType;
+
+        [SerializeField] private string triggerObjectTag;
+
+        [SerializeField] private string triggerObjectName;
 
         public TriggerTypes triggerType;
 
@@ -55,51 +72,78 @@ namespace Anywhen
 
         private void OnTriggerEnter(Collider other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.TriggerEnter) Trigger();
+            if (triggerType != TriggerTypes.TriggerEnter) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
 
         private void OnTriggerExit(Collider other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.TriggerExit) Trigger();
+            if (triggerType != TriggerTypes.TriggerExit) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.CollisionEnter) Trigger();
+            if (triggerType != TriggerTypes.CollisionEnter) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnCollisionExit(Collision other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.CollisionExit) Trigger();
+            if (triggerType != TriggerTypes.CollisionExit) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.TriggerEnter2D) Trigger();
+            if (triggerType != TriggerTypes.TriggerEnter2D) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.TriggerExit2D) Trigger();
+            if (triggerType != TriggerTypes.TriggerExit2D) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.CollisionEnter2D) Trigger();
+            if (triggerType != TriggerTypes.CollisionEnter2D) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
         }
 
         private void OnCollisionExit2D(Collision2D other)
         {
-            if (targetObject != null && other.gameObject != targetObject) return;
-            if (triggerType == TriggerTypes.CollisionExit2D) Trigger();
+            if (triggerType != TriggerTypes.CollisionExit2D) return;
+            if (EvaluateTrigger(other.gameObject))
+                Trigger();
+        }
+
+        bool EvaluateTrigger(GameObject other)
+        {
+            switch (triggerObjectType)
+            {
+                case TriggerObjectTypes.GameObject:
+                    return other == triggerObject;
+                case TriggerObjectTypes.Tag:
+                    return other.CompareTag(other.tag);
+                case TriggerObjectTypes.Name:
+                    return triggerObjectName == other.name;
+                case TriggerObjectTypes.Any:
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return true;
         }
 
 

@@ -115,8 +115,8 @@ GameObject:
   - component: {fileID: 7193698300572267447}
   - component: {fileID: 6665952680800978939}
   - component: {fileID: 8509737169020027105}
-  - component: {fileID: 3380755504781924929}
   - component: {fileID: 365946163898410451}
+  - component: {fileID: 3380755504781924929}
   - component: {fileID: 1936496931052907450}
   m_Layer: 0
   m_Name: AnyIntensityTrigger
@@ -212,19 +212,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3380755504781924929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5501844497434015021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff9c9a57d30424cb98362c6d35375664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anywhenTrigger: {fileID: 0}
 --- !u!114 &365946163898410451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,6 +226,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 0}
   triggerType: 3
+--- !u!114 &3380755504781924929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5501844497434015021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff9c9a57d30424cb98362c6d35375664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anywhenTrigger: {fileID: 365946163898410451}
 --- !u!114 &1936496931052907450
 MonoBehaviour:
   m_ObjectHideFlags: 0
