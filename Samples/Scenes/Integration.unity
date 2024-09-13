@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9538,7 +9537,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c09abb8daab4d4d9eba322fc641016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 964708807}
 --- !u!1 &1643947812
 GameObject:
   m_ObjectHideFlags: 0
@@ -9977,7 +9975,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 3280c6dfbbb994c31816b537420337b4, type: 2}
+      objectReference: {fileID: 11400000, guid: 18209ffd1d45c5d41b9ffce16bd4c293, type: 2}
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: triggerTransitionsType
       value: 0
@@ -13484,7 +13482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5873088227468636864, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
       propertyPath: Bpm
-      value: 110
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5873088227468636864, guid: ed1e97b6d7457453ca6512eda79adc09, type: 3}
       propertyPath: Playing
