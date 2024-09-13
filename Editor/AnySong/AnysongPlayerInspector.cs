@@ -2,6 +2,7 @@
 using Anywhen;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.Anysong
@@ -16,15 +17,22 @@ namespace Editor.Anysong
             var songObjectField = new PropertyField(songObject);
             songObjectField.BindProperty(songObject);
             inspector.Add(songObjectField);
-            
+
             var triggerObject = serializedObject.FindProperty("trigger");
+            
+
             var triggerObjectField = new PropertyField(triggerObject);
             triggerObjectField.BindProperty(triggerObject);
             inspector.Add(triggerObjectField);
+
             
+            var transitionTypeObject = serializedObject.FindProperty("triggerTransitionsType");
+            var transitionObjectField = new PropertyField(transitionTypeObject);
+            transitionObjectField.BindProperty(transitionTypeObject);
+            inspector.Add(transitionObjectField);
+
             return inspector;
         }
-        
     }
 }
 #endif
