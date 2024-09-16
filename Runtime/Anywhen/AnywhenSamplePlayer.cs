@@ -33,6 +33,11 @@ namespace Anywhen
         private void Start()
         {
             if (!AnywhenMetronome.Instance.IsInit) AnywhenMetronome.Instance.Init();
+            Init();
+        }
+
+        public void Init()
+        {
             _isInit = true;
             for (int i = 0; i < numberOfSamplers; i++)
             {
@@ -46,10 +51,10 @@ namespace Anywhen
             _allSamplers.Clear();
             foreach (var sampler in transform.GetComponentsInChildren<AnywhenSampler>())
             {
-                if(sampler.gameObject == gameObject) continue;
+                if (sampler.gameObject == gameObject) continue;
                 DestroyImmediate(sampler.gameObject);
             }
-            
+
             for (int i = 0; i < numberOfSamplers; i++)
             {
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));

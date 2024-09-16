@@ -19,13 +19,18 @@ namespace Anywhen
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
         [SerializeField] private AnywhenTrigger trigger;
- 
+        private bool _isPreviewing;
         private void Start()
         {
             Load(songObject);
             trigger.OnTrigger += Play;
         }
 
+        public void Load()
+        {
+            Load(songObject);
+        }
+        
         private void Load(AnysongObject anysong)
         {
             _loaded = true;
@@ -70,7 +75,6 @@ namespace Anywhen
                 Release();
                 Load(songObject);
             }
-
 
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
@@ -155,5 +159,13 @@ namespace Anywhen
             int progress = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
             return (float)progress / trackLength;
         }
+
+        public void ToggleEditorPreview()
+        {
+            _isPreviewing = !_isPreviewing;
+            AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
+        }
+
+ 
     }
 }

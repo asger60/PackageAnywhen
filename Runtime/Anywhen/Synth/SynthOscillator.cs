@@ -34,6 +34,11 @@ namespace Anywhen.Synth
 
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
             _isActive = true;
             switch (settings.oscillatorType)
             {

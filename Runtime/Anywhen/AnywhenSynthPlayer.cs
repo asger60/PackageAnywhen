@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -20,14 +21,18 @@ namespace Anywhen
 
         private void Awake()
         {
+            Init();
+        }
+
+        public void Init()
+        {
             for (int i = 0; i < numberOfSynths; i++)
             {
-                _allSynths.Add(Instantiate(anywhenSynthPrefab, transform));
+                _allSynths[i].Init();
             }
 
             _isInit = true;
         }
-
 
         [ContextMenu("CreateSynths")]
         void CreateSynths()
@@ -88,6 +93,14 @@ namespace Anywhen
             else
             {
                 Debug.Log("failed to get synth");
+            }
+        }
+
+        public void ClearPresets()
+        {
+            foreach (var synth in _allSynths)
+            {
+                synth.SetPreset(null);
             }
         }
 

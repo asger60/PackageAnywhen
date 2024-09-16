@@ -19,17 +19,28 @@ namespace Editor.Anysong
             inspector.Add(songObjectField);
 
             var triggerObject = serializedObject.FindProperty("trigger");
-            
+
 
             var triggerObjectField = new PropertyField(triggerObject);
             triggerObjectField.BindProperty(triggerObject);
             inspector.Add(triggerObjectField);
 
-            
+
             var transitionTypeObject = serializedObject.FindProperty("triggerTransitionsType");
             var transitionObjectField = new PropertyField(transitionTypeObject);
             transitionObjectField.BindProperty(transitionTypeObject);
             inspector.Add(transitionObjectField);
+
+            var playButton = new Button
+            {
+                text = "Preview"
+            };
+            playButton.clicked += () =>
+            {
+                var anysongPlayer = target as AnysongPlayer;
+                anysongPlayer?.ToggleEditorPreview();
+            };
+            inspector.Add(playButton);
 
             return inspector;
         }

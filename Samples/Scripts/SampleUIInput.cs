@@ -1,13 +1,13 @@
-using Samples.Scripts;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace Samples
+namespace Samples.Scripts
 {
     public class SampleUIInput : MonoBehaviour
     {
         [SerializeField] private SamplePlayerControls playerControls;
         [SerializeField] private SampleUIButtonEvents buttonForward, buttonReverse, buttonLeft, buttonRight, buttonShoot;
-
+        [SerializeField] private Toggle playerIntensityControlToggle;
         void Start()
         {
             buttonForward.OnButtonStateChange += OnForwardButtonStateChange;
@@ -15,6 +15,12 @@ namespace Samples
             buttonLeft.OnButtonStateChange += OnLeftButtonStateChange;
             buttonRight.OnButtonStateChange += OnRightButtonStateChange;
             buttonShoot.OnButtonStateChange += OnShootButtonStateChange;
+            playerIntensityControlToggle.onValueChanged.AddListener(OnPlayerIntensityToggleChanged);
+        }
+
+        private void OnPlayerIntensityToggleChanged(bool state)
+        {
+            playerControls.SetIntensityControl(state);
         }
 
         private void OnForwardButtonStateChange(bool state)

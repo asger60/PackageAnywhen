@@ -38,7 +38,6 @@ namespace Anywhen
             Sub4 = 4,
             Sub8 = 8,
             Sub16 = 16,
-            //Sub32 = 32,
         }
 
         public Action OnTick2;
@@ -71,7 +70,7 @@ namespace Anywhen
 
         private void Awake()
         {
-          //  if (Instance != null) DestroyImmediate(this);
+            //  if (Instance != null) DestroyImmediate(this);
         }
 
         private void Start()
@@ -117,8 +116,9 @@ namespace Anywhen
             _nextTime16 = AudioSettings.dspTime + bufferTime;
         }
 
-        private void Update()
+        public void Update()
         {
+
             if (!Playing) return;
             if (_isStopped) return;
             if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
@@ -189,6 +189,7 @@ namespace Anywhen
                 sub8 = 0;
                 sub4 = 0;
                 sub2 = 0;
+
             }
 
             _nextTime16 += _sub16Length;

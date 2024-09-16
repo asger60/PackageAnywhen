@@ -23,6 +23,7 @@ namespace Samples.Scripts
         public float sidewaysDampingFactor = 0.95f; // Damping factor for sideways movement, 0 means no sideways movement
         public AnimationCurve torqueCurve;
         public AnimationCurve sidewaysDragCurve;
+        private bool _musicIntensityControl;
 
         private void Start()
         {
@@ -65,9 +66,12 @@ namespace Samples.Scripts
 
             _rigidbody.AddForce(transform.forward * (moveSpeedMax * _vertical), ForceMode.Acceleration);
             var localVelocity = transform.InverseTransformDirection(_rigidbody.velocity);
-            AnysongPlayerBrain.SetGlobalIntensity(localVelocity.z / moveSpeedMax);
 
-            float torque = _horizontal * rotateSpeed * Mathf.Sign(localVelocity.z) * torqueCurve.Evaluate((Mathf.Abs(localVelocity.z) / moveSpeedMax));
+            if (_musicIntensityControl)
+                AnysongPlayerBrain.SetGlobalIntensity(localVelocity.z / moveSpeedMax);
+
+            float torque = _horizontal * rotateSpeed * Mathf.Sign(localVelocity.z) *
+                           torqueCurve.Evaluate((Mathf.Abs(localVelocity.z) / moveSpeedMax));
 
 
             _rigidbody.AddTorque(0, torque, 0, ForceMode.Acceleration);
@@ -75,8 +79,13 @@ namespace Samples.Scripts
 
             Vector3 forwardVelocity = transform.forward * Vector3.Dot(_rigidbody.velocity, transform.forward);
             Vector3 sidewaysVelocity = transform.right * Vector3.Dot(_rigidbody.velocity, transform.right);
-            sidewaysVelocity *= sidewaysDragCurve.Evaluate((Mathf.Abs(localVelocity.z) / moveSpeedMax)) *sidewaysDampingFactor;
+            sidewaysVelocity *= sidewaysDragCurve.Evaluate((Mathf.Abs(localVelocity.z) / moveSpeedMax)) * sidewaysDampingFactor;
             _rigidbody.velocity = forwardVelocity + sidewaysVelocity + transform.up * _rigidbody.velocity.y;
+        }
+
+        public void SetIntensityControl(bool state)
+        {
+            _musicIntensityControl = state;
         }
     }
 }

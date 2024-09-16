@@ -7,7 +7,6 @@ namespace Anywhen.Composing
 {
     public class AnysongPlayerBrain : MonoBehaviour
     {
-
         AnysongPlayer _currentPlayer;
 
         private AnysongPlayer _nextUpPlayer;
@@ -26,8 +25,21 @@ namespace Anywhen.Composing
         }
 
         private TransitionTypes _nextTransitionType;
+
         private static AnysongPlayerBrain _instance;
-        public static float GlobalIntensity => _instance.globalIntensity;
+
+        private static AnysongPlayerBrain Instance
+        {
+            get
+            {
+                if (_instance)
+                    return _instance;
+                _instance = FindObjectOfType<AnysongPlayerBrain>();
+                return _instance;
+            }
+        }
+
+        public static float GlobalIntensity => Instance.globalIntensity;
 
 
         private void Awake()
@@ -41,9 +53,6 @@ namespace Anywhen.Composing
             SectionLockIndex = 0;
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
-
-
-
 
 
         private void OnNextBar()
@@ -67,26 +76,27 @@ namespace Anywhen.Composing
         }
 
         public static void TransitionTo(AnysongPlayer player, TransitionTypes transitionType) =>
-            _instance.HandleTransitionToPlayer(player, transitionType);
+            Instance.HandleTransitionToPlayer(player, transitionType);
 
 
         public static void SetGlobalIntensity(float intensity)
         {
             intensity = Mathf.Clamp01(intensity);
-            _instance.globalIntensity = intensity;
-            OnIntensityChanged?.Invoke(_instance.globalIntensity);
+            Instance.globalIntensity = intensity;
+            OnIntensityChanged?.Invoke(Instance.globalIntensity);
         }
 
         public static void ModifyGlobalIntensity(float amount)
         {
-            _instance.globalIntensity += amount;
-            _instance.globalIntensity = Mathf.Clamp01(_instance.globalIntensity);
-            OnIntensityChanged?.Invoke(_instance.globalIntensity);
+            Instance.globalIntensity += amount;
+            Instance.globalIntensity = Mathf.Clamp01(Instance.globalIntensity);
+            OnIntensityChanged?.Invoke(Instance.globalIntensity);
         }
 
 
         private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
         {
+            Debug.Log("transition " + transitionType);
             switch (transitionType)
             {
                 case TransitionTypes.Instant:

@@ -96,31 +96,37 @@ namespace Anywhen.Synth
         public void SetPreset(AnywhenSynthPreset preset)
         {
             _preset = preset;
-            _preset.BindToRuntime(this);
-            RebuildSynth();
-            var source = GetComponent<AudioSource>();
-            source.clip = Resources.Load<AudioClip>("AudioClips/DebugClick");
-            source.Play();
+
+            if (_preset)
+            {
+                _preset.BindToRuntime(this);
+                RebuildSynth();
+                var source = GetComponent<AudioSource>();
+                source.clip = Resources.Load<AudioClip>("AudioClips/DebugClick");
+                source.Play();
+            }
+            else
+            {
+                Clear();
+            }
+        }
+
+        [ContextMenu("Clear components")]
+        public void Clear()
+        {
+            _isInitialized = false;
+            _preset = null;
+            foreach (var childT in GetComponentsInChildren<Transform>())
+            {
+                if (childT == this.transform) continue;
+                DestroyImmediate(childT.gameObject);
+            }
+            
         }
 
         public void RebuildSynth()
         {
-            foreach (var synthControlBase in GetComponentsInChildren<SynthControlBase>())
-            {
-                Destroy(synthControlBase.gameObject);
-            }
-
-            foreach (var synthOscillator in GetComponentsInChildren<SynthOscillator>())
-            {
-                Destroy(synthOscillator.gameObject);
-            }
-
-            foreach (var synthFilterBase in GetComponentsInChildren<SynthFilterBase>())
-            {
-                Destroy(synthFilterBase.gameObject);
-            }
-
-
+            
             _voices = new SynthVoiceGroup[_preset.oscillatorSettings.Length];
             _voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
             _amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
@@ -261,8 +267,15 @@ namespace Anywhen.Synth
                     }
                 }
             }
-            
-            
+
+            foreach (var voice in _voices)
+            {
+                foreach (var synthOscillator in voice._oscillators)
+                {
+                    synthOscillator.Init();
+                }
+            }
+
 
             _isInitialized = true;
         }
@@ -441,7 +454,7 @@ namespace Anywhen.Synth
         }
 
         /// Internal
-        private void Init()
+        public void Init()
         {
             if (FreqTab == null)
             {
@@ -456,8 +469,7 @@ namespace Anywhen.Synth
             }
 
             _noteOnQueue = new EventQueue(QueueCapacity);
-            
-            
+
             ResetVoices();
         }
 
@@ -506,9 +518,9 @@ namespace Anywhen.Synth
                 {
                     ampMod *= ampModifier.Process();
                 }
-                
+
                 ampMod *= _currentNoteEvent.velocity;
-                
+
 
                 float voiceFreqMod = 1;
                 foreach (var frequencyModifier in _voiceFrequencyModifiers)
