@@ -2,6 +2,7 @@
 using System;
 using Anywhen;
 using Anywhen.Composing;
+using Editor.AnySong;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -42,6 +43,21 @@ namespace Editor.Anysong
                 }
             };
             playButtonElement.Add(_playButton);
+
+
+            var editButton = new Button
+            {
+                text = "open in editor",
+            };
+            editButton.clicked += () =>
+            {
+                var anysongPlayer = target as AnysongPlayer;
+                AnysongEditorWindow.ShowModuleWindow();
+                AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject);
+            };
+            
+            inspector.Add(editButton);
+
             var songObject = serializedObject.FindProperty("songObject");
             var songObjectField = new PropertyField(songObject);
             songObjectField.BindProperty(songObject);
