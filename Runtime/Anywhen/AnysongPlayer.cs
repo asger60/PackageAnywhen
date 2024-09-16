@@ -18,6 +18,8 @@ namespace Anywhen
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
+        public bool IsPreviewing => _isPreviewing;
+
         [SerializeField] private AnywhenTrigger trigger;
         private bool _isPreviewing;
         private void Start()
@@ -166,6 +168,14 @@ namespace Anywhen
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
         }
 
- 
+
+        public void SetSongObject(AnysongObject newSong)
+        {
+            this.songObject = newSong;
+            if (_isPreviewing)
+            {
+                Load(newSong);
+            }
+        }
     }
 }
