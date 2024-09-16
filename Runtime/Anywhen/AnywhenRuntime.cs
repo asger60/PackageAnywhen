@@ -74,7 +74,7 @@ namespace Anywhen
 
         public static void SetPreviewMode(bool state, AnysongPlayer targetPlayer)
         {
-            _instance = FindObjectOfType<AnywhenRuntime>();
+            _instance = FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
             if (state)
             {
                 _instance.TryGetComponent(out _metronome);
@@ -88,6 +88,9 @@ namespace Anywhen
                 Metronome.Play();
                 targetPlayer.Load();
                 targetPlayer.Play();
+                #if UNITY_EDITOR
+                
+                #endif
             }
             else
             {

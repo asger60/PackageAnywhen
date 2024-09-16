@@ -1,3 +1,4 @@
+using System;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Anywhen
 
         [SerializeField] private AnywhenTrigger trigger;
         private bool _isPreviewing;
+
         private void Start()
         {
             Load(songObject);
@@ -32,7 +34,7 @@ namespace Anywhen
         {
             Load(songObject);
         }
-        
+
         private void Load(AnysongObject anysong)
         {
             _loaded = true;
@@ -90,11 +92,12 @@ namespace Anywhen
 
 
                 var songTrack = _currentSong.Tracks[trackIndex];
-                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0].GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
+                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
+                    .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
 
-                
-                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
+                float thisIntensity =
+                    Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
                 float thisRnd = Random.Range(0, 1f);
 
                 if (thisRnd < step.chance && step.mixWeight < thisIntensity)
@@ -162,10 +165,14 @@ namespace Anywhen
             return (float)progress / trackLength;
         }
 
+        public Action<bool> OnPlay;
+
         public void ToggleEditorPreview()
         {
             _isPreviewing = !_isPreviewing;
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
+
+            OnPlay?.Invoke(_isPreviewing);
         }
 
 

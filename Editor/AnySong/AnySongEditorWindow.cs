@@ -79,10 +79,33 @@ namespace Editor.AnySong
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             Debug.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
-
             window.Show(true);
             window.CreateGUI();
         }
+
+        public static void SetPlayer(AnysongPlayer player)
+        {
+            _currentRuntimeSongPlayer = player;
+            _currentRuntimeSongPlayer.OnPlay += OnPlayModeChanged;
+        }
+
+        private static void OnPlayModeChanged(bool state)
+        {
+            if (state)
+            {
+                AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+                AnywhenRuntime.Metronome.OnNextBar += OnBar;
+            }
+            else
+            {
+                CurrentSong.Reset();
+                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+                AnywhenRuntime.Metronome.OnNextBar -= OnBar;
+                _currentRuntimeSongPlayer = null;
+                AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
+            }
+        }
+
 
         private VisualElement _mainViewPanel;
         private VisualElement _sequencesPanel;
@@ -220,22 +243,19 @@ namespace Editor.AnySong
                     if (sPlayer.AnysongObject == CurrentSong)
                     {
                         _currentRuntimeSongPlayer = sPlayer;
-                        AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-                        AnywhenRuntime.Metronome.OnNextBar += OnBar;
+
+                        OnPlayModeChanged(true);
                     }
                 }
             }
             else
             {
-                CurrentSong.Reset();
-                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-                AnywhenRuntime.Metronome.OnNextBar -= OnBar;
-                _currentRuntimeSongPlayer = null;
-                AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
+                OnPlayModeChanged(false);
             }
         }
 
-        private void OnTick16()
+
+        private static void OnTick16()
         {
             if (_currentSelection.CurrentSectionIndex == _currentRuntimeSongPlayer.CurrentSectionIndex)
             {
@@ -247,7 +267,7 @@ namespace Editor.AnySong
             }
         }
 
-        void OnBar()
+        static void OnBar()
         {
             //AnysongSequencesView.HilightStepIndex(-1);
             AnysongSectionsView.HilightSection(_currentRuntimeSongPlayer.CurrentSectionIndex,

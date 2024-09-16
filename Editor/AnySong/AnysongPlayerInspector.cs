@@ -30,6 +30,7 @@ namespace Editor.Anysong
             _playButton.clicked += () =>
             {
                 var anysongPlayer = target as AnysongPlayer;
+                AnysongEditorWindow.SetPlayer(anysongPlayer);
                 anysongPlayer?.ToggleEditorPreview();
                 if (anysongPlayer)
                 {
