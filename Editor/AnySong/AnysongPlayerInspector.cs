@@ -14,50 +14,58 @@ namespace Editor.Anysong
     public class AnysongPlayerInspector : UnityEditor.Editor
     {
         private Button _playButton;
+        private AnysongPlayer _anysongPlayer;
+        private VisualElement _currentPackButtonHolder;
+        private VisualElement _currentSongButtonHolder;
+        private VisualElement _packArtHolder;
+        private AnyTrackPackObject[] _packObjects;
+        private int _currentPackIndex = -1;
+        private AnyTrackPackObject _currentPack;
+        private int _currentSongIndex = -1;
+        private Image _packArtImage;
+
+        private void OnEnable()
+        {
+            _anysongPlayer = target as AnysongPlayer;
+            _currentPackIndex = _anysongPlayer ? _anysongPlayer.CurrentSongPackIndex : 0;
+            _packObjects = Resources.LoadAll<AnyTrackPackObject>("/");
+            _currentPack = _packObjects[_currentPackIndex];
+            _currentSongIndex = _anysongPlayer ? _anysongPlayer.CurrentSongIndex : 0;
+        }
 
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement inspector = new VisualElement();
             inspector.Add(DrawSongBrowser());
-            VisualElement playButtonElement = new VisualElement();
-            inspector.Add(playButtonElement);
 
+
+            VisualElement utilityButtonsElement = new VisualElement
+            {
+                style =
+                {
+                    flexGrow = 1,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+            
 
             _playButton = new Button
             {
                 text = "Preview"
             };
-            _playButton.clicked += () =>
-            {
-                var anysongPlayer = target as AnysongPlayer;
-                AnysongEditorWindow.SetPlayer(anysongPlayer);
-                anysongPlayer?.ToggleEditorPreview();
-                if (anysongPlayer)
-                {
-                    if (anysongPlayer.IsPreviewing)
-                        AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-                    else
-                    {
-                        AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-                        _playButton.text = "Preview";
-                    }
-                }
-            };
-            playButtonElement.Add(_playButton);
-
+            _playButton.clicked += Preview;
 
             var editButton = new Button
             {
-                text = "open in editor",
+                text = "Open in editor",
             };
-            editButton.clicked += () =>
-            {
-                var anysongPlayer = target as AnysongPlayer;
-                AnysongEditorWindow.ShowModuleWindow();
-                AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject);
-            };
+            editButton.clicked += Edit;
             
-            inspector.Add(editButton);
+            
+            utilityButtonsElement.Add(_playButton);
+            utilityButtonsElement.Add(editButton);
+            inspector.Add(utilityButtonsElement);
+
 
             var songObject = serializedObject.FindProperty("songObject");
             var songObjectField = new PropertyField(songObject);
@@ -81,9 +89,35 @@ namespace Editor.Anysong
             return inspector;
         }
 
+
+        void Preview()
+        {
+            var anysongPlayer = target as AnysongPlayer;
+            AnysongEditorWindow.SetPlayer(anysongPlayer);
+            anysongPlayer?.ToggleEditorPreview();
+            if (anysongPlayer)
+            {
+                if (anysongPlayer.IsPreviewing)
+                    AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+                else
+                {
+                    AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+                    _playButton.text = "Preview";
+                }
+            }
+        }
+
+        void Edit()
+        {
+            var anysongPlayer = target as AnysongPlayer;
+            AnysongEditorWindow.ShowModuleWindow();
+            AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject);
+        }
+
         private void OnDestroy()
         {
-            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+            if (AnywhenRuntime.Metronome)
+                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
         }
 
         //private string _spinner = "← ↖ ↑ ↗ → ↘ ↓ ↙";
@@ -101,91 +135,177 @@ namespace Editor.Anysong
             _playButton.text = spinner1[(int)Mathf.Repeat(AnywhenRuntime.Metronome.Sub16, 4)] + " Previewing";
         }
 
-        private AnyTrackPackObject[] _packObjects;
-        private int _currentPackIndex = -1;
 
         VisualElement DrawSongBrowser()
         {
-            VisualElement inspector = new VisualElement
+            VisualElement inspector = new VisualElement();
+
+            _packArtHolder = new VisualElement
             {
                 style =
                 {
-                    flexGrow = 1,
+                    height = 240
                 }
             };
-            VisualElement songsList = new VisualElement
+            _packArtImage = new Image
+            {
+                image = _currentPack.packImage,
+                scaleMode = ScaleMode.ScaleToFit,
+                style =
+                {
+                    width = new StyleLength(new Length(100, LengthUnit.Percent)),
+                }
+            };
+            _packArtHolder.Add(_packArtImage);
+
+            _currentPackButtonHolder = new VisualElement();
+            _currentPackButtonHolder.style.flexGrow = 1;
+            _currentSongButtonHolder = new VisualElement();
+            _currentSongButtonHolder.style.flexGrow = 1;
+
+
+            VisualElement songBrowserButtons = new VisualElement
             {
                 style =
                 {
-                    flexGrow = 1,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+
+            VisualElement packBrowserButtons = new VisualElement
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row
                 }
             };
 
 
-            if (_packObjects == null || _packObjects.Length == 0)
-            {
-                _packObjects = Resources.LoadAll<AnyTrackPackObject>("/");
-            }
-
-            for (var i = 0; i < _packObjects.Length; i++)
-            {
-                var trackPackObject = _packObjects[i];
-                var packButton = new Button
-                {
-                    text = trackPackObject.name
-                };
-
-                var i1 = i;
-                packButton.clicked += () =>
-                {
-                    _currentPackIndex = i1;
-                    songsList.Clear();
-                    songsList.Add(DrawSongsList());
-                };
-                inspector.Add(packButton);
-            }
+            packBrowserButtons.Add(DrawArrowButton(-1, () => { IncrementPackSelection(-1); }));
+            packBrowserButtons.Add(_currentPackButtonHolder);
+            packBrowserButtons.Add(DrawArrowButton(1, () => { IncrementPackSelection(1); }));
 
 
-            inspector.Add(songsList);
+            songBrowserButtons.Add(DrawArrowButton(-1, () => { IncrementSongSelection(-1); }));
+            songBrowserButtons.Add(_currentSongButtonHolder);
+            songBrowserButtons.Add(DrawArrowButton(1, () => { IncrementSongSelection(1); }));
 
-            var nextButton = new Button
-            {
-                text = ">",
-                style = { width = 30, }
-            };
-            var prevButton = new Button
-            {
-                text = "<",
-                style = { width = 30, }
-            };
-            //inspector.Add(prevButton);
-            //inspector.Add(nextButton);
 
+            RefreshCurrentPack();
+            RefreshCurrentSong();
+
+
+            inspector.Add(packBrowserButtons);
+            inspector.Add(_packArtHolder);
+            inspector.Add(songBrowserButtons);
             return inspector;
         }
 
-        VisualElement DrawSongsList()
+        void RefreshCurrentSong()
         {
-            VisualElement songsList = new VisualElement();
-            foreach (var t in _packObjects[_currentPackIndex].Songs)
+            _currentSongButtonHolder.Clear();
+            var currentSongButton = new Button
             {
-                var song = t;
-                var songButton = new Button
+                text = _currentPack.Songs[_currentSongIndex].name,
+                style = { flexGrow = 1 }
+            };
+            currentSongButton.clicked += () =>
+            {
+                for (var i = 0; i < _currentPack.Songs.Length; i++)
                 {
-                    text = song.name,
-                    style = { width = 200, }
-                };
+                    var songObject = _currentPack.Songs[i];
+                    var songButton = new Button
+                    {
+                        text = songObject.name
+                    };
+                    var i1 = i;
+                    songButton.clicked += () =>
+                    {
+                        _currentSongIndex = i1;
+                        RefreshCurrentSong();
+                        _anysongPlayer.SetSongObject(_currentPack.Songs[_currentSongIndex], i1);
+                    };
+                    _currentSongButtonHolder.Add(songButton);
+                }
 
-                var anysongObject = t;
-                songButton.clicked += () =>
+                _currentSongButtonHolder.Add(currentSongButton);
+            };
+
+            _currentSongButtonHolder.Add(currentSongButton);
+        }
+
+        void RefreshCurrentPack()
+        {
+            _currentPackButtonHolder.Clear();
+            var currentPackButton = new Button
+            {
+                text = _packObjects[_currentPackIndex].name,
+                style =
                 {
-                    var anysongPlayer = (AnysongPlayer)target;
-                    anysongPlayer.SetSongObject(anysongObject);
-                };
-                songsList.Add(songButton);
-            }
+                    flexGrow = 1,
+                }
+            };
+            currentPackButton.clicked += () =>
+            {
+                for (var i = 0; i < _packObjects.Length; i++)
+                {
+                    var trackPackObject = _packObjects[i];
+                    var packButton = new Button
+                    {
+                        text = trackPackObject.name
+                    };
+                    var i1 = i;
+                    packButton.clicked += () =>
+                    {
+                        _currentPackIndex = i1;
+                        _currentPack = _packObjects[_currentPackIndex];
+                        _currentSongIndex = 0;
+                        RefreshCurrentPack();
+                        RefreshCurrentSong();
+                    };
+                    _currentPackButtonHolder.Add(packButton);
+                }
 
-            return songsList;
+                _currentPackButtonHolder.Remove(currentPackButton);
+            };
+            _packArtImage.image = _currentPack.packImage;
+
+            _currentPackButtonHolder.Add(currentPackButton);
+            _anysongPlayer.SetSongPackIndex(_currentPackIndex);
+        }
+
+        void IncrementPackSelection(int direction)
+        {
+            Debug.Log("increment " + direction + " " + _currentPackIndex);
+            _currentPackIndex += direction;
+            _currentPackIndex = (int)Mathf.Repeat(_currentPackIndex, _packObjects.Length);
+
+            _currentPack = _packObjects[_currentPackIndex];
+            _currentSongIndex = 0;
+            RefreshCurrentSong();
+            RefreshCurrentPack();
+        }
+
+        void IncrementSongSelection(int direction)
+        {
+            Debug.Log("increment " + direction + " " + _currentSongIndex);
+            _currentSongIndex += direction;
+            _currentSongIndex = (int)Mathf.Repeat(_currentSongIndex, _currentPack.Songs.Length);
+            _anysongPlayer.SetSongObject(_currentPack.Songs[_currentSongIndex], _currentSongIndex);
+            RefreshCurrentSong();
+        }
+
+
+        VisualElement DrawArrowButton(int direction, Action onClick)
+        {
+            var nextButton = new Button
+            {
+                text = direction == 1 ? ">" : "<",
+                style = { width = 30, }
+            };
+            nextButton.clicked += onClick.Invoke;
+
+            return nextButton;
         }
     }
 }

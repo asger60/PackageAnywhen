@@ -7,4 +7,5 @@ public class AnyTrackPackObject : ScriptableObject
 {
     public AnysongObject[] Songs => songs;
     [SerializeField] private AnysongObject[] songs;
+    public Texture packImage;
 }

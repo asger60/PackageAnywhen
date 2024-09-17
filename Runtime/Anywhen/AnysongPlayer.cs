@@ -23,6 +23,11 @@ namespace Anywhen
 
         [SerializeField] private AnywhenTrigger trigger;
         private bool _isPreviewing;
+        private int _currentSongIndex;
+        public int CurrentSongIndex => _currentSongIndex;
+
+        private int _currentSongPackIndex;
+        public int CurrentSongPackIndex => _currentSongPackIndex;
 
         private void Start()
         {
@@ -176,13 +181,18 @@ namespace Anywhen
         }
 
 
-        public void SetSongObject(AnysongObject newSong)
+        public void SetSongObject(AnysongObject newSong, int index)
         {
             this.songObject = newSong;
             if (_isPreviewing)
             {
                 Load(newSong);
             }
+        }
+
+        public void SetSongPackIndex(int index)
+        {
+            _currentSongPackIndex = index;
         }
     }
 }
