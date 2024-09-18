@@ -1,3 +1,4 @@
+using System;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -18,12 +19,25 @@ namespace Anywhen
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
+        public bool IsPreviewing => _isPreviewing;
+
         [SerializeField] private AnywhenTrigger trigger;
- 
+        private bool _isPreviewing;
+        private int _currentSongIndex;
+        public int CurrentSongIndex => _currentSongIndex;
+
+        private int _currentSongPackIndex;
+        public int CurrentSongPackIndex => _currentSongPackIndex;
+
         private void Start()
         {
             Load(songObject);
             trigger.OnTrigger += Play;
+        }
+
+        public void Load()
+        {
+            Load(songObject);
         }
 
         private void Load(AnysongObject anysong)
@@ -71,7 +85,6 @@ namespace Anywhen
                 Load(songObject);
             }
 
-
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
@@ -84,11 +97,12 @@ namespace Anywhen
 
 
                 var songTrack = _currentSong.Tracks[trackIndex];
-                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0].GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
+                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
+                    .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
 
-                
-                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
+                float thisIntensity =
+                    Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
                 float thisRnd = Random.Range(0, 1f);
 
                 if (thisRnd < step.chance && step.mixWeight < thisIntensity)
@@ -154,6 +168,31 @@ namespace Anywhen
             int trackLength = _currentSong.Sections[_currentSectionIndex].patternSteps.Length;
             int progress = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
             return (float)progress / trackLength;
+        }
+
+        public Action<bool> OnPlay;
+
+        public void ToggleEditorPreview()
+        {
+            _isPreviewing = !_isPreviewing;
+            AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
+
+            OnPlay?.Invoke(_isPreviewing);
+        }
+
+
+        public void SetSongObject(AnysongObject newSong, int index)
+        {
+            this.songObject = newSong;
+            if (_isPreviewing)
+            {
+                Load(newSong);
+            }
+        }
+
+        public void SetSongPackIndex(int index)
+        {
+            _currentSongPackIndex = index;
         }
     }
 }
