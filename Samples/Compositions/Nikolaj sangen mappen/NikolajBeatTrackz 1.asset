@@ -252,6 +252,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -483,6 +484,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -741,6 +743,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -972,6 +975,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -1230,6 +1234,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 1
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -1461,6 +1466,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 1
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 0
@@ -1692,6 +1698,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 1
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 0
@@ -1923,6 +1930,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 1
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -2181,6 +2189,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -2439,6 +2448,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 1
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -2697,6 +2707,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -2928,6 +2939,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -3186,6 +3198,7 @@ MonoBehaviour:
           rootNote: 10
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -3417,6 +3430,7 @@ MonoBehaviour:
           rootNote: 5
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -3675,6 +3689,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -3933,6 +3948,7 @@ MonoBehaviour:
           rootNote: 7
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -4191,6 +4207,7 @@ MonoBehaviour:
           rootNote: 16
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -4449,6 +4466,7 @@ MonoBehaviour:
           rootNote: 14
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -4680,6 +4698,7 @@ MonoBehaviour:
           rootNote: 19
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -4938,6 +4957,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 100
@@ -5169,6 +5189,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 0
@@ -5400,6 +5421,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       - triggerChances:
         - 0
         - 0
@@ -5631,6 +5653,7 @@ MonoBehaviour:
           rootNote: 0
           repeatRate: 0
         rootNote: 0
+        patternLength: 16
       intensityMappingCurve:
         serializedVersion: 2
         m_Curve:
@@ -5657,6 +5680,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
+    sectionLength: 4
   Tracks:
   - volume: 0.42
     instrument: {fileID: 11400000, guid: 4e61c27547bfb44d2b1ca2cf611430fc, type: 2}
@@ -5722,7 +5746,7 @@ MonoBehaviour:
       decay: 0.42
       sustain: 0
       release: 6.8
-  - volume: 0.52
+  - volume: 0.581
     instrument: {fileID: 11400000, guid: 6340f9ee9b4a24bf682d55c9d54ef526, type: 2}
     trackEnvelope:
       enabled: 1
@@ -5738,7 +5762,7 @@ MonoBehaviour:
       decay: 0.42
       sustain: 0
       release: 6.1
-  - volume: 0.152
+  - volume: 0.226
     instrument: {fileID: 11400000, guid: 126c111c743654eb7a03278d14c2cd7c, type: 2}
     trackEnvelope:
       enabled: 1
@@ -5746,13 +5770,11 @@ MonoBehaviour:
       decay: 0.47
       sustain: 0
       release: 5.4
-  - volume: 0.07
+  - volume: 0.278
     instrument: {fileID: 11400000, guid: 5cd15454104ca49488e6a31a3a3d431c, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0
-      decay: 0.32
+      attack: 0.08
+      decay: 0.15
       sustain: 0
       release: 0
-  coverGraphic: PlayerGraphic2
-  playerBackgroundColor: {r: 0.40000004, g: 0.40000004, b: 0.40000004, a: 1}
