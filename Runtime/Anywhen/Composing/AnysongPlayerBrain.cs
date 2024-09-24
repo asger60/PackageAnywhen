@@ -123,7 +123,6 @@ namespace Anywhen.Composing
         {
             if (_currentPlayer != null)
             {
-                _currentPlayer.SetMixIntensity(0);
                 _currentPlayer.ReleaseFromMetronome();
             }
 

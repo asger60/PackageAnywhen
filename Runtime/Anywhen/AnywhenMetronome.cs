@@ -7,14 +7,12 @@ namespace Anywhen
 {
     public class AnywhenMetronome : MonoBehaviour
     {
-        public int Bpm = 100;
-        public bool Playing;
-        public int sub2;
-        public int sub4;
-
-        public int sub8;
-        public int Sub16;
-        //public int Sub32;
+        [SerializeField] int Bpm = 100;
+        [SerializeField] bool Playing;
+        [SerializeField] int sub2;
+        [SerializeField] int sub4;
+        [SerializeField] int sub8;
+        [SerializeField] public int Sub16;
 
 
         private double _sub16Length;
@@ -68,11 +66,6 @@ namespace Anywhen
         public DebugSettings debugSettings;
 
 
-        private void Awake()
-        {
-            //  if (Instance != null) DestroyImmediate(this);
-        }
-
         private void Start()
         {
             Init();
@@ -82,6 +75,7 @@ namespace Anywhen
             _nextTime8 = _nextTime16;
             _nextTime4 = _nextTime16;
             _nextTime2 = _nextTime16;
+            Play();
         }
 
         public void SetTempo(int newBpm)
@@ -98,7 +92,6 @@ namespace Anywhen
 
             _sub8Length = _sub4Length * 0.5f;
             _sub16Length = _sub4Length * 0.25f;
-
             _isInit = true;
         }
 
@@ -108,39 +101,59 @@ namespace Anywhen
             print("start metronome");
             _isStopped = false;
             Init();
-            //Sub32 = 0;
+            _currentBar = 0;
             Sub16 = 0;
             sub8 = 0;
             sub4 = 0;
             sub2 = 0;
             _nextTime16 = AudioSettings.dspTime + bufferTime;
+
+
+            OnTick16 += DebugOnTick16;
         }
+        
 
-        public void Update()
+        private void DebugOnTick16()
         {
-
-            if (!Playing) return;
-            if (_isStopped) return;
-            if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
-            OnTick16?.Invoke();
-
-            if (Sub16 == 0)
-            {
-                _currentBar++;
-                OnNextBar?.Invoke();
-                if (debugSettings.debugBar)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-                }
-            }
-
-            Sub16++;
             if (debugSettings.debug16)
             {
                 NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
                 AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
             }
+
+            if (debugSettings.debugBar && Sub16 == 0)
+            {
+                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+            }
+
+            if (debugSettings.debug2 && Sub16 % 8 == 0)
+            {
+                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+            }
+            
+            if (debugSettings.debug4 && Sub16 % 4 == 0)
+            {
+                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+            }
+            
+            if (debugSettings.debug8 && Sub16 % 2 == 0)
+            {
+                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
+                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
+            }
+        }
+
+        public void Update()
+        {
+            if (!Playing) return;
+            if (_isStopped) return;
+            if (!(AudioSettings.dspTime + bufferTime >= _nextTime16)) return;
+            OnTick16?.Invoke();
+
+            Sub16++;
 
 
             if (Sub16 % 2 == 0)
@@ -148,11 +161,6 @@ namespace Anywhen
                 _nextTime8 = _nextTime16 + _sub8Length;
                 OnTick8?.Invoke();
                 sub8++;
-                if (debugSettings.debug8)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-                }
             }
 
             if (Sub16 % 4 == 0)
@@ -160,11 +168,6 @@ namespace Anywhen
                 _nextTime4 = _nextTime16 + _sub4Length;
                 OnTick4?.Invoke();
                 sub4++;
-                if (debugSettings.debug4)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-                }
             }
 
             if (Sub16 % 8 == 0)
@@ -172,14 +175,13 @@ namespace Anywhen
                 _nextTime2 = _nextTime16 + _sub2Length;
                 OnTick2?.Invoke();
                 sub2++;
-                if (debugSettings.debug2)
-                {
-                    NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-
-                    AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-                }
             }
 
+            if (Sub16 % 16 == 0)
+            {
+                _currentBar++;
+                OnNextBar?.Invoke();
+            }
 
             // reset
             if (Sub16 == 16)
@@ -189,8 +191,8 @@ namespace Anywhen
                 sub8 = 0;
                 sub4 = 0;
                 sub2 = 0;
-
             }
+
 
             _nextTime16 += _sub16Length;
 
@@ -219,19 +221,6 @@ namespace Anywhen
                 default:
                     //Debug.Log("trying to fetch ");
                     return 0;
-            }
-        }
-
-
-        public struct StepTiming
-        {
-            public int step;
-            public float drift;
-
-            public StepTiming(int step, float drift)
-            {
-                this.step = step;
-                this.drift = drift;
             }
         }
 
@@ -283,7 +272,6 @@ namespace Anywhen
 
         public static double GetTiming(TickRate playbackRate, float swingAmount, float humanizeAmount)
         {
-            //if (humanizeAmount <= 0) return 0;
             float subLength = (float)Instance.GetLength(playbackRate) / 2f;
             float drift = Random.Range(subLength * -1, subLength);
             float swing = 0;

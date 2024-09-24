@@ -137,10 +137,7 @@ namespace Anywhen
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
         }
 
-
-        public void SetMixIntensity(float value)
-        {
-        }
+        
 
         public void ReleaseFromMetronome()
         {
@@ -176,9 +173,9 @@ namespace Anywhen
 
         public void ToggleEditorPreview()
         {
+            
             _isPreviewing = !_isPreviewing;
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
-
             OnPlay?.Invoke(_isPreviewing);
         }
 

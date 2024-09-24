@@ -696,8 +696,7 @@ namespace Editor.AnySong
 
         public static AnyPattern GetCurrentPlayingPatternForTrack(int trackIndex)
         {
-            return CurrentSong.Sections[_currentRuntimeSongPlayer.CurrentSectionIndex].tracks[trackIndex]
-                .GetPlayingPattern();
+            return CurrentSong.Sections[_currentRuntimeSongPlayer.CurrentSectionIndex].tracks[trackIndex].GetPlayingPattern();
         }
 
         public static AnyPattern GetPatternFromTooltip(string tooltip)
