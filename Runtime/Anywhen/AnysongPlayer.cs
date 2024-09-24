@@ -85,11 +85,14 @@ namespace Anywhen
                 Load(songObject);
             }
 
-            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count-1);
-            
+            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
+
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                if (AnywhenRuntime.Metronome.Sub16 == 0)
+                    track.AdvancePlayingPattern();
+                
                 var pattern = track.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
                 pattern.Advance();
@@ -137,7 +140,6 @@ namespace Anywhen
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
         }
 
-        
 
         public void ReleaseFromMetronome()
         {
@@ -173,7 +175,6 @@ namespace Anywhen
 
         public void ToggleEditorPreview()
         {
-            
             _isPreviewing = !_isPreviewing;
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
             OnPlay?.Invoke(_isPreviewing);

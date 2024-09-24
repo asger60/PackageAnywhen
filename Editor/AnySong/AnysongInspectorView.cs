@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -49,12 +50,11 @@ namespace Editor.AnySong
             _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), didUpdate));
             _parent.Add(Spacer());
 
-   
-            
+
             _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), didUpdate));
             _parent.Add(Spacer());
-            
-            
+
+
             var scrubForwardButton = new Button
             {
                 name = "ScrubForward",
@@ -66,9 +66,9 @@ namespace Editor.AnySong
                 text = "Scrub -",
             };
             _parent.Add(scrubBackButton);
-            
+
             _parent.Add(scrubForwardButton);
-            
+
             _parent.Add(Spacer());
             _parent.Add(CreateUtilsBox());
 
@@ -109,82 +109,125 @@ namespace Editor.AnySong
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
         }
 
-        public static void DrawProgression(
-            AnysongEditorWindow.AnySelection selection /*AnysongSectionTrack track, SerializedProperty trackProperty*/)
+        public static void DrawProgression(AnysongEditorWindow.AnySelection selection)
         {
             _parent.Clear();
             Draw(_parent);
             _parent.Add(Spacer());
+            var progressionTypeHolder = new VisualElement();
+            var progressionType =
+                (AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType")
+                    .enumValueIndex;
 
+            Debug.Log(progressionType);
 
-            var triggerRowLabel = new Label()
-            {
-                style = { width = 100, }
-            };
-
-            var barRowLabel = new Label()
-            {
-                style = { width = 100, }
-            };
-
-
-            var patternHeaderRow = new VisualElement()
-            {
-                style = { flexDirection = FlexDirection.Row }
-            };
-
-
-            barRowLabel.text = "";
-            patternHeaderRow.Add(barRowLabel);
-
-
-            triggerRowLabel.text = "Trigger chance";
-
-            var patternsHolder = new VisualElement();
-            for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
-            {
-                var pattern = selection.CurrentSectionTrack.patterns[y];
-                var patternRow = new VisualElement()
+            _parent.Add(CreatePropertyFieldWithCallback(
+                selection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType"),
+                () =>
                 {
-                    style = { flexDirection = FlexDirection.Row }
-                };
-                var patternLabel = new Label
-                {
-                    text = "Pattern " + y,
-                    style =
-                    {
-                        minWidth = 100,
-                        width = 100
-                    }
-                };
+                    Debug.Log("updated progression type");
+                    progressionTypeHolder.Clear();
+                    progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty
+                        .FindPropertyRelative("patternProgressionType")
+                        .enumValueIndex, selection));
+                }));
 
-                patternRow.Add(patternLabel);
-
-
-                for (int i = 0; i < pattern.triggerChances.Count; i++)
-                {
-                    var chanceField = new FloatField
-                    {
-                        value = pattern.triggerChances[i],
-                        style = { minWidth = 30, },
-                    };
-
-
-                    var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
-                        .GetArrayElementAtIndex(y)
-                        .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
-                    chanceField.BindProperty(property);
-                    patternRow.Add(chanceField);
-                }
-
-                patternsHolder.Add(patternRow);
-            }
-
-            _parent.Add(patternsHolder);
-
+            progressionTypeHolder.Add(DrawProgressionType(progressionType, selection));
+            _parent.Add(progressionTypeHolder);
+            _parent.Add(Spacer());
             _parent.Add(AnysongEditorWindow.CreateAddRemoveButtons(true, false));
 
             _parent.Add(Spacer());
+        }
+
+        private static VisualElement DrawProgressionType(AnysongSectionTrack.PatternProgressionType progressionType,
+            AnysongEditorWindow.AnySelection selection)
+        {
+            var content = new VisualElement();
+            switch (progressionType)
+            {
+                case AnysongSectionTrack.PatternProgressionType.Sequence:
+                    var sequenceLabel = new Label("Patterns will play in sequence");
+                    content.Add(sequenceLabel);
+                    break;
+                case AnysongSectionTrack.PatternProgressionType.WeightedRandom:
+                    var weightedLabel = new Label("Patterns will be randomly selected by weight");
+                    content.Add(weightedLabel);
+                    content.Add(Spacer());
+                    var triggerRowLabel = new Label()
+                    {
+                        style = { width = 100, }
+                    };
+
+                    var barRowLabel = new Label()
+                    {
+                        style = { width = 100, }
+                    };
+
+
+                    var patternHeaderRow = new VisualElement()
+                    {
+                        style = { flexDirection = FlexDirection.Row }
+                    };
+
+
+                    barRowLabel.text = "";
+                    patternHeaderRow.Add(barRowLabel);
+
+
+                    triggerRowLabel.text = "Trigger chance";
+
+                    var patternsHolder = new VisualElement();
+                    for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
+                    {
+                        var pattern = selection.CurrentSectionTrack.patterns[y];
+                        var patternRow = new VisualElement()
+                        {
+                            style = { flexDirection = FlexDirection.Row }
+                        };
+                        var patternLabel = new Label
+                        {
+                            text = "Pattern " + y,
+                            style =
+                            {
+                                minWidth = 100,
+                                width = 100
+                            }
+                        };
+
+                        patternRow.Add(patternLabel);
+
+
+                        for (int i = 0; i < pattern.triggerChances.Count; i++)
+                        {
+                            var chanceField = new FloatField
+                            {
+                                value = pattern.triggerChances[i],
+                                style = { minWidth = 30, },
+                            };
+
+
+                            var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
+                                .GetArrayElementAtIndex(y)
+                                .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
+                            chanceField.BindProperty(property);
+                            patternRow.Add(chanceField);
+                        }
+
+                        patternsHolder.Add(patternRow);
+                    }
+
+                    content.Add(patternsHolder);
+                    break;
+                case AnysongSectionTrack.PatternProgressionType.Random:
+                    var randomLabel = new Label("Patterns will be randomly selected every bar");
+                    content.Add(randomLabel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return content;
         }
 
 

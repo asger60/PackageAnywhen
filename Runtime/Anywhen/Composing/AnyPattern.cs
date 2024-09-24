@@ -1,13 +1,22 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Anywhen.Composing
 {
     [Serializable]
     public class AnyPattern
     {
+        
+        
+        
         public List<float> triggerChances = new List<float>();
+        
+        
+        
+        
+        
         public List<AnyPatternStep> steps;
         public int rootNote = 0;
         [Range(0, 16)] public int patternLength = 16;
@@ -45,7 +54,7 @@ namespace Anywhen.Composing
         public bool TriggerOnBar(int currentBar)
         {
             currentBar = (int)Mathf.Repeat(currentBar, triggerChances.Count);
-            return triggerChances[currentBar] > 0;
+            return triggerChances[currentBar] > Random.Range(0,100);
         }
 
         public void Scrub(int direction)
