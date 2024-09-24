@@ -99,37 +99,24 @@ namespace Anywhen
             switch (e.state)
             {
                 case NoteEvent.EventTypes.NoteOff:
-                    if (anywhenInstrumentSettings.instrumentType != AnywhenSampleInstrument.InstrumentType.Sustained)
-                    {
-                        //Debug.LogWarning("trying to stop an instrument that is not set to sustained");
-                        return;
-                    }
+                    //if (anywhenInstrumentSettings.instrumentType != AnywhenSampleInstrument.InstrumentType.Sustained)
+                    //{
+                    //    Debug.LogWarning("trying to stop an instrument that is not set to sustained");
+                    //    return;
+                    //}
 
                     foreach (var thisSampler in _allSamplers)
                     {
                         if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                        if (e.notes.Length == 1 && e.notes[0] == -1000)
-                        {
-                            double stopTime = rate == AnywhenMetronome.TickRate.None
-                                ? 0
-                                : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
-
-                            thisSampler.NoteOff(stopTime);
-                        }
-                        else
-                        {
-                            foreach (var note in e.notes)
+                        
+                            if (thisSampler.IsPlaying || thisSampler.IsArmed)
                             {
-                                if (thisSampler.CurrentNote == note)
-                                {
-                                    double stopTime = rate == AnywhenMetronome.TickRate.None
-                                        ? 0
-                                        : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
-
-                                    thisSampler.NoteOff(stopTime);
-                                }
+                                double stopTime = rate == AnywhenMetronome.TickRate.None
+                                    ? 0
+                                    : AnywhenMetronome.Instance.GetScheduledPlaytime(rate);
+                                thisSampler.NoteOff(stopTime);
                             }
-                        }
+                        
                     }
 
                     break;
@@ -149,8 +136,7 @@ namespace Anywhen
                             foreach (var thisSampler in _allSamplers)
                             {
                                 if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note &&
-                                    thisSampler.ScheduledPlayTime == playTime)
+                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note && thisSampler.ScheduledPlayTime == playTime)
                                 {
                                     return;
                                 }
@@ -166,9 +152,7 @@ namespace Anywhen
                         }
 
 
-                        double stopTime = e.duration < 0
-                            ? -1
-                            : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
+                        double stopTime = e.duration < 0 ? -1 : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
 
                         anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings, track);
                     }

@@ -85,6 +85,8 @@ namespace Anywhen
                 Load(songObject);
             }
 
+            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count-1);
+            
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];

@@ -127,7 +127,7 @@ namespace Anywhen
 
         public void NoteOff(double stopTime)
         {
-            if (_hasScheduledStop) return;
+            //if (_hasScheduledStop) return;
             _isStopping = true;
             if (_playingNoteClip)
             {
@@ -202,6 +202,8 @@ namespace Anywhen
         private bool _isPlaying;
         private bool _scheduledPlay;
         public double ScheduledPlayTime => _scheduledPlayTime;
+        public bool IsPlaying => _isPlaying;
+
         private double _scheduledPlayTime = -1;
         private double _scheduledStopTime;
         private AnywhenNoteClip _noteClip;
@@ -218,7 +220,6 @@ namespace Anywhen
         protected void StopScheduled(double absoluteTime)
         {
             _scheduledStopTime = absoluteTime;
-            _currentNote = -1000;
         }
 
         public void SetPitch(float pitchValue)

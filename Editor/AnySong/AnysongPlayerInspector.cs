@@ -47,7 +47,7 @@ namespace Editor.Anysong
                     flexDirection = FlexDirection.Row
                 }
             };
-            
+
 
             _playButton = new Button
             {
@@ -60,8 +60,8 @@ namespace Editor.Anysong
                 text = "Open in editor",
             };
             editButton.clicked += Edit;
-            
-            
+
+
             utilityButtonsElement.Add(_playButton);
             utilityButtonsElement.Add(editButton);
             inspector.Add(utilityButtonsElement);
@@ -93,25 +93,28 @@ namespace Editor.Anysong
         void Preview()
         {
             var anysongPlayer = target as AnysongPlayer;
+            if (anysongPlayer == null) return;
             AnysongEditorWindow.SetPlayer(anysongPlayer);
             anysongPlayer?.ToggleEditorPreview();
-            if (anysongPlayer)
+            AnywhenRuntime.Metronome.SetTempo(anysongPlayer.AnysongObject.tempo);
+            
+            
+
+            if (anysongPlayer.IsPreviewing)
+                AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+            else
             {
-                if (anysongPlayer.IsPreviewing)
-                    AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-                else
-                {
-                    AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-                    _playButton.text = "Preview";
-                }
+                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+                _playButton.text = "Preview";
             }
         }
 
         void Edit()
         {
             var anysongPlayer = target as AnysongPlayer;
-            AnysongEditorWindow.ShowModuleWindow();
             AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject);
+
+            AnysongEditorWindow.ShowModuleWindow();
         }
 
         private void OnDestroy()

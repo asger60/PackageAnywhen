@@ -127,6 +127,7 @@ namespace Editor.AnySong
             rootVisualElement.Clear();
             if (CurrentSong == null)
             {
+                Debug.Log("Current song is null");
                 CurrentSong = Selection.activeObject as AnysongObject;
                 if (CurrentSong == null)
                 {
