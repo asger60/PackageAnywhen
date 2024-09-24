@@ -65,8 +65,21 @@ namespace Anywhen.Composing
             tracks.RemoveAt(trackIndex);
         }
 
-        public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar)
+        public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar, AnysongSection masterSection)
         {
+            if (patternSteps.Length == 0)
+            {
+                patternSteps = new AnywhenProgressionPatternObject.ProgressionStep[masterSection.patternSteps.Length];
+                for (int i = 0; i < masterSection.patternSteps.Length; i++)
+                {
+                    patternSteps[i] = new AnywhenProgressionPatternObject.ProgressionStep
+                    {
+                        anywhenScale = masterSection.patternSteps[i].anywhenScale,
+                        rootNote = masterSection.patternSteps[i].rootNote
+                    };
+                }
+                
+            }
             return patternSteps[(int)Mathf.Repeat(currentBar, patternSteps.Length)];
         }
     
@@ -85,6 +98,7 @@ namespace Anywhen.Composing
 
             return clone;
         }
+
 
         public void Reset()
         {

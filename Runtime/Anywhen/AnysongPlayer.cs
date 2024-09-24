@@ -69,10 +69,21 @@ namespace Anywhen
             var thisSection = _currentSong.Sections[_currentSectionIndex];
             int progress = (int)Mathf.Repeat(_currentBar, thisSection.sectionLength);
 
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            {
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                track.AdvancePlayingPattern();
+            }
+
             if (progress == 0)
             {
                 NextSection();
             }
+
+            
+            var section = _currentSong.Sections[_currentSectionIndex];
+
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
         }
 
         private void OnTick16()
@@ -90,9 +101,11 @@ namespace Anywhen
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                if (AnywhenRuntime.Metronome.Sub16 == 0)
-                    track.AdvancePlayingPattern();
-                
+                //if (AnywhenRuntime.Metronome.Sub16 == 0)
+                //{
+                //    track.AdvancePlayingPattern();
+                //}
+
                 var pattern = track.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
                 pattern.Advance();
@@ -102,8 +115,6 @@ namespace Anywhen
 
 
                 var songTrack = _currentSong.Tracks[trackIndex];
-                AnywhenRuntime.Conductor.SetScaleProgression(_currentSong.Sections[0]
-                    .GetProgressionStep(AnywhenMetronome.Instance.CurrentBar));
 
 
                 float thisIntensity =
@@ -130,6 +141,11 @@ namespace Anywhen
             {
                 _currentSectionIndex++;
                 _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                {
+                    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                    track.Reset();
+                }
             }
         }
 
@@ -161,6 +177,12 @@ namespace Anywhen
         public void Play()
         {
             print("play " + songObject.name);
+            _currentSong.Reset();
+            _currentSectionIndex = 0;
+            _currentBar = 0;
+            var section = _currentSong.Sections[_currentSectionIndex];
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
+
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
@@ -176,6 +198,7 @@ namespace Anywhen
         public void ToggleEditorPreview()
         {
             _isPreviewing = !_isPreviewing;
+
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
             OnPlay?.Invoke(_isPreviewing);
         }

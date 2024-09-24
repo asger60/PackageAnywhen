@@ -65,27 +65,26 @@ namespace Anywhen.Composing
         }
 
         private AnyPattern _currentPattern;
-
+        private int _currentPatternBar;
         public void AdvancePlayingPattern()
         {
+            _currentPatternBar++;
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
-                    _currentPattern = patterns[(int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, patterns.Count)];
+                    _currentPattern = patterns[(int)Mathf.Repeat(_currentPatternBar, patterns.Count)];
                     break;
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
                     float maxRandom = 100;
                     foreach (var anyPattern in patterns)
                     {
-                        float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, 4)];
+                        float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
                         float thisRnd = Random.Range(0, maxRandom);
-                        Debug.Log(thisTriggerChance + " " + thisRnd);
                         if (thisTriggerChance > thisRnd)
                         {
                             _currentPattern = anyPattern;
                             didFindPattern = true;
-                            Debug.Log("found a pattern");
                             break;
                         }
 
@@ -95,7 +94,6 @@ namespace Anywhen.Composing
 
                     if (!didFindPattern) 
                     {
-                        Debug.Log("didn find a pattern");
                         _currentPattern = patterns[0];
                     }
 
@@ -109,8 +107,10 @@ namespace Anywhen.Composing
             }
         }
 
+     
         public void Reset()
         {
+            _currentPatternBar = 0;
             _currentPattern = patterns[0];
             foreach (var pattern in patterns)
             {

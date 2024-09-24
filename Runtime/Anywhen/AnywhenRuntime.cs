@@ -83,8 +83,9 @@ namespace Anywhen
                 _instance.TryGetComponent(out _eventFunnel);
                 _instance.TryGetComponent(out _anywhenSynthHandler);
                 _anywhenSynthHandler.ClearPresets();
-                _anywhenSamplerHandler.Init();
                 _anywhenSynthHandler.Init();
+
+                _anywhenSamplerHandler.Init();
                 Metronome.Play();
                 targetPlayer.Load();
                 targetPlayer.Play();
