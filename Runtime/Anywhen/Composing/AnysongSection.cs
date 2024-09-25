@@ -17,6 +17,8 @@ namespace Anywhen.Composing
 
         public List<AnysongSectionTrack> tracks;
         public int sectionLength = 4;
+        
+       
 
         public void Init(List<AnysongTrack> songTracks)
         {
@@ -44,12 +46,6 @@ namespace Anywhen.Composing
         
         }
 
-        public void UpdateTracks(List<AnysongTrack> songTracks)
-        {
-            foreach (var songTrack in songTracks)
-            {
-            }
-        }
 
 
         public void AddSongTrack(AnysongTrack songTrack)

@@ -1,5 +1,4 @@
 using Anywhen.Composing;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -10,10 +9,6 @@ namespace Editor.AnySong
         {
             parent.Clear();
             parent.Add(new Label());
-            var spacer = new ToolbarSpacer
-            {
-                style = { height = 8 }
-            };
 
 
             for (var i = 0; i < currentSong.Tracks.Count; i++)

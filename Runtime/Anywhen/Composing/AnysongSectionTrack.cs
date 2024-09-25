@@ -25,10 +25,12 @@ namespace Anywhen.Composing
 
         public bool isMuted;
         public bool isSolo;
+        private int _selectedTrackPatternIndex;
 
 
         public void Init(AnysongTrack songSongTrack)
         {
+            _selectedTrackPatternIndex = 0;
             patterns = new List<AnyPattern> { new() };
             foreach (var pattern in patterns)
             {
@@ -64,50 +66,71 @@ namespace Anywhen.Composing
             return _currentPattern ??= patterns[0];
         }
 
+        public int GetPlayingPatternIndex()
+        {
+            return _currentPatternIndex;
+        }
+        public int GetSelectedPatternIndex()
+        {
+            return _selectedTrackPatternIndex;
+        }
+
+
+        public void SetSelectedPattern(int index)
+        {
+            Debug.Log("selected patter index: " + index);
+            _selectedTrackPatternIndex = index;
+        }
+
+
         private AnyPattern _currentPattern;
         private int _currentPatternBar;
+        private int _currentPatternIndex;
+
         public void AdvancePlayingPattern()
         {
             _currentPatternBar++;
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
-                    _currentPattern = patterns[(int)Mathf.Repeat(_currentPatternBar, patterns.Count)];
+                    _currentPatternIndex = (int)Mathf.Repeat(_currentPatternBar, patterns.Count);
                     break;
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
                     float maxRandom = 100;
-                    foreach (var anyPattern in patterns)
+                    for (var i = 0; i < patterns.Count; i++)
                     {
+                        var anyPattern = patterns[i];
                         float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
                         float thisRnd = Random.Range(0, maxRandom);
                         if (thisTriggerChance > thisRnd)
                         {
-                            _currentPattern = anyPattern;
+                            _currentPatternIndex = i;
+                            //_currentPattern = anyPattern;
                             didFindPattern = true;
                             break;
                         }
 
                         maxRandom -= thisTriggerChance;
-                        //if (anyPattern.TriggerOnBar(AnywhenMetronome.Instance.CurrentBar)) _currentPattern = anyPattern;
                     }
 
-                    if (!didFindPattern) 
+                    if (!didFindPattern)
                     {
-                        _currentPattern = patterns[0];
+                        _currentPatternIndex = 0;
                     }
 
                     break;
                 case PatternProgressionType.Random:
-                    _currentPattern = patterns[Random.Range(0, patterns.Count)];
-
+                    _currentPatternIndex = Random.Range(0, patterns.Count);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            _currentPattern = patterns[_currentPatternIndex];
         }
 
-     
+
         public void Reset()
         {
             _currentPatternBar = 0;

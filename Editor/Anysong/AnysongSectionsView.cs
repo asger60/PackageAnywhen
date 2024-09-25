@@ -106,7 +106,7 @@ namespace Editor.AnySong
                 int thisIndex = Int32.Parse(button.tooltip);
                 if (thisIndex == currentSectionIndex)
                 {
-                    button.style.backgroundColor = AnysongEditorWindow.ColorHilight1;
+                    button.style.backgroundColor = AnysongEditorWindow.ColorHilight4;
                     button.style.color = AnysongEditorWindow.ColorGreyDark;
                 }
                 else

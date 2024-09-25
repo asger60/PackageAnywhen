@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -86,6 +87,19 @@ namespace Anywhen
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
         }
 
+        public int[] GetPlayingTrackPatternIndexes()
+        {
+            List<int> returnList = new List<int>();
+            for (var i = 0; i < _currentSong.Tracks.Count; i++)
+            {
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[i];
+
+                returnList.Add(track.GetPlayingPatternIndex());
+            }
+
+            return returnList.ToArray();
+        }
+
         private void OnTick16()
         {
             if (!_isRunning) return;
@@ -101,10 +115,6 @@ namespace Anywhen
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                //if (AnywhenRuntime.Metronome.Sub16 == 0)
-                //{
-                //    track.AdvancePlayingPattern();
-                //}
 
                 var pattern = track.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
