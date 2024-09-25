@@ -96,7 +96,6 @@ namespace Anywhen.Composing
 
         private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
         {
-            Debug.Log("transition " + transitionType);
             switch (transitionType)
             {
                 case TransitionTypes.Instant:

@@ -65,7 +65,7 @@ namespace Editor.AnySong
         }
 
 
-        [MenuItem("Anywhen/Anysong Editor")]
+        [MenuItem("Anywhen/[DEBUG]Anysong Editor")]
         public static void ShowModuleWindow()
         {
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));

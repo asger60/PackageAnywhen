@@ -98,7 +98,6 @@ namespace Anywhen
 
         public void Play()
         {
-            print("start metronome");
             _isStopped = false;
             Init();
             _currentBar = 0;

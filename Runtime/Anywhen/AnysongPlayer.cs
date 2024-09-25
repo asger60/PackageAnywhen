@@ -186,7 +186,6 @@ namespace Anywhen
 
         public void Play()
         {
-            print("play " + songObject.name);
             _currentSong.Reset();
             _currentSectionIndex = 0;
             _currentBar = 0;
