@@ -137,7 +137,6 @@ namespace Editor.AnySong
 
         private static VisualElement DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
         {
-            Debug.Log("draw pattern steps");
             var stepButtonsHolder = new VisualElement
             {
                 name = "StepButtonsHolder",

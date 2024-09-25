@@ -20,8 +20,6 @@ namespace Samples.Scripts
             private int _prevStep = -1;
             public void OnTick()
             {
-                //Debug.Log(AnywhenMetronome.Instance.Sub32);
-
                 var stepIndex =
                     (int)Mathf.Repeat(AnywhenMetronome.Instance.GetCountForTickRate(tickRate), steps.Length);
                 if (stepIndex != _prevStep)
