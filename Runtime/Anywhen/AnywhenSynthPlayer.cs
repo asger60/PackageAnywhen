@@ -35,7 +35,7 @@ namespace Anywhen
         }
 
         [ContextMenu("CreateSynths")]
-        void CreateSynths()
+        internal void CreateSynths()
         {
             _allSynths.Clear();
 

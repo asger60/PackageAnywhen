@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {
@@ -23,10 +22,6 @@ namespace Anywhen
             CollisionExit2D,
             ObjectEnable,
             ObjectDisable,
-            //MouseEnter,
-            //MouseExit,
-            //MouseDown,
-            //MouseUp,
         }
 
         public enum TriggerObjectTypes
@@ -37,11 +32,9 @@ namespace Anywhen
             Name,
         }
 
-        [FormerlySerializedAs("targetObject")] [SerializeField]
-        private GameObject triggerObject;
+        [SerializeField] private GameObject triggerObject;
 
-        [FormerlySerializedAs("targetObjectType")] [SerializeField]
-        private TriggerObjectTypes triggerObjectType;
+        [SerializeField] private TriggerObjectTypes triggerObjectType;
 
         [SerializeField] private string triggerObjectTag;
 
@@ -143,7 +136,6 @@ namespace Anywhen
                     throw new ArgumentOutOfRangeException();
             }
 
-            return true;
         }
 
 

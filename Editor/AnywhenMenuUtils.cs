@@ -1,4 +1,5 @@
 using Anywhen;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,7 +29,13 @@ namespace Editor
 
             string[] interactionGUIDs = AssetDatabase.FindAssets("Anywhen", new[] { "Assets/PackageAnywhen/Samples/Prefabs" });
             GameObject someGameObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(interactionGUIDs[0])) as GameObject;
-            Selection.activeObject = PrefabUtility.InstantiatePrefab(someGameObject);
+            if (someGameObject)
+            {
+                var anywhenInstance = PrefabUtility.InstantiatePrefab(someGameObject);
+                AnywhenRuntime rt = anywhenInstance.GetComponent<AnywhenRuntime>();
+                rt.Init();
+                Selection.activeObject = anywhenInstance;
+            }
         }
     }
 }

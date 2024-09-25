@@ -46,7 +46,7 @@ namespace Anywhen
         }
 
         [ContextMenu("CreateSamplers")]
-        void CreateSamplers()
+        internal void CreateSamplers()
         {
             _allSamplers.Clear();
             foreach (var sampler in transform.GetComponentsInChildren<AnywhenSampler>())

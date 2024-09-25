@@ -30,7 +30,7 @@ namespace Anywhen
         private int _currentSongPackIndex;
         public int CurrentSongPackIndex => _currentSongPackIndex;
 
-        private void Start()
+        private void Awake()
         {
             Load(songObject);
             trigger.OnTrigger += Play;

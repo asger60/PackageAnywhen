@@ -100,5 +100,17 @@ namespace Anywhen
 
             _executeInEditMode = state;
         }
+
+        public void Init()
+        {
+            Debug.Log("init Anywhen");
+            TryGetComponent(out _metronome);
+            TryGetComponent(out _conductor);
+            TryGetComponent(out _anywhenSamplerHandler);
+            TryGetComponent(out _eventFunnel);
+            TryGetComponent(out _anywhenSynthHandler);
+            _anywhenSamplerHandler.CreateSamplers();
+            _anywhenSynthHandler.CreateSynths();
+        }
     }
 }
