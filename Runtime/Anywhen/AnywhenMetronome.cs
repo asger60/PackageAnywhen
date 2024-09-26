@@ -44,7 +44,6 @@ namespace Anywhen
 
         public Action OnTick16;
 
-        //public Action OnTick32;
         public Action OnNextBar;
 
         private int _currentBar;
@@ -55,7 +54,9 @@ namespace Anywhen
 
         public static AnywhenMetronome Instance => AnywhenRuntime.Metronome;
         public bool debugMode;
-
+        private bool _isStopped;
+        
+        
         [Serializable]
         public struct DebugSettings
         {
@@ -69,7 +70,6 @@ namespace Anywhen
         private void Start()
         {
             Init();
-            Playing = true;
             _currentBar = 0;
             _nextTime16 = AudioSettings.dspTime + bufferTime;
             _nextTime8 = _nextTime16;
@@ -98,8 +98,10 @@ namespace Anywhen
 
         public void Play()
         {
-            _isStopped = false;
             Init();
+            _isStopped = false;
+            Playing = true;
+
             _currentBar = 0;
             Sub16 = 0;
             sub8 = 0;
@@ -248,7 +250,7 @@ namespace Anywhen
             return (float)GetScheduledPlaytime(playbackRate) - (float)AudioSettings.dspTime;
         }
 
-        private bool _isStopped;
+        
 
         public void Stop()
         {

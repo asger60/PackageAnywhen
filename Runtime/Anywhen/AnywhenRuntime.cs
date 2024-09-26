@@ -36,10 +36,10 @@ namespace Anywhen
 
         static AnywhenRuntime()
         {
-            EditorApplication.update += Update;
+            EditorApplication.update += EditorUpdate;
         }
 
-        static void Update()
+        static void EditorUpdate()
         {
             if (_executeInEditMode)
             {
@@ -89,9 +89,7 @@ namespace Anywhen
                 Metronome.Play();
                 targetPlayer.Load();
                 targetPlayer.Play();
-                #if UNITY_EDITOR
-                
-                #endif
+                Debug.Log("preview");
             }
             else
             {

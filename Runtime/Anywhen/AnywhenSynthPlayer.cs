@@ -56,6 +56,7 @@ namespace Anywhen
         {
             foreach (var synth in _allSynths)
             {
+                if (!synth.Preset) continue;
                 if (synth.Preset.name == synthPreset.name) return synth;
             }
 

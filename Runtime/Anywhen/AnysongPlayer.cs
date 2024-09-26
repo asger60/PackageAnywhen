@@ -30,7 +30,7 @@ namespace Anywhen
         private int _currentSongPackIndex;
         public int CurrentSongPackIndex => _currentSongPackIndex;
 
-        private void Awake()
+        private void Start()
         {
             Load(songObject);
             trigger.OnTrigger += Play;
@@ -207,7 +207,6 @@ namespace Anywhen
         public void ToggleEditorPreview()
         {
             _isPreviewing = !_isPreviewing;
-
             AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
             OnPlay?.Invoke(_isPreviewing);
         }
