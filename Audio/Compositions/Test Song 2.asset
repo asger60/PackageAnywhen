@@ -1569,11 +1569,39 @@ MonoBehaviour:
     - patternProgressionType: 1
       patterns:
       - triggerChances:
-        - 100
-        - 100
-        - 100
-        - 100
+        - 0
+        - 0
+        - 0
+        - 0
         steps:
+        - noteOn: 1
+          noteOff: 0
+          duration: 0.27
+          offset: 0
+          velocity: 0.467
+          mixWeight: 0.5
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 0.815
+          expression: 1
+          rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 0.15
+          offset: 0
+          velocity: 0.606
+          mixWeight: 0.5
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 2
+          repeatRate: 0
         - noteOn: 1
           noteOff: 0
           duration: 0.19
@@ -1672,19 +1700,19 @@ MonoBehaviour:
           expression: 1
           rootNote: 9
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 0.59
           offset: 0
           velocity: 1
           mixWeight: 0.5
-          chordNotes: 0200000003000000
+          chordNotes: 0200000005000000
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 0.807
           expression: 1
-          rootNote: 5
+          rootNote: 6
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -1702,17 +1730,17 @@ MonoBehaviour:
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
-          duration: 0.59
+          duration: 2.5
           offset: 0
           velocity: 1
           mixWeight: 0.5
-          chordNotes: 0200000003000000
+          chordNotes: 0200000006000000
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
           chance: 0.807
           expression: 1
-          rootNote: 5
+          rootNote: 7
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -1758,7 +1786,7 @@ MonoBehaviour:
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
-          duration: 0.59
+          duration: 0.19
           offset: 0
           velocity: 1
           mixWeight: 0.5
@@ -1766,37 +1794,9 @@ MonoBehaviour:
           strumAmount: 0
           strumRandom: 0
           stepRepeats: 0
-          chance: 0.807
-          expression: 1
-          rootNote: 9
-          repeatRate: 0
-        - noteOn: 1
-          noteOff: 0
-          duration: 0.27
-          offset: 0
-          velocity: 0.467
-          mixWeight: 0.5
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
           chance: 0.815
           expression: 1
-          rootNote: 6
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 0.15
-          offset: 0
-          velocity: 0.606
-          mixWeight: 0.5
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 2
+          rootNote: 9
           repeatRate: 0
         rootNote: 0
         patternLength: 16
@@ -2004,7 +2004,7 @@ MonoBehaviour:
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
-          duration: 1
+          duration: 0.06
           offset: 0
           velocity: 1
           mixWeight: 0.5
@@ -2575,39 +2575,21 @@ MonoBehaviour:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
-          inSlope: 0.008345002
-          outSlope: 0.008345002
+          value: 1
+          inSlope: 0
+          outSlope: 0
           tangentMode: 34
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.49225068
-          value: 0.004107833
-          inSlope: 0.010126835
-          outSlope: 2.7134712
-          tangentMode: 1
-          weightedMode: 0
-          inWeight: 0.06705153
-          outWeight: 0.041473374
-        - serializedVersion: 3
-          time: 0.9587287
-          value: 0.9944113
-          inSlope: 2.7138367
-          outSlope: -0.020219967
-          tangentMode: 1
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.068962194
+          outWeight: 0
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 0.13541387
-          outSlope: 0.13541387
+          inSlope: 0
+          outSlope: 0
           tangentMode: 34
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -4945,14 +4927,14 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.995
-    instrument: {fileID: 11400000, guid: f9338f071cb3e4b24a424bb214887697, type: 2}
+  - volume: 0.084
+    instrument: {fileID: 11400000, guid: 5cd15454104ca49488e6a31a3a3d431c, type: 2}
     trackEnvelope:
-      enabled: 0
+      enabled: 1
       attack: 0
-      decay: 0
-      sustain: 0
-      release: 0
+      decay: 0.25
+      sustain: 1
+      release: 0.29
   - volume: 1
     instrument: {fileID: 11400000, guid: 2172847fe7ce94e619cfb2b8708e4d4f, type: 2}
     trackEnvelope:

@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 

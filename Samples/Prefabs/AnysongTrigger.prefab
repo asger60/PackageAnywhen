@@ -280,7 +280,6 @@ GameObject:
   - component: {fileID: 3888837336385657566}
   - component: {fileID: 427288671958840882}
   - component: {fileID: 1026110562836208877}
-  - component: {fileID: 526965493177718454}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -372,20 +371,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &526965493177718454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6432352119971125669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f32b2d9c5c4040e39936080ce3f37c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triggerTypeText: {fileID: 6613397049880637631}
-  songNameText: {fileID: 546475163113392951}
 --- !u!1 &8207662452618103203
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +385,6 @@ GameObject:
   - component: {fileID: 2169488734655937669}
   - component: {fileID: 6780924570475025038}
   - component: {fileID: 985398207751296918}
-  - component: {fileID: 2337642490544127470}
   m_Layer: 0
   m_Name: AnysongTrigger
   m_TagString: Untagged
@@ -507,7 +491,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a8cc91396074b088b7775e2348d5b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetObject: {fileID: 0}
+  triggerObject: {fileID: 0}
+  triggerObjectType: 0
+  triggerObjectTag: 
+  triggerObjectName: 
   triggerType: 3
 --- !u!114 &985398207751296918
 MonoBehaviour:
@@ -524,16 +511,3 @@ MonoBehaviour:
   songObject: {fileID: 11400000, guid: eec2b7c8807e5480b9c6dae617252f88, type: 2}
   triggerTransitionsType: 0
   trigger: {fileID: 6780924570475025038}
---- !u!114 &2337642490544127470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207662452618103203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff9c9a57d30424cb98362c6d35375664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anywhenTrigger: {fileID: 6780924570475025038}
