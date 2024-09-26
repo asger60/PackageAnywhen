@@ -275,6 +275,7 @@ namespace Editor.AnySong
 
         static void OnBar()
         {
+            if (CurrentSong != _currentRuntimeSongPlayer.AnysongObject) return;
             AnysongSectionsView.HilightSection(_currentRuntimeSongPlayer.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
 
             var ints = _currentRuntimeSongPlayer.GetPlayingTrackPatternIndexes();
