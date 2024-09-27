@@ -27,10 +27,10 @@ namespace Editor.Anysong
         private void OnEnable()
         {
             _anysongPlayer = target as AnysongPlayer;
-            _currentPackIndex = _anysongPlayer ? _anysongPlayer.CurrentSongPackIndex : 0;
+            _currentPackIndex = _anysongPlayer ? _anysongPlayer.currentSongPackIndex : 0;
             _packObjects = Resources.LoadAll<AnyTrackPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
-            _currentSongIndex = _anysongPlayer ? _anysongPlayer.CurrentSongIndex : 0;
+            _currentSongIndex = _anysongPlayer ? _anysongPlayer.currentSongIndex : 0;
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -279,7 +279,6 @@ namespace Editor.Anysong
 
         void IncrementPackSelection(int direction)
         {
-            Debug.Log("increment " + direction + " " + _currentPackIndex);
             _currentPackIndex += direction;
             _currentPackIndex = (int)Mathf.Repeat(_currentPackIndex, _packObjects.Length);
 
@@ -287,15 +286,17 @@ namespace Editor.Anysong
             _currentSongIndex = 0;
             RefreshCurrentSong();
             RefreshCurrentPack();
+            EditorUtility.SetDirty(target);
+
         }
 
         void IncrementSongSelection(int direction)
         {
-            Debug.Log("increment " + direction + " " + _currentSongIndex);
             _currentSongIndex += direction;
             _currentSongIndex = (int)Mathf.Repeat(_currentSongIndex, _currentPack.Songs.Length);
             _anysongPlayer.SetSongObject(_currentPack.Songs[_currentSongIndex], _currentSongIndex);
             RefreshCurrentSong();
+            EditorUtility.SetDirty(target);
         }
 
 

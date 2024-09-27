@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
@@ -24,11 +25,10 @@ namespace Anywhen
 
         [SerializeField] private AnywhenTrigger trigger;
         private bool _isPreviewing;
-        private int _currentSongIndex;
-        public int CurrentSongIndex => _currentSongIndex;
+        [FormerlySerializedAs("_currentSongIndex")] public int currentSongIndex;
 
-        private int _currentSongPackIndex;
-        public int CurrentSongPackIndex => _currentSongPackIndex;
+        public int currentSongPackIndex;
+        
 
         private void Start()
         {
@@ -210,6 +210,7 @@ namespace Anywhen
 
         public void SetSongObject(AnysongObject newSong, int index)
         {
+            currentSongIndex = index;
             this.songObject = newSong;
             if (_isPreviewing)
             {
@@ -219,7 +220,7 @@ namespace Anywhen
 
         public void SetSongPackIndex(int index)
         {
-            _currentSongPackIndex = index;
+            currentSongPackIndex = index;
         }
     }
 }
