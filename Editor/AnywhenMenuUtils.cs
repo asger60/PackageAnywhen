@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Anywhen;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -27,15 +28,55 @@ namespace Editor
             }
 
 
-            string[] interactionGUIDs = AssetDatabase.FindAssets("Anywhen", new[] { "Assets/PackageAnywhen/Samples/Prefabs" });
-            GameObject someGameObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(interactionGUIDs[0])) as GameObject;
-            if (someGameObject)
+            
+            var paths = GetAssetPath("Prefabs/Anywhen.prefab");
+            
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(paths);
+
+            
+            
+            if (prefab)
             {
-                var anywhenInstance = PrefabUtility.InstantiatePrefab(someGameObject);
+                var anywhenInstance = PrefabUtility.InstantiatePrefab(prefab);
                 AnywhenRuntime rt = anywhenInstance.GetComponent<AnywhenRuntime>();
                 rt.Init();
                 Selection.activeObject = anywhenInstance;
             }
+        }
+        
+        /// <summary>
+        /// Finds complete path to provided path.
+        ///
+        /// Note: The more precise you are the less likely there will be "multipath" errors,
+        /// but on the other hand if you change any directory name in your path,
+        /// you will get "no path found" errors.
+        /// </summary>
+        /// <param name="assetStaticPath">static unchanging path to the asset (example: Prefabs/Prefab.asset)</param>
+        /// <returns>found path, null if not found or found multiple</returns>
+        public static string GetAssetPath(string assetStaticPath) {
+            List<string> foundPaths = new List<string>();
+            var allAssetPaths = AssetDatabase.GetAllAssetPaths();
+            var fileName = assetStaticPath;
+            for (int i = 0; i < allAssetPaths.Length; ++i) {
+                if (allAssetPaths[i].EndsWith(fileName))
+                    foundPaths.Add(allAssetPaths[i]);
+            }
+
+            if (foundPaths.Count == 1)
+                return foundPaths[0];
+
+            if (foundPaths.Count == 0) {
+                Debug.LogError($"No path found for asset {assetStaticPath}!");
+            } else if (foundPaths.Count > 1) {
+                Debug.LogError($"Multiple paths found for asset {assetStaticPath}, use more precise static path!");
+
+                for (int i = 0; i < foundPaths.Count; i++) {
+                    string path = foundPaths[i];
+                    Debug.LogError($"Path {i + 1}: {path}");
+                }
+            }
+
+            return null;
         }
     }
 }

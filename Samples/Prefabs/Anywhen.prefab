@@ -90,7 +90,7 @@ MonoBehaviour:
     debug4: 0
     debug8: 0
     debug16: 0
-    debugAnywhenInstrument: {fileID: 11400000, guid: a2f7f0cad97fc43f6a134c48bd25e5af, type: 2}
+    debugAnywhenInstrument: {fileID: 0}
 --- !u!114 &5342442075504646355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anywhenSamplerPrefab: {fileID: 6188908412672189600, guid: f76d2881ca51143a3b176546985b7bec, type: 3}
   _allSamplers: []
-  numberOfSamplers: 64
+  numberOfSamplers: 32
   activeSamplePlayers: 0
 --- !u!82 &5604494718384798635
 AudioSource:
@@ -258,5 +258,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e2eb16ef4c24a268f71b64493793f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  songPlayers: []
-  globalIntensity: 1
+  globalIntensity: 0

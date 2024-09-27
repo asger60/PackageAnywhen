@@ -90,7 +90,7 @@ namespace Anywhen
         public int[] GetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
-            for (var i = 0; i < _currentSong.Tracks.Count; i++)
+            for (var i = 0; i < _currentSong.Sections[_currentSectionIndex].tracks.Count; i++)
             {
                 var track = _currentSong.Sections[_currentSectionIndex].tracks[i];
 
