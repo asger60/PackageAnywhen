@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Anywhen.Composing;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.AnySong
@@ -92,6 +93,17 @@ namespace Editor.AnySong
             };
             parent.Add(lockElement);
             lockElement.Add(lockButton);
+        }
+
+        public static void RefreshSectionLocked()
+        {
+            Debug.Log("refres toggle");
+            _parent.Query<Button>("SectionLockButton").ForEach(button =>
+            {
+                button.style.backgroundColor = IsSectionLocked()
+                    ? AnysongEditorWindow.ColorGreyDark
+                    : AnysongEditorWindow.ColorGreyDefault;
+            });
         }
 
         public static bool IsSectionLocked()

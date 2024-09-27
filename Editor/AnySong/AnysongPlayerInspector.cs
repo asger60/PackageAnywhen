@@ -94,7 +94,7 @@ namespace Editor.Anysong
         {
             var anysongPlayer = target as AnysongPlayer;
             if (anysongPlayer == null) return;
-            AnysongEditorWindow.SetPlayer(anysongPlayer);
+            //AnysongEditorWindow.SetPlayer(anysongPlayer);
             anysongPlayer?.ToggleEditorPreview();
             AnywhenRuntime.Metronome.SetTempo(anysongPlayer.AnysongObject.tempo);
             
@@ -112,7 +112,7 @@ namespace Editor.Anysong
         void Edit()
         {
             var anysongPlayer = target as AnysongPlayer;
-            AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject);
+            AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject, anysongPlayer);
 
             AnysongEditorWindow.ShowModuleWindow();
         }

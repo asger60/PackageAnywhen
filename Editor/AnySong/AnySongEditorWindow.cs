@@ -3,6 +3,7 @@ using Anywhen;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -65,7 +66,6 @@ namespace Editor.AnySong
         }
 
 
-        [MenuItem("Anywhen/[DEBUG]Anysong Editor")]
         public static void ShowModuleWindow()
         {
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
@@ -75,42 +75,76 @@ namespace Editor.AnySong
             window.CreateGUI();
         }
 
-        public static void LoadSong(AnysongObject songObject)
+        public static void LoadSong(AnysongObject songObject, AnysongPlayer anysongPlayer)
         {
+            _currentRuntimeSongPlayer = anysongPlayer;
+
             CurrentSong = songObject;
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
+            // EditorPrefs.SetString("AnysongPlayer", AssetDatabase.GetAssetPath(_currentRuntimeSongPlayer));
+
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             Debug.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
             window.Show(true);
             window.CreateGUI();
         }
 
-        public static void SetPlayer(AnysongPlayer player)
-        {
-            _currentRuntimeSongPlayer = player;
-            _currentRuntimeSongPlayer.OnPlay += OnPlayModeChanged;
-        }
+        private static bool _isPLaying;
 
-        private static void OnPlayModeChanged(bool state)
+        private static void ToggleIsPlaying()
         {
-            if (state)
+            _isPLaying = !_isPLaying;
+
+            if (_isPLaying)
             {
+                if (_currentRuntimeSongPlayer == null)
+                {
+                    _currentRuntimeSongPlayer = AttemptToFindPlayer();
+                    if (_currentRuntimeSongPlayer == null)
+                    {
+                        Debug.LogError("no runtime player");
+                        return;
+                    }
+                }
+
+
+                AnywhenRuntime.SetPreviewMode(true, _currentRuntimeSongPlayer);
+                AnysongSectionsView.RefreshSectionLocked();
                 AnywhenRuntime.Metronome.OnTick16 += OnTick16;
                 AnywhenRuntime.Metronome.OnNextBar += OnBar;
                 OnBar();
             }
             else
             {
+                AnywhenRuntime.SetPreviewMode(false, _currentRuntimeSongPlayer);
                 CurrentSong.Reset();
                 AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
                 AnywhenRuntime.Metronome.OnNextBar -= OnBar;
-                _currentRuntimeSongPlayer = null;
                 AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
             }
         }
 
 
+        static AnysongPlayer AttemptToFindPlayer()
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                foreach (var rootGameObject in SceneManager.GetSceneAt(i).GetRootGameObjects())
+                {
+                    foreach (var songPlayer in rootGameObject.GetComponentsInChildren<AnysongPlayer>())
+                    {
+                        if (songPlayer.AnysongObject == CurrentSong)
+                            return songPlayer;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+
         private VisualElement _mainViewPanel;
+        private VisualElement _transportPanel;
         private VisualElement _sequencesPanel;
         private VisualElement _sectionsPanel;
         private VisualElement _tracksPanel;
@@ -139,12 +173,6 @@ namespace Editor.AnySong
             }
 
 
-            if (CurrentSong.tempo == 0)
-            {
-                Debug.Log("updating song tempo");
-                CurrentSong.tempo = 100;
-            }
-
             if (CurrentSong.Sections.Count == 0)
             {
                 CreateNewSection();
@@ -156,6 +184,14 @@ namespace Editor.AnySong
                 CreateNewTrack();
             }
 
+            _transportPanel = new VisualElement()
+            {
+                style =
+                {
+                    height = 40,
+                }
+            };
+
             _sectionsPanel = new VisualElement()
             {
                 style =
@@ -165,6 +201,8 @@ namespace Editor.AnySong
                 }
             };
 
+
+            rootVisualElement.Add(_transportPanel);
             rootVisualElement.Add(_sectionsPanel);
 
             VisualElement columnsPanel = new VisualElement()
@@ -220,6 +258,7 @@ namespace Editor.AnySong
             columnsPanel.Add(_mainViewPanel);
             columnsPanel.Add(_inspectorPanel);
 
+            AnysongTransportView.Draw(_transportPanel, CurrentSong);
 
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
@@ -227,6 +266,7 @@ namespace Editor.AnySong
             AnysongStepsView.Draw(_sequencesPanel, CurrentSong.Sections[0], _currentSelection.CurrentSectionIndex);
             AnysongInspectorView.Draw(_inspectorPanel);
 
+            HandleTransportLogic();
             HandleSectionsLogic();
             HandleTracksLogic();
             HandleProgressionLogic();
@@ -234,28 +274,15 @@ namespace Editor.AnySong
             HandlePatternsLogic();
             RegisterKeyboardInputs();
             RegisterScrollWheelInputs();
-            EditorApplication.playModeStateChanged += EditorApplicationOnplayModeStateChanged;
         }
 
-
-        private void EditorApplicationOnplayModeStateChanged(PlayModeStateChange state)
+        void HandleTransportLogic()
         {
-            if (state == PlayModeStateChange.EnteredPlayMode)
+            _transportPanel.Q<Button>("PlayButton").RegisterCallback<ClickEvent>((evt) =>
             {
-                foreach (var sPlayer in FindObjectsOfType<AnysongPlayer>())
-                {
-                    if (sPlayer.AnysongObject == CurrentSong)
-                    {
-                        _currentRuntimeSongPlayer = sPlayer;
-
-                        OnPlayModeChanged(true);
-                    }
-                }
-            }
-            else
-            {
-                OnPlayModeChanged(false);
-            }
+                ToggleIsPlaying();
+                AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
+            });
         }
 
 

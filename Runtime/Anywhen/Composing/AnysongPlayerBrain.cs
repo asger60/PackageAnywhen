@@ -50,7 +50,7 @@ namespace Anywhen.Composing
         private void Start()
         {
             SetGlobalIntensity(1);
-            SectionLockIndex = 0;
+            SetSectionLock(-1);
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
 

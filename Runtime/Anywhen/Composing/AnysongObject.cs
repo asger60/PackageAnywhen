@@ -6,9 +6,12 @@ namespace Anywhen.Composing
     [CreateAssetMenu(fileName = "Anysong", menuName = "Anywhen/Anysong", order = 1)]
     public class AnysongObject : ScriptableObject
     {
+        [Range(10, 200)]
         public int tempo;
         public List<AnysongSection> Sections;
         public List<AnysongTrack> Tracks;
+        [Range(0,1f)]
+        public float songVolume = 1;
     
         [ContextMenu("Init")]
         void Init()
