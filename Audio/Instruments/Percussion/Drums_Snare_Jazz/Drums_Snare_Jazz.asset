@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_Snare_Jazz
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 5bb9b8185325e404d8fb61e8ad60c75a, type: 3}
-  - {fileID: 8300000, guid: b26cc7c1531a94175af54b5a667c1a16, type: 3}
-  - {fileID: 8300000, guid: fe00de3f003cc45b9a7d40682230225a, type: 3}
-  - {fileID: 8300000, guid: b1f309653efa24ff0a36bbd15e112eab, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 9513f244d4d9c46aeb17f13fd0b8460e, type: 2}
   - {fileID: 11400000, guid: c42d6c7a3b5204cd886cd9e1854badfc, type: 2}
@@ -24,14 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a01744f8bf54c4505b108c72b09b90ad, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

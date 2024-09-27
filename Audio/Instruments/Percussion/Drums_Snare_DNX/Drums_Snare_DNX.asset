@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_Snare_DNX
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: afa9cb689d5854e4bab3f6c91f7b6acd, type: 3}
-  - {fileID: 8300000, guid: aacad1028a27d4277b1266903b437e9a, type: 3}
-  - {fileID: 8300000, guid: fb61d1740802d42c9907488b7abd101a, type: 3}
-  - {fileID: 8300000, guid: b2a7c81b760644c989212ea1f753fe36, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 0eca61f5be5eb4c23b99859c7ca74bb4, type: 2}
   - {fileID: 11400000, guid: 583e9833b80e148cbab45cdb74f2245b, type: 2}
@@ -24,14 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 576b4dfe966034962b0dc5483678d3fc, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

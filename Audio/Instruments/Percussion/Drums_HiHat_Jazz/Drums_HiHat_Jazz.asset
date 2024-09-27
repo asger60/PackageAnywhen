@@ -12,13 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_HiHat_Jazz
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 24166e064716c4367be6eb6137e11097, type: 3}
-  - {fileID: 8300000, guid: ed1c5c0ef6c49483889efdde26df9b7f, type: 3}
-  - {fileID: 8300000, guid: 541b3d12b731b44e9950568cfc042f85, type: 3}
-  - {fileID: 8300000, guid: ef520bd94e6a541b4863182b8decd80c, type: 3}
-  - {fileID: 8300000, guid: a1f50c6df7853415eaa5988a96c97c55, type: 3}
-  - {fileID: 8300000, guid: 4e26751bec2744876aee561a067ae16f, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 5ba32b7d0aa2b45709e2f9b2e95b839e, type: 2}
   - {fileID: 11400000, guid: b5963be5d4ae944d6972d7d68a05f7c7, type: 2}
@@ -28,14 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 78e151764cc1d42c2a271fb26905036f, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

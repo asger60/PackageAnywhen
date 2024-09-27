@@ -12,31 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: 8Bit_old_NoiseBass
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 325d08a46da8b44db8f893606c3002c3, type: 3}
-  - {fileID: 8300000, guid: 80068ba368fcb4a35ba1c1be121095ca, type: 3}
-  - {fileID: 8300000, guid: 015ad7f0661d64655ba3dbcda1d7f10f, type: 3}
-  - {fileID: 8300000, guid: 3a8465ca561614eff858aa9287bd7d5b, type: 3}
-  - {fileID: 8300000, guid: e021f4b230e754ab4b28a74dd826ff1a, type: 3}
-  - {fileID: 8300000, guid: 4ada7886ea7f34268b0ea30fc738cb7b, type: 3}
-  - {fileID: 8300000, guid: 51abf509e965e4148b412a976393dc5b, type: 3}
-  - {fileID: 8300000, guid: 4b6cfee43b6cc439e9be2e19122b4bdd, type: 3}
-  - {fileID: 8300000, guid: 0cef12296c5a741a79be9d3c8b6878a3, type: 3}
-  - {fileID: 8300000, guid: fc80b2ef5707d4d7a9e334395850b8a9, type: 3}
-  - {fileID: 8300000, guid: f718c8d43439a49abb89f27c95e564eb, type: 3}
-  - {fileID: 8300000, guid: ced5206192c6e4369983e673730a4e66, type: 3}
-  - {fileID: 8300000, guid: de671169593cf4678becc1402c2510f2, type: 3}
-  - {fileID: 8300000, guid: b47895d63eeb94d3f9c903142a2e1c34, type: 3}
-  - {fileID: 8300000, guid: f4dee8490064e4bb2a93084bf8abef67, type: 3}
-  - {fileID: 8300000, guid: a4bcb4e29498148ee8dc5397a33f64e1, type: 3}
-  - {fileID: 8300000, guid: 67ae302447fc0448fb8f26d7b8c7fb08, type: 3}
-  - {fileID: 8300000, guid: ff5e6e71cfce6465395fe73da970cc41, type: 3}
-  - {fileID: 8300000, guid: 88b48d3949daa472e9cae098ba55141a, type: 3}
-  - {fileID: 8300000, guid: edc675d5c1b2b41ad8105888ae6a4490, type: 3}
-  - {fileID: 8300000, guid: 174e7e375f0214a3fbf76f394a623741, type: 3}
-  - {fileID: 8300000, guid: a1607f83ac06b474fbfffa7f5547c609, type: 3}
-  - {fileID: 8300000, guid: a7da947a5467e4c729970f2bd8b4a8d8, type: 3}
-  - {fileID: 8300000, guid: 14d17677a4b8a4a2c8e2343ca193a9f0, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 05bb6167242794cffaa48e674ccb6b69, type: 2}
   - {fileID: 11400000, guid: 0af40d7e145c442a89ceae9c2c66ebf9, type: 2}
@@ -66,12 +42,6 @@ MonoBehaviour:
   instrumentType: 0
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

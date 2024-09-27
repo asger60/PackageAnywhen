@@ -12,23 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Amen
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 9180ae3b079a84c7daf1d4bbcd62ae54, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 3ae99ef740240417598c4cdaf94591c4, type: 2}
-  volume: 1
   stopDuration: 0.1
-  instrumentType: 2
-  clipSelectType: 1
+  instrumentType: 0
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 1
-    attack: 0
-    decay: 0
-    sustain: 1
-    release: 4
   loopSettings:
     enabled: 1
     loopStart: 66150
     loopLength: 66150
     crossFadeDuration: 0
+  volume: 1

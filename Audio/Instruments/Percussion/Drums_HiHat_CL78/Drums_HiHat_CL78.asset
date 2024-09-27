@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_HiHat_CL78
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 5600a3df782de4e4787fef26d738512b, type: 3}
-  - {fileID: 8300000, guid: cb3e3d37d6ea2419b97a42e0a9522c48, type: 3}
-  - {fileID: 8300000, guid: 99fae7479afb048ddb1b799f0525ea10, type: 3}
-  - {fileID: 8300000, guid: d66f9f5564ffc43399566fb195b15e2f, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 232e5df7c53744283ad15426b871004d, type: 2}
   - {fileID: 11400000, guid: c3a12917c0f024a5685c80bc8751e1c3, type: 2}
@@ -24,14 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aaed39d5e5b6f4957857ec74293226d6, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

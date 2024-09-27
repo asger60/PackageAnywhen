@@ -78,7 +78,6 @@ namespace Anywhen.Composing
 
         public void SetSelectedPattern(int index)
         {
-            Debug.Log("selected patter index: " + index);
             _selectedTrackPatternIndex = index;
         }
 

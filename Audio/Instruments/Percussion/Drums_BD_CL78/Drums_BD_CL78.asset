@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_BD_CL78
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: c326145aff6a84c8882a1fdbce7963f2, type: 3}
-  - {fileID: 8300000, guid: 7d2fc4cfbaa7e4ad9ab2f5d8d38e0f91, type: 3}
-  - {fileID: 8300000, guid: a43a02cb78e594f40b91d04dc81278ef, type: 3}
-  - {fileID: 8300000, guid: b7bb1c4792e184eaa80cb89faf022818, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 7659594bff3a14cfa92c7dfaa26784bf, type: 2}
   - {fileID: 11400000, guid: 33c71404df17848d5b855a8ec30e15c4, type: 2}
@@ -24,14 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2d19771729448435898a707f5728019d, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

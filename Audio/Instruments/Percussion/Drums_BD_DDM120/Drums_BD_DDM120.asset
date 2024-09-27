@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_BD_DDM120
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: bd7c2e864cbf2432d8d70a9f72c4aadb, type: 3}
-  - {fileID: 8300000, guid: 12e2094d22a1342a7a203676b1646827, type: 3}
-  - {fileID: 8300000, guid: fe7f237c72d1749b2826778aafa3358e, type: 3}
-  - {fileID: 8300000, guid: c34165047eb454433b0f396627eb52d0, type: 3}
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 4d7f10fda17364341838aa4fb3485d3a, type: 2}
   - {fileID: 11400000, guid: db9faeb7087fe44648b87be6d336139f, type: 2}
@@ -24,14 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ccbdd072f67bd42e491f5f446c87fcb5, type: 2}
   stopDuration: 0.1
   instrumentType: 0
-  clipSelectType: 1
+  clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0
