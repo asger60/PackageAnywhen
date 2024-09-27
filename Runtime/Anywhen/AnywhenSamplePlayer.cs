@@ -39,7 +39,7 @@ namespace Anywhen
         public void Init()
         {
             _isInit = true;
-            for (int i = 0; i < numberOfSamplers; i++)
+            for (int i = 0; i < _allSamplers.Count; i++)
             {
                 _allSamplers[i].Init(AnywhenMetronome.TickRate.Sub16);
             }
