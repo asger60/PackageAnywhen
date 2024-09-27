@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
   m_Name: NGAmbinetpuzz
   m_EditorClassIdentifier: 
-  tempo: 58
+  tempo: 70
   Sections:
   - rootNote: 0
     patternSteps:
@@ -7513,7 +7513,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 0.18
           offset: 0
@@ -7525,9 +7525,9 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 8
+          rootNote: 7
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 0.14
           offset: 0
@@ -7539,7 +7539,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 8
+          rootNote: 7
           repeatRate: 0
         rootNote: 0
         patternLength: 16
@@ -22008,15 +22008,15 @@ MonoBehaviour:
       patterns:
       - triggerChances:
         - 0
+        - 100
         - 0
-        - 0
-        - 0
+        - 100
         steps:
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.667
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22040,11 +22040,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.583
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22054,11 +22054,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 10
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.533
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22082,11 +22082,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.575
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22110,11 +22110,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 6
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.567
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22138,11 +22138,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.917
+          velocity: 0.508
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22152,11 +22152,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 7
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.877
+          velocity: 0.508
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22180,11 +22180,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.838
+          velocity: 0.533
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22194,11 +22194,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 5
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 0.891
+          velocity: 0.5
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -22222,11 +22222,11 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 0
+        - noteOn: 1
           noteOff: 0
           duration: 1
           offset: 0
-          velocity: 1
+          velocity: 0.558
           mixWeight: 0.91601753
           chordNotes: 
           strumAmount: 0
@@ -23289,20 +23289,6 @@ MonoBehaviour:
           duration: 1
           offset: 0
           velocity: 1
-          mixWeight: 0.187284
-          chordNotes: 
-          strumAmount: 0
-          strumRandom: 0
-          stepRepeats: 0
-          chance: 1
-          expression: 1
-          rootNote: 8
-          repeatRate: 0
-        - noteOn: 0
-          noteOff: 0
-          duration: 1
-          offset: 0
-          velocity: 1
           mixWeight: 0.06329703
           chordNotes: 
           strumAmount: 0
@@ -23410,7 +23396,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -23507,6 +23493,20 @@ MonoBehaviour:
           chance: 1
           expression: 1
           rootNote: 0
+          repeatRate: 0
+        - noteOn: 0
+          noteOff: 0
+          duration: 1
+          offset: 0
+          velocity: 1
+          mixWeight: 0.187284
+          chordNotes: 
+          strumAmount: 0
+          strumRandom: 0
+          stepRepeats: 0
+          chance: 1
+          expression: 1
+          rootNote: 8
           repeatRate: 0
         rootNote: 0
         patternLength: 16
@@ -29431,15 +29431,15 @@ MonoBehaviour:
       decay: 4.83
       sustain: 0.179
       release: 10
-  - volume: 0.093
+  - volume: 0.083
     instrument: {fileID: 11400000, guid: 4bfba893bec414981b57b2d6293a71c9, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0.33
-      decay: 1.84
+      attack: 0.15
+      decay: 2.28
       sustain: 0
       release: 10
-  - volume: 0.295
+  - volume: 0.331
     instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
     trackEnvelope:
       enabled: 1
@@ -29463,7 +29463,7 @@ MonoBehaviour:
       decay: 1.08
       sustain: 0
       release: 5.33
-  - volume: 0.394
+  - volume: 0.334
     instrument: {fileID: 11400000, guid: a015cb615646142a2a37463adeeb1292, type: 2}
     trackEnvelope:
       enabled: 1
@@ -29487,7 +29487,7 @@ MonoBehaviour:
       decay: 0.81
       sustain: 0
       release: 6.99
-  - volume: 0.215
+  - volume: 0.258
     instrument: {fileID: 11400000, guid: 490d3c6c876bf4d44abc91ee139439b5, type: 2}
     trackEnvelope:
       enabled: 1
