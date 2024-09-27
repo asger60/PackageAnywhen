@@ -102,6 +102,7 @@ namespace Anywhen
             }
         }
 
+        private bool _setLateInit;
         public void RegisterPreset(AnywhenSynthPreset synthPreset)
         {
             foreach (var synth in _allSynths)
@@ -110,6 +111,20 @@ namespace Anywhen
                 {
                     synth.SetPreset(synthPreset);
                     break;
+                }
+            }
+
+            _setLateInit = true;
+        }
+
+        public void Update()
+        {
+            if (_setLateInit)
+            {
+                _setLateInit = false;
+                foreach (var synth in _allSynths)
+                {
+                    synth.SetLateInit();
                 }
             }
         }

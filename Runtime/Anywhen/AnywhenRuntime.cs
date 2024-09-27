@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,6 +43,7 @@ namespace Anywhen
             if (_executeInEditMode)
             {
                 Metronome.Update();
+                AnywhenSynthHandler.Update();
             }
         }
 
@@ -62,12 +62,7 @@ namespace Anywhen
         private void Awake()
         {
             _instance = this;
-            TryGetComponent(out _metronome);
-            TryGetComponent(out _conductor);
-            TryGetComponent(out _anywhenSamplerHandler);
-            TryGetComponent(out _eventFunnel);
-            TryGetComponent(out _anywhenSynthHandler);
-            _anywhenSynthHandler.ClearPresets();
+            GetAnyComponents();
             SetPreviewMode(false, null);
         }
 
@@ -77,19 +72,13 @@ namespace Anywhen
             _instance = FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
             if (state)
             {
-                _instance.TryGetComponent(out _metronome);
-                _instance.TryGetComponent(out _conductor);
-                _instance.TryGetComponent(out _anywhenSamplerHandler);
-                _instance.TryGetComponent(out _eventFunnel);
-                _instance.TryGetComponent(out _anywhenSynthHandler);
+                _instance.GetAnyComponents();
                 _anywhenSynthHandler.ClearPresets();
                 _anywhenSynthHandler.Init();
-
                 _anywhenSamplerHandler.Init();
-                Metronome.Play();
                 targetPlayer.Load();
                 targetPlayer.Play();
-                Debug.Log("preview");
+                Metronome.Play();
             }
             else
             {
@@ -101,14 +90,18 @@ namespace Anywhen
 
         public void Init()
         {
-            Debug.Log("init Anywhen");
+            GetAnyComponents();
+            _anywhenSamplerHandler.CreateSamplers();
+            _anywhenSynthHandler.CreateSynths();
+        }
+
+        void GetAnyComponents()
+        {
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
             TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
             TryGetComponent(out _anywhenSynthHandler);
-            _anywhenSamplerHandler.CreateSamplers();
-            _anywhenSynthHandler.CreateSynths();
         }
     }
 }

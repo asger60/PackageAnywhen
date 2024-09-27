@@ -19,6 +19,7 @@
 //  SOFTWARE."
 
 using System;
+using System.Runtime.CompilerServices;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
@@ -75,7 +76,7 @@ namespace Anywhen.Synth
         public AnywhenSynthPreset Preset => _preset;
         public static int SampleRate;
         private int _noteOnCount;
-
+        private AudioSource _audioSource;
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
@@ -101,32 +102,35 @@ namespace Anywhen.Synth
             {
                 _preset.BindToRuntime(this);
                 RebuildSynth();
-                var source = GetComponent<AudioSource>();
-                source.clip = Resources.Load<AudioClip>("AudioClips/DebugClick");
-                source.Play();
             }
             else
             {
-                Clear();
+                _isInitialized = false;
+                _preset = null;
+                foreach (var childT in GetComponentsInChildren<Transform>())
+                {
+                    if (childT == this.transform) continue;
+                    DestroyImmediate(childT.gameObject);
+                }
+
+                _voices = null;
+                _voiceFrequencyModifiers = null;
+                _amplitudeModifiers = null;
+                _filterModifiers = null;
+                _filters = null;
+
+                //Clear();
             }
         }
 
-        [ContextMenu("Clear components")]
-        public void Clear()
+        private void OnDestroy()
         {
-            _isInitialized = false;
-            _preset = null;
-            foreach (var childT in GetComponentsInChildren<Transform>())
-            {
-                if (childT == this.transform) continue;
-                DestroyImmediate(childT.gameObject);
-            }
-            
+            SetPreset(null);
         }
+
 
         public void RebuildSynth()
         {
-            
             _voices = new SynthVoiceGroup[_preset.oscillatorSettings.Length];
             _voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
             _amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
@@ -276,9 +280,11 @@ namespace Anywhen.Synth
                 }
             }
 
-
-            _isInitialized = true;
+            _noteOnCount = 0;
+            _noteOnWaiting = false;
+            _noteOffWaiting = false;
         }
+
 
         void HandleQueue(int queueSize)
         {
@@ -402,16 +408,6 @@ namespace Anywhen.Synth
         }
 
 
-        //public float[] GetLastBuffer()
-        //{
-        //    return _lastBuffer;
-        //}
-//
-        //public object GetBufferMutex()
-        //{
-        //    return _bufferMutex;
-        //}
-
         /// Unity
         ///
         private void Awake()
@@ -429,15 +425,13 @@ namespace Anywhen.Synth
         {
             if (_isInitialized)
             {
-                //Debug.Log("running");
                 if (channels == 2)
                 {
                     // Cache this for the entire buffer, we don't need to check for
                     // every sample if new events have been enqueued.
                     // This assumes that no other methods call GetFrontAndDequeue.
                     HandleQueue(_noteOnQueue.GetSize());
-
-
+                    
                     int sampleFrames = data.Length / 2;
 
                     RenderFloat32StereoInterleaved(data, sampleFrames);
@@ -453,6 +447,14 @@ namespace Anywhen.Synth
             }
         }
 
+        public void SetLateInit()
+        {
+            if (!_preset) return;
+            _isInitialized = true;
+        }
+
+        
+        
         /// Internal
         public void Init()
         {
@@ -468,8 +470,15 @@ namespace Anywhen.Synth
                 }
             }
 
+            SampleRate = AudioSettings.outputSampleRate;
             _noteOnQueue = new EventQueue(QueueCapacity);
-
+            
+            AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
+            TryGetComponent(out _audioSource);
+            _audioSource.clip = myClip;
+            _audioSource.playOnAwake = true;
+            _audioSource.Play();
+            
             ResetVoices();
         }
 

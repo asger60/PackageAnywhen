@@ -42,6 +42,7 @@ namespace Anywhen
             _audioSource.clip = myClip;
             _adsr = new ADSR();
             _audioSource.Play();
+            
         }
 
 

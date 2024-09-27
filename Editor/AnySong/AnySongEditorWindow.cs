@@ -110,6 +110,7 @@ namespace Editor.AnySong
 
                 AnywhenRuntime.SetPreviewMode(true, _currentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
+                AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
                 AnywhenRuntime.Metronome.OnTick16 += OnTick16;
                 AnywhenRuntime.Metronome.OnNextBar += OnBar;
                 OnBar();

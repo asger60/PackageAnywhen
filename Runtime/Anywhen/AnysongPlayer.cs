@@ -67,6 +67,8 @@ namespace Anywhen
                 _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
             }
 
+            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
+
             var thisSection = _currentSong.Sections[_currentSectionIndex];
             int progress = (int)Mathf.Repeat(_currentBar, thisSection.sectionLength);
 
@@ -81,7 +83,7 @@ namespace Anywhen
                 NextSection();
             }
 
-            
+
             var section = _currentSong.Sections[_currentSectionIndex];
 
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
@@ -103,12 +105,7 @@ namespace Anywhen
         private void OnTick16()
         {
             if (!_isRunning) return;
-
-            if (_currentSong != songObject)
-            {
-                Release();
-                Load(songObject);
-            }
+            
 
             _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
 
@@ -191,7 +188,6 @@ namespace Anywhen
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
-
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
