@@ -20,6 +20,12 @@ public class AnySongPackInspector : UnityEditor.Editor
 
     public static AsyncOperationHandle<IList<AnysongObject>> LoadSongs(AnyTrackPackObject packObject)
     {
+        var load = Addressables.LoadAssetAsync<AnysongObject>(packObject.assetReference);
+        load.Completed += handle =>
+        {
+            Debug.Log(handle.DebugName);
+        };
+        
         var loadSongs = Addressables.LoadAssetsAsync<AnysongObject>(packObject.AssetLabelReference,
             o =>
             {

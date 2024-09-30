@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 [CreateAssetMenu(fileName = "AnyTrackPack", menuName = "Anywhen/AnyTrackPack")]
 public class AnyTrackPackObject : ScriptableObject
 {
+    public AssetReference assetReference;
     public AssetLabelReference AssetLabelReference;
     public AnysongObject[] Songs => _songs;
      private AnysongObject[] _songs;

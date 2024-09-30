@@ -223,8 +223,13 @@ namespace Editor.Anysong
                     var loadSongs = AnySongPackInspector.LoadSongs(_currentPack);
                     loadSongs.Completed += handle =>
                     {
-                        _currentPack.SetSongs(handle.Result.ToArray());
-                        RefreshCurrentSong();
+                        if (handle.Result != null)
+                        {
+                            _currentPack.SetSongs(handle.Result.ToArray());
+                            RefreshCurrentSong();
+                        }
+
+                        Debug.Log("load completed");
                     };
                 };
                 _currentSongButtonHolder.Add(currentSongButton);
@@ -233,6 +238,8 @@ namespace Editor.Anysong
                 
             }
 
+            _currentSongIndex = Mathf.Min(_currentSongIndex, _currentPack.Songs.Length - 1);
+            
             currentSongButton.text = _currentPack.Songs[_currentSongIndex].name;
             
             
