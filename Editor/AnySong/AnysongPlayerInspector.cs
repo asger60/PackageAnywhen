@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Linq;
 using Anywhen;
 using Anywhen.Composing;
 using Editor.AnySong;
@@ -207,11 +208,34 @@ namespace Editor.Anysong
         void RefreshCurrentSong()
         {
             _currentSongButtonHolder.Clear();
+            Debug.Log("refresh songs");
+            
             var currentSongButton = new Button
             {
-                text = _currentPack.Songs[_currentSongIndex].name,
                 style = { flexGrow = 1 }
             };
+            
+            if (_currentPack.Songs == null || _currentPack.Songs.Length == 0)
+            {
+                currentSongButton.text = "load tracks";
+                currentSongButton.clicked += () =>
+                {
+                    var loadSongs = AnySongPackInspector.LoadSongs(_currentPack);
+                    loadSongs.Completed += handle =>
+                    {
+                        _currentPack.SetSongs(handle.Result.ToArray());
+                        RefreshCurrentSong();
+                    };
+                };
+                _currentSongButtonHolder.Add(currentSongButton);
+
+                return;
+                
+            }
+
+            currentSongButton.text = _currentPack.Songs[_currentSongIndex].name;
+            
+            
             currentSongButton.clicked += () =>
             {
                 for (var i = 0; i < _currentPack.Songs.Length; i++)
@@ -231,7 +255,7 @@ namespace Editor.Anysong
                     _currentSongButtonHolder.Add(songButton);
                 }
 
-                _currentSongButtonHolder.Add(currentSongButton);
+               // _currentSongButtonHolder.Add(currentSongButton);
             };
 
             _currentSongButtonHolder.Add(currentSongButton);
@@ -284,6 +308,7 @@ namespace Editor.Anysong
 
             _currentPack = _packObjects[_currentPackIndex];
             _currentSongIndex = 0;
+            
             RefreshCurrentSong();
             RefreshCurrentPack();
             EditorUtility.SetDirty(target);
