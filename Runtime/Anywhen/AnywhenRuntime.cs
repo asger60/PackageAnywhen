@@ -8,10 +8,10 @@ namespace Anywhen
     [RequireComponent(typeof(AnywhenSamplePlayer))]
     [RequireComponent(typeof(AnywhenEventFunnel))]
     [RequireComponent(typeof(AnywhenNoteClipPreviewer))]
-    
+
 #if UNITY_EDITOR
     [InitializeOnLoad]
-    #endif
+#endif
     public class AnywhenRuntime : MonoBehaviour
     {
         private static AnywhenMetronome _metronome;
@@ -35,6 +35,8 @@ namespace Anywhen
         private static AnywhenRuntime _instance;
         private static bool _executeInEditMode;
         private static AnysongPlayer _targetPlayer;
+        public static int SampleRate;
+
 
 #if UNITY_EDITOR
         static AnywhenRuntime()
@@ -44,10 +46,11 @@ namespace Anywhen
 #endif
         static void EditorUpdate()
         {
+            if (Application.isPlaying) return;
             if (_executeInEditMode)
             {
                 Metronome.Update();
-                AnywhenSynthHandler.Update();
+                AnywhenSynthHandler.LateUpdate();
             }
         }
 
@@ -68,6 +71,7 @@ namespace Anywhen
             _instance = this;
             GetAnyComponents();
             SetPreviewMode(false, null);
+            SampleRate = AudioSettings.outputSampleRate;
         }
 
 

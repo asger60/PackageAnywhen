@@ -102,7 +102,7 @@ namespace Anywhen.Synth
         private float _cutoffMod = 1;
 
         /// Config
-        float _reso, _fs;
+        float _reso;
 
         int _oversampling = 1; // 1 means don't oversample
 
@@ -115,7 +115,6 @@ namespace Anywhen.Synth
         float _s, _v;
 
         float _cutOff;
-        
 
 
         public override void SetExpression(float data)
@@ -138,16 +137,15 @@ namespace Anywhen.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            _fs = AnywhenSynth.SampleRate;
             _v = V_t * 0.5f; // 1/2V_t
             _cutoffMod = 1;
+            
             settings = newSettings;
         }
 
 
         public override float Process(float sample)
         {
-
             for (int j = 0; j < _oversampling; ++j)
             {
                 y_a += _s * (FastTanh(sample - 4 * _reso * y_d * _v) - w_a);
@@ -161,7 +159,6 @@ namespace Anywhen.Synth
 
             return Clamp(y_d, -1f, 1f); // Ensure float clamping
         }
-        
 
 
         // Fast approximation of Tanh
@@ -185,7 +182,8 @@ namespace Anywhen.Synth
         private void SetCutOff(float c)
         {
             _cutOff = c;
-            _s = c / C / _fs / _oversampling * 6.28318530717959f * _cutoffMod;
+            //_s = 1;
+            _s = c / C / (float)AnywhenRuntime.SampleRate / _oversampling * 6.28318530717959f * _cutoffMod;
         }
 
         private void SetOversampling(int iterationCount)
@@ -193,7 +191,6 @@ namespace Anywhen.Synth
             _oversampling = iterationCount;
             if (_oversampling < 1)
                 _oversampling = 1;
-            //SetCutOff(_cutOff);
         }
     }
 }
