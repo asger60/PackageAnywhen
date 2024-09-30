@@ -98,8 +98,7 @@ namespace Editor.Anysong
             //AnysongEditorWindow.SetPlayer(anysongPlayer);
             anysongPlayer?.ToggleEditorPreview();
             AnywhenRuntime.Metronome.SetTempo(anysongPlayer.AnysongObject.tempo);
-            
-            
+
 
             if (anysongPlayer.IsPreviewing)
                 AnywhenRuntime.Metronome.OnTick16 += OnTick16;
@@ -209,12 +208,12 @@ namespace Editor.Anysong
         {
             _currentSongButtonHolder.Clear();
             Debug.Log("refresh songs");
-            
+
             var currentSongButton = new Button
             {
                 style = { flexGrow = 1 }
             };
-            
+
             if (_currentPack.Songs == null || _currentPack.Songs.Length == 0)
             {
                 currentSongButton.text = "load tracks";
@@ -235,14 +234,13 @@ namespace Editor.Anysong
                 _currentSongButtonHolder.Add(currentSongButton);
 
                 return;
-                
             }
 
             _currentSongIndex = Mathf.Min(_currentSongIndex, _currentPack.Songs.Length - 1);
-            
+
             currentSongButton.text = _currentPack.Songs[_currentSongIndex].name;
-            
-            
+
+
             currentSongButton.clicked += () =>
             {
                 for (var i = 0; i < _currentPack.Songs.Length; i++)
@@ -261,8 +259,6 @@ namespace Editor.Anysong
                     };
                     _currentSongButtonHolder.Add(songButton);
                 }
-
-               // _currentSongButtonHolder.Add(currentSongButton);
             };
 
             _currentSongButtonHolder.Add(currentSongButton);
@@ -315,15 +311,19 @@ namespace Editor.Anysong
 
             _currentPack = _packObjects[_currentPackIndex];
             _currentSongIndex = 0;
-            
+
             RefreshCurrentSong();
             RefreshCurrentPack();
             EditorUtility.SetDirty(target);
-
         }
 
         void IncrementSongSelection(int direction)
         {
+            if (_currentPack.Songs == null || _currentPack.Songs.Length == 0)
+            {
+                return;
+            }
+
             _currentSongIndex += direction;
             _currentSongIndex = (int)Mathf.Repeat(_currentSongIndex, _currentPack.Songs.Length);
             _anysongPlayer.SetSongObject(_currentPack.Songs[_currentSongIndex], _currentSongIndex);
