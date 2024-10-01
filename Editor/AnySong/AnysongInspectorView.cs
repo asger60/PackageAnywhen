@@ -66,9 +66,24 @@ namespace Editor.AnySong
                 text = "Scrub -",
             };
             _parent.Add(scrubBackButton);
-
             _parent.Add(scrubForwardButton);
 
+            _parent.Add(Spacer());
+            
+            var randomizeMelody = new Button
+            {
+                name = "RandomizeMelody",
+                text = "Randomize melody",
+            };
+            
+            var randomizeRhythm = new Button
+            {
+                name = "RandomizeRhythm",
+                text = "Randomize rhythm",
+            };
+            _parent.Add(randomizeMelody);
+            _parent.Add(randomizeRhythm);
+            
             _parent.Add(Spacer());
             _parent.Add(CreateUtilsBox());
 
