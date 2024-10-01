@@ -40,7 +40,8 @@ namespace Anywhen.Composing
         }
 
         public static float GlobalIntensity => Instance.globalIntensity;
-
+        private bool _isStarted;
+        public static bool IsStarted => Instance._isStarted;
 
         private void Awake()
         {
@@ -93,9 +94,10 @@ namespace Anywhen.Composing
             OnIntensityChanged?.Invoke(Instance.globalIntensity);
         }
 
-
+       
         private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
         {
+            _isStarted = true;
             switch (transitionType)
             {
                 case TransitionTypes.Instant:

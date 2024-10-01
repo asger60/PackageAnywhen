@@ -74,9 +74,9 @@ namespace Anywhen.Synth
 
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
-        public static int SampleRate;
         private int _noteOnCount;
         private AudioSource _audioSource;
+
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
         {
@@ -96,6 +96,8 @@ namespace Anywhen.Synth
 
         public void SetPreset(AnywhenSynthPreset preset)
         {
+            _isInitialized = false;
+
             _preset = preset;
 
             if (_preset)
@@ -140,8 +142,7 @@ namespace Anywhen.Synth
             for (int i = 0; i < _preset.oscillatorSettings.Length; i++)
             {
                 var oscillatorSetting = _preset.oscillatorSettings[i];
-
-
+                
                 var go = new GameObject("Oscillator " + oscillatorSetting.oscillatorType);
                 go.transform.SetParent(transform);
                 bool isNoise = oscillatorSetting.oscillatorType == SynthSettingsObjectOscillator.OscillatorType.Noise;
@@ -346,8 +347,8 @@ namespace Anywhen.Synth
                         for (int i = 0; i < voice._oscillators.Length; i++)
                         {
                             var osc = voice._oscillators[i];
-                            osc.SetNote(_currentNoteEvent.notes[0], SampleRate);
-                            osc.SetFineTuning(i * _preset.voiceSpread, SampleRate);
+                            osc.SetNote(_currentNoteEvent.notes[0], AnywhenRuntime.SampleRate);
+                            osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                         }
                     }
                 }
@@ -366,8 +367,8 @@ namespace Anywhen.Synth
                             int currentNote = _currentNoteEvent.notes[i];
 
 
-                            osc.SetFineTuning(i * _preset.voiceSpread, SampleRate);
-                            osc.SetNote(currentNote, SampleRate);
+                            osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
+                            osc.SetNote(currentNote, AnywhenRuntime.SampleRate);
                         }
                     }
                 }
@@ -408,12 +409,7 @@ namespace Anywhen.Synth
         }
 
 
-        /// Unity
-        ///
-        private void Awake()
-        {
-            SampleRate = AudioSettings.outputSampleRate;
-        }
+
 
         private void Start()
         {
@@ -431,21 +427,22 @@ namespace Anywhen.Synth
                     // every sample if new events have been enqueued.
                     // This assumes that no other methods call GetFrontAndDequeue.
                     HandleQueue(_noteOnQueue.GetSize());
-                    
+
                     int sampleFrames = data.Length / 2;
 
                     RenderFloat32StereoInterleaved(data, sampleFrames);
 
-                    if (_debugBufferEnabled)
-                    {
-                        lock (_bufferMutex)
-                        {
-                            Array.Copy(data, _lastBuffer, data.Length);
-                        }
-                    }
+                    //if (_debugBufferEnabled)
+                    //{
+                    //    lock (_bufferMutex)
+                    //    {
+                    //        Array.Copy(data, _lastBuffer, data.Length);
+                    //    }
+                    //}
                 }
             }
         }
+
 
         public void SetLateInit()
         {
@@ -453,8 +450,7 @@ namespace Anywhen.Synth
             _isInitialized = true;
         }
 
-        
-        
+
         /// Internal
         public void Init()
         {
@@ -470,15 +466,14 @@ namespace Anywhen.Synth
                 }
             }
 
-            SampleRate = AudioSettings.outputSampleRate;
             _noteOnQueue = new EventQueue(QueueCapacity);
-            
+
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             TryGetComponent(out _audioSource);
             _audioSource.clip = myClip;
             _audioSource.playOnAwake = true;
             _audioSource.Play();
-            
+
             ResetVoices();
         }
 
@@ -546,7 +541,7 @@ namespace Anywhen.Synth
                     {
                         if (!synthOscillator.IsActive) break;
 
-                        synthOscillator.SetPitchMod(voiceFreqMod, SampleRate);
+                        synthOscillator.SetPitchMod(voiceFreqMod, AnywhenRuntime.SampleRate);
                         oscillatorOutput += synthOscillator.Process();
                         numOsc++;
                     }
@@ -594,8 +589,7 @@ namespace Anywhen.Synth
         /// Internals
         private static float Midi2Freq(int note)
         {
-            return 440 * (Mathf.Pow(2, ((note - 69) / 12f)));
-            // return 32.70319566257483f * Mathf.Pow(2.0f, note / 12.0f + octave);
+            return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
     }
 }

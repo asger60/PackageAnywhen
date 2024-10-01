@@ -32,7 +32,7 @@ namespace Anywhen.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            Init(AnywhenSynth.SampleRate);
+            Init(AnywhenRuntime.SampleRate);
             _q = 5;
             settings = newSettings;
         }

@@ -62,7 +62,8 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenSynthPreset synthPreset, AnywhenMetronome.TickRate rate, AudioMixerGroup mixerChannel = null)
+        public void HandleEvent(NoteEvent e, AnywhenSynthPreset synthPreset, AnywhenMetronome.TickRate rate,
+            AudioMixerGroup mixerChannel = null)
         {
             var thisSynth = GetSynth(synthPreset);
 
@@ -103,6 +104,7 @@ namespace Anywhen
         }
 
         private bool _setLateInit;
+
         public void RegisterPreset(AnywhenSynthPreset synthPreset)
         {
             foreach (var synth in _allSynths)
@@ -117,15 +119,17 @@ namespace Anywhen
             _setLateInit = true;
         }
 
-        public void Update()
+        private int _counter = 0;
+        public void LateUpdate()
         {
             if (_setLateInit)
             {
-                _setLateInit = false;
                 foreach (var synth in _allSynths)
                 {
                     synth.SetLateInit();
                 }
+
+                _setLateInit = false;
             }
         }
     }

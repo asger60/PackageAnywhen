@@ -25,18 +25,25 @@ namespace Anywhen
 
         [SerializeField] private AnywhenTrigger trigger;
         private bool _isPreviewing;
-        [FormerlySerializedAs("_currentSongIndex")] public int currentSongIndex;
+
+        [FormerlySerializedAs("_currentSongIndex")]
+        public int currentSongIndex;
 
         public int currentSongPackIndex;
-        
 
-        private void Start()
+
+        private void Awake()
         {
-            Load(songObject);
+            //Load(songObject);
             trigger.OnTrigger += Play;
         }
 
         public void Load()
+        {
+            Load(songObject);
+        }
+
+        private void Start()
         {
             Load(songObject);
         }
@@ -86,7 +93,8 @@ namespace Anywhen
 
             var section = _currentSong.Sections[_currentSectionIndex];
 
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
+                _currentSong.Sections[0]));
         }
 
         public int[] GetPlayingTrackPatternIndexes()
@@ -105,7 +113,7 @@ namespace Anywhen
         private void OnTick16()
         {
             if (!_isRunning) return;
-            
+
 
             _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
 
@@ -183,11 +191,15 @@ namespace Anywhen
 
         public void Play()
         {
+            if (!_currentSong) Load();
+            if (!AnysongPlayerBrain.IsStarted)
+                AnywhenMetronome.Instance.SetTempo(_currentSong.tempo);
             _currentSong.Reset();
             _currentSectionIndex = 0;
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
+                _currentSong.Sections[0]));
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 

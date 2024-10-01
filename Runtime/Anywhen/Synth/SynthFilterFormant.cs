@@ -123,7 +123,7 @@ namespace Anywhen.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             settings = newSettings;
-            Init(AnywhenSynth.SampleRate);
+            Init(AnywhenRuntime.SampleRate);
         }
 
 

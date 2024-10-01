@@ -36,10 +36,10 @@ namespace Anywhen.Synth
         {
             if (settings == null) return;
             //Reset();
-            SetAttackRate(settings.attack * AnywhenSynth.SampleRate);
-            SetDecayRate(settings.decay * AnywhenSynth.SampleRate);
+            SetAttackRate(settings.attack * AnywhenRuntime.SampleRate);
+            SetDecayRate(settings.decay * AnywhenRuntime.SampleRate);
             SetSustainLevel(settings.sustain);
-            SetReleaseRate(settings.release * AnywhenSynth.SampleRate);
+            SetReleaseRate(settings.release * AnywhenRuntime.SampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_attack;
@@ -47,7 +47,7 @@ namespace Anywhen.Synth
 
         public override void NoteOff()
         {
-            SetReleaseRate(settings.release * AnywhenSynth.SampleRate);
+            SetReleaseRate(settings.release * AnywhenRuntime.SampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_release;
