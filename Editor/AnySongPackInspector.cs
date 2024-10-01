@@ -23,6 +23,7 @@ public class AnySongPackInspector : UnityEditor.Editor
         var loadSongs = Addressables.LoadAssetsAsync<AnysongObject>(packObject.AssetLabelReference,
             o => { Debug.Log("loaded: " + o.name); });
 
+        
         return loadSongs;
     }
 

@@ -14,17 +14,17 @@ namespace Anywhen
         [SerializeField] private AnysongObject songObject;
         public AnysongObject AnysongObject => songObject;
         private AnywhenInstrument[] _instruments;
-        private AnysongObject _currentSong;
+        private AnysongObject _currentSong, _previewSong;
         private bool _isRunning;
         private bool _loaded = false;
         public bool IsSongLoaded => _loaded;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
-        public bool IsPreviewing => _isPreviewing;
+        //public bool IsPreviewing => _isPreviewing;
 
         [SerializeField] private AnywhenTrigger trigger;
-        private bool _isPreviewing;
+        //private bool _isPreviewing;
 
         [FormerlySerializedAs("_currentSongIndex")]
         public int currentSongIndex;
@@ -36,11 +36,12 @@ namespace Anywhen
         {
             //Load(songObject);
             trigger.OnTrigger += Play;
+            _previewSong = null;
         }
 
         public void Load()
         {
-            Load(songObject);
+            Load(_previewSong ? _previewSong : songObject);
         }
 
         private void Start()
@@ -200,6 +201,7 @@ namespace Anywhen
             var section = _currentSong.Sections[_currentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
                 _currentSong.Sections[0]));
+
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
@@ -210,21 +212,12 @@ namespace Anywhen
             return (float)progress / trackLength;
         }
 
-        public Action<bool> OnPlay;
-
-        public void ToggleEditorPreview()
-        {
-            _isPreviewing = !_isPreviewing;
-            AnywhenRuntime.SetPreviewMode(_isPreviewing, this);
-            OnPlay?.Invoke(_isPreviewing);
-        }
-
 
         public void SetSongObject(AnysongObject newSong, int index)
         {
             currentSongIndex = index;
             this.songObject = newSong;
-            if (_isPreviewing)
+            if (AnywhenRuntime.IsPreviewing)
             {
                 Load(newSong);
             }
@@ -233,6 +226,11 @@ namespace Anywhen
         public void SetSongPackIndex(int index)
         {
             currentSongPackIndex = index;
+        }
+
+        public void SetPreviewSong(AnysongObject anysongObject)
+        {
+            _previewSong = anysongObject;
         }
     }
 }

@@ -94,10 +94,18 @@ namespace Anywhen.Composing
             OnIntensityChanged?.Invoke(Instance.globalIntensity);
         }
 
-       
+
         private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
         {
             _isStarted = true;
+            if (AnywhenRuntime.IsPreviewing)
+            {
+                _nextTransitionType = transitionType;
+                TransitionNow(player);
+                return;
+            }
+
+
             switch (transitionType)
             {
                 case TransitionTypes.Instant:

@@ -85,7 +85,7 @@ namespace Anywhen.SettingsObjects
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     if (note >= noteClips.Length)
                     {
-                        Debug.LogWarning("note out of clip range");
+                        AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
                         return null;
                     }
 
@@ -109,7 +109,7 @@ namespace Anywhen.SettingsObjects
             {
                 case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
-                    if (note >= audioClips.Length) Debug.LogWarning("note out of clip range");
+                    if (note >= audioClips.Length) AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
                     return note >= audioClips.Length ? null : audioClips[note];
 
                 case ClipSelectType.RandomVariations:
@@ -144,7 +144,7 @@ namespace Anywhen.SettingsObjects
                 var clip = Instantiate<AudioClip>(activeObject);
 
                 extension = ".asset";
-                Debug.Log(fullPath + ".asset");
+                AnywhenRuntime.Log(fullPath + ".asset");
                 var newClipPath = "Assets/" + clip.name + extension;
                 //AssetDatabase.CreateAsset(clip, newClipPath);
                 //AssetDatabase.ImportAsset(newClipPath);

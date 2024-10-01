@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,7 +16,17 @@ namespace Anywhen
     public class AnywhenRuntime : MonoBehaviour
     {
         private static AnywhenMetronome _metronome;
-        public static AnywhenMetronome Metronome => _metronome;
+
+        public static AnywhenMetronome Metronome
+        {
+            get
+            {
+                if (!_metronome)
+                    Instance.GetAnyComponents();
+
+                return _metronome;
+            }
+        }
 
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
@@ -31,12 +42,29 @@ namespace Anywhen
         private static AnywhenSynthPlayer _anywhenSynthHandler;
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
 
-
         private static AnywhenRuntime _instance;
+
+        private static AnywhenRuntime Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance =
+                        FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
+                    _instance.GetAnyComponents();
+                }
+
+                return _instance;
+            }
+        }
+
         private static bool _executeInEditMode;
         private static AnysongPlayer _targetPlayer;
         public static int SampleRate;
-
+        private bool _isPreviewing;
+        [SerializeField] private bool logErrors;
+        public static bool IsPreviewing => Instance._isPreviewing;
 
 #if UNITY_EDITOR
         static AnywhenRuntime()
@@ -75,12 +103,18 @@ namespace Anywhen
         }
 
 
+        public static void TogglePreviewMode(AnysongPlayer targetPlayer)
+        {
+            Instance._isPreviewing = !Instance._isPreviewing;
+            SetPreviewMode(Instance._isPreviewing, targetPlayer);
+        }
+
         public static void SetPreviewMode(bool state, AnysongPlayer targetPlayer)
         {
-            _instance = FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
+            Instance._isPreviewing = state;
             if (state)
             {
-                _instance.GetAnyComponents();
+                Instance.GetAnyComponents();
                 _anywhenSynthHandler.ClearPresets();
                 _anywhenSynthHandler.Init();
                 _anywhenSamplerHandler.Init();
@@ -110,6 +144,31 @@ namespace Anywhen
             TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
             TryGetComponent(out _anywhenSynthHandler);
+        }
+
+        public enum DebugMessageType
+        {
+            Log,
+            Warning,
+            Error
+        }
+
+        public static void Log(string message, DebugMessageType debugMessageType = DebugMessageType.Log)
+        {
+            if (!_instance.logErrors) return;
+            switch (debugMessageType)
+            {
+                case DebugMessageType.Log:
+                    Debug.Log(message);
+                    break;
+                case DebugMessageType.Warning:
+                    Debug.LogWarning(message);
+
+                    break;
+                case DebugMessageType.Error:
+                    Debug.LogError(message);
+                    break;
+            }
         }
     }
 }

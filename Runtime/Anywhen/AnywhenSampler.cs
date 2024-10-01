@@ -114,7 +114,7 @@ namespace Anywhen
                     }
                     else
                     {
-                        Debug.LogWarning("failed to find NoteClip");
+                        AnywhenRuntime.Log("failed to find NoteClip", AnywhenRuntime.DebugMessageType.Warning);
                         SetReady(true);
                     }
 
@@ -128,7 +128,6 @@ namespace Anywhen
 
         public void NoteOff(double stopTime)
         {
-            //if (_hasScheduledStop) return;
             _isStopping = true;
             if (_playingNoteClip)
             {

@@ -231,14 +231,6 @@ namespace Editor.AnySong
         }
 
 
-        static void EvaluateOtherTriggerChanced(List<SerializedProperty> properties)
-        {
-            foreach (var property in properties)
-            {
-                Debug.Log(property.floatValue);
-                //property.floatValue = 0;
-            }
-        }
 
         public static void DrawStep(SerializedProperty step, Action didUpdate)
         {

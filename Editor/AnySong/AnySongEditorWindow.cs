@@ -190,6 +190,7 @@ namespace Editor.AnySong
                 style =
                 {
                     height = 40,
+                    minHeight = 40,
                 }
             };
 
