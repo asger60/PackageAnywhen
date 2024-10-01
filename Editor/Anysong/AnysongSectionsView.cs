@@ -51,7 +51,7 @@ namespace Editor.AnySong
                     text = "Section " + i,
                     style =
                     {
-                        width = new StyleLength(170),
+                        width = new StyleLength(currentSong.Sections[i].sectionLength*25),
                         height = 20,
                         backgroundColor = i == currentSelectionIndex
                             ? AnysongEditorWindow.ColorGreyDark
