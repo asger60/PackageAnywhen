@@ -8,7 +8,10 @@ namespace Anywhen
     [RequireComponent(typeof(AnywhenSamplePlayer))]
     [RequireComponent(typeof(AnywhenEventFunnel))]
     [RequireComponent(typeof(AnywhenNoteClipPreviewer))]
+    
+#if UNITY_EDITOR
     [InitializeOnLoad]
+    #endif
     public class AnywhenRuntime : MonoBehaviour
     {
         private static AnywhenMetronome _metronome;
@@ -33,11 +36,12 @@ namespace Anywhen
         private static bool _executeInEditMode;
         private static AnysongPlayer _targetPlayer;
 
+#if UNITY_EDITOR
         static AnywhenRuntime()
         {
             EditorApplication.update += EditorUpdate;
         }
-
+#endif
         static void EditorUpdate()
         {
             if (_executeInEditMode)

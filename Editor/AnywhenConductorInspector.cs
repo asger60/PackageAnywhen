@@ -7,15 +7,6 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(AnywhenConductor))]
 public class AnywhenConductorInspector : UnityEditor.Editor
 {
-    void OnEnable()
-    {
-        EditorApplication.update += Update;
-    }
-
-    void OnDisable()
-    {
-        EditorApplication.update -= Update;
-    }
 
     public override VisualElement CreateInspectorGUI()
     {
@@ -45,7 +36,5 @@ public class AnywhenConductorInspector : UnityEditor.Editor
         return inspector;
     }
 
-    void Update()
-    {
-    }
+    
 }
