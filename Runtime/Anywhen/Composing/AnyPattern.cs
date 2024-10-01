@@ -102,7 +102,7 @@ namespace Anywhen.Composing
             {
                 if (patternStep.noteOn)
                 {
-                    int thisIndex = Random.Range(0, notes.Count - 1);
+                    int thisIndex = Random.Range(0, notes.Count );
                     patternStep.rootNote = notes[thisIndex];
                     notes.RemoveAt(thisIndex);
                 }
