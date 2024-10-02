@@ -13,5 +13,6 @@ public class AnyTrackPackObject : ScriptableObject
     {
         _songs = songsList;
     }
-    public Texture packImage;
+    public Sprite packImage;
+    public Color editorBackgroundColor;
 }

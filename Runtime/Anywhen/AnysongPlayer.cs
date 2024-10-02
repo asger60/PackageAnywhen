@@ -232,5 +232,10 @@ namespace Anywhen
         {
             _previewSong = anysongObject;
         }
+
+        public void RefreshUI()
+        {
+            
+        }
     }
 }

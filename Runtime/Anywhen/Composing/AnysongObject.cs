@@ -12,7 +12,9 @@ namespace Anywhen.Composing
         public List<AnysongTrack> Tracks;
         [Range(0,1f)]
         public float songVolume = 1;
-    
+
+        public string author = "Floppy Club";
+        
         [ContextMenu("Init")]
         void Init()
         {

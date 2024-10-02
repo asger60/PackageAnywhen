@@ -29,8 +29,9 @@ public class AnySongBrowser : EditorWindow
 
     private bool _isLoadingPack;
     private AsyncOperationHandle<IList<AnysongObject>> _loadStatus;
-
-    public static void ShowBrowserWindow(AnysongPlayer thisPlayer)
+    private Action OnClose;
+    
+    public static void ShowBrowserWindow(AnysongPlayer thisPlayer, Action OnWindowClosed)
     {
         _anysongPlayer = thisPlayer;
         AnySongBrowser window = (AnySongBrowser)GetWindow(typeof(AnySongBrowser));
@@ -38,6 +39,13 @@ public class AnySongBrowser : EditorWindow
         window.titleContent = new GUIContent("Anysong browser");
         window.minSize = new Vector2(450, 200);
         window.CreateGUI();
+        window.OnClose = OnWindowClosed;
+    }
+
+
+    private void OnDestroy()
+    {
+        OnClose?.Invoke();
     }
 
     public void CreateGUI()
@@ -71,7 +79,7 @@ public class AnySongBrowser : EditorWindow
         };
         _packArtImage = new Image
         {
-            image = _currentPack.packImage,
+            //image = _currentPack.packImage,
             scaleMode = ScaleMode.ScaleToFit,
             style =
             {
@@ -187,7 +195,7 @@ public class AnySongBrowser : EditorWindow
 
             _currentPackButtonHolder.Remove(currentPackButton);
         };
-        _packArtImage.image = _currentPack.packImage;
+       // _packArtImage.image = _currentPack.packImage;
         _currentPackButtonHolder.Add(currentPackButton);
 
         _songBrowserHolder.Add(DrawSongSelector());
@@ -226,7 +234,9 @@ public class AnySongBrowser : EditorWindow
         EditorUtility.SetDirty(_anysongPlayer);
         _anysongPlayer.SetPreviewSong(null);
         AnywhenRuntime.SetPreviewMode(false, _anysongPlayer);
-        this.Close();
+        _anysongPlayer.RefreshUI();
+        OnClose?.Invoke();
+        Close();
     }
 
 
