@@ -77,7 +77,6 @@ namespace Editor.Anysong
 
         private void OnBrowseWindowClosed()
         {
-            Debug.Log("window closed");
             Refresh();
         }
         
