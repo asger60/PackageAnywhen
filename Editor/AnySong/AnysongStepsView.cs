@@ -134,7 +134,10 @@ namespace Editor.AnySong
 
             patternsButtonHolder.Add(AnysongEditorWindow.CreateAddRemoveButtons());
             patternsButtonHolder.Q<Button>("AddButton").tooltip = trackIndex.ToString();
-            patternsButtonHolder.Q<Button>("RemoveButton").tooltip = trackIndex.ToString();
+            var deleteButton = patternsButtonHolder.Q<Button>("RemoveButton");
+            deleteButton.tooltip = trackIndex.ToString();
+            deleteButton.style.display = thisTrack.patterns.Count == 1 ? DisplayStyle.None : DisplayStyle.Flex;
+            
 
             return patternsButtonHolder;
         }
