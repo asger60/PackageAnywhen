@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad3830cd88c544d69c0c9c68f4aa5fe, type: 3}
   m_Name: NGRytmiskDingo
   m_EditorClassIdentifier: 
-  tempo: 95
+  tempo: 105
   Sections:
   - rootNote: 0
     patternSteps:
@@ -20,7 +20,8 @@ MonoBehaviour:
       anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 1
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -279,7 +280,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -538,7 +540,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -797,7 +800,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -1056,7 +1060,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -1315,7 +1320,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -1574,7 +1580,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -1833,7 +1840,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -2092,7 +2100,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -2351,7 +2360,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -2610,7 +2620,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -2869,7 +2880,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -3128,7 +3140,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -3387,7 +3400,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -3644,9 +3658,10 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      isMuted: 1
+      isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -3905,7 +3920,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -4164,7 +4180,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -4423,7 +4440,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -4682,7 +4700,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -4941,7 +4960,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -5202,10 +5222,13 @@ MonoBehaviour:
       isSolo: 0
     sectionLength: 8
   - rootNote: 0
-    patternSteps: []
+    patternSteps:
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 0.85
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -5464,7 +5487,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -5723,7 +5747,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -5982,7 +6007,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -6241,7 +6267,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -6500,7 +6527,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -6759,7 +6787,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -7018,7 +7047,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -7277,7 +7307,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -7536,7 +7567,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -7795,7 +7827,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -8054,7 +8087,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -8313,7 +8347,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -8572,7 +8607,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -8831,7 +8867,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -9090,7 +9127,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -9349,7 +9387,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -9608,7 +9647,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -9867,7 +9907,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -10126,7 +10167,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -10387,10 +10429,13 @@ MonoBehaviour:
       isSolo: 0
     sectionLength: 8
   - rootNote: 0
-    patternSteps: []
+    patternSteps:
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 0.85
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -10649,7 +10694,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -10908,7 +10954,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -11167,7 +11214,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -11426,7 +11474,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -11685,7 +11734,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -11944,7 +11994,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -12203,7 +12254,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -12462,7 +12514,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -12721,7 +12774,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -12980,7 +13034,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -13239,7 +13294,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -13498,7 +13554,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -13757,7 +13814,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -14016,7 +14074,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -14275,7 +14334,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -14534,7 +14594,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -14793,7 +14854,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -15052,7 +15114,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -15311,7 +15374,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -15572,10 +15636,13 @@ MonoBehaviour:
       isSolo: 0
     sectionLength: 8
   - rootNote: 0
-    patternSteps: []
+    patternSteps:
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 0.85
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -15834,7 +15901,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -16093,7 +16161,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -16352,7 +16421,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -16611,7 +16681,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -16870,7 +16941,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -17129,7 +17201,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -17388,7 +17461,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -17647,7 +17721,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -17906,7 +17981,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -18165,7 +18241,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -18424,7 +18501,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -18683,7 +18761,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -19638,7 +19717,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -20593,7 +20673,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -20852,7 +20933,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -21111,7 +21193,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -21370,7 +21453,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -21629,7 +21713,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -21888,7 +21973,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -22149,10 +22235,13 @@ MonoBehaviour:
       isSolo: 0
     sectionLength: 8
   - rootNote: 0
-    patternSteps: []
+    patternSteps:
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 0.85
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -22411,7 +22500,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -22670,7 +22760,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -22929,7 +23020,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -23188,7 +23280,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -23447,7 +23540,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -23706,7 +23800,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -23965,7 +24060,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -24224,7 +24320,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -24483,7 +24580,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -24742,7 +24840,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -25001,7 +25100,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -25260,7 +25360,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -26215,7 +26316,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -27170,7 +27272,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -28125,7 +28228,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -29080,7 +29184,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -30035,7 +30140,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -30990,7 +31096,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -31249,7 +31356,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -31510,10 +31618,13 @@ MonoBehaviour:
       isSolo: 0
     sectionLength: 16
   - rootNote: 0
-    patternSteps: []
+    patternSteps:
+    - rootNote: 0
+      anywhenScale: {fileID: 11400000, guid: e9b4cca4c56144d698e32ff175adaa9c, type: 2}
     volume: 0.85
     tracks:
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -31772,7 +31883,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -32031,7 +32143,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -32290,7 +32403,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -32549,7 +32663,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -32808,7 +32923,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -33067,7 +33183,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -33326,7 +33443,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -33585,7 +33703,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -33844,7 +33963,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -34103,7 +34223,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -34362,7 +34483,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 0
         - 0
@@ -34621,7 +34743,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -34696,7 +34819,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -35576,7 +35699,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -35665,7 +35789,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 7
+          rootNote: 12
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
@@ -36531,7 +36655,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -37486,7 +37611,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -38441,7 +38567,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -39396,7 +39523,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -40351,7 +40479,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -41306,7 +41435,8 @@ MonoBehaviour:
         m_RotationOrder: 4
       isMuted: 0
       isSolo: 0
-    - patterns:
+    - patternProgressionType: 1
+      patterns:
       - triggerChances:
         - 100
         - 0
@@ -42271,14 +42401,14 @@ MonoBehaviour:
       decay: 4.71
       sustain: 0.076
       release: 10
-  - volume: 0.558
+  - volume: 0.333
     instrument: {fileID: 11400000, guid: ebf060f2eb88845a1ad498133a513734, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0
-      decay: 0.56
+      attack: 0.1
+      decay: 0.2
       sustain: 0
-      release: 8.3
+      release: 1.13
   - volume: 1
     instrument: {fileID: 11400000, guid: e9a3d8512199748039c8f32f2bb33777, type: 2}
     trackEnvelope:
@@ -42327,12 +42457,12 @@ MonoBehaviour:
       decay: 0.67
       sustain: 0
       release: 4.3
-  - volume: 0.78
+  - volume: 0.655
     instrument: {fileID: 11400000, guid: 812195d2baf2640739e411c1de4e849c, type: 2}
     trackEnvelope:
       enabled: 1
       attack: 0
-      decay: 1.4
+      decay: 1.28
       sustain: 0
       release: 10
   - volume: 0.68
@@ -42343,7 +42473,7 @@ MonoBehaviour:
       decay: 1.06
       sustain: 0
       release: 8.2
-  - volume: 0.409
+  - volume: 0.421
     instrument: {fileID: 11400000, guid: cfa4be8b060554737970c59146d05429, type: 2}
     trackEnvelope:
       enabled: 1
@@ -42359,7 +42489,7 @@ MonoBehaviour:
       decay: 1.44
       sustain: 0
       release: 0
-  - volume: 0.161
+  - volume: 0.13
     instrument: {fileID: 11400000, guid: b99165748ae994d8cac2684f5fc34fbe, type: 2}
     trackEnvelope:
       enabled: 0
@@ -42367,7 +42497,7 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
-  - volume: 0.118
+  - volume: 0.127
     instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
     trackEnvelope:
       enabled: 1
@@ -42383,7 +42513,7 @@ MonoBehaviour:
       decay: 4.67
       sustain: 0
       release: 10
-  - volume: 0.142
+  - volume: 0.13
     instrument: {fileID: 11400000, guid: 44f5341091420489390bb7cc69c3a1d1, type: 2}
     trackEnvelope:
       enabled: 0
@@ -42423,3 +42553,4 @@ MonoBehaviour:
       decay: 0
       sustain: 0
       release: 0
+  songVolume: 1
