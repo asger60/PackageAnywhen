@@ -7854,7 +7854,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      isMuted: 1
+      isMuted: 0
       isSolo: 0
     - patternProgressionType: 1
       patterns:
@@ -62214,7 +62214,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -64210,7 +64210,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -64456,7 +64456,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -64470,7 +64470,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -65208,7 +65208,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 6
+          rootNote: 3
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -65224,7 +65224,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65294,7 +65294,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65322,7 +65322,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65364,7 +65364,7 @@ MonoBehaviour:
           expression: 1
           rootNote: -3
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65392,7 +65392,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 12
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65406,7 +65406,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 5
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -65468,7 +65468,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -3
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
@@ -69610,7 +69610,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -69638,7 +69638,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -69666,7 +69666,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -69694,7 +69694,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -71086,7 +71086,7 @@ MonoBehaviour:
           expression: 1
           rootNote: 0
           repeatRate: 0
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -72748,7 +72748,7 @@ MonoBehaviour:
   - rootNote: 0
     patternSteps:
     - rootNote: 0
-      anywhenScale: {fileID: 11400000, guid: d3a80eac451034538a25a30b5127e1ef, type: 2}
+      anywhenScale: {fileID: 11400000, guid: f3f6bcf0816514750a7c65bf1b33ced9, type: 2}
     volume: 0.85
     tracks:
     - patternProgressionType: 1
@@ -78227,7 +78227,7 @@ MonoBehaviour:
         - 0
         - 0
         steps:
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -78459,7 +78459,7 @@ MonoBehaviour:
         - 0
         - 0
         steps:
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -78691,7 +78691,7 @@ MonoBehaviour:
         - 100
         - 0
         steps:
-        - noteOn: 1
+        - noteOn: 0
           noteOff: 0
           duration: 1
           offset: 0
@@ -85425,7 +85425,7 @@ MonoBehaviour:
       decay: 0.4
       sustain: 0
       release: 9.51
-  - volume: 0.39
+  - volume: 0.345
     instrument: {fileID: 11400000, guid: e588850ab7ca94569ad0f43990be8b87, type: 2}
     trackEnvelope:
       enabled: 1
@@ -85433,14 +85433,14 @@ MonoBehaviour:
       decay: 0.45
       sustain: 0
       release: 0
-  - volume: 0.208
-    instrument: {fileID: 11400000, guid: c244b46cdfc024afe8eb335dcfd99665, type: 2}
+  - volume: 0.662
+    instrument: {fileID: 11400000, guid: 0d152f2cee7b04588aa848e0714f1334, type: 2}
     trackEnvelope:
       enabled: 1
-      attack: 0.1
-      decay: 0.23
+      attack: 0.08
+      decay: 0.16
       sustain: 0
-      release: 2.19
+      release: 3.39
   - volume: 0.396
     instrument: {fileID: 11400000, guid: 4bfba893bec414981b57b2d6293a71c9, type: 2}
     trackEnvelope:
