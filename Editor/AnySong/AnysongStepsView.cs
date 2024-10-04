@@ -155,8 +155,10 @@ namespace Editor.AnySong
             //parent.Add(stepButtonsHolder);
             _stepButtonsHolders.Add(stepButtonsHolder);
 
+
             for (int stepIndex = 0; stepIndex < 16; stepIndex++)
             {
+                if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
                 var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
 
                 var button = new Button
