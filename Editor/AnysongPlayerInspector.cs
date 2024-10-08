@@ -21,6 +21,7 @@ namespace Editor.Anysong
         private Sprite _tapeSprite1, _tapeSprite2;
         private VisualElement _tapeElement;
         private VisualElement _root;
+        private AnysongPlayerControls _anysongPlayerControls;
 
         private void OnEnable()
         {
@@ -38,7 +39,8 @@ namespace Editor.Anysong
 
             VisualElement ui = uiAsset.Instantiate();
             _root.Add(ui);
-            AnysongPlayerControls.HandlePlayerLogic(_root, _anysongPlayer);
+            _anysongPlayerControls = new AnysongPlayerControls();
+            _anysongPlayerControls.HandlePlayerLogic(_root, _anysongPlayer);
 
             _browseButton = _root.Q<Button>("ButtonLoadTrack");
             //_playButton = _root.Q<Button>("ButtonPreview");
