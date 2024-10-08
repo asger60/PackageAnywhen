@@ -1,0 +1,48 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="AnysongPlayer" src="project://database/Assets/PackageAnywhen/Editor/uxml/AnysongPlayer.uxml?fileID=9197481963319205126&amp;guid=0a9d5263aeadd421f864d916bae97bfc&amp;type=3#AnysongPlayer" />
+    <Style src="project://database/Assets/PackageAnywhen/Editor/USS/AnywhenStyles.uss?fileID=7433441132597879392&amp;guid=49dd660eae79949e7a5ec51c14cc394c&amp;type=3#AnywhenStyles" />
+    <ui:VisualElement style="flex-grow: 1; right: 0; left: 0; top: 0; bottom: 0; height: 100%; margin-right: 5px; margin-left: 5px;">
+        <ui:VisualElement name="Header" style="flex-grow: 0; height: 40px; flex-direction: row; align-self: flex-start; justify-content: flex-start; align-items: flex-start; min-height: 40px; flex-shrink: 0; max-height: 40px; margin-left: 5px;">
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <ui:VisualElement style="flex-grow: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/AnywhenLogoSmall.png?fileID=21300000&amp;guid=41c828c49963c41d8afcb0ba18069e33&amp;type=3#AnywhenLogoSmall&apos;); left: 0; height: 30px; margin-top: 10px; margin-right: 0; margin-bottom: 10px; margin-left: 0; -unity-background-scale-mode: scale-to-fit; align-items: flex-start; width: 60px;" />
+                <ui:Label tabindex="-1" text="Anywhen®" parse-escape-sequences="true" display-tooltip-when-elided="true" class="textbody" style="margin-left: 8px; margin-top: 8px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Collumns" style="flex-grow: 1; flex-shrink: 1; flex-direction: row; top: 10px; justify-content: flex-start; color: rgb(180, 135, 26); min-height: auto; align-items: flex-start; background-color: rgba(159, 162, 62, 0);">
+            <ui:ScrollView style="min-height: 300px; height: auto; flex-direction: row; flex-shrink: 1; flex-grow: 1; align-self: stretch; background-color: rgba(159, 62, 62, 0);">
+                <ui:VisualElement name="Packs" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; white-space: normal; overflow: hidden; display: flex; visibility: visible; opacity: 1; align-items: flex-start; left: auto; width: auto; height: auto;">
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-width: 150px; min-height: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; min-width: 150px; min-height: 150px; max-height: 150px; max-width: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-height: 150px; min-width: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-height: 150px; min-width: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-height: 150px; min-width: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-height: 150px; min-width: 150px;" />
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 150px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 150px; max-width: 150px; max-height: 150px; min-height: 150px; min-width: 150px;" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:VisualElement name="Inspector" style="flex-grow: 0; min-width: 300px; max-width: 300px; background-color: rgba(63, 65, 57, 0); flex-shrink: 0;">
+                <ui:VisualElement style="flex-grow: 0; flex-direction: row; min-height: 110px; height: 100px;">
+                    <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 100px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; align-items: auto; width: 100px; max-width: 100px; max-height: 100px; min-width: 100px; min-height: 100px;" />
+                    <ui:VisualElement style="flex-grow: 1;">
+                        <ui:Label tabindex="-1" text="Pack name" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Label tabindex="-1" text="Pack description" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Instance template="AnysongPlayer" name="AnysongPlayer" style="height: 110px;" />
+                <ui:ScrollView style="min-height: 200px; max-height: none; flex-grow: 1; align-self: stretch; flex-direction: column;">
+                    <ui:VisualElement name="TrackList" style="min-height: auto; align-items: stretch; align-self: auto; justify-content: flex-start; flex-grow: 0; flex-shrink: 1; flex-basis: 100%; max-height: none;">
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tracklist-button" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -42,8 +42,7 @@ namespace Editor.AnySong
         {
             _parent.Clear();
             Draw(_parent);
-
-
+            
             _parent.Add(Spacer());
 
 
@@ -119,6 +118,9 @@ namespace Editor.AnySong
                     null));
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
+            
+            _parent.Add(CreatePropertyFieldWithCallback(
+                selection.CurrentSongTrackProperty.FindPropertyRelative("trackType"), null));
 
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));

@@ -10,20 +10,12 @@ namespace Anywhen.SettingsObjects
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
-       
         public AudioClip[] audioClips;
         public AnywhenNoteClip[] noteClips;
         public float stopDuration = 0.1f;
 
-        public enum InstrumentType
-        {
-            OneShotShort = 0,
-            OneShotLong = 1,
-            Sustained = 2
-        }
 
-        public InstrumentType instrumentType;
-
+     
         public enum ClipSelectType
         {
             ScalePitchedNotes,
@@ -69,7 +61,6 @@ namespace Anywhen.SettingsObjects
             }
         }
 
-        //public EnvelopeSettings envelopeSettings;
         public LoopSettings loopSettings;
         [Range(0, 1f)] public float volume = 1;
         public AnywhenNoteClip GetNoteClip(int note)
