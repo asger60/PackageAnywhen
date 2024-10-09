@@ -21,16 +21,8 @@ namespace Anywhen
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
-        //public bool IsPreviewing => _isPreviewing;
-
         [SerializeField] private AnywhenTrigger trigger;
-        //private bool _isPreviewing;
-
-        [FormerlySerializedAs("_currentSongIndex")]
-        public int currentSongIndex;
-
         public int currentSongPackIndex;
-
 
         private void Awake()
         {
@@ -213,29 +205,21 @@ namespace Anywhen
         }
 
 
-        public void SetSongObject(AnysongObject newSong, int index)
+        public void SetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
-            currentSongIndex = index;
             this.songObject = newSong;
+            currentSongPackIndex = packIndex;
             if (AnywhenRuntime.IsPreviewing)
             {
                 Load(newSong);
             }
         }
 
-        public void SetSongPackIndex(int index)
-        {
-            currentSongPackIndex = index;
-        }
 
         public void SetPreviewSong(AnysongObject anysongObject)
         {
             _previewSong = anysongObject;
         }
-
-        public void RefreshUI()
-        {
-            
-        }
+        
     }
 }

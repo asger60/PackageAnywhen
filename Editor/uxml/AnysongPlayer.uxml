@@ -4,10 +4,10 @@
         <ui:VisualElement name="Player" style="flex-grow: 1; right: 0; max-width: none; align-items: flex-end; max-height: 100px; min-width: 300px;">
             <ui:VisualElement style="flex-grow: 1; height: 30px; left: 0; -unity-text-outline-color: rgba(149, 149, 149, 0); flex-direction: row; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;">
                 <ui:VisualElement class="border" style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 0; border-left-width: 1px; width: 50%;">
-                    <ui:Label tabindex="-1" text="Song: Puzzlife" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LabelSongTitle" class="textbody border" style="-unity-text-align: middle-left; align-items: center; justify-content: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;" />
+                    <ui:Label tabindex="-1" text="Song: No song loaded" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LabelSongTitle" class="textbody border" style="-unity-text-align: middle-left; align-items: center; justify-content: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;" />
                 </ui:VisualElement>
                 <ui:VisualElement class="border" style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 0; border-left-width: 0; width: 50%;">
-                    <ui:Label tabindex="-1" text="By: NG" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LabelSongAuthor" class="textbody border" style="-unity-text-align: middle-left; align-items: center; justify-content: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;" />
+                    <ui:Label tabindex="-1" text="By: " parse-escape-sequences="true" display-tooltip-when-elided="true" name="LabelSongAuthor" class="textbody border" style="-unity-text-align: middle-left; align-items: center; justify-content: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="ControlsElement" style="flex-grow: 1; position: relative; left: 0; top: 0; flex-direction: row; right: 0;">

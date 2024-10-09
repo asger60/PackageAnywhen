@@ -8,7 +8,7 @@ public class AnysongPackObject : ScriptableObject
 {
     public AssetLabelReference AssetLabelReference;
     public AnysongObject[] Songs => _songs.ToArray();
-    private List<AnysongObject> _songs;
+    private List<AnysongObject> _songs = new List<AnysongObject>();
 
     public void SetSongs(AnysongObject[] songsList)
     {
@@ -24,7 +24,8 @@ public class AnysongPackObject : ScriptableObject
 
     public Sprite packImage;
     public Color editorBackgroundColor;
-    public string[] songPaths;
+    
+    public string description;
 
     public void ClearSongs()
     {

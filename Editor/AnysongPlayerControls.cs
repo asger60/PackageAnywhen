@@ -16,7 +16,7 @@ namespace Editor
         private AnysongObject _currentSong;
         public static Color AccentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
         private VisualElement _tapeElement;
-
+        private Label _songNameLabel, _songAuthorLabel;
 
         static AnysongPlayerControls()
         {
@@ -30,13 +30,18 @@ namespace Editor
 
             _tapeElement = root.Q<VisualElement>("TapeElement");
             _playButton = root.Q<Button>("ButtonPreview");
+            _songNameLabel = root.Q<Label>("LabelSongTitle");
+            _songAuthorLabel = root.Q<Label>("LabelSongAuthor");
+
             _playButton.clicked += TogglePreview;
         }
 
         public void SetSongObject(AnysongObject anysongObject)
         {
             _currentSong = anysongObject;
-            Debug.Log("song " +_currentSong.name);
+            _songNameLabel.text = anysongObject.name;
+            _songAuthorLabel.text = "By: " + anysongObject.author;
+            Debug.Log("song " + _currentSong.name);
         }
 
         private void OnTick16()
