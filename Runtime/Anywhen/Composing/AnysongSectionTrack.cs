@@ -70,6 +70,7 @@ namespace Anywhen.Composing
         {
             return _currentPatternIndex;
         }
+
         public int GetSelectedPatternIndex()
         {
             return _selectedTrackPatternIndex;
@@ -133,7 +134,8 @@ namespace Anywhen.Composing
         public void Reset()
         {
             _currentPatternBar = 0;
-            _currentPattern = patterns[0];
+            if (patterns.Count > 0)
+                _currentPattern = patterns[0];
             foreach (var pattern in patterns)
             {
                 pattern.Reset();

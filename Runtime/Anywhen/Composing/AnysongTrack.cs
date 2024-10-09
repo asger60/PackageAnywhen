@@ -12,6 +12,15 @@ namespace Anywhen.Composing
         private NoteEvent _lastTrackEvent;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
 
+        public enum AnyTrackTypes
+        {
+            None,
+            Bass,
+            Pad,
+            Lead
+        }
+
+        public AnyTrackTypes trackType;
 
         public void Init()
         {

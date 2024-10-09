@@ -6432,7 +6432,7 @@ PrefabInstance:
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: songObject
       value: 
-      objectReference: {fileID: 11400000, guid: 5baf1639683a99d4fbc0b20321add787, type: 2}
+      objectReference: {fileID: 11400000, guid: df8c83f4694e65647bd79917ce1e6574, type: 2}
     - target: {fileID: 985398207751296918, guid: 3c3ab7cdf797d4804af17932eaf91f65, type: 3}
       propertyPath: currentSongIndex
       value: 1
@@ -17153,7 +17153,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnyIntensityTrigger
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3380755504781924929, guid: 6899fb363089940ce87bce8e62177f3b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

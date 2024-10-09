@@ -8,41 +8,36 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 
-[CustomEditor(typeof(AnyTrackPackObject))]
+[CustomEditor(typeof(AnysongPackObject))]
 public class AnySongPackInspector : UnityEditor.Editor
 {
-    private AnyTrackPackObject _trackPackObject;
+    private AnysongPackObject _trackPackObject;
 
     private void OnEnable()
     {
-        _trackPackObject = target as AnyTrackPackObject;
+        _trackPackObject = target as AnysongPackObject;
     }
 
-    public static AsyncOperationHandle<IList<AnysongObject>> LoadSongs(AnyTrackPackObject packObject)
-    {
-        return  Addressables.LoadAssetsAsync<AnysongObject>(packObject.AssetLabelReference,
-            o => { Debug.Log("loaded: " + o.name); });
-        
-    }
+
 
 
     public override VisualElement CreateInspectorGUI()
     {
         VisualElement inspector = new VisualElement();
 
-        var button = new Button
-        {
-            text = "Load"
-        };
-        button.clicked += () =>
-        {
-            Debug.Log("load");
-            LoadSongs(_trackPackObject);
-        };
+        //var button = new Button
+        //{
+        //    text = "Load"
+        //};
+        //button.clicked += () =>
+        //{
+        //    Debug.Log("load");
+        //    LoadSongs(_trackPackObject);
+        //};
 
         InspectorElement.FillDefaultInspector(inspector, serializedObject, this);
 
-        inspector.Add(button);
+        //inspector.Add(button);
         return inspector;
     }
 }

@@ -134,7 +134,10 @@ namespace Editor.AnySong
 
             patternsButtonHolder.Add(AnysongEditorWindow.CreateAddRemoveButtons());
             patternsButtonHolder.Q<Button>("AddButton").tooltip = trackIndex.ToString();
-            patternsButtonHolder.Q<Button>("RemoveButton").tooltip = trackIndex.ToString();
+            var deleteButton = patternsButtonHolder.Q<Button>("RemoveButton");
+            deleteButton.tooltip = trackIndex.ToString();
+            deleteButton.style.display = thisTrack.patterns.Count == 1 ? DisplayStyle.None : DisplayStyle.Flex;
+            
 
             return patternsButtonHolder;
         }
@@ -155,8 +158,10 @@ namespace Editor.AnySong
             //parent.Add(stepButtonsHolder);
             _stepButtonsHolders.Add(stepButtonsHolder);
 
+
             for (int stepIndex = 0; stepIndex < 16; stepIndex++)
             {
+                if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
                 var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
 
                 var button = new Button
