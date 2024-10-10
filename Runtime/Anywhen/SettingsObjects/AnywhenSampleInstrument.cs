@@ -80,6 +80,11 @@ namespace Anywhen.SettingsObjects
                         return null;
                     }
 
+                    if (note < 0)
+                    {
+                        Debug.LogWarning("note value is below 0");
+                        return null;
+                    }
                     return note >= noteClips.Length ? null : noteClips[note];
 
                 case ClipSelectType.RandomVariations:
