@@ -122,17 +122,16 @@ namespace Anywhen
                 if (track.isMuted) continue;
 
 
-                var songTrack = _currentSong.Tracks[trackIndex];
-
-
-                float thisIntensity =
-                    Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
-                float thisRnd = Random.Range(0, 1f);
-
-                if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                if (step.noteOn || step.noteOff)
                 {
-                    if (step.noteOn || step.noteOff)
-                        songTrack.TriggerNoteOn(step, pattern);
+                    float thisIntensity =
+                        Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
+                    float thisRnd = Random.Range(0, 1f);
+                    if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                    {
+                        var songTrack = _currentSong.Tracks[trackIndex];
+                        songTrack.TriggerStep(step, pattern);
+                    }
                 }
             }
         }
@@ -220,6 +219,5 @@ namespace Anywhen
         {
             _previewSong = anysongObject;
         }
-        
     }
 }

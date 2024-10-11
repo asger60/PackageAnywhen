@@ -93,7 +93,8 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings, AnywhenMetronome.TickRate rate,
+        public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings,
+            AnywhenMetronome.TickRate rate,
             AnysongTrack track = null)
         {
             switch (e.state)
@@ -122,7 +123,6 @@ namespace Anywhen
 
                 case NoteEvent.EventTypes.NoteOn:
 
-
                     for (int i = 0; i < e.notes.Length; i++)
                     {
                         double playTime = 0;
@@ -135,7 +135,8 @@ namespace Anywhen
                             foreach (var thisSampler in _allSamplers)
                             {
                                 if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note && thisSampler.ScheduledPlayTime == playTime)
+                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note &&
+                                    thisSampler.ScheduledPlayTime == playTime)
                                 {
                                     return;
                                 }
@@ -151,7 +152,9 @@ namespace Anywhen
                         }
 
 
-                        double stopTime = e.duration < 0 ? -1 : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
+                        double stopTime = e.duration < 0
+                            ? -1
+                            : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
 
                         anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings, track);
                     }
