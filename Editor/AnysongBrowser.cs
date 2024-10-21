@@ -51,7 +51,7 @@ namespace Editor
 
         public void CreateGUI()
         {
-            string path = AnywhenMenuUtils.GetAssetPath("Assets/PackageAnywhen/Editor/uxml/AnysongBrowser.uxml");
+            string path = AnywhenMenuUtils.GetAssetPath("PackageAnywhen/Editor/uxml/AnysongBrowser.uxml");
             VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
             VisualElement ui = uiAsset.Instantiate();
 
