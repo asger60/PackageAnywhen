@@ -51,7 +51,8 @@ namespace Editor
 
         public void CreateGUI()
         {
-            VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongBrowser.uxml");
+            string path = AnywhenMenuUtils.GetAssetPath("PackageAnywhen/Editor/uxml/AnysongBrowser.uxml");
+            VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
             VisualElement ui = uiAsset.Instantiate();
 
             _currentPackIndex = _anysongPlayer ? _anysongPlayer.currentSongPackIndex : 0;
