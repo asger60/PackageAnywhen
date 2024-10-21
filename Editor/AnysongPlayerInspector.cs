@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using Anywhen;
+using Anywhen.Composing;
 using Editor.AnySong;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -29,7 +30,8 @@ namespace Editor
         public override VisualElement CreateInspectorGUI()
         {
             _root = new VisualElement();
-            VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongPlayerInspector.uxml");
+            string path = AnywhenMenuUtils.GetAssetPath("Assets/PackageAnywhen/Editor/uxml/AnysongPlayerInspector.uxml");
+            VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
 
             VisualElement ui = uiAsset.Instantiate();
             _root.Add(ui);
