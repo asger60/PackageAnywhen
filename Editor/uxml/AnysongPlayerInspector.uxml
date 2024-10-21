@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="AnysongPlayer" src="project://database/Assets/PackageAnywhen/Editor/uxml/AnysongPlayer.uxml?fileID=9197481963319205126&amp;guid=0a9d5263aeadd421f864d916bae97bfc&amp;type=3#AnysongPlayer" />
     <Style src="project://database/Assets/PackageAnywhen/Editor/USS/AnywhenStyles.uss?fileID=7433441132597879392&amp;guid=49dd660eae79949e7a5ec51c14cc394c&amp;type=3#AnywhenStyles" />
-    <ui:VisualElement style="flex-grow: 1; background-color: rgba(58, 58, 58, 0); height: 460px;">
-        <ui:VisualElement style="flex-grow: 1; right: 5px; left: 5px; top: 0; position: absolute; bottom: 10px; height: 450px;">
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(58, 58, 58, 0); height: auto;">
+        <ui:VisualElement>
             <ui:VisualElement name="Header" style="flex-grow: 1; height: 50px; flex-direction: row; align-self: flex-start; justify-content: flex-start; align-items: flex-start; max-height: 50px; min-height: 50px;">
                 <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
                     <ui:VisualElement style="flex-grow: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/AnywhenLogoSmall.png?fileID=21300000&amp;guid=41c828c49963c41d8afcb0ba18069e33&amp;type=3#AnywhenLogoSmall&apos;); left: 0; height: 30px; margin-top: 10px; margin-right: 0; margin-bottom: 10px; margin-left: 0; -unity-background-scale-mode: scale-to-fit; align-items: flex-start; width: 60px;" />
@@ -13,7 +13,14 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(61, 41, 76); position: relative; height: 300px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&apos;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/Action.png?fileID=2800000&amp;guid=60269298e0d304a92945a04153d959d5&amp;type=3#Action&apos;); -unity-background-scale-mode: scale-to-fit; max-height: 300px; min-height: 300px;" />
-            <ui:Instance template="AnysongPlayer" name="AnysongPlayer" />
+            <ui:Instance template="AnysongPlayer" name="AnysongPlayer" style="min-height: 100px; max-height: 100px; height: 100px;" />
+            <ui:VisualElement name="NoTriggerElement" style="flex-grow: 1; height: auto; max-height: none; min-height: auto; border-top-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgb(204, 204, 204); border-right-color: rgb(204, 204, 204); border-top-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgb(250, 220, 139);">
+                <ui:Label tabindex="-1" text="No activation trigger assigned" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; color: rgb(0, 0, 0); -unity-text-align: middle-center; min-height: 25px; align-self: auto;" />
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row; min-height: 25px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgb(237, 189, 59);">
+                    <ui:Button text="Create trigger" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateTriggerButton" style="flex-grow: 1; color: rgb(0, 0, 0); padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; background-color: rgba(188, 188, 188, 0); border-left-color: rgb(56, 56, 56); border-right-color: rgb(56, 56, 56); border-top-color: rgb(56, 56, 56); border-bottom-color: rgb(56, 56, 56); border-bottom-width: 1px; border-left-width: 0; border-top-width: 1px; border-right-width: 0;" />
+                    <ui:Button text="Search for trigger" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LocateTriggerButton" style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; -unity-text-outline-color: rgb(255, 255, 255); color: rgb(0, 0, 0); background-color: rgba(188, 188, 188, 0); border-left-color: rgb(56, 56, 56); border-right-color: rgb(56, 56, 56); border-top-color: rgb(56, 56, 56); border-bottom-color: rgb(56, 56, 56);" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

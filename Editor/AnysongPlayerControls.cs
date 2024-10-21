@@ -25,8 +25,8 @@ namespace Editor
         public void HandlePlayerLogic(VisualElement root, AnysongPlayer anysongPlayer)
         {
             _anysongPlayer = anysongPlayer;
-            _tapeSprite1 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/PackageAnywhen/Editor/Sprites/Tape1.png");
-            _tapeSprite2 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/PackageAnywhen/Editor/Sprites/Tape2.png");
+            _tapeSprite1 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Assets/PackageAnywhen/Editor/Sprites/Tape1.png"));
+            _tapeSprite2 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Assets/PackageAnywhen/Editor/Sprites/Tape2.png"));
 
             _tapeElement = root.Q<VisualElement>("TapeElement");
             _playButton = root.Q<Button>("ButtonPreview");
@@ -52,6 +52,7 @@ namespace Editor
 
         private void TogglePreview()
         {
+            if (_anysongPlayer.AnysongObject == null) return;
             _isPreviewing = !_isPreviewing;
             Debug.Log("preview" + _isPreviewing);
             if (_isPreviewing)

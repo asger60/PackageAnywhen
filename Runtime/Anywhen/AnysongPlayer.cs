@@ -219,5 +219,15 @@ namespace Anywhen
         {
             _previewSong = anysongObject;
         }
+
+        public void CreateTrigger()
+        {
+            trigger = gameObject.AddComponent<AnywhenTrigger>();
+        }
+
+        public void LocateTrigger()
+        {
+            trigger = GetComponentInChildren<AnywhenTrigger>();
+        }
     }
 }

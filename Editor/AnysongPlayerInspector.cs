@@ -48,13 +48,24 @@ namespace Editor
 
             Refresh();
 
-            var songObject = serializedObject.FindProperty("songObject");
-            var songObjectField = new PropertyField(songObject);
-            songObjectField.BindProperty(songObject);
-            _root.Add(songObjectField);
+            //var songObject = serializedObject.FindProperty("songObject");
+            //var songObjectField = new PropertyField(songObject);
+            //songObjectField.BindProperty(songObject);
+            //_root.Add(songObjectField);
 
             var triggerObject = serializedObject.FindProperty("trigger");
 
+
+            var noTriggerElement = _root.Q<VisualElement>("NoTriggerElement");
+            var createTriggerButton = _root.Q<Button>("CreateTriggerButton");
+            var locateTriggerButton = _root.Q<Button>("LocateTriggerButton");
+            createTriggerButton.clicked += CreateTriggerButtonOnclicked;
+            locateTriggerButton.clicked += LocateTriggerButtonOnclicked;
+
+
+            noTriggerElement.style.display = triggerObject.objectReferenceValue == null
+                ? new StyleEnum<DisplayStyle>(StyleKeyword.Auto)
+                : new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
             var triggerObjectField = new PropertyField(triggerObject);
             triggerObjectField.BindProperty(triggerObject);
@@ -70,6 +81,16 @@ namespace Editor
             return _root;
         }
 
+        private void LocateTriggerButtonOnclicked()
+        {
+            _anysongPlayer.LocateTrigger();
+        }
+
+        private void CreateTriggerButtonOnclicked()
+        {
+            _anysongPlayer.CreateTrigger();
+        }
+
         private void OnBrowseWindowClosed()
         {
             Refresh();
@@ -78,10 +99,11 @@ namespace Editor
 
         void Refresh()
         {
+            if (_anysongPlayer.AnysongObject == null) return;
             _currentPackIndex = _anysongPlayer ? _anysongPlayer.currentSongPackIndex : 0;
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
-            
+
             var labelTitle = _root.Q<Label>("LabelSongTitle");
             var labelAuthor = _root.Q<Label>("LabelSongAuthor");
 
@@ -95,19 +117,13 @@ namespace Editor
         }
 
 
-
         void Edit()
         {
+            if (_anysongPlayer.AnysongObject == null) return;
             var anysongPlayer = target as AnysongPlayer;
             AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject, anysongPlayer);
-
             AnysongEditorWindow.ShowModuleWindow();
         }
-
-
-
-
-
     }
 }
 #endif
