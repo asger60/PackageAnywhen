@@ -30,7 +30,7 @@ namespace Editor
         public override VisualElement CreateInspectorGUI()
         {
             _root = new VisualElement();
-            string path = AnywhenMenuUtils.GetAssetPath("PackageAnywhen/Editor/uxml/AnysongPlayerInspector.uxml");
+            string path = AnywhenMenuUtils.GetAssetPath("Editor/uxml/AnysongPlayerInspector.uxml");
             VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
 
             VisualElement ui = uiAsset.Instantiate();
