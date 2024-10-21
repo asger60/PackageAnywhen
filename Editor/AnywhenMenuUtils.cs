@@ -53,9 +53,9 @@ namespace Editor
             }
 
 
-            var paths = GetAssetPath("Prefabs/Anywhen.prefab");
+            var path = GetAssetPath("Prefabs/Anywhen.prefab");
 
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(paths);
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
 
             if (prefab)
