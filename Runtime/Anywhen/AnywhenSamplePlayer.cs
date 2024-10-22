@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -11,24 +10,13 @@ namespace Anywhen
     {
         public AnywhenSampler anywhenSamplerPrefab;
 
-        [SerializeField] private List<AnywhenSampler> _allSamplers = new();
+        private List<AnywhenSampler> _allSamplers = new();
         public int numberOfSamplers = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
-        public int activeSamplePlayers;
         public static AnywhenSamplePlayer Instance => AnywhenRuntime.AnywhenSamplerHandler;
 
-        private bool _didCreateSamplers;
-
-        private void Update()
-        {
-            activeSamplePlayers = 0;
-            foreach (var sampler in _allSamplers)
-            {
-                if (!sampler.IsReady)
-                    activeSamplePlayers++;
-            }
-        }
+        
 
         private void Start()
         {
@@ -60,7 +48,6 @@ namespace Anywhen
                 _allSamplers.Add(Instantiate(anywhenSamplerPrefab, transform));
             }
 
-            _didCreateSamplers = true;
         }
 
 

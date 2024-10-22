@@ -13,7 +13,7 @@ namespace Editor
     public class AnysongBrowser : EditorWindow
     {
         private Button _previewButton;
-        private static AnysongPlayer _anysongPlayer;
+        private static AnywhenPlayer _anywhenPlayer;
         private AnysongPackObject[] _packObjects;
         private AnysongPackObject _currentPack;
 
@@ -31,9 +31,9 @@ namespace Editor
         private Button _playButton, _loadSongButton;
         private int _currentPackIndex;
 
-        public static void ShowBrowserWindow(AnysongPlayer thisPlayer, Action OnWindowClosed)
+        public static void ShowBrowserWindow(AnywhenPlayer thisPlayer, Action OnWindowClosed)
         {
-            _anysongPlayer = thisPlayer;
+            _anywhenPlayer = thisPlayer;
             AnysongBrowser window = (AnysongBrowser)GetWindow(typeof(AnysongBrowser));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong browser");
@@ -45,7 +45,7 @@ namespace Editor
 
         private void OnDestroy()
         {
-            _anysongPlayer.SetPreviewSong(null);
+            _anywhenPlayer.EditorSetPreviewSong(null);
             _onClose?.Invoke();
         }
 
@@ -55,7 +55,7 @@ namespace Editor
             VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
             VisualElement ui = uiAsset.Instantiate();
 
-            _currentPackIndex = _anysongPlayer ? _anysongPlayer.currentSongPackIndex : 0;
+            _currentPackIndex = _anywhenPlayer ? _anywhenPlayer.currentSongPackIndex : 0;
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
 
@@ -64,7 +64,7 @@ namespace Editor
             rootVisualElement.Add(ui);
 
             _anysongPlayerControls = new AnysongPlayerControls();
-            _anysongPlayerControls.HandlePlayerLogic(rootVisualElement, _anysongPlayer);
+            _anysongPlayerControls.HandlePlayerLogic(rootVisualElement, _anywhenPlayer);
 
 
             _packImageElement = ui.Q<VisualElement>("PackImage666");
@@ -102,7 +102,7 @@ namespace Editor
 
         private void LoadSongButtonOnclicked()
         {
-            _anysongPlayer.SetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
+            _anywhenPlayer.EditorSetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
 
             Close();
         }

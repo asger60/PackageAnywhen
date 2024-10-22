@@ -9,11 +9,11 @@ using UnityEngine.UIElements;
 
 namespace Editor
 {
-    [CustomEditor(typeof(AnysongPlayer))]
+    [CustomEditor(typeof(AnywhenPlayer))]
     public class AnysongPlayerInspector : UnityEditor.Editor
     {
         private Button _playButton, _browseButton;
-        private AnysongPlayer _anysongPlayer;
+        private AnywhenPlayer _anywhenPlayer;
         private AnysongPackObject[] _packObjects;
         private AnysongPackObject _currentPack;
         private Image _packArtImage;
@@ -24,7 +24,7 @@ namespace Editor
 
         private void OnEnable()
         {
-            _anysongPlayer = target as AnysongPlayer;
+            _anywhenPlayer = target as AnywhenPlayer;
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -36,10 +36,10 @@ namespace Editor
             VisualElement ui = uiAsset.Instantiate();
             _root.Add(ui);
             _anysongPlayerControls = new AnysongPlayerControls();
-            _anysongPlayerControls.HandlePlayerLogic(_root, _anysongPlayer);
+            _anysongPlayerControls.HandlePlayerLogic(_root, _anywhenPlayer);
 
             _browseButton = _root.Q<Button>("ButtonLoadTrack");
-            _browseButton.clicked += () => { AnysongBrowser.ShowBrowserWindow(_anysongPlayer, OnBrowseWindowClosed); };
+            _browseButton.clicked += () => { AnysongBrowser.ShowBrowserWindow(_anywhenPlayer, OnBrowseWindowClosed); };
 
 
             var editButton = _root.Q<Button>("ButtonEdit");
@@ -83,12 +83,12 @@ namespace Editor
 
         private void LocateTriggerButtonOnclicked()
         {
-            _anysongPlayer.LocateTrigger();
+            _anywhenPlayer.EditorLocateTrigger();
         }
 
         private void CreateTriggerButtonOnclicked()
         {
-            _anysongPlayer.CreateTrigger();
+            _anywhenPlayer.EditorCreateTrigger();
         }
 
         private void OnBrowseWindowClosed()
@@ -99,16 +99,16 @@ namespace Editor
 
         void Refresh()
         {
-            if (_anysongPlayer.AnysongObject == null) return;
-            _currentPackIndex = _anysongPlayer ? _anysongPlayer.currentSongPackIndex : 0;
+            if (_anywhenPlayer.AnysongObject == null) return;
+            _currentPackIndex = _anywhenPlayer ? _anywhenPlayer.currentSongPackIndex : 0;
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
 
             var labelTitle = _root.Q<Label>("LabelSongTitle");
             var labelAuthor = _root.Q<Label>("LabelSongAuthor");
 
-            labelTitle.text = "Song: " + _anysongPlayer.AnysongObject.name;
-            labelAuthor.text = "By: " + _anysongPlayer.AnysongObject.author;
+            labelTitle.text = "Song: " + _anywhenPlayer.AnysongObject.name;
+            labelAuthor.text = "By: " + _anywhenPlayer.AnysongObject.author;
 
 
             var packArtElement = _root.Q<VisualElement>("PackImage");
@@ -119,8 +119,8 @@ namespace Editor
 
         void Edit()
         {
-            if (_anysongPlayer.AnysongObject == null) return;
-            var anysongPlayer = target as AnysongPlayer;
+            if (_anywhenPlayer.AnysongObject == null) return;
+            var anysongPlayer = target as AnywhenPlayer;
             AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject, anysongPlayer);
             AnysongEditorWindow.ShowModuleWindow();
         }

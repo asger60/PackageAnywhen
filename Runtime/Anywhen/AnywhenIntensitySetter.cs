@@ -1,28 +1,26 @@
 using System;
 using Anywhen.Composing;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {
+    [AddComponentMenu("Anywhen/AnywhenIntensitySetter")]
     public class AnywhenIntensitySetter : MonoBehaviour
     {
-        [FormerlySerializedAs("trigger")] [SerializeField]
-        private AnywhenTrigger anywhenTrigger;
+        [SerializeField] private AnywhenTrigger anywhenTrigger;
 
 
-        private enum ValueChangeModes
+        public enum ValueChangeModes
         {
             Set,
             Modify
         }
 
-        [SerializeField] private ValueChangeModes valueChangeMode;
+        [SerializeField] private ValueChangeModes intensityUpdateMode;
 
-        [FormerlySerializedAs("intensityValue")] [SerializeField]
-        private float intensitySetValue;
+        [Range(0, 1f)] [SerializeField] private float intensitySetValue;
 
-        [SerializeField] private float intensityModifyValue;
+        [Range(-1, 1f)] [SerializeField] private float intensityModifyValue;
 
         void Start()
         {
@@ -33,7 +31,7 @@ namespace Anywhen
 
         private void Trigger()
         {
-            switch (valueChangeMode)
+            switch (intensityUpdateMode)
             {
                 case ValueChangeModes.Set:
                     AnysongPlayerBrain.SetGlobalIntensity(intensitySetValue);

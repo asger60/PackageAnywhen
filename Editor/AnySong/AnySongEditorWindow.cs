@@ -26,7 +26,7 @@ namespace Editor.AnySong
         public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
         public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
-        private static AnysongPlayer _currentRuntimeSongPlayer;
+        private static AnywhenPlayer _currentRuntimeSongPlayer;
         private AnyPatternStep _stepCopy;
 
         private AnysongSection _sectionCopy;
@@ -76,9 +76,9 @@ namespace Editor.AnySong
             window.CreateGUI();
         }
 
-        public static void LoadSong(AnysongObject songObject, AnysongPlayer anysongPlayer)
+        public static void LoadSong(AnysongObject songObject, AnywhenPlayer anywhenPlayer)
         {
-            _currentRuntimeSongPlayer = anysongPlayer;
+            _currentRuntimeSongPlayer = anywhenPlayer;
 
             CurrentSong = songObject;
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
@@ -140,19 +140,19 @@ namespace Editor.AnySong
                     }
                 }
 
-                _currentRuntimeSongPlayer.SetTestIntensity(value);
+                _currentRuntimeSongPlayer.EditorSetTestIntensity(value);
 
             }
         }
 
 
-        static AnysongPlayer AttemptToFindPlayer()
+        static AnywhenPlayer AttemptToFindPlayer()
         {
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 foreach (var rootGameObject in SceneManager.GetSceneAt(i).GetRootGameObjects())
                 {
-                    foreach (var songPlayer in rootGameObject.GetComponentsInChildren<AnysongPlayer>())
+                    foreach (var songPlayer in rootGameObject.GetComponentsInChildren<AnywhenPlayer>())
                     {
                         if (songPlayer.AnysongObject == CurrentSong)
                             return songPlayer;
@@ -335,7 +335,7 @@ namespace Editor.AnySong
             AnysongSectionsView.HilightSection(_currentRuntimeSongPlayer.CurrentSectionIndex,
                 _currentSelection.CurrentSectionIndex);
 
-            var ints = _currentRuntimeSongPlayer.GetPlayingTrackPatternIndexes();
+            var ints = _currentRuntimeSongPlayer.EditorGetPlayingTrackPatternIndexes();
             for (var i = 0; i < ints.Length; i++)
             {
                 var patternIndex = ints[i];

@@ -60,7 +60,7 @@ namespace Anywhen
         }
 
         private static bool _executeInEditMode;
-        private static AnysongPlayer _targetPlayer;
+        private static AnywhenPlayer _targetPlayer;
         public static int SampleRate;
         private bool _isPreviewing;
         [SerializeField] private bool logErrors;
@@ -103,13 +103,13 @@ namespace Anywhen
         }
 
 
-        public static void TogglePreviewMode(AnysongPlayer targetPlayer)
+        public static void TogglePreviewMode(AnywhenPlayer targetPlayer)
         {
             Instance._isPreviewing = !Instance._isPreviewing;
             SetPreviewMode(Instance._isPreviewing, targetPlayer);
         }
 
-        public static void SetPreviewMode(bool state, AnysongPlayer targetPlayer)
+        public static void SetPreviewMode(bool state, AnywhenPlayer targetPlayer)
         {
             Instance._isPreviewing = state;
             if (state)

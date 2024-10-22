@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Anywhen
 {
+    [AddComponentMenu("Anywhen/AnywhenTrigger")]
     public class AnywhenTrigger : MonoBehaviour
     {
         public Action OnTrigger;

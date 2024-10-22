@@ -10,7 +10,7 @@ namespace Editor
 {
     public class AnywhenMenuUtils : MonoBehaviour
     {
-        [MenuItem("Anywhen/[DEBUG] Remove audioclips")]
+        [MenuItem("GameObject/Anywhen/[DEBUG] Remove audioclips")]
         public static void RemoveAudioClips()
         {
             foreach (var o in Selection.objects)
@@ -34,7 +34,7 @@ namespace Editor
         }
 
 
-        [MenuItem("Anywhen/Add Anywhen to scene")]
+        [MenuItem("GameObject/Anywhen/Add Anywhen to scene")]
         public static void AddAnywhen()
         {
             Debug.Log("Adding Anywhen to active scene");
@@ -64,6 +64,23 @@ namespace Editor
                 AnywhenRuntime rt = anywhenInstance.GetComponent<AnywhenRuntime>();
                 rt.Init();
                 Selection.activeObject = anywhenInstance;
+            }
+        }
+        
+        [MenuItem("GameObject/Anywhen/Create AnywhenPlayer")]
+        public static void CreateAnywhenPlayer()
+        {
+            Debug.Log("Creating AnywhenPlayer");
+            
+            var path = GetAssetPath("Prefabs/AnywhenPlayer.prefab");
+
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+
+            if (prefab)
+            {
+                var instantiatePrefab = PrefabUtility.InstantiatePrefab(prefab);
+                Selection.activeObject = instantiatePrefab;
             }
         }
 

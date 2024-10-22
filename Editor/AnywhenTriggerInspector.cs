@@ -15,6 +15,7 @@ namespace Editor
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement inspector = new VisualElement();
+            inspector.Add(AnywhenBranding.DrawBranding());
             _targetObjectTypeElement = new VisualElement();
             _targetObjectElement = new VisualElement();
 

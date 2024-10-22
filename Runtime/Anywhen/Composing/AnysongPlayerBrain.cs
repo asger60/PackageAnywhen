@@ -1,15 +1,13 @@
 using System;
-using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Anywhen.Composing
 {
     public class AnysongPlayerBrain : MonoBehaviour
     {
-        AnysongPlayer _currentPlayer;
+        AnywhenPlayer _currentPlayer;
 
-        private AnysongPlayer _nextUpPlayer;
+        private AnywhenPlayer _nextUpPlayer;
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
 
@@ -76,7 +74,7 @@ namespace Anywhen.Composing
             }
         }
 
-        public static void TransitionTo(AnysongPlayer player, TransitionTypes transitionType) =>
+        public static void TransitionTo(AnywhenPlayer player, TransitionTypes transitionType) =>
             Instance.HandleTransitionToPlayer(player, transitionType);
 
 
@@ -95,7 +93,7 @@ namespace Anywhen.Composing
         }
 
 
-        private void HandleTransitionToPlayer(AnysongPlayer player, TransitionTypes transitionType)
+        private void HandleTransitionToPlayer(AnywhenPlayer player, TransitionTypes transitionType)
         {
             _isStarted = true;
             if (AnywhenRuntime.IsPreviewing)
@@ -128,7 +126,7 @@ namespace Anywhen.Composing
             _nextTransitionType = transitionType;
         }
 
-        void TransitionNow(AnysongPlayer newPlayer)
+        void TransitionNow(AnywhenPlayer newPlayer)
         {
             if (_currentPlayer != null)
             {

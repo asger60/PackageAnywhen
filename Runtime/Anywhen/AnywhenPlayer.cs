@@ -1,15 +1,15 @@
-using System;
+
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
 namespace Anywhen
 {
-    public class AnysongPlayer : MonoBehaviour
+    [AddComponentMenu("Anywhen/AnywhenPlayer")]
+    public class AnywhenPlayer : MonoBehaviour
     {
         [SerializeField] private AnysongObject songObject;
         public AnysongObject AnysongObject => songObject;
@@ -23,10 +23,12 @@ namespace Anywhen
         public int CurrentSectionIndex => _currentSectionIndex;
         [SerializeField] private AnywhenTrigger trigger;
         public int currentSongPackIndex;
+        private float _previewIntensity = 1;
+        private NoteEvent[] _lastTrackNote;
+        private int _currentBar;
 
         private void Awake()
         {
-            //Load(songObject);
             trigger.OnTrigger += Play;
             _previewSong = null;
         }
@@ -55,8 +57,7 @@ namespace Anywhen
             }
         }
 
-        private NoteEvent[] _lastTrackNote;
-        private int _currentBar;
+
 
         private void OnBar()
         {
@@ -90,18 +91,7 @@ namespace Anywhen
                 _currentSong.Sections[0]));
         }
 
-        public int[] GetPlayingTrackPatternIndexes()
-        {
-            List<int> returnList = new List<int>();
-            for (var i = 0; i < _currentSong.Sections[_currentSectionIndex].tracks.Count; i++)
-            {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[i];
-
-                returnList.Add(track.GetPlayingPatternIndex());
-            }
-
-            return returnList.ToArray();
-        }
+        
 
         private void OnTick16()
         {
@@ -171,14 +161,14 @@ namespace Anywhen
         }
 
 
-        public void ReleaseFromMetronome()
+        protected internal  void ReleaseFromMetronome()
         {
             _isRunning = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
             AnywhenRuntime.Metronome.OnNextBar -= OnBar;
         }
 
-        public void AttachToMetronome()
+        protected internal void AttachToMetronome()
         {
             if (_isRunning) return;
             if (!_loaded) return;
@@ -211,7 +201,7 @@ namespace Anywhen
         }
 
 
-        public void SetSongAndPackObject(AnysongObject newSong, int packIndex)
+        public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
             this.songObject = newSong;
             currentSongPackIndex = packIndex;
@@ -222,25 +212,37 @@ namespace Anywhen
         }
 
 
-        public void SetPreviewSong(AnysongObject anysongObject)
+        public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
             _previewSong = anysongObject;
         }
 
-        public void CreateTrigger()
+        public void EditorCreateTrigger()
         {
             trigger = gameObject.AddComponent<AnywhenTrigger>();
         }
 
-        public void LocateTrigger()
+        public void EditorLocateTrigger()
         {
             trigger = GetComponentInChildren<AnywhenTrigger>();
         }
 
-        private float _previewIntensity = 1;
-        public void SetTestIntensity(float value)
+        public void EditorSetTestIntensity(float value)
         {
             _previewIntensity = value;
+        }
+        
+        public int[] EditorGetPlayingTrackPatternIndexes()
+        {
+            List<int> returnList = new List<int>();
+            for (var i = 0; i < _currentSong.Sections[_currentSectionIndex].tracks.Count; i++)
+            {
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[i];
+
+                returnList.Add(track.GetPlayingPatternIndex());
+            }
+
+            return returnList.ToArray();
         }
     }
 }

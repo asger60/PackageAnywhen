@@ -12,7 +12,7 @@ namespace Editor
         private Sprite _tapeSprite2;
         private bool _isPreviewing;
         private Button _playButton;
-        private AnysongPlayer _anysongPlayer;
+        private AnywhenPlayer _anywhenPlayer;
         private AnysongObject _currentSong;
         public static Color AccentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
         private VisualElement _tapeElement;
@@ -22,9 +22,9 @@ namespace Editor
         {
         }
 
-        public void HandlePlayerLogic(VisualElement root, AnysongPlayer anysongPlayer)
+        public void HandlePlayerLogic(VisualElement root, AnywhenPlayer anywhenPlayer)
         {
-            _anysongPlayer = anysongPlayer;
+            _anywhenPlayer = anywhenPlayer;
             _tapeSprite1 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape1.png"));
             _tapeSprite2 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape2.png"));
 
@@ -52,17 +52,17 @@ namespace Editor
 
         private void TogglePreview()
         {
-            if (_anysongPlayer.AnysongObject == null) return;
+            if (_anywhenPlayer.AnysongObject == null) return;
             _isPreviewing = !_isPreviewing;
             Debug.Log("preview" + _isPreviewing);
             if (_isPreviewing)
             {
                 if (_currentSong == null)
                 {
-                    _currentSong = _anysongPlayer.AnysongObject;
+                    _currentSong = _anywhenPlayer.AnysongObject;
                 }
 
-                _anysongPlayer.SetPreviewSong(_currentSong);
+                _anywhenPlayer.EditorSetPreviewSong(_currentSong);
 
                 AnywhenRuntime.Metronome.SetTempo(_currentSong.tempo);
                 _playButton.style.backgroundColor = new StyleColor(AccentColor);
@@ -74,7 +74,7 @@ namespace Editor
                 _playButton.style.backgroundColor = new StyleColor(Color.clear);
             }
 
-            AnywhenRuntime.SetPreviewMode(_isPreviewing, _anysongPlayer);
+            AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Anywhen
     {
         public AnywhenSynth anywhenSynthPrefab;
 
-        [SerializeField] private List<AnywhenSynth> _allSynths = new();
+        private List<AnywhenSynth> _allSynths = new();
         public int numberOfSynths = 32;
         private bool _isInit;
         public bool IsInit => _isInit;

@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 6780924570475025038}
   - component: {fileID: 985398207751296918}
   m_Layer: 0
-  m_Name: AnysongTrigger
+  m_Name: AnywhenPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -508,6 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fbc0e794f0964dd6ae15ae07b1374e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  songObject: {fileID: 11400000, guid: eec2b7c8807e5480b9c6dae617252f88, type: 2}
+  songObject: {fileID: 0}
   triggerTransitionsType: 0
   trigger: {fileID: 6780924570475025038}
+  currentSongPackIndex: 0
