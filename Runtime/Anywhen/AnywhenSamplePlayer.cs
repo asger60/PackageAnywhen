@@ -10,7 +10,7 @@ namespace Anywhen
     {
         public AnywhenSampler anywhenSamplerPrefab;
 
-        private List<AnywhenSampler> _allSamplers = new();
+        [HideInInspector] [SerializeField] private List<AnywhenSampler> _allSamplers = new();
         public int numberOfSamplers = 32;
         private bool _isInit;
         public bool IsInit => _isInit;

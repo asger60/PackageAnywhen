@@ -10,7 +10,7 @@ namespace Anywhen
     {
         public AnywhenSynth anywhenSynthPrefab;
 
-        private List<AnywhenSynth> _allSynths = new();
+        [HideInInspector] [SerializeField] private List<AnywhenSynth> _allSynths = new();
         public int numberOfSynths = 32;
         private bool _isInit;
         public bool IsInit => _isInit;
@@ -119,7 +119,7 @@ namespace Anywhen
             _setLateInit = true;
         }
 
-        private int _counter = 0;
+
         public void LateUpdate()
         {
             if (_setLateInit)

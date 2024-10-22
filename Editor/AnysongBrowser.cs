@@ -103,7 +103,8 @@ namespace Editor
         private void LoadSongButtonOnclicked()
         {
             _anywhenPlayer.EditorSetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
-
+            EditorUtility.SetDirty(_anywhenPlayer);
+            _anysongPlayerControls.Stop();
             Close();
         }
 
@@ -186,7 +187,6 @@ namespace Editor
 
         void SetPreviewSong(AnysongObject song)
         {
-            Debug.Log("current preview song: " + song.name);
             _currentPreviewSong = song;
             _anysongPlayerControls.SetSongObject(_currentPreviewSong);
             _loadSongButton.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);

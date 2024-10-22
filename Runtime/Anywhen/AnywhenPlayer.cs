@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -45,6 +44,7 @@ namespace Anywhen
 
         private void Load(AnysongObject anysong)
         {
+            if (anysong == null) return;
             _loaded = true;
             _currentSong = anysong;
 
@@ -56,7 +56,6 @@ namespace Anywhen
                 }
             }
         }
-
 
 
         private void OnBar()
@@ -91,7 +90,6 @@ namespace Anywhen
                 _currentSong.Sections[0]));
         }
 
-        
 
         private void OnTick16()
         {
@@ -161,7 +159,7 @@ namespace Anywhen
         }
 
 
-        protected internal  void ReleaseFromMetronome()
+        protected internal void ReleaseFromMetronome()
         {
             _isRunning = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
@@ -180,7 +178,9 @@ namespace Anywhen
 
         public void Play()
         {
+            if (AnysongObject == null) return;
             if (!_currentSong) Load();
+
             if (!AnysongPlayerBrain.IsStarted)
                 AnywhenMetronome.Instance.SetTempo(_currentSong.tempo);
             _currentSong.Reset();
@@ -231,7 +231,7 @@ namespace Anywhen
         {
             _previewIntensity = value;
         }
-        
+
         public int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();

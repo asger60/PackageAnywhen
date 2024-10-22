@@ -76,5 +76,13 @@ namespace Editor
 
             AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
         }
+
+        public void Stop()
+        {
+            _isPreviewing = false;
+            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+            _playButton.style.backgroundColor = new StyleColor(Color.clear);
+            AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
+        }
     }
 }
