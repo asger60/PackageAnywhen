@@ -41,7 +41,6 @@ namespace Editor
             _currentSong = anysongObject;
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
-            Debug.Log("song " + _currentSong.name);
         }
 
         private void OnTick16()
@@ -54,7 +53,6 @@ namespace Editor
         {
             if (_anywhenPlayer.AnysongObject == null) return;
             _isPreviewing = !_isPreviewing;
-            Debug.Log("preview" + _isPreviewing);
             if (_isPreviewing)
             {
                 if (_currentSong == null)
