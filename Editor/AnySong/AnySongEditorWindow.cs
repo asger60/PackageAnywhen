@@ -307,7 +307,6 @@ namespace Editor.AnySong
             
             _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt =>
             {
-                Debug.Log("int " + evt.newValue);
                 SetTestIntensity(evt.newValue);
             });
 
