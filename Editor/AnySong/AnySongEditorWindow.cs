@@ -126,6 +126,25 @@ namespace Editor.AnySong
             }
         }
 
+        static void SetTestIntensity(float value)
+        {
+            if (_isPLaying)
+            {
+                if (_currentRuntimeSongPlayer == null)
+                {
+                    _currentRuntimeSongPlayer = AttemptToFindPlayer();
+                    if (_currentRuntimeSongPlayer == null)
+                    {
+                        Debug.LogError("no runtime player");
+                        return;
+                    }
+                }
+
+                _currentRuntimeSongPlayer.SetTestIntensity(value);
+
+            }
+        }
+
 
         static AnysongPlayer AttemptToFindPlayer()
         {
@@ -285,6 +304,14 @@ namespace Editor.AnySong
                 ToggleIsPlaying();
                 AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
             });
+            
+            _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt =>
+            {
+                Debug.Log("int " + evt.newValue);
+                SetTestIntensity(evt.newValue);
+            });
+
+
         }
 
 

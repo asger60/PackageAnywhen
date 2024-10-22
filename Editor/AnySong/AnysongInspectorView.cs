@@ -116,8 +116,9 @@ namespace Editor.AnySong
             _parent.Add(
                 CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
                     null));
+            
             _parent.Add(CreatePropertyFieldWithCallback(
-                selection.CurrentSectionTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
+                selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
             
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackType"), null));

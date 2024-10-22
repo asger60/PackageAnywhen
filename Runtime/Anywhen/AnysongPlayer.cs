@@ -112,20 +112,19 @@ namespace Anywhen
 
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-
-                var pattern = track.GetPlayingPattern();
+                var sectionTrack = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                var track = _currentSong.Tracks[trackIndex];
+                var pattern = sectionTrack.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
                 pattern.Advance();
 
 
-                if (track.isMuted) continue;
+                if (sectionTrack.isMuted) continue;
 
 
                 if (step.noteOn || step.noteOff)
                 {
-                    float thisIntensity =
-                        Mathf.Clamp01(track.intensityMappingCurve.Evaluate(AnysongPlayerBrain.GlobalIntensity));
+                    float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
                     float thisRnd = Random.Range(0, 1f);
                     if (thisRnd < step.chance && step.mixWeight < thisIntensity)
                     {
@@ -134,6 +133,14 @@ namespace Anywhen
                     }
                 }
             }
+        }
+
+        float GetIntensity()
+        {
+            if (Application.isPlaying)
+                return AnysongPlayerBrain.GlobalIntensity;
+
+            return _previewIntensity;
         }
 
         void NextSection()
@@ -228,6 +235,12 @@ namespace Anywhen
         public void LocateTrigger()
         {
             trigger = GetComponentInChildren<AnywhenTrigger>();
+        }
+
+        private float _previewIntensity = 1;
+        public void SetTestIntensity(float value)
+        {
+            _previewIntensity = value;
         }
     }
 }

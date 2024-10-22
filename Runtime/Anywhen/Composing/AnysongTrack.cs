@@ -11,7 +11,10 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         private NoteEvent _lastTrackEvent;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-
+        
+        public AnimationCurve intensityMappingCurve =
+            new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+        
         public enum AnyTrackTypes
         {
             None,
@@ -25,6 +28,7 @@ namespace Anywhen.Composing
         public void Init()
         {
             volume = 1;
+            intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
         }
 
         public AnysongTrack Clone()

@@ -20,9 +20,7 @@ namespace Anywhen.Composing
 
         public List<AnyPattern> patterns;
 
-        public AnimationCurve intensityMappingCurve =
-            new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-
+        
         public bool isMuted;
         public bool isSolo;
         private int _selectedTrackPatternIndex;

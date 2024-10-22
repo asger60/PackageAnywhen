@@ -44,8 +44,7 @@ namespace Editor.AnySong
             };
 
             headerElement.Add(songTitle);
-            //_parent.Add(Spacer(100));
-
+            
 
             var song = new SerializedObject(currentSong);
             var tempoProperty = song.FindProperty("tempo");
@@ -61,6 +60,20 @@ namespace Editor.AnySong
             songVolumeField.BindProperty(volumeProperty);
             songVolumeField.style.width = 300;
             controlsElement.Add(songVolumeField);
+
+            var intensitySlider = new Slider(0,1)
+            {
+                style = { width = 300},
+                direction = SliderDirection.Horizontal,
+                name = "TestIntensitySlider",
+                label = "Intensity",
+                value = 1
+            };
+
+            controlsElement.Add(intensitySlider);
+            
+            
+            
             controlsElement.Add(Spacer());
 
             _playButton = new Button()
