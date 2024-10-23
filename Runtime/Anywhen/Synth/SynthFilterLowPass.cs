@@ -89,6 +89,7 @@
 //  is not implemented yet.
 
 using Anywhen.Synth.Filter;
+using UnityEngine;
 using UnitySynth.Runtime.Synth;
 
 namespace Anywhen.Synth
@@ -96,7 +97,7 @@ namespace Anywhen.Synth
     public class SynthFilterLowPass : SynthFilterBase
     {
         /// Static config
-        const float C = 1.0f; // ????
+        //const float C = 1.0f; // ????
 
         const float V_t = 1.22070313f; // From Diakopoulos
         private float _cutoffMod = 1;
@@ -114,7 +115,6 @@ namespace Anywhen.Synth
         /// Cache
         float _s, _v;
 
-        float _cutOff;
 
 
         public override void SetExpression(float data)
@@ -139,7 +139,6 @@ namespace Anywhen.Synth
         {
             _v = V_t * 0.5f; // 1/2V_t
             _cutoffMod = 1;
-            
             settings = newSettings;
         }
 
@@ -179,11 +178,9 @@ namespace Anywhen.Synth
         }
 
 
-        private void SetCutOff(float c)
+        private void SetCutOff(float value)
         {
-            _cutOff = c;
-            //_s = 1;
-            _s = c / C / (float)AnywhenRuntime.SampleRate / _oversampling * 6.28318530717959f * _cutoffMod;
+            _s = value / 1.0f / AnywhenRuntime.SampleRate / /*_oversampling * */ 6.28318530717959f * _cutoffMod;
         }
 
         private void SetOversampling(int iterationCount)

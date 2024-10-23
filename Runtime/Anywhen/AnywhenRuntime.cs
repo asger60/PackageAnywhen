@@ -61,7 +61,18 @@ namespace Anywhen
 
         private static bool _executeInEditMode;
         private static AnywhenPlayer _targetPlayer;
-        public static int SampleRate;
+
+        private static int _sampleRate;
+        public static int SampleRate
+        {
+            get
+            {
+                if (_sampleRate == 0)
+                    _sampleRate = AudioSettings.outputSampleRate;
+                
+                return _sampleRate;
+            }
+        }
         private bool _isPreviewing;
         [SerializeField] private bool logErrors;
         public static bool IsPreviewing => Instance._isPreviewing;
@@ -99,7 +110,6 @@ namespace Anywhen
             _instance = this;
             GetAnyComponents();
             SetPreviewMode(false, null);
-            SampleRate = AudioSettings.outputSampleRate;
         }
 
 

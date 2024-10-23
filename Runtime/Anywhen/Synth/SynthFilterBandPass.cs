@@ -12,8 +12,6 @@ namespace Anywhen.Synth
             _q = 5;
         }
 
-        float _sampleRate; // Sample rate
-
         // // DSP variables
         private float _vF, _vD, _vZ1, _vZ2, _vZ3;
         private float _filterFrequency;
@@ -40,7 +38,6 @@ namespace Anywhen.Synth
 
         public void Init(int sampleRate)
         {
-            _sampleRate = sampleRate;
             _frequencyMod = 1;
         }
 
@@ -64,7 +61,11 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
-            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / _sampleRate);
+            if (AnywhenRuntime.SampleRate == 0)
+            {
+                print("mmdk");
+            }
+            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / AnywhenRuntime.SampleRate);
             _vD = 1f / _q;
             _vF = (1.85f - 0.75f * _vD * f) * f;
             

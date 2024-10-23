@@ -112,7 +112,6 @@ namespace Editor
         void ShowPack(AnysongPackObject packObject, int index)
         {
             _currentPackIndex = index;
-            Debug.Log("Clicked " + packObject.name);
             _loadSongButton.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             _currentPack = packObject;
 
@@ -177,9 +176,18 @@ namespace Editor
                 {
                     text = song.name
                 };
+                newTrackButton.AddToClassList("tracklist-button");
 
                 _trackListView.Add(newTrackButton);
-                newTrackButton.clicked += () => { SetPreviewSong(song); };
+                newTrackButton.clicked += () =>
+                {
+                    SetPreviewSong(song);
+                    if (_anysongPlayerControls.IsPlaying)
+                    {
+                        _anysongPlayerControls.Play();
+                    }
+                    
+                };
             }
         }
 

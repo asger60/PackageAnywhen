@@ -31,13 +31,31 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
+    min-height: 25px;
+}
+
+.unity-button:hover {
+    background-color: rgba(255, 255, 255, 0.09);
 }
 
 .tracklist-button {
-    min-height: 40px;
+    min-height: 25px;
     background-color: rgba(0, 0, 0, 0);
     border-left-color: rgb(188, 188, 188);
     border-right-color: rgb(188, 188, 188);
     border-top-color: rgb(188, 188, 188);
-    border-bottom-color: rgb(188, 188, 188);
+    border-bottom-color: rgba(188, 188, 188, 0);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 0;
+    border-left-width: 1px;
+}
+
+.tracklist-button:hover {
+    background-color: rgb(72, 72, 72);
+}
+
+.tracklist-button:focus {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 }

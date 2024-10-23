@@ -58,7 +58,6 @@ namespace Anywhen.Synth
 
 
         public static float[] FreqTab;
-        private float[] _freqTabTest;
 
         private const int QueueCapacity = 16;
         private readonly float[] _lastBuffer = new float[2048];
@@ -75,7 +74,8 @@ namespace Anywhen.Synth
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
         private int _noteOnCount;
-        private AudioSource _audioSource;
+        public AudioSource _audioSource;
+        private bool _isCreated;
 
         /// Public interface
         public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
@@ -142,7 +142,7 @@ namespace Anywhen.Synth
             for (int i = 0; i < _preset.oscillatorSettings.Length; i++)
             {
                 var oscillatorSetting = _preset.oscillatorSettings[i];
-                
+
                 var go = new GameObject("Oscillator " + oscillatorSetting.oscillatorType);
                 go.transform.SetParent(transform);
                 bool isNoise = oscillatorSetting.oscillatorType == SynthSettingsObjectOscillator.OscillatorType.Noise;
@@ -409,12 +409,10 @@ namespace Anywhen.Synth
         }
 
 
-
-
-        private void Start()
-        {
-            Init();
-        }
+        //private void Start()
+        //{
+        //    Init();
+        //}
 
 
         private void OnAudioFilterRead(float[] data, int channels)
@@ -450,32 +448,41 @@ namespace Anywhen.Synth
             _isInitialized = true;
         }
 
-
-        /// Internal
-        public void Init()
+        public void Create()
         {
-            if (FreqTab == null)
-            {
-                _freqTabTest = new float[128];
-                FreqTab = new float[128];
-                for (int i = 0; i < 128; i++)
-                {
-                    // 128 midi notes
-                    FreqTab[i] = Midi2Freq(i);
-                    _freqTabTest[i] = Midi2Freq(i);
-                }
-            }
+            Debug.Log("create");
+            
 
-            _noteOnQueue = new EventQueue(QueueCapacity);
 
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             TryGetComponent(out _audioSource);
             _audioSource.clip = myClip;
             _audioSource.playOnAwake = true;
-            _audioSource.Play();
-
-            ResetVoices();
+            _isCreated = true;
         }
+
+        /// Internal
+        public void Init()
+        {
+            if (!_isCreated)
+            {
+                Create();
+            }
+
+            if (FreqTab == null)
+            {
+                FreqTab = new float[128];
+                for (int i = 0; i < 128; i++)
+                {
+                    // 128 midi notes
+                    FreqTab[i] = Midi2Freq(i);
+                }
+            }
+            _noteOnQueue = new EventQueue(QueueCapacity);
+            ResetVoices();
+            _audioSource.Play();
+        }
+        
 
         private void ResetVoices()
         {

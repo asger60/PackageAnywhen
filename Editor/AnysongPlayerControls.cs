@@ -17,10 +17,13 @@ namespace Editor
         public static Color AccentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
         private VisualElement _tapeElement;
         private Label _songNameLabel, _songAuthorLabel;
+        private bool _isPlaying;
 
         static AnysongPlayerControls()
         {
         }
+
+        public bool IsPlaying => _isPlaying;
 
         public void HandlePlayerLogic(VisualElement root, AnywhenPlayer anywhenPlayer)
         {
@@ -53,30 +56,60 @@ namespace Editor
         {
             if (_anywhenPlayer.AnysongObject == null) return;
             _isPreviewing = !_isPreviewing;
-            if (_isPreviewing)
+            if(_isPreviewing)
             {
-                if (_currentSong == null)
-                {
-                    _currentSong = _anywhenPlayer.AnysongObject;
-                }
-
-                _anywhenPlayer.EditorSetPreviewSong(_currentSong);
-
-                AnywhenRuntime.Metronome.SetTempo(_currentSong.tempo);
-                _playButton.style.backgroundColor = new StyleColor(AccentColor);
-                AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+                Play();
             }
             else
             {
-                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-                _playButton.style.backgroundColor = new StyleColor(Color.clear);
+                Stop();
             }
 
-            AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
+
+            //_isPlaying = _isPreviewing;
+            //if (_isPreviewing)
+            //{
+            //    if (_currentSong == null)
+            //    {
+            //        _currentSong = _anywhenPlayer.AnysongObject;
+            //    }
+//
+            //    _anywhenPlayer.EditorSetPreviewSong(_currentSong);
+//
+            //    AnywhenRuntime.Metronome.SetTempo(_currentSong.tempo);
+            //    _playButton.style.backgroundColor = new StyleColor(AccentColor);
+            //    AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+            //}
+            //else
+            //{
+            //    AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+            //    _playButton.style.backgroundColor = new StyleColor(Color.clear);
+            //}
+
+            
         }
 
+        public void Play()
+        {
+            if (_anywhenPlayer.AnysongObject == null) return;
+            
+            _isPreviewing = true;
+            _isPlaying = true;
+            if (_currentSong == null)
+            {
+                _currentSong = _anywhenPlayer.AnysongObject;
+            }
+
+            _anywhenPlayer.EditorSetPreviewSong(_currentSong);
+
+            AnywhenRuntime.Metronome.SetTempo(_currentSong.tempo);
+            _playButton.style.backgroundColor = new StyleColor(AccentColor);
+            AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+            AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
+        }
         public void Stop()
         {
+            _isPlaying = false;
             _isPreviewing = false;
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
             _playButton.style.backgroundColor = new StyleColor(Color.clear);

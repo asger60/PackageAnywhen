@@ -28,21 +28,13 @@
                         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PackDescription" style="color: rgb(255, 255, 255); flex-wrap: nowrap; flex-grow: 1; white-space: normal;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Instance template="AnysongPlayer" name="AnysongPlayer" style="height: 110px;" />
+                <ui:Instance template="AnysongPlayer" name="AnysongPlayer" style="height: 110px; min-height: 100px;" />
                 <ui:Button text="Load song" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LoadSongButton" style="min-height: 40px; background-color: rgb(91, 207, 107); color: rgb(255, 255, 255); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; padding-bottom: 0; margin-bottom: 10px; visibility: visible; display: flex;" />
-                <ui:ScrollView style="min-height: 200px; max-height: none; flex-grow: 1; align-self: stretch; flex-direction: column;">
-                    <ui:VisualElement name="TrackList" style="min-height: auto; align-items: stretch; align-self: auto; justify-content: flex-start; flex-grow: 0; flex-shrink: 1; flex-basis: 100%; max-height: none;">
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tracklist-button" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                        <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-                    </ui:VisualElement>
-                </ui:ScrollView>
+                <ui:VisualElement name="TrackList" style="align-items: stretch; align-self: auto; justify-content: flex-start; flex-grow: 1; flex-shrink: 1; border-bottom-width: 1px; border-bottom-color: rgb(188, 188, 188);">
+                    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tracklist-button" />
+                    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tracklist-button" />
+                    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tracklist-button" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
