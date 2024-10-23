@@ -143,7 +143,6 @@ namespace Editor
 
         void LoadPack()
         {
-            Debug.Log("loading pack " + _currentPack.AssetLabelReference.labelString);
             _currentPack.ClearSongs();
             _noIncrementFrames = 0;
             _lastFrameCount = 0;
@@ -152,7 +151,6 @@ namespace Editor
             _loadStatus = Addressables.LoadAssetsAsync<AnysongObject>(_currentPack.AssetLabelReference,
                 song =>
                 {
-                    Debug.Log("loaded: " + song.name);
                     _currentPack.AddSong(song);
                 });
 
@@ -202,7 +200,6 @@ namespace Editor
             _lastFrameCount = _currentPack.Songs.Length;
 
             EditorUtility.DisplayProgressBar("Loading songs", "Loading...", _noIncrementFrames / 4f);
-            Debug.Log("loading.. " + _noIncrementFrames + "    ---    " + _noIncrementFrames / 4f);
 
             if (_noIncrementFrames > 3)
                 LoadCompletedCallback(_loadStatus);

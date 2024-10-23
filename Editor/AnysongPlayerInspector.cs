@@ -48,10 +48,10 @@ namespace Editor
 
             Refresh();
 
-            //var songObject = serializedObject.FindProperty("songObject");
-            //var songObjectField = new PropertyField(songObject);
-            //songObjectField.BindProperty(songObject);
-            //_root.Add(songObjectField);
+            var songObject = serializedObject.FindProperty("songObject");
+            var songObjectField = new PropertyField(songObject);
+            songObjectField.BindProperty(songObject);
+            _root.Add(songObjectField);
 
             var triggerObject = serializedObject.FindProperty("trigger");
 
