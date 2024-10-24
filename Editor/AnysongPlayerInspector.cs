@@ -25,6 +25,12 @@ namespace Editor
         private void OnEnable()
         {
             _anywhenPlayer = target as AnywhenPlayer;
+            var anywhen = FindFirstObjectByType<AnywhenRuntime>();
+            if (!anywhen)
+            {
+                Debug.LogWarning("no anywhen");
+                AnywhenMenuUtils.AddAnywhen();
+            }
         }
 
         public override VisualElement CreateInspectorGUI()

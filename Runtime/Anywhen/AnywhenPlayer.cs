@@ -201,12 +201,7 @@ namespace Anywhen
             return (float)progress / trackLength;
         }
 
-
-        public void OnValidate()
-        {
-            Debug.Log("checking for anywhen");
-            //GameObject.FindFirstObjectByType<>()
-        }
+        
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
