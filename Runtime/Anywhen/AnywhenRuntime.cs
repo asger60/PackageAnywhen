@@ -68,7 +68,7 @@ namespace Anywhen
             get
             {
                 if (_sampleRate == 0)
-                    _sampleRate = AudioSettings.outputSampleRate;
+                    _sampleRate = 1;
                 
                 return _sampleRate;
             }
@@ -86,6 +86,8 @@ namespace Anywhen
         static void EditorUpdate()
         {
             if (Application.isPlaying) return;
+            if (_sampleRate == 1)
+                _sampleRate = AudioSettings.outputSampleRate;
             if (_executeInEditMode)
             {
                 Metronome.Update();
