@@ -83,7 +83,9 @@ namespace Editor
 
             for (var i = 0; i < _packObjects.Length; i++)
             {
+                
                 var pack = _packObjects[i];
+                if(!pack.IsInPackage) continue;
                 Button packElement = new Button()
                 {
                     style =
@@ -145,17 +147,24 @@ namespace Editor
             _currentPack.ClearSongs();
             _noIncrementFrames = 0;
             _lastFrameCount = 0;
-
-            _loadStatus = new AsyncOperationHandle<IList<AnysongObject>>();
-            _loadStatus = Addressables.LoadAssetsAsync<AnysongObject>(_currentPack.AssetLabelReference,
-                song =>
-                {
-                    _currentPack.AddSong(song);
-                });
-
-
-            _isLoadingPack = true;
             EditorUtility.DisplayProgressBar("Loading songs", "Loading...", 0);
+            foreach (var songName in _currentPack.songNames)
+            {
+                string path = AnywhenMenuUtils.GetAssetPath(songName);
+                AnysongObject song = AssetDatabase.LoadAssetAtPath<AnysongObject>(path);
+                _currentPack.AddSong(song);
+            }
+            
+            ShowSongs();
+            //_loadStatus = new AsyncOperationHandle<IList<AnysongObject>>();
+            //_loadStatus = Addressables.LoadAssetsAsync<AnysongObject>(_currentPack.AssetLabelReference,
+            //    song =>
+            //    {
+            //        _currentPack.AddSong(song);
+            //    });
+//
+//
+            //_isLoadingPack = true;
         }
 
         void LoadCompletedCallback(AsyncOperationHandle<IList<AnysongObject>> songs)
@@ -163,11 +172,12 @@ namespace Editor
             _isLoadingPack = false;
             ShowSongs();
             Debug.Log("load completed");
-            EditorUtility.ClearProgressBar();
+            
         }
 
         void ShowSongs()
         {
+            EditorUtility.ClearProgressBar();
             _loadSongButton.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             _trackListView.Clear();
             foreach (var song in _currentPack.Songs)
@@ -186,7 +196,6 @@ namespace Editor
                     {
                         _anysongPlayerControls.Play();
                     }
-                    
                 };
             }
         }
