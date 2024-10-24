@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -200,6 +201,12 @@ namespace Anywhen
             return (float)progress / trackLength;
         }
 
+
+        public void OnValidate()
+        {
+            Debug.Log("checking for anywhen");
+            //GameObject.FindFirstObjectByType<>()
+        }
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {

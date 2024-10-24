@@ -37,7 +37,7 @@ namespace Editor
             AnysongBrowser window = (AnysongBrowser)GetWindow(typeof(AnysongBrowser));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong browser");
-            window.minSize = new Vector2(450, 200);
+            window.minSize = new Vector2(1000, 500);
             window.CreateGUI();
             window._onClose = OnWindowClosed;
         }
