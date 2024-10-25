@@ -26,6 +26,7 @@ namespace Anywhen
         private float _previewIntensity = 1;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
+        private int _currentPlayerTempo = -1;
 
         private void Awake()
         {
@@ -48,6 +49,7 @@ namespace Anywhen
             if (anysong == null) return;
             _loaded = true;
             _currentSong = anysong;
+            //_currentPlayerTempo = _currentSong.tempo;
 
             foreach (var track in anysong.Tracks)
             {
@@ -205,7 +207,9 @@ namespace Anywhen
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
+            Debug.Log("loaded song");
             this.songObject = newSong;
+            _currentPlayerTempo = newSong.tempo;
             currentSongPackIndex = packIndex;
             if (AnywhenRuntime.IsPreviewing)
             {
@@ -245,6 +249,19 @@ namespace Anywhen
             }
 
             return returnList.ToArray();
+        }
+
+    
+
+        public void EditorSetTempo(int newTempo)
+        {
+            _currentPlayerTempo = newTempo;
+            AnywhenRuntime.Metronome.SetTempo(newTempo);
+        }
+
+        public float GetTempo()
+        {
+            return _currentPlayerTempo;
         }
     }
 }
