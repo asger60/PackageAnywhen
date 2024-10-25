@@ -141,5 +141,10 @@ namespace Anywhen.Composing
         {
             SectionLockIndex = index;
         }
+
+        public static AnywhenPlayer GetCurrentPlayer()
+        {
+            return _instance._currentPlayer;
+        }
     }
 }

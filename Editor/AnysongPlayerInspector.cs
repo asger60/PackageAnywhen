@@ -112,16 +112,7 @@ namespace Editor
 
             
             _anysongPlayerControls.SetSongObject(_anywhenPlayer.AnysongObject);
-            //var labelTitle = _root.Q<Label>("LabelSongTitle");
-            //var labelAuthor = _root.Q<Label>("LabelSongAuthor");
-            //var tempoSlider = _root.Q<Slider>("TempoSlider");
-            //var intensitySlider = _root.Q<Slider>("IntensitySlider");
-//
-//
-            //labelTitle.text = "Song: " + _anywhenPlayer.AnysongObject.name;
-            //labelAuthor.text = "By: " + _anywhenPlayer.AnysongObject.author;
-            //tempoSlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
-            //intensitySlider.SetValueWithoutNotify(1);
+
 
             var packArtElement = _root.Q<VisualElement>("PackImage");
             packArtElement.style.backgroundImage = new StyleBackground(_currentPack.packImage);

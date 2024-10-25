@@ -448,12 +448,8 @@ namespace Anywhen.Synth
             _isInitialized = true;
         }
 
-        public void Create()
+        private void Create()
         {
-            Debug.Log("create");
-            
-
-
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             TryGetComponent(out _audioSource);
             _audioSource.clip = myClip;

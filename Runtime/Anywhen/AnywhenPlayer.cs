@@ -186,6 +186,14 @@ namespace Anywhen
 
             if (!AnysongPlayerBrain.IsStarted)
                 AnywhenMetronome.Instance.SetTempo(_currentSong.tempo);
+
+            if (AnysongPlayerBrain.GetCurrentPlayer() == this)
+            {
+                Debug.Log("retriggering player that is already playing");
+                return;
+            }
+
+
             _currentSong.Reset();
             _currentSectionIndex = 0;
             _currentBar = 0;
@@ -203,7 +211,6 @@ namespace Anywhen
             return (float)progress / trackLength;
         }
 
-        
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
@@ -251,7 +258,6 @@ namespace Anywhen
             return returnList.ToArray();
         }
 
-    
 
         public void EditorSetTempo(int newTempo)
         {
