@@ -17,7 +17,7 @@ namespace Editor
         public static Color AccentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
         private VisualElement _tapeElement;
         private Label _songNameLabel, _songAuthorLabel;
-        private Slider _intensitySlider, _tempoSlider;
+        private AnySlider _intensityAnySlider, _tempoAnySlider;
         private bool _isPlaying;
 
         static AnysongPlayerControls()
@@ -36,16 +36,16 @@ namespace Editor
             _playButton = root.Q<Button>("ButtonPreview");
             _songNameLabel = root.Q<Label>("LabelSongTitle");
             _songAuthorLabel = root.Q<Label>("LabelSongAuthor");
-            _intensitySlider = root.Q<Slider>("IntensitySlider");
-            _tempoSlider = root.Q<Slider>("TempoSlider");
+            _intensityAnySlider = root.Q<AnySlider>("IntensitySlider");
+            _tempoAnySlider = root.Q<AnySlider>("TempoSlider");
 
-            _tempoSlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
+            _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
             
-            _intensitySlider.RegisterValueChangedCallback(evt =>
+            _intensityAnySlider.RegisterValueChangedCallback(evt =>
             {
                 anywhenPlayer.EditorSetTestIntensity(evt.newValue);
             });
-            _tempoSlider.RegisterValueChangedCallback(evt =>
+            _tempoAnySlider.RegisterValueChangedCallback(evt =>
             {
                 anywhenPlayer.EditorSetTempo((int)evt.newValue);
             });
@@ -57,8 +57,8 @@ namespace Editor
             _currentSong = anysongObject;
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
-            _tempoSlider.SetValueWithoutNotify(anysongObject.tempo);
-            _intensitySlider.SetValueWithoutNotify(1);
+            _tempoAnySlider.SetValueWithoutNotify(anysongObject.tempo);
+            _intensityAnySlider.SetValueWithoutNotify(1);
         }
         
        
