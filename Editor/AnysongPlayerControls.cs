@@ -43,7 +43,7 @@ namespace Editor
             
             _intensityAnySlider.RegisterValueChangedCallback(evt =>
             {
-                anywhenPlayer.EditorSetTestIntensity(evt.newValue);
+                anywhenPlayer.EditorSetTestIntensity(evt.newValue/100f);
             });
             _tempoAnySlider.RegisterValueChangedCallback(evt =>
             {
@@ -58,7 +58,7 @@ namespace Editor
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
             _tempoAnySlider.SetValueWithoutNotify(anysongObject.tempo);
-            _intensityAnySlider.SetValueWithoutNotify(1);
+            _intensityAnySlider.SetValueWithoutNotify(100);
         }
         
        

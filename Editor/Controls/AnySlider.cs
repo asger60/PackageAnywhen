@@ -4,10 +4,9 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class AnySlider : Slider
 {
-    [UxmlAttribute] public string myString { get; set; } = "default_value";
+    [UxmlAttribute] public string unit { get; set; } = "%";
 
-    [UxmlAttribute] public float myFloat { get; set; } = 2;
-    [UxmlAttribute] public float color { get; set; } = 2;
+    [UxmlAttribute] public Color color { get; set; } = Color.cyan;
 
 
     public static readonly new string ussClassName = "anywhen-slider";
@@ -17,7 +16,7 @@ public partial class AnySlider : Slider
     public new static readonly string trackerUssClassName = "drag-track";
 
     private readonly Label _valueLabel;
-    private readonly VisualElement _dragTrack;
+    private readonly VisualElement _dragTrack, _dragHandle;
 
 
     public AnySlider() : this((string)null)
@@ -51,7 +50,7 @@ public partial class AnySlider : Slider
         headerElement.AddToClassList("header-element");
         this.Add(headerElement);
 
-        
+
         var dragContainerElement = new VisualElement
         {
             name = "drag-element"
@@ -74,23 +73,25 @@ public partial class AnySlider : Slider
         var dragContainer = this.Q<VisualElement>("unity-drag-container");
         dragContainer?.AddToClassList("unity-drag-container");
 
-        var dragHandle = this.Q<VisualElement>("unity-dragger");
-        dragHandle?.AddToClassList(draggerUssClassName);
+        _dragHandle = this.Q<VisualElement>("unity-dragger");
+        _dragHandle?.AddToClassList(draggerUssClassName);
+        _dragHandle.style.backgroundColor = color;
 
         _dragTrack = this.Q<VisualElement>("unity-tracker");
-        _dragTrack?.AddToClassList(trackerUssClassName);
+        _dragTrack?.AddToClassList("drag-track");
+        _dragTrack.style.backgroundColor = new StyleColor(color);
 
         var dragBorder = this.Q<VisualElement>("unity-dragger-border");
         dragBorder?.AddToClassList(draggerBorderUssClassName);
-        
-
     }
 
     public override void SetValueWithoutNotify(float newValue)
     {
         base.SetValueWithoutNotify(newValue);
-        _valueLabel.text = newValue.ToString();
+        _valueLabel.text = newValue + " " + unit;
         float lengthPercent = Mathf.InverseLerp(lowValue, highValue, newValue) * 100;
         _dragTrack.style.width = new StyleLength(new Length(lengthPercent, LengthUnit.Percent));
+        _dragTrack.style.backgroundColor = new StyleColor(color);
+        _dragHandle.style.backgroundColor = color;
     }
 }

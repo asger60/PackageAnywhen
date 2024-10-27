@@ -22,9 +22,10 @@
     align-self: auto;
     align-items: auto;
     flex-wrap: nowrap;
-    height: 20%;
+    height: 30px;
     flex-grow: 1;
     min-height: 30px;
+    max-height: 30px;
 }
 
 .drag-element {
@@ -41,7 +42,6 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
-    height: 80%;
     flex-grow: 1;
     justify-content: flex-start;
     align-items: auto;
