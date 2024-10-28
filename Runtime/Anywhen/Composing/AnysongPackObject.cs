@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Anywhen.Composing
 {
     [CreateAssetMenu(fileName = "AnyTrackPack", menuName = "Anywhen/AnyTrackPack")]
     public class AnysongPackObject : ScriptableObject
     {
-        public AssetLabelReference AssetLabelReference;
+        //public AssetLabelReference AssetLabelReference;
         public AnysongObject[] Songs => _songs.ToArray();
         private List<AnysongObject> _songs = new List<AnysongObject>();
         public string[] songNames;

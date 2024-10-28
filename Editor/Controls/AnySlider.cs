@@ -1,13 +1,39 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+#if UNITY_2023_OR_NEWER
 [UxmlElement]
+#endif
 public partial class AnySlider : Slider
 {
+    public new class UxmlFactory : UxmlFactory<AnySlider, UxmlTraits>
+    {
+    }
+
+
+#if UNITY_2023_OR_NEWER
     [UxmlAttribute] public string unit { get; set; } = "%";
-
     [UxmlAttribute] public Color color { get; set; } = Color.cyan;
+#else
+    public string unit { get; set; } = "%";
+    public Color color { get; set; } = Color.cyan;
+#endif
 
+#if !UNITY_2023_OR_NEWER
+    public new class UxmlTraits : Slider.UxmlTraits
+    {
+        private readonly UxmlStringAttributeDescription _unit = new UxmlStringAttributeDescription { name = "unit", defaultValue = "%" };
+        private readonly UxmlColorAttributeDescription _color = new UxmlColorAttributeDescription { name = "color", defaultValue = Color.cyan };
+
+        public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+        {
+            base.Init(ve, bag, cc);
+            var anySlider = (AnySlider)ve;
+            anySlider.unit = _unit.GetValueFromBag(bag, cc);
+            anySlider.color = _color.GetValueFromBag(bag, cc);
+        }
+    }
+#endif
 
     public static readonly new string ussClassName = "anywhen-slider";
     public static readonly new string labelUssClassName = "slider-label";
