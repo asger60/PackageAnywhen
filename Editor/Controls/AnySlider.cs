@@ -23,7 +23,7 @@ public partial class AnySlider : Slider
     public new class UxmlTraits : Slider.UxmlTraits
     {
         private readonly UxmlStringAttributeDescription _unit = new UxmlStringAttributeDescription { name = "unit", defaultValue = "%" };
-        private readonly UxmlColorAttributeDescription _color = new UxmlColorAttributeDescription { name = "color", defaultValue = Color.cyan };
+        private readonly UxmlColorAttributeDescription _color = new UxmlColorAttributeDescription { name = "color", defaultValue = Color.yellow };
 
         public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
         {
@@ -35,16 +35,10 @@ public partial class AnySlider : Slider
     }
 #endif
 
-    public static readonly new string ussClassName = "anywhen-slider";
-    public static readonly new string labelUssClassName = "slider-label";
-    public new static readonly string draggerUssClassName = "drag-handle";
-    public new static readonly string draggerBorderUssClassName = "drag-handle-border";
-    public new static readonly string trackerUssClassName = "drag-track";
 
     private readonly Label _valueLabel;
     private readonly VisualElement _dragTrack, _dragHandle;
-
-
+    
     public AnySlider() : this((string)null)
     {
     }
@@ -87,7 +81,7 @@ public partial class AnySlider : Slider
         headerElement.Add(labelElement);
         headerElement.Add(_valueLabel);
 
-        AddToClassList(ussClassName);
+        AddToClassList("anywhen-slider");
         var dragContainerLine = new VisualElement();
         dragContainerLine.name = "drag-container-line";
         dragContainerLine.AddToClassList("drag-container-line");
@@ -95,12 +89,12 @@ public partial class AnySlider : Slider
 
         dragContainerElement.Add(this.Q<VisualElement>("unity-drag-container").parent);
 
-        labelElement.AddToClassList(labelUssClassName);
+        labelElement.AddToClassList("slider-label");
         var dragContainer = this.Q<VisualElement>("unity-drag-container");
         dragContainer?.AddToClassList("unity-drag-container");
 
         _dragHandle = this.Q<VisualElement>("unity-dragger");
-        _dragHandle?.AddToClassList(draggerUssClassName);
+        _dragHandle?.AddToClassList("drag-handle");
         _dragHandle.style.backgroundColor = color;
 
         _dragTrack = this.Q<VisualElement>("unity-tracker");
@@ -108,7 +102,7 @@ public partial class AnySlider : Slider
         _dragTrack.style.backgroundColor = new StyleColor(color);
 
         var dragBorder = this.Q<VisualElement>("unity-dragger-border");
-        dragBorder?.AddToClassList(draggerBorderUssClassName);
+        dragBorder?.AddToClassList("drag-handle-border");
     }
 
     public override void SetValueWithoutNotify(float newValue)

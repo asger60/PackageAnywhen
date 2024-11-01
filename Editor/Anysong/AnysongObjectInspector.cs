@@ -1,5 +1,4 @@
 using Anywhen.Composing;
-using Editor.AnySong;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,11 +15,6 @@ public class AnysongObjectInspector : UnityEditor.Editor
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         GUILayout.Label("loading is now done from the antwhen song player");
-        //if (GUILayout.Button("Edit", GUILayout.Height(35), GUILayout.Width(300)))
-        //{
-        //    AnysongEditorWindow.ShowModuleWindow();
-        //    AnysongEditorWindow.LoadSong(target as AnysongObject);
-        //}
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 
