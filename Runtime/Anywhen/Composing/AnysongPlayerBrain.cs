@@ -7,7 +7,9 @@ namespace Anywhen.Composing
     {
         AnywhenPlayer _currentPlayer;
 
-        private AnywhenPlayer _nextUpPlayer;
+
+        
+        private AnywhenPlayer _nextUpPlayer, _stopPlayer;
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
 
@@ -18,8 +20,7 @@ namespace Anywhen.Composing
         {
             Instant,
             NextBar,
-            CrossFade,
-            TrackEnd
+            CrossFade
         }
 
         private TransitionTypes _nextTransitionType;
@@ -44,6 +45,7 @@ namespace Anywhen.Composing
         private void Awake()
         {
             _instance = this;
+            _currentPlayer = null;
         }
 
         private void Start()
@@ -58,19 +60,14 @@ namespace Anywhen.Composing
         {
             if (_nextUpPlayer != null)
             {
-                if (_nextTransitionType == TransitionTypes.TrackEnd)
-                {
-                    if (_currentPlayer.GetTrackProgress() == 0f)
-                    {
-                        TransitionNow(_nextUpPlayer);
-                        _nextUpPlayer = null;
-                    }
-                }
-                else
-                {
-                    TransitionNow(_nextUpPlayer);
-                    _nextUpPlayer = null;
-                }
+                TransitionNow(_nextUpPlayer);
+                _nextUpPlayer = null;
+            }
+            
+            if (_stopPlayer != null)
+            {
+                TransitionNow(null);
+                _stopPlayer = null;
             }
         }
 
@@ -116,9 +113,28 @@ namespace Anywhen.Composing
                     _nextUpPlayer = player;
                     _nextUpPlayer.AttachToMetronome();
                     break;
-                case TransitionTypes.TrackEnd:
-                    _nextUpPlayer = player;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _nextTransitionType = transitionType;
+        }
+
+        private void HandleTransitionToNothing(AnywhenPlayer player, TransitionTypes transitionType)
+        {
+            switch (transitionType)
+            {
+                case TransitionTypes.Instant:
+                    TransitionNow(null);
                     break;
+                case TransitionTypes.NextBar:
+                    _stopPlayer = player;
+                    break;
+                case TransitionTypes.CrossFade:
+                    Debug.LogWarning("stopping doesn't support crossfade");
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -133,8 +149,17 @@ namespace Anywhen.Composing
                 _currentPlayer.ReleaseFromMetronome();
             }
 
-            _currentPlayer = newPlayer;
-            _currentPlayer.AttachToMetronome();
+            if (newPlayer != null)
+            {
+                _currentPlayer = newPlayer;
+                _currentPlayer.AttachToMetronome();
+            }
+            else
+            {
+                //_currentPlayer.Stop();
+                _currentPlayer?.ReleaseFromMetronome();
+                _currentPlayer = null;
+            }
         }
 
         public static void SetSectionLock(int index)
@@ -145,6 +170,11 @@ namespace Anywhen.Composing
         public static AnywhenPlayer GetCurrentPlayer()
         {
             return _instance._currentPlayer;
+        }
+
+        public static void StopPlayer(AnywhenPlayer player, TransitionTypes transitionType)
+        {
+            _instance.HandleTransitionToNothing(player, transitionType);
         }
     }
 }

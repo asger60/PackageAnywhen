@@ -21,6 +21,7 @@ namespace Editor
         private VisualElement _root;
         private AnysongPlayerControls _anysongPlayerControls;
         private int _currentPackIndex;
+        private int _initialTempo;
 
         private void OnEnable()
         {
@@ -45,7 +46,11 @@ namespace Editor
             _anysongPlayerControls.HandlePlayerLogic(_root, _anywhenPlayer);
 
             _browseButton = _root.Q<Button>("ButtonLoadTrack");
-            _browseButton.clicked += () => { AnysongBrowser.ShowBrowserWindow(_anywhenPlayer, OnBrowseWindowClosed); };
+            _browseButton.clicked += () =>
+            {
+                _initialTempo = _anywhenPlayer.GetTempo();
+                AnysongBrowser.ShowBrowserWindow(_anywhenPlayer, OnBrowseWindowClosed);
+            };
 
 
             var editButton = _root.Q<Button>("ButtonEdit");
@@ -97,8 +102,12 @@ namespace Editor
             _anywhenPlayer.EditorCreateTrigger();
         }
 
-        private void OnBrowseWindowClosed()
+        private void OnBrowseWindowClosed(bool didLoad)
         {
+            Debug.Log("window closed " + didLoad);
+            if (!didLoad)
+                _anywhenPlayer.EditorSetTempo(_initialTempo);
+            
             Refresh();
         }
 
@@ -110,8 +119,8 @@ namespace Editor
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
 
-            
-            _anysongPlayerControls.SetSongObject(_anywhenPlayer.AnysongObject);
+
+            _anysongPlayerControls.RefreshSongObject(_anywhenPlayer.AnysongObject);
 
 
             var packArtElement = _root.Q<VisualElement>("PackImage");

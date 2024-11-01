@@ -14,18 +14,20 @@
     border-left-color: rgb(149, 149, 149);
     border-right-color: rgb(149, 149, 149);
     height: 100%;
+    width: 100%;
 }
 
 .header-element {
     flex-direction: row;
     justify-content: flex-start;
     align-self: auto;
-    align-items: auto;
+    align-items: center;
     flex-wrap: nowrap;
     height: 30px;
     flex-grow: 1;
     min-height: 30px;
     max-height: 30px;
+    width: 100%;
 }
 
 .drag-element {
@@ -82,7 +84,7 @@
 .slider-label {
     background-color: rgba(245, 87, 87, 0);
     flex-direction: column;
-    flex-grow: 0;
+    flex-grow: 1;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -97,11 +99,11 @@
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     -unity-text-align: middle-left;
-    flex-shrink: 0;
-    width: 100px;
-    min-width: 100px;
-    align-self: center;
-    align-items: center;
+    flex-shrink: 1;
+    align-self: auto;
+    align-items: auto;
+    flex-basis: auto;
+    min-width: 60px;
 }
 
 .value-label {
@@ -113,7 +115,7 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
-    margin-top: 0;
+    margin-top: 3px;
     margin-right: 5px;
     margin-bottom: 0;
     margin-left: 0;
@@ -123,12 +125,11 @@
     padding-left: 0;
     flex-grow: 1;
     align-self: center;
-    align-items: center;
+    align-items: flex-end;
     -unity-text-align: middle-right;
     min-height: 20px;
-    min-width: 60px;
-    width: 60px;
     -unity-font-style: bold;
+    flex-basis: 50%;
 }
 
 .drag-handle-border {

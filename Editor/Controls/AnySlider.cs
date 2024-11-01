@@ -15,14 +15,14 @@ public partial class AnySlider : Slider
     [UxmlAttribute] public string unit { get; set; } = "%";
     [UxmlAttribute] public Color color { get; set; } = Color.cyan;
 #else
-    public string unit { get; set; } = "%";
+    public string unit { get; set; } = "";
     public Color color { get; set; } = Color.cyan;
 #endif
 
 #if !UNITY_2023_OR_NEWER
     public new class UxmlTraits : Slider.UxmlTraits
     {
-        private readonly UxmlStringAttributeDescription _unit = new UxmlStringAttributeDescription { name = "unit", defaultValue = "%" };
+        private readonly UxmlStringAttributeDescription _unit = new UxmlStringAttributeDescription { name = "unit", defaultValue = "" };
         private readonly UxmlColorAttributeDescription _color = new UxmlColorAttributeDescription { name = "color", defaultValue = Color.yellow };
 
         public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)

@@ -42,9 +42,9 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern)
+        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, int rootMod)
         {
-            _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote);
+            _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote + rootMod);
             _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, this);
             foreach (var repeat in anyPatternStep.GetRepeats(pattern.rootNote, volume))

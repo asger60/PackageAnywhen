@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 
@@ -19,7 +20,7 @@ namespace Editor
 
         private bool _isLoadingPack;
         private AsyncOperationHandle<IList<AnysongObject>> _loadStatus;
-        private Action _onClose;
+        private Action<bool> _onClose;
         private VisualElement _trackListView;
         private AnysongObject _currentPreviewSong;
         private AnysongPlayerControls _anysongPlayerControls;
@@ -30,27 +31,30 @@ namespace Editor
         private int _lastFrameCount;
         private Button _playButton, _loadSongButton;
         private int _currentPackIndex;
+        private bool _didLoad;
 
-        public static void ShowBrowserWindow(AnywhenPlayer thisPlayer, Action OnWindowClosed)
+        public static void ShowBrowserWindow(AnywhenPlayer thisPlayer, Action<bool> onWindowClosed)
         {
+            
             _anywhenPlayer = thisPlayer;
             AnysongBrowser window = (AnysongBrowser)GetWindow(typeof(AnysongBrowser));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong browser");
             window.minSize = new Vector2(1000, 500);
             window.CreateGUI();
-            window._onClose = OnWindowClosed;
+            window._onClose = onWindowClosed;
         }
 
 
         private void OnDestroy()
         {
-            _anywhenPlayer.EditorSetPreviewSong(null);
-            _onClose?.Invoke();
+            _anywhenPlayer?.EditorSetPreviewSong(null);
+            _onClose?.Invoke(_didLoad);
         }
 
         public void CreateGUI()
         {
+            _didLoad = false;
             string path = AnywhenMenuUtils.GetAssetPath("Editor/uxml/AnysongBrowser.uxml");
             VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
             VisualElement ui = uiAsset.Instantiate();
@@ -71,7 +75,7 @@ namespace Editor
             _packNameLabel = ui.Q<Label>("PackName");
             _packDescriptionLabel = ui.Q<Label>("PackDescription");
             _loadSongButton = ui.Q<Button>("LoadSongButton");
-            _loadSongButton.clicked += LoadSongButtonOnclicked;
+            _loadSongButton.clicked += LoadSongButtonOnClicked;
 
             var packsHolder = ui.Q<VisualElement>("Packs");
             _trackListView = ui.Q<VisualElement>("TrackList");
@@ -83,9 +87,8 @@ namespace Editor
 
             for (var i = 0; i < _packObjects.Length; i++)
             {
-                
                 var pack = _packObjects[i];
-                if(!pack.IsInPackage) continue;
+                if (!pack.IsInPackage) continue;
                 Button packElement = new Button()
                 {
                     style =
@@ -102,11 +105,13 @@ namespace Editor
             }
         }
 
-        private void LoadSongButtonOnclicked()
+        private void LoadSongButtonOnClicked()
         {
+            
             _anywhenPlayer.EditorSetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
             EditorUtility.SetDirty(_anywhenPlayer);
             _anysongPlayerControls.Stop();
+            _didLoad = true;
             Close();
         }
 
@@ -137,12 +142,13 @@ namespace Editor
                 {
                     text = "Load tracks"
                 };
-                loadTracksButton.clicked += LoadPack;
+                loadTracksButton.clicked += () => { this.StartCoroutine(LoadPack()); };
+
                 _trackListView.Add(loadTracksButton);
             }
         }
 
-        void LoadPack()
+        IEnumerator LoadPack()
         {
             _currentPack.ClearSongs();
             _noIncrementFrames = 0;
@@ -153,18 +159,11 @@ namespace Editor
                 string path = AnywhenMenuUtils.GetAssetPath(songName);
                 AnysongObject song = AssetDatabase.LoadAssetAtPath<AnysongObject>(path);
                 _currentPack.AddSong(song);
+                EditorUtility.DisplayProgressBar("Loading songs", "Loading...", (float)_currentPack.Songs.Length / _currentPack.songNames.Length);
+                yield return null;
             }
-            
+
             ShowSongs();
-            //_loadStatus = new AsyncOperationHandle<IList<AnysongObject>>();
-            //_loadStatus = Addressables.LoadAssetsAsync<AnysongObject>(_currentPack.AssetLabelReference,
-            //    song =>
-            //    {
-            //        _currentPack.AddSong(song);
-            //    });
-//
-//
-            //_isLoadingPack = true;
         }
 
         void LoadCompletedCallback(AsyncOperationHandle<IList<AnysongObject>> songs)
@@ -172,7 +171,6 @@ namespace Editor
             _isLoadingPack = false;
             ShowSongs();
             Debug.Log("load completed");
-            
         }
 
         void ShowSongs()
@@ -208,21 +206,21 @@ namespace Editor
         }
 
 
-        void OnInspectorUpdate()
-        {
-            if (!_isLoadingPack) return;
-            if (_currentPack.Songs.Length == _lastFrameCount)
-                _noIncrementFrames++;
-
-            _lastFrameCount = _currentPack.Songs.Length;
-
-            EditorUtility.DisplayProgressBar("Loading songs", "Loading...", _noIncrementFrames / 4f);
-
-            if (_noIncrementFrames > 3)
-                LoadCompletedCallback(_loadStatus);
-
-            if (_loadStatus.IsDone)
-                LoadCompletedCallback(_loadStatus);
-        }
+        //void OnInspectorUpdate()
+        //{
+        //    if (!_isLoadingPack) return;
+        //    if (_currentPack.Songs.Length == _lastFrameCount)
+        //        _noIncrementFrames++;
+//
+        //    _lastFrameCount = _currentPack.Songs.Length;
+//
+        //    EditorUtility.DisplayProgressBar("Loading songs", "Loading...", _noIncrementFrames / 4f);
+//
+        //    if (_noIncrementFrames > 3)
+        //        LoadCompletedCallback(_loadStatus);
+//
+        //    if (_loadStatus.IsDone)
+        //        LoadCompletedCallback(_loadStatus);
+        //}
     }
 }

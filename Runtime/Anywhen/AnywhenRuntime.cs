@@ -3,11 +3,6 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    [RequireComponent(typeof(AnywhenMetronome))]
-    [RequireComponent(typeof(AnywhenConductor))]
-    [RequireComponent(typeof(AnywhenSamplePlayer))]
-    [RequireComponent(typeof(AnywhenEventFunnel))]
-    [RequireComponent(typeof(AnywhenNoteClipPreviewer))]
 
 #if UNITY_EDITOR
     [InitializeOnLoad]
@@ -135,6 +130,7 @@ namespace Anywhen
             }
             else
             {
+                targetPlayer?.Stop();
                 _anywhenSynthHandler.ClearPresets();
             }
 
@@ -154,7 +150,8 @@ namespace Anywhen
             TryGetComponent(out _conductor);
             TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
-            TryGetComponent(out _anywhenSynthHandler);
+            _anywhenSamplerHandler = GetComponentInChildren<AnywhenSamplePlayer>();
+            _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
         }
 
         public enum DebugMessageType

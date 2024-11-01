@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
@@ -26,7 +27,9 @@ namespace Anywhen
         private float _previewIntensity = 1;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
-        private int _currentPlayerTempo = -1;
+        [SerializeField] private int currentPlayerTempo = -100;
+
+        [SerializeField] private int rootNoteMod;
 
         private void Awake()
         {
@@ -49,7 +52,6 @@ namespace Anywhen
             if (anysong == null) return;
             _loaded = true;
             _currentSong = anysong;
-            //_currentPlayerTempo = _currentSong.tempo;
 
             foreach (var track in anysong.Tracks)
             {
@@ -120,7 +122,12 @@ namespace Anywhen
                     if (thisRnd < step.chance && step.mixWeight < thisIntensity)
                     {
                         var songTrack = _currentSong.Tracks[trackIndex];
-                        songTrack.TriggerStep(step, pattern);
+                        //step.rootNote += rootNoteMod;
+                        //step.rootNote = AnywhenRuntime.Conductor.GetScaledNote(step.rootNote);
+                        var triggerStep = step.Clone();
+                        triggerStep.rootNote += rootNoteMod;
+
+                        songTrack.TriggerStep(step, pattern, rootNoteMod);
                     }
                 }
             }
@@ -155,12 +162,15 @@ namespace Anywhen
         }
 
 
-        private void Release()
+        private void OnDisable()
         {
-            _loaded = false;
-            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+            ReleaseFromMetronome();
         }
 
+        private void OnDestroy()
+        {
+            ReleaseFromMetronome();
+        }
 
         protected internal void ReleaseFromMetronome()
         {
@@ -181,13 +191,14 @@ namespace Anywhen
 
         public void Play()
         {
-            if (AnysongObject == null) return;
             if (!_currentSong) Load();
 
             if (!AnysongPlayerBrain.IsStarted)
-                AnywhenMetronome.Instance.SetTempo(_currentSong.tempo);
+            {
+                AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
+            }
 
-            if (AnysongPlayerBrain.GetCurrentPlayer() == this)
+            if (Application.isPlaying && AnysongPlayerBrain.GetCurrentPlayer() == this)
             {
                 Debug.Log("retriggering player that is already playing");
                 return;
@@ -204,19 +215,18 @@ namespace Anywhen
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
-        public float GetTrackProgress()
+        public void Stop()
         {
-            int trackLength = _currentSong.Sections[_currentSectionIndex].patternSteps.Length;
-            int progress = (int)Mathf.Repeat(AnywhenMetronome.Instance.CurrentBar, trackLength);
-            return (float)progress / trackLength;
+            AnysongPlayerBrain.StopPlayer(this, AnysongPlayerBrain.TransitionTypes.Instant);
         }
+
 
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
             Debug.Log("loaded song");
             this.songObject = newSong;
-            _currentPlayerTempo = newSong.tempo;
+            //currentPlayerTempo = newSong.tempo;
             currentSongPackIndex = packIndex;
             if (AnywhenRuntime.IsPreviewing)
             {
@@ -261,13 +271,26 @@ namespace Anywhen
 
         public void EditorSetTempo(int newTempo)
         {
-            _currentPlayerTempo = newTempo;
+            print("set tempo " + newTempo);
+            currentPlayerTempo = newTempo;
             AnywhenRuntime.Metronome.SetTempo(newTempo);
         }
 
-        public float GetTempo()
+        public int GetTempo()
         {
-            return _currentPlayerTempo;
+            if (currentPlayerTempo == -1)
+                return AnysongObject.tempo;
+            return currentPlayerTempo;
+        }
+
+        public int GetRootNote()
+        {
+            return rootNoteMod;
+        }
+
+        public void EditorSetRootNote(int newValue)
+        {
+            rootNoteMod = newValue;
         }
     }
 }

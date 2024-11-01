@@ -476,7 +476,7 @@ namespace Anywhen.Synth
             }
             _noteOnQueue = new EventQueue(QueueCapacity);
             ResetVoices();
-            _audioSource.Play();
+            _audioSource?.Play();
         }
         
 
