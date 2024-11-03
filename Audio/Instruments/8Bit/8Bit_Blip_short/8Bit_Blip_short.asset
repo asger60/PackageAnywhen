@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: 8Bit_Blip_short
   m_EditorClassIdentifier: 
+  instrumentType: 35
   audioClips:
   - {fileID: 8300000, guid: 18a7b8f790f024e66bba7a608fe4c3a6, type: 3}
   - {fileID: 8300000, guid: 09eb0410d93a846c4aa2bfcfb04ec5e6, type: 3}
@@ -87,15 +88,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0f1bdf91e84ac4d15ba31c32be8c454c, type: 2}
   - {fileID: 11400000, guid: 9831c9a631c6a4fb7ab2bc9f9ad9b87f, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

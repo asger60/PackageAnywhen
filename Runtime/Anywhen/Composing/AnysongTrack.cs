@@ -11,16 +11,22 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         private NoteEvent _lastTrackEvent;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-        
+
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-        
+
         public enum AnyTrackTypes
         {
-            None,
-            Bass,
-            Pad,
-            Lead
+            None = 0,
+            Bass = 10,
+            Pad = 20,
+            Lead = 30,
+            SynthShort = 35,
+            SynthLong = 36,
+            [InspectorName("Rhythm/Hihat")] Hihat = 40,
+            [InspectorName("Rhythm/Kick")] Kick = 50,
+            [InspectorName("Rhythm/Snare")] Snare = 60,
+            [InspectorName("Rhythm/Clap")] Clap = 70,
         }
 
         public AnyTrackTypes trackType;
@@ -36,9 +42,11 @@ namespace Anywhen.Composing
             var clone = new AnysongTrack
             {
                 instrument = instrument,
-                volume = volume
+                volume = volume,
+                intensityMappingCurve = intensityMappingCurve,
+                trackEnvelope = trackEnvelope,
+                trackType = trackType,
             };
-
             return clone;
         }
 
@@ -55,7 +63,6 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
-            
         }
     }
 }

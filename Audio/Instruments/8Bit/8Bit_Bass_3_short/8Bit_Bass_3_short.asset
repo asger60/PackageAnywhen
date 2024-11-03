@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: 8Bit_Bass_3_short
   m_EditorClassIdentifier: 
+  instrumentType: 10
   audioClips:
   - {fileID: 8300000, guid: dad258efc0afb4f3b907fcc6e012dcd0, type: 3}
   - {fileID: 8300000, guid: eb593d96f905241009deafe764611f2b, type: 3}
@@ -87,15 +88,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5bada5cd0d54145489f6fcbd8435eb0b, type: 2}
   - {fileID: 11400000, guid: 11a17ae0a6531433a9d054d82ce89a9b, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 0
-    attack: 0
-    decay: 0
-    sustain: 0
-    release: 0
   loopSettings:
     enabled: 0
     loopStart: 0

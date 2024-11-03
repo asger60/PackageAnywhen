@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drum_808_Snare_snappy_v2
   m_EditorClassIdentifier: 
+  instrumentType: 60
   audioClips:
   - {fileID: 8300000, guid: ab5b9975b97074719bdbcd183b918ea4, type: 3}
   - {fileID: 8300000, guid: ea39c8593bb4f4be1852b6e75bf1f3cd, type: 3}
@@ -19,7 +20,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 88df011ffbcad493e9f7256feacf06ea, type: 2}
   - {fileID: 11400000, guid: 08030b00868be43e0a69857192d8dc19, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 1
   clipType: 1
   loopSettings:

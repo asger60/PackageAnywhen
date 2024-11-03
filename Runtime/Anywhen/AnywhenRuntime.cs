@@ -35,6 +35,9 @@ namespace Anywhen
         public static AnywhenSynthPlayer AnywhenSynthHandler => _anywhenSynthHandler;
         private static AnywhenSynthPlayer _anywhenSynthHandler;
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
+        
+        private static InstrumentDatabase _instrumentDatabase;
+        public static InstrumentDatabase InstrumentDatabase => _instrumentDatabase; 
 
         private static AnywhenRuntime _instance;
 
@@ -152,6 +155,8 @@ namespace Anywhen
             TryGetComponent(out _eventFunnel);
             _anywhenSamplerHandler = GetComponentInChildren<AnywhenSamplePlayer>();
             _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
+            _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
+
         }
 
         public enum DebugMessageType

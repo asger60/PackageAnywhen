@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Anywhen.Composing;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,7 +16,6 @@ namespace Anywhen.SettingsObjects
         public float stopDuration = 0.1f;
 
 
-     
         public enum ClipSelectType
         {
             ScalePitchedNotes,
@@ -63,6 +63,9 @@ namespace Anywhen.SettingsObjects
 
         public LoopSettings loopSettings;
         [Range(0, 1f)] public float volume = 1;
+
+
+
         public AnywhenNoteClip GetNoteClip(int note)
         {
             if (noteClips.Length == 0)
@@ -85,6 +88,7 @@ namespace Anywhen.SettingsObjects
                         Debug.LogWarning("note value is below 0");
                         return null;
                     }
+
                     return note >= noteClips.Length ? null : noteClips[note];
 
                 case ClipSelectType.RandomVariations:
@@ -105,7 +109,8 @@ namespace Anywhen.SettingsObjects
             {
                 case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
-                    if (note >= audioClips.Length) AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
+                    if (note >= audioClips.Length)
+                        AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
                     return note >= audioClips.Length ? null : audioClips[note];
 
                 case ClipSelectType.RandomVariations:

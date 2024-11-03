@@ -31,6 +31,8 @@ namespace Anywhen
 
         [SerializeField] private int rootNoteMod;
 
+        public AnysongTrack[] tracks;
+
         private void Awake()
         {
             trigger.OnTrigger += Play;
@@ -39,6 +41,7 @@ namespace Anywhen
 
         public void Load()
         {
+            print("load");
             Load(_previewSong ? _previewSong : songObject);
         }
 
@@ -53,7 +56,7 @@ namespace Anywhen
             _loaded = true;
             _currentSong = anysong;
 
-            foreach (var track in anysong.Tracks)
+            foreach (var track in tracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
                 {
@@ -62,6 +65,20 @@ namespace Anywhen
             }
         }
 
+        [ContextMenu("Randomize sounds")]
+        void RandomizeSounds()
+        {
+            for (var i = 0; i < tracks.Length; i++)
+            {
+                var track = tracks[i];
+                if (track.trackType == AnysongTrack.AnyTrackTypes.None) continue;
+                var inst = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(track.trackType);
+                if (inst)
+                {
+                    tracks[i].instrument = inst;
+                }
+            }
+        }
 
         private void OnBar()
         {
@@ -121,7 +138,7 @@ namespace Anywhen
                     float thisRnd = Random.Range(0, 1f);
                     if (thisRnd < step.chance && step.mixWeight < thisIntensity)
                     {
-                        var songTrack = _currentSong.Tracks[trackIndex];
+                        var songTrack = tracks[trackIndex];
                         //step.rootNote += rootNoteMod;
                         //step.rootNote = AnywhenRuntime.Conductor.GetScaledNote(step.rootNote);
                         var triggerStep = step.Clone();
@@ -191,7 +208,8 @@ namespace Anywhen
 
         public void Play()
         {
-            if (!_currentSong) Load();
+            if (!_currentSong)
+                Load();
 
             if (!AnysongPlayerBrain.IsStarted)
             {
@@ -221,7 +239,6 @@ namespace Anywhen
         }
 
 
-
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
             Debug.Log("loaded song");
@@ -231,6 +248,14 @@ namespace Anywhen
             if (AnywhenRuntime.IsPreviewing)
             {
                 Load(newSong);
+            }
+
+            tracks = new AnysongTrack[newSong.Tracks.Count];
+            for (var i = 0; i < newSong.Tracks.Count; i++)
+            {
+                var track = newSong.Tracks[i];
+                tracks[i] = new AnysongTrack();
+                tracks[i] = track.Clone();
             }
         }
 
@@ -271,7 +296,6 @@ namespace Anywhen
 
         public void EditorSetTempo(int newTempo)
         {
-            print("set tempo " + newTempo);
             currentPlayerTempo = newTempo;
             AnywhenRuntime.Metronome.SetTempo(newTempo);
         }

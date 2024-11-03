@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drum_ClickySnareHi
   m_EditorClassIdentifier: 
+  instrumentType: 60
   audioClips:
   - {fileID: 8300000, guid: 53303fd8223a84374a094a08fd819a40, type: 3}
   - {fileID: 8300000, guid: 77510bd1eb6fa4e3097dd510d11ac819, type: 3}
@@ -31,7 +32,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3d5f5447730064c50a256973aec79e68, type: 2}
   - {fileID: 11400000, guid: b63a96580444c4129a8046fb12136066, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 1
   clipType: 1
   loopSettings:

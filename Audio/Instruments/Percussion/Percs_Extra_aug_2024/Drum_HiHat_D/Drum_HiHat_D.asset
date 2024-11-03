@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drum_HiHat_D
   m_EditorClassIdentifier: 
+  instrumentType: 40
   audioClips:
   - {fileID: 8300000, guid: 532f430cb7f224ae396dfebd8e5e21a6, type: 3}
   - {fileID: 8300000, guid: 2a0e64103c2f84c09a17828b95f4ac9c, type: 3}
@@ -23,7 +24,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 516162cbe2a334d4bb110d31caefec5b, type: 2}
   - {fileID: 11400000, guid: 0188cc98a28c84e9da9bbce52ee111e0, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 1
   clipType: 1
   loopSettings:

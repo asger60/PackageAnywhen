@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: monark_neon
   m_EditorClassIdentifier: 
+  instrumentType: 36
   audioClips:
   - {fileID: 8300000, guid: cb4b6c30324d84cada733ad151103395, type: 3}
   - {fileID: 8300000, guid: 2a9c96bd3ea7f49c389350a033066f59, type: 3}
@@ -87,9 +88,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6a6b301e412854d2fa043ba9d79ad132, type: 2}
   - {fileID: 11400000, guid: 97333aa00cfca4b4d967390e5d4a647f, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 0
-  clipType: 0
+  clipType: 1
   loopSettings:
     enabled: 0
     loopStart: 0
