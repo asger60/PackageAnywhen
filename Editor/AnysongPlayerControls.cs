@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using UnityEditor;
@@ -17,8 +19,11 @@ namespace Editor
         private static Color _accentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
         private VisualElement _tapeElement;
         private Label _songNameLabel, _songAuthorLabel;
+
         private AnySlider _intensityAnySlider, _tempoAnySlider;
-        private SliderInt _rootNoteSlider;
+
+        // private SliderInt _rootNoteSlider;
+        private List<Button> _sectionButtons = new List<Button>();
         private bool _isPlaying;
 
         static AnysongPlayerControls()
@@ -30,8 +35,10 @@ namespace Editor
         public void HandlePlayerLogic(VisualElement root, AnywhenPlayer anywhenPlayer)
         {
             _anywhenPlayer = anywhenPlayer;
-            _tapeSprite1 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape1.png"));
-            _tapeSprite2 = AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape2.png"));
+            _tapeSprite1 =
+                AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape1.png"));
+            _tapeSprite2 =
+                AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape2.png"));
 
             _tapeElement = root.Q<VisualElement>("TapeElement");
             _playButton = root.Q<Button>("ButtonPreview");
@@ -40,24 +47,43 @@ namespace Editor
             _intensityAnySlider = root.Q<AnySlider>("IntensitySlider");
             _tempoAnySlider = root.Q<AnySlider>("TempoSlider");
 
-            _rootNoteSlider = root.Q<SliderInt>("RootNoteSlider");
 
-            _rootNoteSlider.SetValueWithoutNotify(_anywhenPlayer.GetRootNote());
             _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
             _intensityAnySlider.SetValueWithoutNotify(100);
 
-            _intensityAnySlider.RegisterValueChangedCallback(evt => { anywhenPlayer.EditorSetTestIntensity(evt.newValue / 100f); });
+            _intensityAnySlider.RegisterValueChangedCallback(evt =>
+            {
+                anywhenPlayer.EditorSetTestIntensity(evt.newValue / 100f);
+            });
             _tempoAnySlider.RegisterValueChangedCallback(evt =>
             {
                 anywhenPlayer.EditorSetTempo((int)evt.newValue);
                 EditorUtility.SetDirty(anywhenPlayer);
             });
-            _rootNoteSlider.RegisterValueChangedCallback(evt =>
+
+            var sectionButtonsElement = root.Q<VisualElement>("SectionButtonsElement");
+
+            sectionButtonsElement.Query<Button>("SectionButton").ForEach(button =>
             {
-                anywhenPlayer.EditorSetRootNote((int)evt.newValue);
-                EditorUtility.SetDirty(anywhenPlayer);
-                
+                sectionButtonsElement.Remove(button);
             });
+
+            _sectionButtons.Clear();
+            for (var i = 0; i < anywhenPlayer.AnysongObject.Sections.Count; i++)
+            {
+                var btn = new Button
+                {
+                    text = i.ToString()
+                };
+                btn.AddToClassList("section-button");
+                btn.clicked += () =>
+                {
+                    _anywhenPlayer.SetSection(Int32.Parse(btn.text));
+                };
+                _sectionButtons.Add(btn);
+                sectionButtonsElement.Add(btn);
+            }
+
 
             _playButton.clicked += TogglePreview;
         }
@@ -69,6 +95,15 @@ namespace Editor
             _songAuthorLabel.text = "By: " + anysongObject.author;
             _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
             _intensityAnySlider.SetValueWithoutNotify(100);
+        }
+
+        void RefreshActiveSection()
+        {
+            for (int i = 0; i < _sectionButtons.Count; i++)
+            {
+                _sectionButtons[i].style.backgroundColor =
+                    new StyleColor((i == _anywhenPlayer.CurrentSectionIndex) ? Color.grey : Color.clear);
+            }
         }
 
         public void SetSongObject(AnysongObject anysongObject)
@@ -85,6 +120,7 @@ namespace Editor
         {
             var sprite = AnywhenMetronome.Instance.Sub16 % 2 == 0 ? _tapeSprite1 : _tapeSprite2;
             _tapeElement.style.backgroundImage = new StyleBackground(sprite);
+            RefreshActiveSection();
         }
 
         private void TogglePreview()

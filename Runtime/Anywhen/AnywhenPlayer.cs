@@ -41,7 +41,6 @@ namespace Anywhen
 
         public void Load()
         {
-            print("load");
             Load(_previewSong ? _previewSong : songObject);
         }
 
@@ -65,7 +64,6 @@ namespace Anywhen
             }
         }
 
-        
 
         private void OnBar()
         {
@@ -196,7 +194,9 @@ namespace Anywhen
         public void Play()
         {
             if (!_currentSong)
+            {
                 Load();
+            }
 
             if (!AnysongPlayerBrain.IsStarted)
             {
@@ -211,7 +211,7 @@ namespace Anywhen
 
 
             _currentSong.Reset();
-            _currentSectionIndex = 0;
+            _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
@@ -301,10 +301,11 @@ namespace Anywhen
 
         public void EditorSetRootNote(int newValue)
         {
+            Debug.Log("set root note " + newValue);
             rootNoteMod = newValue;
         }
-        [ContextMenu("Randomize sounds")]
-        void EditorRandomizeSounds()
+
+        public void EditorRandomizeSounds()
         {
             for (var i = 0; i < tracks.Length; i++)
             {
@@ -316,6 +317,22 @@ namespace Anywhen
                     tracks[i].instrument = inst;
                 }
             }
+        }
+
+        public void EditorRestoreSounds()
+        {
+            tracks = new AnysongTrack[_currentSong.Tracks.Count];
+            for (var i = 0; i < _currentSong.Tracks.Count; i++)
+            {
+                var track = _currentSong.Tracks[i];
+                tracks[i] = new AnysongTrack();
+                tracks[i] = track.Clone();
+            }
+        }
+
+        public void SetSection(int sectionIndex)
+        {
+            _currentSectionIndex = sectionIndex;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using Anywhen.Composing;
 using UnityEngine;
 
@@ -8,23 +9,25 @@ public class InstrumentDatabase : MonoBehaviour
 
     public AnywhenInstrument GetInstrumentOfType(AnysongTrack.AnyTrackTypes type)
     {
-        print("getting instrument of type " + type);
-        int index = Random.Range(0, instruments.Length);
+        instruments = ShuffleArray(instruments);
+
         for (var i = 0; i < instruments.Length; i++)
         {
-            index = (int)Mathf.Repeat(index, instruments.Length);
-            var instrument = instruments[index];
+            var instrument = instruments[i];
             if (instrument.InstrumentType == type)
             {
-                print("returning " + instrument.name);
                 return instrument;
             }
-
-            index++;
         }
 
         print("returning null");
 
         return null;
+    }
+
+    static T[] ShuffleArray<T>(T[] array)
+    {
+        System.Random random = new System.Random();
+        return array.OrderBy(x => random.Next()).ToArray();
     }
 }

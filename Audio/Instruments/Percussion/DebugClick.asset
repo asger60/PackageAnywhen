@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
-  m_Name: DebugHihat1
+  m_Name: DebugClick
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 92f8b7433150040ddae09a124b691a17, type: 3}
+  instrumentType: 50
+  audioClips: []
   noteClips:
-  - {fileID: 11400000, guid: 7031920e9a60d4f058e309a3ea3a95ee, type: 2}
+  - {fileID: 11400000, guid: f07a6951866e0407b81e614e28e7f17d, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 1
   clipType: 1
   loopSettings:
@@ -25,4 +24,4 @@ MonoBehaviour:
     loopStart: 0
     loopLength: 0
     crossFadeDuration: 0
-  volume: 0.971
+  volume: 0.395

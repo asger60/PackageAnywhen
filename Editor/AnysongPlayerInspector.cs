@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using Anywhen;
 using Anywhen.Composing;
 using Editor.AnySong;
@@ -53,6 +54,28 @@ namespace Editor
             };
 
 
+            var randomizeButton = _root.Q<Button>("ButtonRandomizeInstruments");
+            randomizeButton.clicked += () =>
+            {
+                bool wasPlaying = AnywhenRuntime.IsPreviewing;
+                _anysongPlayerControls.Stop();
+                _anywhenPlayer.EditorRandomizeSounds();
+                if (wasPlaying)
+                    _anysongPlayerControls.Play();
+            };
+
+            _root.Query<Button>("RootNoteButton").ForEach(button =>
+            {
+                button.clicked += () =>
+                {
+                    _anywhenPlayer.EditorSetRootNote(Int32.Parse(button.text));
+                    RefreshActiveRootNoteButton();
+                };
+            });
+            RefreshActiveRootNoteButton();
+            var restoreButton = _root.Q<Button>("ButtonRestoreInstruments");
+            restoreButton.clicked += () => { _anywhenPlayer.EditorRestoreSounds(); };
+
             var editButton = _root.Q<Button>("ButtonEdit");
             editButton.clicked += Edit;
 
@@ -92,6 +115,21 @@ namespace Editor
             return _root;
         }
 
+        void RefreshActiveRootNoteButton()
+        {
+            _root.Query<Button>("RootNoteButton").ForEach(button =>
+            {
+                if (Int32.Parse(button.text) == _anywhenPlayer.GetRootNote())
+                {
+                    button.style.backgroundColor = new StyleColor(Color.grey);
+                }
+                else
+                {
+                    button.style.backgroundColor = new StyleColor(Color.clear);
+                }
+            });
+        }
+
         private void LocateTriggerButtonOnclicked()
         {
             _anywhenPlayer.EditorLocateTrigger();
@@ -107,7 +145,7 @@ namespace Editor
             Debug.Log("window closed " + didLoad);
             if (!didLoad)
                 _anywhenPlayer.EditorSetTempo(_initialTempo);
-            
+
             Refresh();
         }
 
@@ -119,9 +157,7 @@ namespace Editor
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
 
-
             _anysongPlayerControls.RefreshSongObject(_anywhenPlayer.AnysongObject);
-
 
             var packArtElement = _root.Q<VisualElement>("PackImage");
             packArtElement.style.backgroundImage = new StyleBackground(_currentPack.packImage);
