@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: HiHat_Subtle
+  m_EditorClassIdentifier: 
+  instrumentType: 40
+  audioClips: []
+  noteClips:
+  - {fileID: 11400000, guid: a2a6b1b143e444d828d72c6be3c9bb33, type: 2}
+  - {fileID: 11400000, guid: b61f56007a4ba4d05bec9b187aee348c, type: 2}
+  - {fileID: 11400000, guid: df51afd6d26564bb3bd8d4ac1d3ae322, type: 2}
+  - {fileID: 11400000, guid: aeace5390817b436688a2496d61a97ae, type: 2}
+  - {fileID: 11400000, guid: ef68dc3d1c81c46429f74a3765ad164b, type: 2}
+  - {fileID: 11400000, guid: 65b54f11d32354cd48c7c0b293861488, type: 2}
+  - {fileID: 11400000, guid: 016d5e9ee137448959417424d660a79f, type: 2}
+  stopDuration: 0.1
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1

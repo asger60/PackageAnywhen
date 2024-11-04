@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
+  m_Name: HiHat_Open_Open_Mid
+  m_EditorClassIdentifier: 
+  instrumentType: 40
+  audioClips:
+  - {fileID: 8300000, guid: bfbdcaf4ed25542bfbec76f1a4053022, type: 3}
+  - {fileID: 8300000, guid: 289e82eadced842459fceaaf66ec5212, type: 3}
+  - {fileID: 8300000, guid: 79ab39ddc6a28466a92c9dd1dc42407a, type: 3}
+  - {fileID: 8300000, guid: c6b3dbc7503a5400e8fd12334e7ff77f, type: 3}
+  - {fileID: 8300000, guid: 301fbc7615b24475a9b581767a17f3a4, type: 3}
+  - {fileID: 8300000, guid: 4be01840f9d7748e4869b6455ef10077, type: 3}
+  - {fileID: 8300000, guid: b83632d1c7d4043b9acaf44d26eee2e8, type: 3}
+  noteClips:
+  - {fileID: 11400000, guid: a2a6b1b143e444d828d72c6be3c9bb33, type: 2}
+  - {fileID: 11400000, guid: b61f56007a4ba4d05bec9b187aee348c, type: 2}
+  - {fileID: 11400000, guid: df51afd6d26564bb3bd8d4ac1d3ae322, type: 2}
+  - {fileID: 11400000, guid: aeace5390817b436688a2496d61a97ae, type: 2}
+  - {fileID: 11400000, guid: ef68dc3d1c81c46429f74a3765ad164b, type: 2}
+  - {fileID: 11400000, guid: 65b54f11d32354cd48c7c0b293861488, type: 2}
+  - {fileID: 11400000, guid: 016d5e9ee137448959417424d660a79f, type: 2}
+  stopDuration: 0.1
+  clipSelectType: 1
+  clipType: 1
+  loopSettings:
+    enabled: 0
+    loopStart: 0
+    loopLength: 0
+    crossFadeDuration: 0
+  volume: 1
