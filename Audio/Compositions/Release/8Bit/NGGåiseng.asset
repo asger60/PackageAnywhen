@@ -4044,7 +4044,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -4976,7 +4976,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -9364,7 +9364,7 @@ MonoBehaviour:
         patternLength: 16
       isMuted: 0
       isSolo: 0
-    sectionLength: 16
+    sectionLength: 8
   - rootNote: 0
     patternSteps:
     - rootNote: 0
@@ -15329,7 +15329,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -16261,7 +16261,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 16
+          rootNote: 21
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -17193,7 +17193,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 16
+          rootNote: 17
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -18125,7 +18125,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -18361,7 +18361,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -18597,7 +18597,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -21388,7 +21388,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -21828,7 +21828,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 9
+          rootNote: 10
           repeatRate: 0
         - noteOn: 1
           noteOff: 0
@@ -21856,7 +21856,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 2
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -46804,7 +46804,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 35
   - volume: 1
     instrument: {fileID: 11400000, guid: a2f7f0cad97fc43f6a134c48bd25e5af, type: 2}
     trackEnvelope:
@@ -46837,7 +46837,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 50
   - volume: 1
     instrument: {fileID: 11400000, guid: 79d9322e2e8054b0b819b4fdbca51031, type: 2}
     trackEnvelope:
@@ -46870,7 +46870,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 35
   - volume: 0.631
     instrument: {fileID: 11400000, guid: f7afe38b069234005a7aca86bb40cc6d, type: 2}
     trackEnvelope:
@@ -46903,7 +46903,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 10
   - volume: 0.498
     instrument: {fileID: 11400000, guid: 54fc3c9a5d45e4280aedea987dfa7c2c, type: 2}
     trackEnvelope:
@@ -46936,7 +46936,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 10
   - volume: 0.455
     instrument: {fileID: 11400000, guid: 4bfba893bec414981b57b2d6293a71c9, type: 2}
     trackEnvelope:
@@ -46969,7 +46969,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   - volume: 0.295
     instrument: {fileID: 11400000, guid: cc0c94f1bc9964cf9bac20260cb2f8a8, type: 2}
     trackEnvelope:
@@ -47002,7 +47002,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   - volume: 0.189
     instrument: {fileID: 11400000, guid: 490d3c6c876bf4d44abc91ee139439b5, type: 2}
     trackEnvelope:
@@ -47035,7 +47035,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   - volume: 0.155
     instrument: {fileID: 11400000, guid: e2c7e3af5dbce4d67863dbd1df233c6d, type: 2}
     trackEnvelope:
@@ -47101,7 +47101,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 35
   - volume: 0.24
     instrument: {fileID: 11400000, guid: 4bfba893bec414981b57b2d6293a71c9, type: 2}
     trackEnvelope:
@@ -47134,7 +47134,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   - volume: 0.04
     instrument: {fileID: 11400000, guid: ebf060f2eb88845a1ad498133a513734, type: 2}
     trackEnvelope:
@@ -47167,7 +47167,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 35
   - volume: 0.742
     instrument: {fileID: 11400000, guid: ab91b5700f4824e9db4e0bb7042f21e6, type: 2}
     trackEnvelope:
@@ -47200,7 +47200,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   - volume: 0.506
     instrument: {fileID: 11400000, guid: b29ecc70036084704a5aea0cea790e03, type: 2}
     trackEnvelope:
@@ -47233,7 +47233,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 40
   - volume: 0.35999998
     instrument: {fileID: 11400000, guid: 02d5be10edc13484089ab8c6ba9bd8d4, type: 2}
     trackEnvelope:
@@ -47266,7 +47266,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 70
   - volume: 0.148
     instrument: {fileID: 11400000, guid: 9b88a0967532a4a498aab003a500157a, type: 2}
     trackEnvelope:
@@ -47299,6 +47299,6 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    trackType: 0
+    trackType: 36
   songVolume: 1
   author: Floppy Club

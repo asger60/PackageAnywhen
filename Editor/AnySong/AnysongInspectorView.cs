@@ -42,7 +42,7 @@ namespace Editor.AnySong
         {
             _parent.Clear();
             Draw(_parent);
-            
+
             _parent.Add(Spacer());
 
 
@@ -68,13 +68,13 @@ namespace Editor.AnySong
             _parent.Add(scrubForwardButton);
 
             _parent.Add(Spacer());
-            
+
             var randomizeMelody = new Button
             {
                 name = "RandomizeMelody",
                 text = "Randomize melody",
             };
-            
+
             var randomizeRhythm = new Button
             {
                 name = "RandomizeRhythm",
@@ -82,7 +82,7 @@ namespace Editor.AnySong
             };
             _parent.Add(randomizeMelody);
             _parent.Add(randomizeRhythm);
-            
+
             _parent.Add(Spacer());
             _parent.Add(CreateUtilsBox());
 
@@ -109,19 +109,32 @@ namespace Editor.AnySong
         {
             _parent.Clear();
             Draw(_parent);
+            var instrumentProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("instrument");
 
-            _parent.Add(
-                CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("instrument"),
-                    null));
+            _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, null));
             _parent.Add(
                 CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
                     null));
-            
+
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
-            
-            _parent.Add(CreatePropertyFieldWithCallback(
-                selection.CurrentSongTrackProperty.FindPropertyRelative("trackType"), null));
+
+
+            var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
+            if (trackTypeProperty.enumValueIndex == 0)
+            {
+                Debug.Log("no track type set");
+                var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
+                if (instrument)
+                {
+                    var index =  Array.IndexOf(Enum.GetValues(typeof(AnysongTrack.AnyTrackTypes)), instrument.InstrumentType);
+                    Debug.Log(" set " + (int)index);
+                    selection.CurrentSongTrack.trackType = instrument.InstrumentType;
+                    EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
+                }
+            }
+
+            _parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
 
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
@@ -134,7 +147,8 @@ namespace Editor.AnySong
             _parent.Add(Spacer());
             var progressionTypeHolder = new VisualElement();
             var progressionType =
-                (AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType")
+                (AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty
+                    .FindPropertyRelative("patternProgressionType")
                     .enumValueIndex;
 
             Debug.Log(progressionType);
@@ -145,7 +159,8 @@ namespace Editor.AnySong
                 {
                     Debug.Log("updated progression type");
                     progressionTypeHolder.Clear();
-                    progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty
+                    progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)selection
+                        .CurrentSectionTrackProperty
                         .FindPropertyRelative("patternProgressionType")
                         .enumValueIndex, selection));
                 }));
@@ -247,7 +262,6 @@ namespace Editor.AnySong
 
             return content;
         }
-
 
 
         public static void DrawStep(SerializedProperty step, Action didUpdate)

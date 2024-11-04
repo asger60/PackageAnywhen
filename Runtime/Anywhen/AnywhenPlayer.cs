@@ -65,20 +65,7 @@ namespace Anywhen
             }
         }
 
-        [ContextMenu("Randomize sounds")]
-        void RandomizeSounds()
-        {
-            for (var i = 0; i < tracks.Length; i++)
-            {
-                var track = tracks[i];
-                if (track.trackType == AnysongTrack.AnyTrackTypes.None) continue;
-                var inst = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(track.trackType);
-                if (inst)
-                {
-                    tracks[i].instrument = inst;
-                }
-            }
-        }
+        
 
         private void OnBar()
         {
@@ -315,6 +302,20 @@ namespace Anywhen
         public void EditorSetRootNote(int newValue)
         {
             rootNoteMod = newValue;
+        }
+        [ContextMenu("Randomize sounds")]
+        void EditorRandomizeSounds()
+        {
+            for (var i = 0; i < tracks.Length; i++)
+            {
+                var track = tracks[i];
+                if (track.trackType == AnysongTrack.AnyTrackTypes.None) continue;
+                var inst = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(track.trackType);
+                if (inst)
+                {
+                    tracks[i].instrument = inst;
+                }
+            }
         }
     }
 }
