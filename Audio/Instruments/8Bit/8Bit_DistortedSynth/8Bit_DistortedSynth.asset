@@ -12,43 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: 8Bit_DistortedSynth
   m_EditorClassIdentifier: 
-  audioClips:
-  - {fileID: 8300000, guid: 1dd827ed33fa240c090118566ab86167, type: 3}
-  - {fileID: 8300000, guid: 1f39adfe2536a429e8f05cce9ffb3b54, type: 3}
-  - {fileID: 8300000, guid: 8952b82b7c40e444083eaba2f395360a, type: 3}
-  - {fileID: 8300000, guid: 730113637358c4f2e9ba700ed87d106b, type: 3}
-  - {fileID: 8300000, guid: 25ad5dd37872c4116bbe86fe6734f1a0, type: 3}
-  - {fileID: 8300000, guid: 9815a69454f2648aa8d03f4f3eeec97a, type: 3}
-  - {fileID: 8300000, guid: 4336d7b0079384c5ea7109bc156fa39a, type: 3}
-  - {fileID: 8300000, guid: fca69bf0eb0824e17ab344f9c7bfd9d8, type: 3}
-  - {fileID: 8300000, guid: a4b15f417dbcf4cce81c40d6a40f1fc0, type: 3}
-  - {fileID: 8300000, guid: f91423146e66549cc9dde171e5c27335, type: 3}
-  - {fileID: 8300000, guid: 3fd1eaa848aae466595c671f9bef5edb, type: 3}
-  - {fileID: 8300000, guid: 1c9ac0cd6c4c049e385bdc82c1380abc, type: 3}
-  - {fileID: 8300000, guid: 9f316326cb7654b29ab10086627ffc42, type: 3}
-  - {fileID: 8300000, guid: 3143f4ec6451d4b04a09bdbd3af5ebc5, type: 3}
-  - {fileID: 8300000, guid: 644c8370e5f5248c09665777d92ea134, type: 3}
-  - {fileID: 8300000, guid: 68ac61985775f4a4e959956742741c00, type: 3}
-  - {fileID: 8300000, guid: b346271eec6fc4964b7f7b71faff64e4, type: 3}
-  - {fileID: 8300000, guid: 2bae9447c6e9540dfb910e6ec7502681, type: 3}
-  - {fileID: 8300000, guid: 1818d62c40ca44918bb02807b04d966b, type: 3}
-  - {fileID: 8300000, guid: 558cd73220a2c45738a54835986ab1f0, type: 3}
-  - {fileID: 8300000, guid: ed2927e9cdd8e4a869f09ebb71cda30d, type: 3}
-  - {fileID: 8300000, guid: 449615d55fa29427d850b88aa0fc7bad, type: 3}
-  - {fileID: 8300000, guid: c394ef13b069e4bb2a023d742e37fd5a, type: 3}
-  - {fileID: 8300000, guid: 98c3ff410255e472da872b80eb1a1c5f, type: 3}
-  - {fileID: 8300000, guid: bf08d2033c1b545e9a02212e6f6be00c, type: 3}
-  - {fileID: 8300000, guid: 50aaf761edd8e4fe7bc1843a43f02c6e, type: 3}
-  - {fileID: 8300000, guid: 57e9a1a32444b41939ab370df3c50264, type: 3}
-  - {fileID: 8300000, guid: 11823528c3a5849118d78b04003044ce, type: 3}
-  - {fileID: 8300000, guid: 665d20297c5094a088ac631673d970fa, type: 3}
-  - {fileID: 8300000, guid: 97febf09172934836839e6869065d4de, type: 3}
-  - {fileID: 8300000, guid: e11eae758b1d9430289d9f92f040dd65, type: 3}
-  - {fileID: 8300000, guid: 27c43319f4e5f4a1abbfb224deef1d6c, type: 3}
-  - {fileID: 8300000, guid: 895d0c6ef087743cdac396735944f5a7, type: 3}
-  - {fileID: 8300000, guid: ecc4a702ed7bd491fbb35348409797d1, type: 3}
-  - {fileID: 8300000, guid: 08287b76d3a90411d8752755a2acbd6c, type: 3}
-  - {fileID: 8300000, guid: 9dc7b03a711c74e27a69d3eaa25ca5b8, type: 3}
+  instrumentType: 36
+  audioClips: []
   noteClips:
   - {fileID: 11400000, guid: 395fbbd58b8f642dda0ac49fe4698e6f, type: 2}
   - {fileID: 11400000, guid: 4558e481547064218a0a12521a8cde1d, type: 2}
@@ -87,7 +52,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aca13ebb6dcec494297cc12bd60e66f8, type: 2}
   - {fileID: 11400000, guid: 67c11db593e8a4e2bafa88dd4bcdceba, type: 2}
   stopDuration: 0.1
-  instrumentType: 0
   clipSelectType: 0
   clipType: 1
   loopSettings:

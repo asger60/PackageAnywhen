@@ -6,12 +6,12 @@ namespace Anywhen
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenNoteClipPreviewer : AnywhenSampler
     {
-
-    
-        public void PlayClip(AnywhenNoteClip clip)
+        public void PlayClip(AnywhenSampleInstrument instrument, AnywhenNoteClip clip)
         {
             Init(AnywhenMetronome.TickRate.None);
-            PlayScheduled( clip);
+            _instrument = instrument;
+            Volume = instrument.volume;
+            PlayScheduled(clip);
         }
 
         public void StopClip()
@@ -69,7 +69,7 @@ namespace Anywhen
                 double f = (double)_samplePos - sampleIndex;
                 var sourceSample1 = Mathf.Min((sampleIndex), _noteClip.clipSamples.Length - 1);
                 var sourceSample2 = Mathf.Min((sampleIndex) + 1, _noteClip.clipSamples.Length - 1);
-              
+
                 double e = ((1 - f) * _noteClip.clipSamples[sourceSample1]) + (f * _noteClip.clipSamples[sourceSample2]);
                 data[i] = (float)e;
                 //data[i] = Mathf.Lerp(_noteClip.clipSamples[sourceSample1], _noteClip.clipSamples[sourceSample2],
@@ -109,7 +109,7 @@ namespace Anywhen
         {
             _isPlaying = false;
         }
-        
+
 
 }*/
     }

@@ -23,13 +23,13 @@ namespace Anywhen
 
         private AnywhenMetronome.TickRate _tickRate;
         public AnywhenSampleInstrument Instrument => _instrument;
-        private AnywhenSampleInstrument _instrument;
+        protected AnywhenSampleInstrument _instrument;
         public bool IsStopping => _isStopping;
         private bool _isStopping;
         private bool _playingNoteClip;
         public int CurrentNote => _currentNote;
         private int _currentNote;
-        private float _volume;
+        protected float Volume;
         private AnysongTrack _track;
 
         public void Init(AnywhenMetronome.TickRate tickRate)
@@ -42,7 +42,6 @@ namespace Anywhen
             _audioSource.clip = myClip;
             _adsr = new ADSR();
             _audioSource.Play();
-            
         }
 
 
@@ -100,7 +99,7 @@ namespace Anywhen
                     var noteClip = _instrument.GetNoteClip(note);
                     if (noteClip != null)
                     {
-                        _volume = volume;
+                        Volume = volume;
                         _isArmed = true;
                         _playingNoteClip = true;
                         _audioSource.Stop();
@@ -279,8 +278,6 @@ namespace Anywhen
 
 
             _isLooping = _currentLoopSettings.enabled;
-
-
             _scheduledStopTime = -1;
         }
 
@@ -364,7 +361,7 @@ namespace Anywhen
                 double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
                             (f1 * _noteClip.clipSamples[sourceSample2]);
 
-                data[i] = ((float)(e1)) * _ampMod * _instrument.volume * _volume;
+                data[i] = ((float)(e1)) * _ampMod * _instrument.volume * Volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
 

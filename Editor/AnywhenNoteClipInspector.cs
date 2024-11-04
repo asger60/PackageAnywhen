@@ -29,13 +29,13 @@ namespace PackageAnywhen.Editor
                 _noteDown = GUILayout.Toggle(_noteDown, _noteDown ? "STOP" : "PLAY", "Button");
                 if (_noteDown && !_isPlaying)
                 {
-                    AnywhenRuntime.ClipPreviewer.PlayClip(_target);
+                    //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(_target);
                     _isPlaying = true;
                 }
 
                 if (!_noteDown)
                 {
-                    AnywhenRuntime.ClipPreviewer.StopClip();
+                    AnywhenRuntime.ClipNoteClipPreviewer.StopClip();
                     _isPlaying = false;
                 }
             }
@@ -43,7 +43,7 @@ namespace PackageAnywhen.Editor
             {
                 if (GUILayout.Button("PLAY"))
                 {
-                    AnywhenRuntime.ClipPreviewer.PlayClip( _target);
+                    //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip( _target);
                 }
             }
         }

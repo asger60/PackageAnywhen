@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Rhodes
   m_EditorClassIdentifier: 
+  instrumentType: 36
   audioClips:
   - {fileID: 8300000, guid: 2536aca2f6a4a45888edce3d3e6519ae, type: 3}
   - {fileID: 8300000, guid: 3ce02a64366684179813d91a377ec954, type: 3}
@@ -87,15 +88,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bb14a806f6c144ae78acd1741719dd37, type: 2}
   - {fileID: 11400000, guid: 34ce2d346afd04dc4a19f53db118bb6b, type: 2}
   stopDuration: 0.1
-  instrumentType: 2
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 1
-    attack: 0.1
-    decay: 0
-    sustain: 0.795
-    release: 0.1
   loopSettings:
     enabled: 0
     loopStart: 0

@@ -27,6 +27,10 @@ namespace Anywhen.Composing
             [InspectorName("Rhythm/Kick")] Kick = 50,
             [InspectorName("Rhythm/Snare")] Snare = 60,
             [InspectorName("Rhythm/Clap")] Clap = 70,
+            [InspectorName("Rhythm/Tick")] Tick = 80,
+            [InspectorName("Rhythm/Tom")] Tom = 90,
+
+
         }
 
         public AnyTrackTypes trackType;

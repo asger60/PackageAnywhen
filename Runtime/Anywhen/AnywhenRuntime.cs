@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Anywhen
 {
-
 #if UNITY_EDITOR
     [InitializeOnLoad]
 #endif
@@ -25,7 +24,7 @@ namespace Anywhen
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
 
-        private static AnywhenNoteClipPreviewer _previewer;
+        private static AnywhenNoteClipPreviewer _noteClipPreviewer;
 
         static AnywhenEventFunnel _eventFunnel;
         public static AnywhenSamplePlayer AnywhenSamplerHandler => _anywhenSamplerHandler;
@@ -35,9 +34,9 @@ namespace Anywhen
         public static AnywhenSynthPlayer AnywhenSynthHandler => _anywhenSynthHandler;
         private static AnywhenSynthPlayer _anywhenSynthHandler;
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
-        
+
         private static InstrumentDatabase _instrumentDatabase;
-        public static InstrumentDatabase InstrumentDatabase => _instrumentDatabase; 
+        public static InstrumentDatabase InstrumentDatabase => _instrumentDatabase;
 
         private static AnywhenRuntime _instance;
 
@@ -60,16 +59,18 @@ namespace Anywhen
         private static AnywhenPlayer _targetPlayer;
 
         private static int _sampleRate;
+
         public static int SampleRate
         {
             get
             {
                 if (_sampleRate == 0)
                     _sampleRate = 1;
-                
+
                 return _sampleRate;
             }
         }
+
         private bool _isPreviewing;
         [SerializeField] private bool logErrors;
         public static bool IsPreviewing => Instance._isPreviewing;
@@ -92,14 +93,13 @@ namespace Anywhen
             }
         }
 
-        public static AnywhenNoteClipPreviewer ClipPreviewer
+        public static AnywhenNoteClipPreviewer ClipNoteClipPreviewer
         {
             get
             {
-                if (_previewer != null)
-                    return _previewer;
-                _previewer = FindObjectOfType<AnywhenRuntime>().GetComponent<AnywhenNoteClipPreviewer>();
-                return _previewer;
+                if (_noteClipPreviewer == null)
+                    Instance.GetAnyComponents();
+                return _noteClipPreviewer;
             }
         }
 
@@ -111,12 +111,6 @@ namespace Anywhen
             SetPreviewMode(false, null);
         }
 
-
-        public static void TogglePreviewMode(AnywhenPlayer targetPlayer)
-        {
-            Instance._isPreviewing = !Instance._isPreviewing;
-            SetPreviewMode(Instance._isPreviewing, targetPlayer);
-        }
 
         public static void SetPreviewMode(bool state, AnywhenPlayer targetPlayer)
         {
@@ -153,10 +147,10 @@ namespace Anywhen
             TryGetComponent(out _conductor);
             TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
+            TryGetComponent(out _noteClipPreviewer);
             _anywhenSamplerHandler = GetComponentInChildren<AnywhenSamplePlayer>();
             _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
-
         }
 
         public enum DebugMessageType

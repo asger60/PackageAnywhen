@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Piano_felt
   m_EditorClassIdentifier: 
+  instrumentType: 36
   audioClips:
   - {fileID: 8300000, guid: 131571daf7cd849e2b4a7dca5df9d0c9, type: 3}
   - {fileID: 8300000, guid: bbdf2d4fd80ff4ee68a149e4357f947c, type: 3}
@@ -63,15 +64,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ba69337c333cf42c1b620ed3217118c7, type: 2}
   - {fileID: 11400000, guid: 173216c732ea94310884a86b5dc89057, type: 2}
   stopDuration: 0.1
-  instrumentType: 2
   clipSelectType: 0
   clipType: 1
-  envelopeSettings:
-    enabled: 1
-    attack: 0.1
-    decay: 0
-    sustain: 0.829
-    release: 0.1
   loopSettings:
     enabled: 0
     loopStart: 0

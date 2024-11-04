@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Anywhen.Composing;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -167,6 +166,22 @@ namespace Anywhen.SettingsObjects
             noteClips = newNoteClips.ToArray();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        [ContextMenu("Preview")]
+        public void PreviewSound()
+        {
+            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, noteClips[0]);
+        }
+        public void DeleteAudioCLips()
+        {
+            foreach (var audioClip in audioClips)
+            {
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(audioClip));
+            }
+
+            audioClips = null;
+            clipType = ClipTypes.NoteClips;
         }
 #endif
     }
