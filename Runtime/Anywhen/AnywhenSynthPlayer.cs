@@ -91,7 +91,7 @@ namespace Anywhen
             }
             else
             {
-                Debug.Log("failed to get synth");
+                //Debug.Log("failed to get synth");
             }
         }
 

@@ -61,7 +61,9 @@ namespace Editor
                 _anysongPlayerControls.Stop();
                 _anywhenPlayer.EditorRandomizeSounds();
                 if (wasPlaying)
+                {
                     _anysongPlayerControls.Play();
+                }
             };
 
             _root.Query<Button>("RootNoteButton").ForEach(button =>
@@ -142,9 +144,10 @@ namespace Editor
 
         private void OnBrowseWindowClosed(bool didLoad)
         {
-            Debug.Log("window closed " + didLoad);
             if (!didLoad)
+            {
                 _anywhenPlayer.EditorSetTempo(_initialTempo);
+            }
 
             Refresh();
         }

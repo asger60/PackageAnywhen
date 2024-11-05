@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
@@ -15,10 +13,9 @@ namespace Anywhen
         [SerializeField] private AnysongObject songObject;
         public AnysongObject AnysongObject => songObject;
         private AnywhenInstrument[] _instruments;
-        private AnysongObject _currentSong, _previewSong;
+        private AnysongObject _currentSong;
         private bool _isRunning;
         private bool _loaded = false;
-        public bool IsSongLoaded => _loaded;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
@@ -27,22 +24,19 @@ namespace Anywhen
         private float _previewIntensity = 1;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
-        [SerializeField] private int currentPlayerTempo = -100;
 
+        [SerializeField] private int currentPlayerTempo = -100;
         [SerializeField] private int rootNoteMod;
 
-        public AnysongTrack[] tracks;
+        [SerializeField] private AnysongTrack[] customTracks;
+        [SerializeField] private AnysongTrack[] currentTracks;
+        [SerializeField] private bool isCustomized;
 
         private void Awake()
         {
             trigger.OnTrigger += Play;
-            _previewSong = null;
         }
 
-        public void Load()
-        {
-            Load(_previewSong ? _previewSong : songObject);
-        }
 
         private void Start()
         {
@@ -55,7 +49,7 @@ namespace Anywhen
             _loaded = true;
             _currentSong = anysong;
 
-            foreach (var track in tracks)
+            foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
                 {
@@ -123,9 +117,8 @@ namespace Anywhen
                     float thisRnd = Random.Range(0, 1f);
                     if (thisRnd < step.chance && step.mixWeight < thisIntensity)
                     {
-                        var songTrack = tracks[trackIndex];
-                        //step.rootNote += rootNoteMod;
-                        //step.rootNote = AnywhenRuntime.Conductor.GetScaledNote(step.rootNote);
+                        var songTrack = currentTracks[trackIndex];
+
                         var triggerStep = step.Clone();
                         triggerStep.rootNote += rootNoteMod;
 
@@ -193,9 +186,10 @@ namespace Anywhen
 
         public void Play()
         {
-            if (!_currentSong)
+            if (_currentSong == null)
             {
-                Load();
+                Load(AnysongObject);
+                //      return;
             }
 
             if (!AnysongPlayerBrain.IsStarted)
@@ -214,8 +208,7 @@ namespace Anywhen
             _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
-                _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
 
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
@@ -228,28 +221,46 @@ namespace Anywhen
 
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
-            Debug.Log("loaded song");
-            this.songObject = newSong;
-            //currentPlayerTempo = newSong.tempo;
+            songObject = newSong;
             currentSongPackIndex = packIndex;
             if (AnywhenRuntime.IsPreviewing)
             {
                 Load(newSong);
             }
 
-            tracks = new AnysongTrack[newSong.Tracks.Count];
+            currentTracks = new AnysongTrack[newSong.Tracks.Count];
             for (var i = 0; i < newSong.Tracks.Count; i++)
             {
                 var track = newSong.Tracks[i];
-                tracks[i] = new AnysongTrack();
-                tracks[i] = track.Clone();
+                currentTracks[i] = new AnysongTrack();
+                currentTracks[i] = track.Clone();
             }
+
+            isCustomized = false;
         }
 
 
         public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
-            _previewSong = anysongObject;
+            _currentSong = anysongObject;
+
+
+            if (isCustomized && _currentSong == AnysongObject)
+            {
+                currentTracks = new AnysongTrack[customTracks.Length];
+                for (var i = 0; i < customTracks.Length; i++)
+                {
+                    currentTracks[i] = customTracks[i].Clone();
+                }
+            }
+            else
+            {
+                currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
+                for (var i = 0; i < _currentSong.Tracks.Count; i++)
+                {
+                    currentTracks[i] = _currentSong.Tracks[i].Clone();
+                }
+            }
         }
 
         public void EditorCreateTrigger()
@@ -301,32 +312,37 @@ namespace Anywhen
 
         public void EditorSetRootNote(int newValue)
         {
-            Debug.Log("set root note " + newValue);
             rootNoteMod = newValue;
         }
 
         public void EditorRandomizeSounds()
         {
-            for (var i = 0; i < tracks.Length; i++)
+            print("randomize");
+            customTracks = new AnysongTrack[currentTracks.Length];
+            for (var i = 0; i < currentTracks.Length; i++)
             {
-                var track = tracks[i];
+                var track = currentTracks[i];
                 if (track.trackType == AnysongTrack.AnyTrackTypes.None) continue;
                 var inst = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(track.trackType);
                 if (inst)
                 {
-                    tracks[i].instrument = inst;
+                    currentTracks[i].instrument = inst;
                 }
+
+                customTracks[i] = currentTracks[i].Clone();
             }
+
+            isCustomized = true;
         }
 
         public void EditorRestoreSounds()
         {
-            tracks = new AnysongTrack[_currentSong.Tracks.Count];
+            currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
             for (var i = 0; i < _currentSong.Tracks.Count; i++)
             {
                 var track = _currentSong.Tracks[i];
-                tracks[i] = new AnysongTrack();
-                tracks[i] = track.Clone();
+                currentTracks[i] = new AnysongTrack();
+                currentTracks[i] = track.Clone();
             }
         }
 
@@ -334,5 +350,7 @@ namespace Anywhen
         {
             _currentSectionIndex = sectionIndex;
         }
+
+
     }
 }

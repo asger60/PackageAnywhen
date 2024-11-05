@@ -358,13 +358,11 @@ namespace Anywhen
                 double f1 = _samplePosBuffer1 - sampleIndex1;
                 var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
                 var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
-                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
-                            (f1 * _noteClip.clipSamples[sourceSample2]);
+                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) + (f1 * _noteClip.clipSamples[sourceSample2]);
 
                 data[i] = ((float)(e1)) * _ampMod * _instrument.volume * Volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
-
                 _currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
                 i++;
             }

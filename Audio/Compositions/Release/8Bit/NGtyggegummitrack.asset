@@ -17427,7 +17427,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: 1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -19667,7 +19667,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -25968,7 +25968,7 @@ MonoBehaviour:
           stepRepeats: 0
           chance: 1
           expression: 1
-          rootNote: 0
+          rootNote: -1
           repeatRate: 0
         - noteOn: 0
           noteOff: 0
@@ -62101,12 +62101,12 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     trackType: 36
-  - volume: 1
-    instrument: {fileID: 11400000, guid: fa1d7980028dc422eb4f4be193871aed, type: 2}
+  - volume: 0.919
+    instrument: {fileID: 11400000, guid: 9bef0f697055f43b7b088fe8e98fa09d, type: 2}
     trackEnvelope:
-      enabled: 0
+      enabled: 1
       attack: 0
-      decay: 0.48
+      decay: 0.18
       sustain: 0
       release: 0
     intensityMappingCurve:

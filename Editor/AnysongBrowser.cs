@@ -48,7 +48,7 @@ namespace Editor
 
         private void OnDestroy()
         {
-            _anywhenPlayer?.EditorSetPreviewSong(null);
+            _anywhenPlayer?.EditorSetPreviewSong(_anywhenPlayer.AnysongObject);
             _onClose?.Invoke(_didLoad);
         }
 
@@ -166,12 +166,7 @@ namespace Editor
             ShowSongs();
         }
 
-        void LoadCompletedCallback(AsyncOperationHandle<IList<AnysongObject>> songs)
-        {
-            _isLoadingPack = false;
-            ShowSongs();
-            Debug.Log("load completed");
-        }
+
 
         void ShowSongs()
         {
@@ -206,21 +201,5 @@ namespace Editor
         }
 
 
-        //void OnInspectorUpdate()
-        //{
-        //    if (!_isLoadingPack) return;
-        //    if (_currentPack.Songs.Length == _lastFrameCount)
-        //        _noIncrementFrames++;
-//
-        //    _lastFrameCount = _currentPack.Songs.Length;
-//
-        //    EditorUtility.DisplayProgressBar("Loading songs", "Loading...", _noIncrementFrames / 4f);
-//
-        //    if (_noIncrementFrames > 3)
-        //        LoadCompletedCallback(_loadStatus);
-//
-        //    if (_loadStatus.IsDone)
-        //        LoadCompletedCallback(_loadStatus);
-        //}
     }
 }

@@ -138,7 +138,6 @@ namespace Editor
 
         public void Play()
         {
-            //if (_anywhenPlayer.AnysongObject == null) return;
             if (_currentSong == null)
             {
                 return;
