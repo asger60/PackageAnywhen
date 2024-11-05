@@ -177,7 +177,7 @@ namespace Anywhen
         protected internal void AttachToMetronome()
         {
             if (_isRunning) return;
-            if (!_loaded) return;
+            //if (!_loaded) return;
             _isRunning = true;
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
@@ -189,9 +189,10 @@ namespace Anywhen
             if (_currentSong == null)
             {
                 Load(AnysongObject);
-                //      return;
+                //return;
             }
 
+            print("play");
             if (!AnysongPlayerBrain.IsStarted)
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
@@ -350,7 +351,5 @@ namespace Anywhen
         {
             _currentSectionIndex = sectionIndex;
         }
-
-
     }
 }
