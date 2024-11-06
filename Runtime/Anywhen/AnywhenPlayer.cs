@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -192,7 +193,6 @@ namespace Anywhen
                 //return;
             }
 
-            print("play");
             if (!AnysongPlayerBrain.IsStarted)
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
@@ -234,7 +234,7 @@ namespace Anywhen
             {
                 var track = newSong.Tracks[i];
                 currentTracks[i] = new AnysongTrack();
-                currentTracks[i] = track.Clone();
+                currentTracks[i] = track;
             }
 
             isCustomized = false;
@@ -245,23 +245,41 @@ namespace Anywhen
         {
             _currentSong = anysongObject;
 
-
-            if (isCustomized && _currentSong == AnysongObject)
+            if (_currentSong != AnysongObject)
             {
-                currentTracks = new AnysongTrack[customTracks.Length];
-                for (var i = 0; i < customTracks.Length; i++)
-                {
-                    currentTracks[i] = customTracks[i].Clone();
-                }
-            }
-            else
-            {
+                print("preview other song");
                 currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
                 for (var i = 0; i < _currentSong.Tracks.Count; i++)
                 {
                     currentTracks[i] = _currentSong.Tracks[i].Clone();
                 }
             }
+            
+
+            if (_currentSong == AnysongObject)
+            {
+                if (isCustomized)
+                {
+                    print("restoring custom song");
+                    currentTracks = new AnysongTrack[customTracks.Length];
+                    for (var i = 0; i < customTracks.Length; i++)
+                    {
+                        currentTracks[i] = customTracks[i].Clone();
+                    }    
+                }
+                else
+                {
+                    print("restoring original song");
+                    currentTracks = new AnysongTrack[AnysongObject.Tracks.Count];
+                    for (var i = 0; i < AnysongObject.Tracks.Count; i++)
+                    {
+                        currentTracks[i] = AnysongObject.Tracks[i];
+                    } 
+                }
+                
+            }
+            
+            
         }
 
         public void EditorCreateTrigger()
@@ -322,12 +340,13 @@ namespace Anywhen
             customTracks = new AnysongTrack[currentTracks.Length];
             for (var i = 0; i < currentTracks.Length; i++)
             {
-                var track = currentTracks[i];
-                if (track.trackType == AnysongTrack.AnyTrackTypes.None) continue;
-                var inst = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(track.trackType);
-                if (inst)
+                if (currentTracks[i].trackType != AnysongTrack.AnyTrackTypes.None)
                 {
-                    currentTracks[i].instrument = inst;
+                    var newInstrument = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(currentTracks[i].trackType);
+                    if (newInstrument)
+                    {
+                        currentTracks[i].instrument = newInstrument;
+                    }
                 }
 
                 customTracks[i] = currentTracks[i].Clone();

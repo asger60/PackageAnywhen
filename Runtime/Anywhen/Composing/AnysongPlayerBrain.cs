@@ -144,7 +144,6 @@ namespace Anywhen.Composing
 
         void TransitionNow(AnywhenPlayer newPlayer)
         {
-            print("reansition " + newPlayer);
             if (_currentPlayer != null)
             {
                 _currentPlayer.ReleaseFromMetronome();
