@@ -22,9 +22,9 @@ If the AnywhenPlayer does not have a reference to a trigger, a “Create trigger
 To start a AnywhenPlayer through code simply call the AnywhenPlayer.Play() method.
 ### Controlling song transitions
 There can never be more than one AnywhenPlayer playing at the same time. So whenever an AnywhenPlayer is started it will stop the current active player. The system can handle several different types of transitions between players.
-- Instant This will stop the current player and start the new one instantaneously. Some notes from the previous player might play out on top of the new song.
-- Next Bar The new player will wait until the next bar in the music before starting
-- Cross Fade The new player will do an intensity fade in, while the old player does an intensity fade out. After the fade the old player stops. 
+- **Instant** This will stop the current player and start the new one instantaneously. Some notes from the previous player might play out on top of the new song.
+- **Next Bar** The new player will wait until the next bar in the music before starting
+- **Cross Fade** The new player will do an intensity fade in, while the old player does an intensity fade out. After the fade the old player stops. 
 ## AnywhenTrigger
 This component will trigger playback of an AnywhenPlayer if the “TriggerType” condition is met. You can select trigger type from the dropdown. Some options require additional settings.
 The AnywhenTrigger does not need to be on the same gameobject as the connected AnywhenPlayer.
@@ -36,12 +36,12 @@ The intensity of the playing music can be controlled either from custom code, or
 ## AnywhenIntensitySetter
 The AnywhenIntensitySetter can be added to any gameobject. It uses the AnywhenTrigger for triggering.
 There is two intensity update modes:
-- Set In this mode the intensity value is hard set to the value specified in the inspector.
-- Modify In this mode the value is modified by the value set in the inspector every time the trigger is triggered. The value can be both positive and negative.
+- **Set** In this mode the intensity value is hard set to the value specified in the inspector.
+- **Modify** In this mode the value is modified by the value set in the inspector every time the trigger is triggered. The value can be both positive and negative.
 ### Setting intensity through code
 Setting the music intensity through your own code is pretty easy. 
 Just call: AnysongPlayerBrain.SetGlobalIntensity(newIntensity); - where “newIntensity” is your desired value
 ## Customising the music
 Every AnywhenPlayer has a fold out section called “Customize”. Expanding this will give you access to two options.
-- Randomise instruments This will basically randomise all sounds used in the song to give it a completely new vibe. The system will try to select sounds that fit with the ones that were before to keep a little bit of the structure from the original song. You can always use the restore button to return to the original song.
-- Root note Here you can change the root note of the song. The whole song will be transposed to match the new root.
+- **Randomise instruments** This will basically randomise all sounds used in the song to give it a completely new vibe. The system will try to select sounds that fit with the ones that were before to keep a little bit of the structure from the original song. You can always use the restore button to return to the original song.
+- **Root note** Here you can change the root note of the song. The whole song will be transposed to match the new root.
