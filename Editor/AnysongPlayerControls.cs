@@ -69,19 +69,23 @@ namespace Editor
             });
 
             _sectionButtons.Clear();
-            for (var i = 0; i < anywhenPlayer.AnysongObject.Sections.Count; i++)
+            if (anywhenPlayer.AnysongObject != null)
             {
-                var btn = new Button
+                for (var i = 0; i < anywhenPlayer.AnysongObject.Sections.Count; i++)
                 {
-                    text = i.ToString()
-                };
-                btn.AddToClassList("section-button");
-                btn.clicked += () =>
-                {
-                    _anywhenPlayer.SetSection(Int32.Parse(btn.text));
-                };
-                _sectionButtons.Add(btn);
-                sectionButtonsElement.Add(btn);
+                    var btn = new Button
+                    {
+                        text = i.ToString()
+                    };
+                    btn.AddToClassList("section-button");
+                    btn.clicked += () => { _anywhenPlayer.SetSection(Int32.Parse(btn.text)); };
+                    _sectionButtons.Add(btn);
+                    sectionButtonsElement.Add(btn);
+                }
+            }
+            else
+            {
+                sectionButtonsElement.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             }
 
 
