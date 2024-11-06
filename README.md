@@ -40,7 +40,7 @@ There is two intensity update modes:
 - **Modify** In this mode the value is modified by the value set in the inspector every time the trigger is triggered. The value can be both positive and negative.
 ### Setting intensity through code
 Setting the music intensity through your own code is pretty easy. 
-Just call: AnysongPlayerBrain.SetGlobalIntensity(newIntensity); - where “newIntensity” is your desired value
+Just call: AnysongPlayerBrain.SetGlobalIntensity(_newIntensity_); - where “newIntensity” is your desired value
 ## Customising the music
 Every AnywhenPlayer has a fold out section called “Customize”. Expanding this will give you access to two options.
 - **Randomise instruments** This will basically randomise all sounds used in the song to give it a completely new vibe. The system will try to select sounds that fit with the ones that were before to keep a little bit of the structure from the original song. You can always use the restore button to return to the original song.
