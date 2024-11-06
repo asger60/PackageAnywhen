@@ -1,12 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 
 namespace Editor
@@ -19,7 +17,6 @@ namespace Editor
         private AnysongPackObject _currentPack;
 
         private bool _isLoadingPack;
-        private AsyncOperationHandle<IList<AnysongObject>> _loadStatus;
         private Action<bool> _onClose;
         private VisualElement _trackListView;
         private AnysongObject _currentPreviewSong;
@@ -27,8 +24,7 @@ namespace Editor
 
         private VisualElement _packImageElement;
         private Label _packNameLabel, _packDescriptionLabel;
-        private int _noIncrementFrames;
-        private int _lastFrameCount;
+
         private Button _playButton, _loadSongButton;
         private int _currentPackIndex;
         private bool _didLoad;
@@ -151,8 +147,6 @@ namespace Editor
         IEnumerator LoadPack()
         {
             _currentPack.ClearSongs();
-            _noIncrementFrames = 0;
-            _lastFrameCount = 0;
             EditorUtility.DisplayProgressBar("Loading songs", "Loading...", 0);
             foreach (var songName in _currentPack.songNames)
             {
