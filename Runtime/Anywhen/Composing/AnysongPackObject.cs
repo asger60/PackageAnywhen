@@ -8,12 +8,11 @@ namespace Anywhen.Composing
     [CreateAssetMenu(fileName = "AnyTrackPack", menuName = "Anywhen/AnyTrackPack")]
     public class AnysongPackObject : ScriptableObject
     {
-        //public AssetLabelReference AssetLabelReference;
         public AnysongObject[] Songs => _songs.ToArray();
         private List<AnysongObject> _songs = new List<AnysongObject>();
         public string[] songNames;
         [SerializeField] string editorSongPath;
-        [SerializeField]private bool isInPackage;
+        [SerializeField] private bool isInPackage;
         public bool IsInPackage => isInPackage;
 
         public void AddSong(AnysongObject song)
@@ -41,7 +40,7 @@ namespace Anywhen.Composing
 
             for (var i = 0; i < song.Length; i++)
             {
-                songNames[i] = song[i].name+".asset";
+                songNames[i] = song[i].name + ".asset";
                 var o = song[i];
                 Debug.Log(o);
             }
@@ -49,7 +48,6 @@ namespace Anywhen.Composing
 
         public static T[] GetAtPath<T>(string path) where T : UnityEngine.Object
         {
-            
             var assets = AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { path });
             List<T> foundAssets = new List<T>();
 
@@ -60,8 +58,8 @@ namespace Anywhen.Composing
 
             // if you want to skip the convertion to array, simply change method return type
             return foundAssets.ToArray();
-            
-            
+
+
             List<T> al = new List<T>();
             string[] fileEntries = Directory.GetFiles(Application.dataPath + "/" + path);
             foreach (string fileName in fileEntries)

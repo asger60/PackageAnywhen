@@ -6,7 +6,7 @@ namespace Anywhen.SettingsObjects
 {
     public class AnywhenNoteClip : AnywhenSettingsBase
     {
-        public AudioClip sourceClip;
+        //public AudioClip sourceClip;
 
         public float[] clipSamples;
         public int frequency;
@@ -19,7 +19,7 @@ namespace Anywhen.SettingsObjects
             audioClip.GetData(clipSamples, 0);
             frequency = audioClip.frequency;
             channels = audioClip.channels;
-            sourceClip = audioClip;
+         //   sourceClip = audioClip;
         }
         #if UNITY_EDITOR
 
@@ -32,14 +32,14 @@ namespace Anywhen.SettingsObjects
 
             var directory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(activeObject));
             var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(activeObject));
-            var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
+            //var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
 
             var fullPath = directory + "/" + fileName;
             AssetDatabase.CreateAsset(newNoteClip, fullPath + ".asset");
 
-            var clip = Instantiate<AudioClip>(activeObject);
+            //var clip = Instantiate<AudioClip>(activeObject);
 
-            extension = ".asset";
+            //extension = ".asset";
             Debug.Log(fullPath + ".asset");
 
 
@@ -56,11 +56,6 @@ namespace Anywhen.SettingsObjects
             Debug.Log(AssetDatabase.GetAssetPath(this));
         }
 
-        [ContextMenu("add clip")]
-        void AddClip()
-        {
-            AssetDatabase.AddObjectToAsset(Instantiate(sourceClip), AssetDatabase.GetAssetPath(this));
-        }
         #endif
     }
 }

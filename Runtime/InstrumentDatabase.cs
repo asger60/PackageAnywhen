@@ -1,5 +1,6 @@
 using System.Linq;
 using Anywhen.Composing;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
 public class InstrumentDatabase : MonoBehaviour
@@ -29,5 +30,17 @@ public class InstrumentDatabase : MonoBehaviour
     {
         System.Random random = new System.Random();
         return array.OrderBy(x => random.Next()).ToArray();
+    }
+
+
+    void UnlinkNoteCLips()
+    {
+        foreach (var instrument in instruments)
+        {
+            if (instrument is AnywhenSampleInstrument sampleInstrument)
+            {
+                sampleInstrument.UnlinkClips();
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen.SettingsObjects
@@ -13,7 +14,6 @@ namespace Anywhen.SettingsObjects
         public AudioClip[] audioClips;
         public AnywhenNoteClip[] noteClips;
         public float stopDuration = 0.1f;
-
 
         public enum ClipSelectType
         {
@@ -62,7 +62,6 @@ namespace Anywhen.SettingsObjects
 
         public LoopSettings loopSettings;
         [Range(0, 1f)] public float volume = 1;
-
 
 
         public AnywhenNoteClip GetNoteClip(int note)
@@ -168,11 +167,11 @@ namespace Anywhen.SettingsObjects
             AssetDatabase.Refresh();
         }
 
-        [ContextMenu("Preview")]
         public void PreviewSound()
         {
             AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, noteClips[0]);
         }
+
         public void DeleteAudioCLips()
         {
             foreach (var audioClip in audioClips)
@@ -183,6 +182,53 @@ namespace Anywhen.SettingsObjects
             audioClips = null;
             clipType = ClipTypes.NoteClips;
         }
+
+
+        [ContextMenu("load clipts")]
+        public void LoadClips()
+        {
+            List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
+            foreach (var clipString in clipDatas)
+            {
+                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(clipString.path);
+                loadedClips.Add(clip);
+            }
+
+            noteClips = loadedClips.ToArray();
+        }
+
+
+        [Serializable]
+        public struct ClipData
+        {
+            public string name;
+            public string path;
+            [FormerlySerializedAs("Guid")] public string guid;
+        }
+
+        public ClipData[] clipDatas;
+
+        [ContextMenu("UnlinkClips")]
+        public void UnlinkClips()
+        {
+            if (noteClips.Length == 0) return;
+            clipDatas = new ClipData[noteClips.Length];
+            for (var i = 0; i < noteClips.Length; i++)
+            {
+                var noteClip = noteClips[i];
+                var clipData = new ClipData
+                {
+                    name = noteClip.name,
+                    path = AssetDatabase.GetAssetPath(noteClip)
+                };
+                clipData.guid = AssetDatabase.AssetPathToGUID(clipData.path);
+                clipDatas[i] = clipData;
+            }
+
+            noteClips = null;
+            EditorUtility.SetDirty(this);
+        }
+
 #endif
     }
 }
