@@ -193,12 +193,39 @@ namespace Anywhen.SettingsObjects
         [ContextMenu("load clipts")]
         public void LoadClips()
         {
-            List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
+            List<AnywhenNoteClip> loadedClips = new System.Collections.Generic.List<AnywhenNoteClip>();
+
+            bool isInPackage = false;
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(assembly);
+            if (packageInfo != null)
+            {
+                isInPackage = true;
+            }
+
             foreach (var clipString in clipDatas)
             {
-                
+                var path = clipString.path;
+                if (isInPackage)
+                {
+                    var pathDirs = path.Split("/");
+                    List<string> pathDirList = new List<string>();
+                    pathDirList.AddRange(pathDirs);
+                    pathDirList.RemoveAt(0);
+                    pathDirList.RemoveAt(0);
+                    path = "Packages/Anywhen/";
+                    for (var i = 0; i < pathDirList.Count; i++)
+                    {
+                        var dirName = pathDirList[i];
+                        path += dirName;
+                        if (i != pathDirList.Count - 1)
+                            path += "/";
+                    }
+                }
 
-                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(GetAssetPath(clipString.name + ".asset"));
+                Debug.LogWarning(path);
+
+                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
                 loadedClips.Add(clip);
             }
 
@@ -206,39 +233,6 @@ namespace Anywhen.SettingsObjects
             _noteClips = loadedClips.ToArray();
         }
 
-        string GetAssetPath(string assetStaticPath)
-        {
-            List<string> foundPaths = new List<string>();
-            var allAssetPaths = AssetDatabase.GetAllAssetPaths();
-            var fileName = assetStaticPath;
-            for (int i = 0; i < allAssetPaths.Length; ++i)
-            {
-                if (allAssetPaths[i].EndsWith(fileName))
-                {
-                    foundPaths.Add(allAssetPaths[i]);
-                }
-            }
-
-            if (foundPaths.Count == 1)
-                return foundPaths[0];
-
-            if (foundPaths.Count == 0)
-            {
-                Debug.LogError($"No path found for asset {assetStaticPath}!");
-            }
-            else if (foundPaths.Count > 1)
-            {
-                Debug.LogError($"Multiple paths found for asset {assetStaticPath}, use more precise static path!");
-
-                for (int i = 0; i < foundPaths.Count; i++)
-                {
-                    string path = foundPaths[i];
-                    Debug.LogError($"Path {i + 1}: {path}");
-                }
-            }
-
-            return null;
-        }
 
         [Serializable]
         public struct ClipData
