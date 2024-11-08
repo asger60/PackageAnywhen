@@ -15,8 +15,7 @@ MonoBehaviour:
   instrumentType: 80
   audioClips:
   - {fileID: 8300000, guid: 9c701f625f9a04c618a7f346be461723, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 744f86c3dc40f43d987f7f35f23dd10b, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -26,3 +25,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Perc_808_Tic
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Perc_808_Tic.asset
+    guid: 744f86c3dc40f43d987f7f35f23dd10b
