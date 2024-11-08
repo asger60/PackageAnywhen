@@ -213,7 +213,7 @@ namespace Anywhen.SettingsObjects
                     pathDirList.AddRange(pathDirs);
                     pathDirList.RemoveAt(0);
                     pathDirList.RemoveAt(0);
-                    path = "Packages/Anywhen/";
+                    path = "Packages/com.floppylub.anywhen/";
                     for (var i = 0; i < pathDirList.Count; i++)
                     {
                         var dirName = pathDirList[i];
@@ -223,7 +223,6 @@ namespace Anywhen.SettingsObjects
                     }
                 }
 
-                Debug.LogWarning(path);
 
                 var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
                 loadedClips.Add(clip);
