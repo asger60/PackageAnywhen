@@ -15,7 +15,7 @@ namespace Anywhen
             get
             {
                 if (!_metronome)
-                    Instance.GetAnyComponents();
+                    Instance?.GetAnyComponents();
 
                 return _metronome;
             }
@@ -46,8 +46,10 @@ namespace Anywhen
             {
                 if (_instance == null)
                 {
-                    _instance =
-                        FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None)[0];
+                    var anywhens = FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    if (anywhens.Length == 0) return null;
+                    _instance = anywhens[0];
+
                     _instance.GetAnyComponents();
                 }
 

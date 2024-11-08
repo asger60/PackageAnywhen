@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,13 +16,11 @@ namespace Anywhen
         private AnywhenInstrument[] _instruments;
         private AnysongObject _currentSong;
         private bool _isRunning;
-        private bool _loaded = false;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
         [SerializeField] private AnywhenTrigger trigger;
         public int currentSongPackIndex;
-        private float _previewIntensity = 1;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
 
@@ -32,6 +30,9 @@ namespace Anywhen
         [SerializeField] private AnysongTrack[] customTracks;
         [SerializeField] private AnysongTrack[] currentTracks;
         [SerializeField] private bool isCustomized;
+        [SerializeField] private float intensity = 1;
+        [SerializeField] private bool followGlobalTempo = true;
+        [SerializeField] private bool followGlobalIntensity = true;
 
         private void Awake()
         {
@@ -47,7 +48,6 @@ namespace Anywhen
         private void Load(AnysongObject anysong)
         {
             if (anysong == null) return;
-            _loaded = true;
             _currentSong = anysong;
 
             foreach (var songTrack in _currentSong.Tracks)
@@ -58,7 +58,7 @@ namespace Anywhen
                     i.LoadClips();
                 }
             }
-            
+
             foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
@@ -138,12 +138,12 @@ namespace Anywhen
             }
         }
 
-        float GetIntensity()
+        public float GetIntensity()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && followGlobalIntensity)
                 return AnysongPlayerBrain.GlobalIntensity;
 
-            return _previewIntensity;
+            return intensity;
         }
 
         void NextSection()
@@ -263,32 +263,27 @@ namespace Anywhen
                     currentTracks[i] = _currentSong.Tracks[i].Clone();
                 }
             }
-            
+
 
             if (_currentSong == AnysongObject)
             {
                 if (isCustomized)
                 {
-                    print("restoring custom song");
                     currentTracks = new AnysongTrack[customTracks.Length];
                     for (var i = 0; i < customTracks.Length; i++)
                     {
                         currentTracks[i] = customTracks[i].Clone();
-                    }    
+                    }
                 }
                 else
                 {
-                    print("restoring original song");
                     currentTracks = new AnysongTrack[AnysongObject.Tracks.Count];
                     for (var i = 0; i < AnysongObject.Tracks.Count; i++)
                     {
                         currentTracks[i] = AnysongObject.Tracks[i];
-                    } 
+                    }
                 }
-                
             }
-            
-            
         }
 
         public void EditorCreateTrigger()
@@ -301,10 +296,6 @@ namespace Anywhen
             trigger = GetComponentInChildren<AnywhenTrigger>();
         }
 
-        public void EditorSetTestIntensity(float value)
-        {
-            _previewIntensity = value;
-        }
 
         public int[] EditorGetPlayingTrackPatternIndexes()
         {
@@ -330,6 +321,7 @@ namespace Anywhen
         {
             if (currentPlayerTempo == -1)
                 return AnysongObject.tempo;
+
             return currentPlayerTempo;
         }
 
@@ -338,9 +330,14 @@ namespace Anywhen
             return rootNoteMod;
         }
 
+        public bool GetUseGlobalIntensity() => followGlobalIntensity;
+        public bool GetUseGlobalTempo() => followGlobalTempo;
+
+
         public void EditorSetRootNote(int newValue)
         {
             rootNoteMod = newValue;
+            EditorUtility.SetDirty(this);
         }
 
         public void EditorRandomizeSounds()
@@ -362,6 +359,7 @@ namespace Anywhen
             }
 
             isCustomized = true;
+            EditorUtility.SetDirty(this);
         }
 
         public void EditorRestoreSounds()
@@ -375,9 +373,32 @@ namespace Anywhen
             }
         }
 
-        public void SetSection(int sectionIndex)
+        public void SetIntensity(float newIntensity)
+        {
+            intensity = newIntensity;
+        }
+
+        public void ModifyIntensity(float newIntensity)
+        {
+            intensity += newIntensity;
+        }
+
+
+        public void EditorSetSection(int sectionIndex)
         {
             _currentSectionIndex = sectionIndex;
+        }
+
+        public void EditorSetGlobelTempo(bool newValue)
+        {
+            followGlobalTempo = newValue;
+            EditorUtility.SetDirty(this);
+        }
+
+        public void EditorSetFollowGlobalIntensity(bool newValue)
+        {
+            followGlobalIntensity = newValue;
+            EditorUtility.SetDirty(this);
         }
     }
 }

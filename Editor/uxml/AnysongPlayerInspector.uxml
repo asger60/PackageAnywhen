@@ -14,6 +14,14 @@
             </ui:VisualElement>
             <ui:VisualElement name="PackImage" style="flex-grow: 1; top: auto; left: auto; right: auto; visibility: visible; background-color: rgb(209, 208, 209); position: relative; height: 300px; margin-bottom: 10px; padding-bottom: 0; background-image: url(&quot;project://database/Assets/PackageAnywhen/Editor/Sprites/Packs/BlankPack.png?fileID=2800000&amp;guid=aabc4410d7c61426485f799c858d2a3a&amp;type=3#BlankPack&quot;); -unity-background-scale-mode: scale-to-fit; max-height: 300px; min-height: 300px; align-self: stretch;" />
             <ui:Instance template="AnysongPlayer" name="AnysongPlayer" style="max-height: 220px; height: 220px; min-height: 220px; flex-grow: 1;" />
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row; min-height: 30px; border-left-width: 1px; border-right-width: 1px; border-left-color: rgb(149, 149, 149); border-right-color: rgb(149, 149, 149); border-top-color: rgb(149, 149, 149); border-bottom-color: rgb(149, 149, 149); border-bottom-width: 1px;">
+                <ui:VisualElement style="flex-grow: 1; min-height: 30px; border-right-width: 0.5px; border-right-color: rgb(149, 149, 149); width: 50%; justify-content: center;">
+                    <ui:Toggle label="Follow global tempo" name="FollowTempoToggle" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; min-height: 30px; width: 50%; border-left-width: 0.5px; border-left-color: rgb(149, 149, 149); justify-content: center; align-items: flex-start; align-self: stretch;">
+                    <ui:Toggle label="Follow global intensity" value="false" name="FollowIntensityToggle" />
+                </ui:VisualElement>
+            </ui:VisualElement>
             <ui:Foldout text="Customize" focusable="false" value="false" style="margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 0; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(149, 149, 149); border-right-color: rgb(149, 149, 149); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgb(149, 149, 149); padding-left: 20px;">
                 <ui:VisualElement style="flex-grow: 1; padding-left: -20px; position: relative; left: -20px; bottom: 0; margin-bottom: 20px;">
                     <ui:VisualElement style="flex-grow: 1;">

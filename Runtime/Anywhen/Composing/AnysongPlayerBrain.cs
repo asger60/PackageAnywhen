@@ -8,7 +8,6 @@ namespace Anywhen.Composing
         AnywhenPlayer _currentPlayer;
 
 
-        
         private AnywhenPlayer _nextUpPlayer, _stopPlayer;
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
@@ -23,7 +22,6 @@ namespace Anywhen.Composing
             CrossFade
         }
 
-        private TransitionTypes _nextTransitionType;
 
         private static AnysongPlayerBrain _instance;
 
@@ -33,7 +31,7 @@ namespace Anywhen.Composing
             {
                 if (_instance)
                     return _instance;
-                _instance = FindObjectOfType<AnysongPlayerBrain>();
+                _instance = FindAnyObjectByType<AnysongPlayerBrain>();
                 return _instance;
             }
         }
@@ -63,7 +61,7 @@ namespace Anywhen.Composing
                 TransitionNow(_nextUpPlayer);
                 _nextUpPlayer = null;
             }
-            
+
             if (_stopPlayer != null)
             {
                 TransitionNow(null);
@@ -95,7 +93,6 @@ namespace Anywhen.Composing
             _isStarted = true;
             if (AnywhenRuntime.IsPreviewing)
             {
-                _nextTransitionType = transitionType;
                 TransitionNow(player);
                 return;
             }
@@ -117,8 +114,6 @@ namespace Anywhen.Composing
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            _nextTransitionType = transitionType;
         }
 
         private void HandleTransitionToNothing(AnywhenPlayer player, TransitionTypes transitionType)
@@ -138,8 +133,6 @@ namespace Anywhen.Composing
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            _nextTransitionType = transitionType;
         }
 
         void TransitionNow(AnywhenPlayer newPlayer)
@@ -156,7 +149,6 @@ namespace Anywhen.Composing
             }
             else
             {
-                //_currentPlayer.Stop();
                 _currentPlayer?.ReleaseFromMetronome();
                 _currentPlayer = null;
             }

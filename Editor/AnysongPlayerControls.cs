@@ -13,7 +13,8 @@ namespace Editor
         private Sprite _tapeSprite1;
         private Sprite _tapeSprite2;
         private bool _isPreviewing;
-        private Button _playButton;
+        private Button _playButton, _editButton;
+        
         private AnywhenPlayer _anywhenPlayer;
         private AnysongObject _currentSong;
         private static Color _accentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
@@ -46,14 +47,15 @@ namespace Editor
             _songAuthorLabel = root.Q<Label>("LabelSongAuthor");
             _intensityAnySlider = root.Q<AnySlider>("IntensitySlider");
             _tempoAnySlider = root.Q<AnySlider>("TempoSlider");
-
+            _editButton = root.Q<Button>("ButtonEdit");
 
             _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
-            _intensityAnySlider.SetValueWithoutNotify(100);
+            _intensityAnySlider.SetValueWithoutNotify(anywhenPlayer.GetIntensity() * 100f);
 
             _intensityAnySlider.RegisterValueChangedCallback(evt =>
             {
-                anywhenPlayer.EditorSetTestIntensity(evt.newValue / 100f);
+                anywhenPlayer.SetIntensity(evt.newValue / 100f);
+                EditorUtility.SetDirty(anywhenPlayer);
             });
             _tempoAnySlider.RegisterValueChangedCallback(evt =>
             {
@@ -63,10 +65,7 @@ namespace Editor
 
             var sectionButtonsElement = root.Q<VisualElement>("SectionButtonsElement");
 
-            sectionButtonsElement.Query<Button>("SectionButton").ForEach(button =>
-            {
-                sectionButtonsElement.Remove(button);
-            });
+            sectionButtonsElement.Query<Button>("SectionButton").ForEach(button => { sectionButtonsElement.Remove(button); });
 
             _sectionButtons.Clear();
             if (anywhenPlayer.AnysongObject != null)
@@ -78,7 +77,7 @@ namespace Editor
                         text = i.ToString()
                     };
                     btn.AddToClassList("section-button");
-                    btn.clicked += () => { _anywhenPlayer.SetSection(Int32.Parse(btn.text)); };
+                    btn.clicked += () => { _anywhenPlayer.EditorSetSection(Int32.Parse(btn.text)); };
                     _sectionButtons.Add(btn);
                     sectionButtonsElement.Add(btn);
                 }
@@ -88,6 +87,15 @@ namespace Editor
                 sectionButtonsElement.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             }
 
+            if (_currentSong == null)
+            {
+                var dimColor = new StyleColor(new Color(1, 1, 1, 0.1f));
+
+                _playButton.style.unityBackgroundImageTintColor = dimColor;
+                _tapeElement.style.unityBackgroundImageTintColor = dimColor;
+                _editButton.style.unityBackgroundImageTintColor = dimColor;
+
+            }
 
             _playButton.clicked += TogglePreview;
         }
@@ -98,7 +106,11 @@ namespace Editor
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
             _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
-            _intensityAnySlider.SetValueWithoutNotify(100);
+            _intensityAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetIntensity() * 100);
+            _playButton.style.unityBackgroundImageTintColor = new StyleColor(new Color(1, 1, 1, 1));
+            _tapeElement.style.unityBackgroundImageTintColor = Color.white;
+            _editButton.style.unityBackgroundImageTintColor = Color.white;
+
         }
 
         void RefreshActiveSection()
@@ -117,7 +129,12 @@ namespace Editor
             _songAuthorLabel.text = "By: " + anysongObject.author;
             _tempoAnySlider.SetValueWithoutNotify(anysongObject.tempo);
             _anywhenPlayer.EditorSetTempo(anysongObject.tempo);
-            _intensityAnySlider.SetValueWithoutNotify(100);
+            _intensityAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetIntensity() * 100);
+            _playButton.style.unityBackgroundImageTintColor = new StyleColor(new Color(1, 1, 1, 1));
+            _tapeElement.style.unityBackgroundImageTintColor = Color.white;
+            _editButton.style.unityBackgroundImageTintColor = Color.white;
+
+
         }
 
         private void OnTick16()
@@ -129,6 +146,8 @@ namespace Editor
 
         private void TogglePreview()
         {
+            if (_anywhenPlayer == null) return;
+            if (_currentSong == null) return;
             _isPreviewing = !_isPreviewing;
             if (_isPreviewing)
             {
@@ -142,10 +161,8 @@ namespace Editor
 
         public void Play()
         {
-            if (_currentSong == null)
-            {
-                return;
-            }
+            if (_anywhenPlayer == null) return;
+            if (_currentSong == null) return;
 
             _isPreviewing = true;
             _isPlaying = true;

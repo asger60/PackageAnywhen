@@ -140,7 +140,7 @@ namespace Editor.AnySong
                     }
                 }
 
-                _currentRuntimeSongPlayer.EditorSetTestIntensity(value);
+                _currentRuntimeSongPlayer.SetIntensity(value);
 
             }
         }

@@ -49,6 +49,8 @@ namespace Editor
             _browseButton = _root.Q<Button>("ButtonLoadTrack");
             _browseButton.clicked += () =>
             {
+                _anysongPlayerControls.Stop();
+
                 _initialTempo = _anywhenPlayer.GetTempo();
                 AnysongBrowser.ShowBrowserWindow(_anywhenPlayer, OnBrowseWindowClosed);
             };
@@ -112,6 +114,15 @@ namespace Editor
             var transitionObjectField = new PropertyField(transitionTypeObject);
             transitionObjectField.BindProperty(transitionTypeObject);
             _root.Add(transitionObjectField);
+
+
+            var globalTempoToggle = _root.Q<Toggle>("FollowTempoToggle");
+            var globalIntensityToggle = _root.Q<Toggle>("FollowIntensityToggle");
+            globalIntensityToggle.SetValueWithoutNotify(_anywhenPlayer.GetUseGlobalIntensity());
+            globalTempoToggle.SetValueWithoutNotify(_anywhenPlayer.GetUseGlobalTempo());
+
+            globalTempoToggle.RegisterValueChangedCallback(evt => { _anywhenPlayer.EditorSetGlobelTempo(evt.newValue); });
+            globalIntensityToggle.RegisterValueChangedCallback(evt => { _anywhenPlayer.EditorSetFollowGlobalIntensity(evt.newValue); });
 
 
             return _root;
