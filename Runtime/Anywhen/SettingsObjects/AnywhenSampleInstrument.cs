@@ -196,7 +196,9 @@ namespace Anywhen.SettingsObjects
             List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
             foreach (var clipString in clipDatas)
             {
-                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(GetAssetPath(clipString.path));
+                
+
+                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(GetAssetPath(clipString.name + ".asset"));
                 loadedClips.Add(clip);
             }
 
@@ -212,7 +214,9 @@ namespace Anywhen.SettingsObjects
             for (int i = 0; i < allAssetPaths.Length; ++i)
             {
                 if (allAssetPaths[i].EndsWith(fileName))
+                {
                     foundPaths.Add(allAssetPaths[i]);
+                }
             }
 
             if (foundPaths.Count == 1)
