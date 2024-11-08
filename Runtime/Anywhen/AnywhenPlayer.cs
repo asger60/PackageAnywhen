@@ -31,8 +31,8 @@ namespace Anywhen
         [SerializeField] private AnysongTrack[] currentTracks;
         [SerializeField] private bool isCustomized;
         [SerializeField] private float intensity = 1;
-        [SerializeField] private bool followGlobalTempo = true;
-        [SerializeField] private bool followGlobalIntensity = true;
+        [SerializeField] private bool followGlobalTempo = false;
+        [SerializeField] private bool followGlobalIntensity = false;
 
         private void Awake()
         {

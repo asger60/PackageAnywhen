@@ -21,7 +21,7 @@ namespace Editor
         private VisualElement _tapeElement;
         private Label _songNameLabel, _songAuthorLabel;
 
-        private AnySlider _intensityAnySlider, _tempoAnySlider;
+
 
         // private SliderInt _rootNoteSlider;
         private List<Button> _sectionButtons = new List<Button>();
@@ -45,23 +45,14 @@ namespace Editor
             _playButton = root.Q<Button>("ButtonPreview");
             _songNameLabel = root.Q<Label>("LabelSongTitle");
             _songAuthorLabel = root.Q<Label>("LabelSongAuthor");
-            _intensityAnySlider = root.Q<AnySlider>("IntensitySlider");
-            _tempoAnySlider = root.Q<AnySlider>("TempoSlider");
+
+
+            
+            
+            
+            
             _editButton = root.Q<Button>("ButtonEdit");
 
-            _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
-            _intensityAnySlider.SetValueWithoutNotify(anywhenPlayer.GetIntensity() * 100f);
-
-            _intensityAnySlider.RegisterValueChangedCallback(evt =>
-            {
-                anywhenPlayer.SetIntensity(evt.newValue / 100f);
-                EditorUtility.SetDirty(anywhenPlayer);
-            });
-            _tempoAnySlider.RegisterValueChangedCallback(evt =>
-            {
-                anywhenPlayer.EditorSetTempo((int)evt.newValue);
-                EditorUtility.SetDirty(anywhenPlayer);
-            });
 
             var sectionButtonsElement = root.Q<VisualElement>("SectionButtonsElement");
 
@@ -98,6 +89,8 @@ namespace Editor
             }
 
             _playButton.clicked += TogglePreview;
+            
+            
         }
 
         public void RefreshSongObject(AnysongObject anysongObject)
@@ -105,8 +98,9 @@ namespace Editor
             _currentSong = anysongObject;
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
-            _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
-            _intensityAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetIntensity() * 100);
+            
+            
+            
             _playButton.style.unityBackgroundImageTintColor = new StyleColor(new Color(1, 1, 1, 1));
             _tapeElement.style.unityBackgroundImageTintColor = Color.white;
             _editButton.style.unityBackgroundImageTintColor = Color.white;
@@ -127,9 +121,9 @@ namespace Editor
             _currentSong = anysongObject;
             _songNameLabel.text = anysongObject.name;
             _songAuthorLabel.text = "By: " + anysongObject.author;
-            _tempoAnySlider.SetValueWithoutNotify(anysongObject.tempo);
             _anywhenPlayer.EditorSetTempo(anysongObject.tempo);
-            _intensityAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetIntensity() * 100);
+            
+            
             _playButton.style.unityBackgroundImageTintColor = new StyleColor(new Color(1, 1, 1, 1));
             _tapeElement.style.unityBackgroundImageTintColor = Color.white;
             _editButton.style.unityBackgroundImageTintColor = Color.white;

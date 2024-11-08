@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 #if UNITY_2023_OR_NEWER
 [UxmlElement]
 #endif
+
 public partial class AnySlider : Slider
 {
     public new class UxmlFactory : UxmlFactory<AnySlider, UxmlTraits>
@@ -16,7 +17,10 @@ public partial class AnySlider : Slider
     [UxmlAttribute] public Color color { get; set; } = Color.cyan;
 #else
     public string unit { get; set; } = "";
-    public Color color { get; set; } = Color.cyan;
+    public Color color { get; set; } = Color.yellow;
+
+    public bool isEnabled { get; set; } = true;
+
 #endif
 
 #if !UNITY_2023_OR_NEWER
@@ -24,6 +28,7 @@ public partial class AnySlider : Slider
     {
         private readonly UxmlStringAttributeDescription _unit = new UxmlStringAttributeDescription { name = "unit", defaultValue = "" };
         private readonly UxmlColorAttributeDescription _color = new UxmlColorAttributeDescription { name = "color", defaultValue = Color.yellow };
+        private readonly UxmlBoolAttributeDescription _isEnabled = new UxmlBoolAttributeDescription { name = "isEnabled", defaultValue = true };
 
         public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
         {
@@ -31,6 +36,7 @@ public partial class AnySlider : Slider
             var anySlider = (AnySlider)ve;
             anySlider.unit = _unit.GetValueFromBag(bag, cc);
             anySlider.color = _color.GetValueFromBag(bag, cc);
+            anySlider.isEnabled = _isEnabled.GetValueFromBag(bag, cc);
         }
     }
 #endif
@@ -38,7 +44,7 @@ public partial class AnySlider : Slider
 
     private readonly Label _valueLabel;
     private readonly VisualElement _dragTrack, _dragHandle;
-    
+
     public AnySlider() : this((string)null)
     {
     }
@@ -103,10 +109,22 @@ public partial class AnySlider : Slider
 
         var dragBorder = this.Q<VisualElement>("unity-dragger-border");
         dragBorder?.AddToClassList("drag-handle-border");
+
+
+       
+    }
+
+    public void SetIsEnabled(bool state)
+    {
+        isEnabled = state;
+
+        _dragHandle.style.backgroundColor = !isEnabled ? new StyleColor(Color.gray) : new StyleColor(color);
+        _dragTrack.style.backgroundColor = !isEnabled ? new StyleColor(Color.gray) : new StyleColor(color);
     }
 
     public override void SetValueWithoutNotify(float newValue)
     {
+        if (!isEnabled) return;
         base.SetValueWithoutNotify(newValue);
         _valueLabel.text = newValue + " " + unit;
         float lengthPercent = Mathf.InverseLerp(lowValue, highValue, newValue) * 100;

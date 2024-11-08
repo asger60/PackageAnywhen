@@ -23,7 +23,8 @@ namespace Editor
         private AnysongPlayerControls _anysongPlayerControls;
         private int _currentPackIndex;
         private int _initialTempo;
-
+        private AnySlider _intensityAnySlider, _tempoAnySlider;
+        
         private void OnEnable()
         {
             _anywhenPlayer = target as AnywhenPlayer;
@@ -55,6 +56,22 @@ namespace Editor
                 AnysongBrowser.ShowBrowserWindow(_anywhenPlayer, OnBrowseWindowClosed);
             };
 
+            
+            _intensityAnySlider = _root.Q<AnySlider>("IntensitySlider");
+            _tempoAnySlider = _root.Q<AnySlider>("TempoSlider");
+            _tempoAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetTempo());
+            _intensityAnySlider.SetValueWithoutNotify(_anywhenPlayer.GetIntensity() * 100f);
+
+            _intensityAnySlider.RegisterValueChangedCallback(evt =>
+            {
+                _anywhenPlayer.SetIntensity(evt.newValue / 100f);
+                EditorUtility.SetDirty(_anywhenPlayer);
+            });
+            _tempoAnySlider.RegisterValueChangedCallback(evt =>
+            {
+                _anywhenPlayer.EditorSetTempo((int)evt.newValue);
+                EditorUtility.SetDirty(_anywhenPlayer);
+            });
 
             var randomizeButton = _root.Q<Button>("ButtonRandomizeInstruments");
             randomizeButton.clicked += () =>
@@ -120,9 +137,21 @@ namespace Editor
             var globalIntensityToggle = _root.Q<Toggle>("FollowIntensityToggle");
             globalIntensityToggle.SetValueWithoutNotify(_anywhenPlayer.GetUseGlobalIntensity());
             globalTempoToggle.SetValueWithoutNotify(_anywhenPlayer.GetUseGlobalTempo());
+            _intensityAnySlider.SetIsEnabled(!_anywhenPlayer.GetUseGlobalIntensity());
+            _tempoAnySlider.SetIsEnabled(!_anywhenPlayer.GetUseGlobalIntensity());
+            
+            
 
-            globalTempoToggle.RegisterValueChangedCallback(evt => { _anywhenPlayer.EditorSetGlobelTempo(evt.newValue); });
-            globalIntensityToggle.RegisterValueChangedCallback(evt => { _anywhenPlayer.EditorSetFollowGlobalIntensity(evt.newValue); });
+            globalTempoToggle.RegisterValueChangedCallback(evt =>
+            {
+                _tempoAnySlider.SetIsEnabled( !evt.newValue);
+                _anywhenPlayer.EditorSetGlobelTempo(evt.newValue);
+            });
+            globalIntensityToggle.RegisterValueChangedCallback(evt =>
+            {
+                _intensityAnySlider.SetIsEnabled(!evt.newValue);
+                _anywhenPlayer.EditorSetFollowGlobalIntensity(evt.newValue);
+            });
 
 
             return _root;
