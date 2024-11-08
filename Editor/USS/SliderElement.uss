@@ -1,6 +1,6 @@
 .anywhen-slider {
     align-items: stretch;
-    align-self: auto;
+    align-self: stretch;
     justify-content: flex-start;
     flex-grow: 1;
     flex-wrap: nowrap;
@@ -31,7 +31,7 @@
 }
 
 .drag-element {
-    background-color: rgba(72, 18, 18, 0);
+    background-color: rgba(72, 51, 18, 0);
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -46,8 +46,8 @@
     border-bottom-left-radius: 0;
     flex-grow: 1;
     justify-content: flex-start;
-    align-items: auto;
-    align-self: auto;
+    align-items: stretch;
+    align-self: stretch;
     flex-direction: column;
     min-height: 20px;
     border-top-color: rgb(149, 149, 149);
@@ -65,7 +65,7 @@
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
-    align-items: auto;
+    align-items: stretch;
     align-self: auto;
     background-color: rgba(89, 37, 37, 0);
     flex-direction: column;
@@ -79,6 +79,7 @@
     border-bottom-left-radius: 0;
     height: 100%;
     min-height: 20px;
+    align-content: auto;
 }
 
 .slider-label {

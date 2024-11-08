@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Anywhen;
 using Anywhen.SettingsObjects;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -58,7 +57,7 @@ public class AnywhenMenuUtils : MonoBehaviour
 
         if (prefab)
         {
-            var anywhenInstance = PrefabUtility.InstantiatePrefab(prefab);
+            var anywhenInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             AnywhenRuntime rt = anywhenInstance.GetComponent<AnywhenRuntime>();
             rt.Init();
             //Selection.activeObject = anywhenInstance;
