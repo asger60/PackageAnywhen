@@ -170,11 +170,11 @@ namespace Anywhen.SettingsObjects
 
         public void PreviewSound()
         {
-            
             if (_noteClips == null || _noteClips.Length == 0)
             {
                 LoadClips();
             }
+
             AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, _noteClips[0]);
         }
 
@@ -196,7 +196,7 @@ namespace Anywhen.SettingsObjects
             List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
             foreach (var clipString in clipDatas)
             {
-                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(clipString.path);
+                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(GetAssetPath(clipString.path));
                 loadedClips.Add(clip);
             }
 
@@ -204,6 +204,37 @@ namespace Anywhen.SettingsObjects
             _noteClips = loadedClips.ToArray();
         }
 
+        string GetAssetPath(string assetStaticPath)
+        {
+            List<string> foundPaths = new List<string>();
+            var allAssetPaths = AssetDatabase.GetAllAssetPaths();
+            var fileName = assetStaticPath;
+            for (int i = 0; i < allAssetPaths.Length; ++i)
+            {
+                if (allAssetPaths[i].EndsWith(fileName))
+                    foundPaths.Add(allAssetPaths[i]);
+            }
+
+            if (foundPaths.Count == 1)
+                return foundPaths[0];
+
+            if (foundPaths.Count == 0)
+            {
+                Debug.LogError($"No path found for asset {assetStaticPath}!");
+            }
+            else if (foundPaths.Count > 1)
+            {
+                Debug.LogError($"Multiple paths found for asset {assetStaticPath}, use more precise static path!");
+
+                for (int i = 0; i < foundPaths.Count; i++)
+                {
+                    string path = foundPaths[i];
+                    Debug.LogError($"Path {i + 1}: {path}");
+                }
+            }
+
+            return null;
+        }
 
         [Serializable]
         public struct ClipData
