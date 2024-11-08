@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_Snare_Jazz
   m_EditorClassIdentifier: 
+  instrumentType: 60
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 9513f244d4d9c46aeb17f13fd0b8460e, type: 2}
-  - {fileID: 11400000, guid: c42d6c7a3b5204cd886cd9e1854badfc, type: 2}
-  - {fileID: 11400000, guid: bb8873f54b1e8437797217c5576fcc0f, type: 2}
-  - {fileID: 11400000, guid: a01744f8bf54c4505b108c72b09b90ad, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 60
+  clipDatas:
+  - name: Drums_Snare_Jazz_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Snare_Jazz/Drums_Snare_Jazz_0A.asset
+    guid: 9513f244d4d9c46aeb17f13fd0b8460e
+  - name: Drums_Snare_Jazz_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Snare_Jazz/Drums_Snare_Jazz_0B.asset
+    guid: c42d6c7a3b5204cd886cd9e1854badfc
+  - name: Drums_Snare_Jazz_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Snare_Jazz/Drums_Snare_Jazz_0C.asset
+    guid: bb8873f54b1e8437797217c5576fcc0f
+  - name: Drums_Snare_Jazz_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Snare_Jazz/Drums_Snare_Jazz_0D.asset
+    guid: a01744f8bf54c4505b108c72b09b90ad

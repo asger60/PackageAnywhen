@@ -14,43 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 10
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 1e04f5d59841d45809056aca5d33c4ca, type: 2}
-  - {fileID: 11400000, guid: 09e4cf40f0eda42358ae8c348ea3445a, type: 2}
-  - {fileID: 11400000, guid: c1efe5e45d2af44e3950b7be75f9d147, type: 2}
-  - {fileID: 11400000, guid: 60a94efbb8c2449c485a89f9ff2fecb7, type: 2}
-  - {fileID: 11400000, guid: 30c2aabacbc474d52b04091d2540606e, type: 2}
-  - {fileID: 11400000, guid: f52f5082b18a54d68a8f26afde5c11cf, type: 2}
-  - {fileID: 11400000, guid: cd695e593fd79455980c569df1ecea3c, type: 2}
-  - {fileID: 11400000, guid: 6e24b9cc87e124dd2bccd0e7b4da9a64, type: 2}
-  - {fileID: 11400000, guid: 489838c3884fb4659a49960ef0afdd7d, type: 2}
-  - {fileID: 11400000, guid: a469e5d3da7f6496f915d655160555ad, type: 2}
-  - {fileID: 11400000, guid: 7e889dfaba84e4ebcb15cd11175c3161, type: 2}
-  - {fileID: 11400000, guid: 20585dc6014724ab2addff45edbb6655, type: 2}
-  - {fileID: 11400000, guid: 6cae24506f5c14342b504bed9487e58a, type: 2}
-  - {fileID: 11400000, guid: 225d09f45a77549ec91f6e0c5c1cb4b0, type: 2}
-  - {fileID: 11400000, guid: d2813c195b3064d71b141a8a846c6474, type: 2}
-  - {fileID: 11400000, guid: d89eafe474e4e461a9e24f25b43ac18c, type: 2}
-  - {fileID: 11400000, guid: e501dd572c4f44bbdb64a6e8bff64a1b, type: 2}
-  - {fileID: 11400000, guid: 1b48f5c8f070a4239bf6307b2befd8d8, type: 2}
-  - {fileID: 11400000, guid: 724b6a5493a2a429fad7a0effc49326b, type: 2}
-  - {fileID: 11400000, guid: a27af514f5c784446b9021fba3d527dc, type: 2}
-  - {fileID: 11400000, guid: 82b4c060f3eda4dd9a8c1d5176d02eb9, type: 2}
-  - {fileID: 11400000, guid: 581146cf481244383aa2ac9bc7b53dd3, type: 2}
-  - {fileID: 11400000, guid: d6abbb8e6514048539ff4954bc621b04, type: 2}
-  - {fileID: 11400000, guid: 4a4b4c240da6f4832b3c5605bbb2596c, type: 2}
-  - {fileID: 11400000, guid: 844e0fcdd3c1547098f104a046c70608, type: 2}
-  - {fileID: 11400000, guid: 443a4b7d1f4ba4efd91dd765e4fe9259, type: 2}
-  - {fileID: 11400000, guid: 6648b45293ec74ef8b7993ff798d0b3d, type: 2}
-  - {fileID: 11400000, guid: 27a9c929dd26a47dbbb8dfb46c2f1e36, type: 2}
-  - {fileID: 11400000, guid: ccb05b94fb420485bbd252bf1d7a3af9, type: 2}
-  - {fileID: 11400000, guid: aaab8c638c46048358427d8618b8dbcc, type: 2}
-  - {fileID: 11400000, guid: 4192481d2408c4b9f9789495c7bb5a36, type: 2}
-  - {fileID: 11400000, guid: 4ca910ff59468471287a0baf5d2a6669, type: 2}
-  - {fileID: 11400000, guid: d774962ede3974e64aba0de410e005d7, type: 2}
-  - {fileID: 11400000, guid: d5ca09e004d2a406eb622d5baae0bb6d, type: 2}
-  - {fileID: 11400000, guid: e2762b1bee1684be5a496505d0d1f973, type: 2}
-  - {fileID: 11400000, guid: 9a648c68aa657418dad59b30b18896d1, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -60,3 +24,112 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: 0 C_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/0 C_Space_Synth_Cheasy.asset
+    guid: 1e04f5d59841d45809056aca5d33c4ca
+  - name: 1 Cis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/1 Cis_Space_Synth_Cheasy.asset
+    guid: 09e4cf40f0eda42358ae8c348ea3445a
+  - name: 2 D_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/2 D_Space_Synth_Cheasy.asset
+    guid: c1efe5e45d2af44e3950b7be75f9d147
+  - name: 3 Dis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/3 Dis_Space_Synth_Cheasy.asset
+    guid: 60a94efbb8c2449c485a89f9ff2fecb7
+  - name: 4 E_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/4 E_Space_Synth_Cheasy.asset
+    guid: 30c2aabacbc474d52b04091d2540606e
+  - name: 5 F_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/5 F_Space_Synth_Cheasy.asset
+    guid: f52f5082b18a54d68a8f26afde5c11cf
+  - name: 6 Fis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/6 Fis_Space_Synth_Cheasy.asset
+    guid: cd695e593fd79455980c569df1ecea3c
+  - name: 7 G_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/7 G_Space_Synth_Cheasy.asset
+    guid: 6e24b9cc87e124dd2bccd0e7b4da9a64
+  - name: 8 Gis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/8 Gis_Space_Synth_Cheasy.asset
+    guid: 489838c3884fb4659a49960ef0afdd7d
+  - name: 9 A_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/9 A_Space_Synth_Cheasy.asset
+    guid: a469e5d3da7f6496f915d655160555ad
+  - name: 10 Hb_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/10 Hb_Space_Synth_Cheasy.asset
+    guid: 7e889dfaba84e4ebcb15cd11175c3161
+  - name: 11 H_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/11 H_Space_Synth_Cheasy.asset
+    guid: 20585dc6014724ab2addff45edbb6655
+  - name: 12 C_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/12 C_Space_Synth_Cheasy.asset
+    guid: 6cae24506f5c14342b504bed9487e58a
+  - name: 13 Cis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/13 Cis_Space_Synth_Cheasy.asset
+    guid: 225d09f45a77549ec91f6e0c5c1cb4b0
+  - name: 14 D_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/14 D_Space_Synth_Cheasy.asset
+    guid: d2813c195b3064d71b141a8a846c6474
+  - name: 15 Dis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/15 Dis_Space_Synth_Cheasy.asset
+    guid: d89eafe474e4e461a9e24f25b43ac18c
+  - name: 16 E_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/16 E_Space_Synth_Cheasy.asset
+    guid: e501dd572c4f44bbdb64a6e8bff64a1b
+  - name: 17 F_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/17 F_Space_Synth_Cheasy.asset
+    guid: 1b48f5c8f070a4239bf6307b2befd8d8
+  - name: 18 Fis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/18 Fis_Space_Synth_Cheasy.asset
+    guid: 724b6a5493a2a429fad7a0effc49326b
+  - name: 19 G_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/19 G_Space_Synth_Cheasy.asset
+    guid: a27af514f5c784446b9021fba3d527dc
+  - name: 20 Gis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/20 Gis_Space_Synth_Cheasy.asset
+    guid: 82b4c060f3eda4dd9a8c1d5176d02eb9
+  - name: 21 A_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/21 A_Space_Synth_Cheasy.asset
+    guid: 581146cf481244383aa2ac9bc7b53dd3
+  - name: 22 Hb_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/22 Hb_Space_Synth_Cheasy.asset
+    guid: d6abbb8e6514048539ff4954bc621b04
+  - name: 23 H_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/23 H_Space_Synth_Cheasy.asset
+    guid: 4a4b4c240da6f4832b3c5605bbb2596c
+  - name: 24 C_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/24 C_Space_Synth_Cheasy.asset
+    guid: 844e0fcdd3c1547098f104a046c70608
+  - name: 25 Cis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/25 Cis_Space_Synth_Cheasy.asset
+    guid: 443a4b7d1f4ba4efd91dd765e4fe9259
+  - name: 26 D_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/26 D_Space_Synth_Cheasy.asset
+    guid: 6648b45293ec74ef8b7993ff798d0b3d
+  - name: 27 Dis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/27 Dis_Space_Synth_Cheasy.asset
+    guid: 27a9c929dd26a47dbbb8dfb46c2f1e36
+  - name: 28 E_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/28 E_Space_Synth_Cheasy.asset
+    guid: ccb05b94fb420485bbd252bf1d7a3af9
+  - name: 29 F_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/29 F_Space_Synth_Cheasy.asset
+    guid: aaab8c638c46048358427d8618b8dbcc
+  - name: 30 Fis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/30 Fis_Space_Synth_Cheasy.asset
+    guid: 4192481d2408c4b9f9789495c7bb5a36
+  - name: 31 G_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/31 G_Space_Synth_Cheasy.asset
+    guid: 4ca910ff59468471287a0baf5d2a6669
+  - name: 32 Gis_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/32 Gis_Space_Synth_Cheasy.asset
+    guid: d774962ede3974e64aba0de410e005d7
+  - name: 33 A_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/33 A_Space_Synth_Cheasy.asset
+    guid: d5ca09e004d2a406eb622d5baae0bb6d
+  - name: 34 Hb_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/34 Hb_Space_Synth_Cheasy.asset
+    guid: e2762b1bee1684be5a496505d0d1f973
+  - name: 35 H_Space_Synth_Cheasy
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/Space_Synth_Cheasy/35 H_Space_Synth_Cheasy.asset
+    guid: 9a648c68aa657418dad59b30b18896d1

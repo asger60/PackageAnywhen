@@ -74,25 +74,26 @@ namespace Anywhen
             switch (_instrument.clipType)
             {
                 case AnywhenSampleInstrument.ClipTypes.AudioClips:
-                    var audioClip = _instrument.GetAudioClip(note);
-
-                    if (audioClip != null)
-                    {
-                        _queuedClip = audioClip;
-                        _isArmed = true;
-                        _audioSource.clip = _queuedClip;
-                        _audioSource.Stop();
-                        _audioSource.volume = volume * _instrument.volume;
-                        _audioSource.time = 0;
-                        //_audioSource.outputAudioMixerGroup = mixerChannel;
-                        _playingNoteClip = false;
-                        _audioSource.PlayScheduled(_scheduledPlayTime);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("failed to find AudioClip");
-                        SetReady(true);
-                    }
+                    Debug.LogWarning("audioclips is not supported anymore");
+                    //var audioClip = _instrument.GetAudioClip(note);
+//
+                    //if (audioClip != null)
+                    //{
+                    //    _queuedClip = audioClip;
+                    //    _isArmed = true;
+                    //    _audioSource.clip = _queuedClip;
+                    //    _audioSource.Stop();
+                    //    _audioSource.volume = volume * _instrument.volume;
+                    //    _audioSource.time = 0;
+                    //    //_audioSource.outputAudioMixerGroup = mixerChannel;
+                    //    _playingNoteClip = false;
+                    //    _audioSource.PlayScheduled(_scheduledPlayTime);
+                    //}
+                    //else
+                    //{
+                    //    Debug.LogWarning("failed to find AudioClip");
+                    //    SetReady(true);
+                    //}
 
                     break;
                 case AnywhenSampleInstrument.ClipTypes.NoteClips:

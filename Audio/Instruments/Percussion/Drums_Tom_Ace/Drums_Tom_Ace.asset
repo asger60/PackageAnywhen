@@ -14,11 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 90
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 3aa0cc97e7f6947fd89d4be8ad8f9a40, type: 2}
-  - {fileID: 11400000, guid: 0ff3002c0433a42debf7054f83813293, type: 2}
-  - {fileID: 11400000, guid: 1e55903e41c5045188d934d8a1e3bbb6, type: 2}
-  - {fileID: 11400000, guid: 88d7ff3d3866a490cab6fa33a4f9be6e, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -28,3 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drums_Tom_Ace_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Tom_Ace/Drums_Tom_Ace_0A.asset
+    guid: 3aa0cc97e7f6947fd89d4be8ad8f9a40
+  - name: Drums_Tom_Ace_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Tom_Ace/Drums_Tom_Ace_0B.asset
+    guid: 0ff3002c0433a42debf7054f83813293
+  - name: Drums_Tom_Ace_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Tom_Ace/Drums_Tom_Ace_0C.asset
+    guid: 1e55903e41c5045188d934d8a1e3bbb6
+  - name: Drums_Tom_Ace_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_Tom_Ace/Drums_Tom_Ace_0D.asset
+    guid: 88d7ff3d3866a490cab6fa33a4f9be6e

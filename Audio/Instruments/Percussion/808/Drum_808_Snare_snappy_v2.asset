@@ -16,9 +16,7 @@ MonoBehaviour:
   audioClips:
   - {fileID: 8300000, guid: ab5b9975b97074719bdbcd183b918ea4, type: 3}
   - {fileID: 8300000, guid: ea39c8593bb4f4be1852b6e75bf1f3cd, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 88df011ffbcad493e9f7256feacf06ea, type: 2}
-  - {fileID: 11400000, guid: 08030b00868be43e0a69857192d8dc19, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -28,3 +26,10 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drum_808_Snare_snappy_v2_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Snare_snappy_v2_0.asset
+    guid: 88df011ffbcad493e9f7256feacf06ea
+  - name: Drum_808_Snare_snappy_v2_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Snare_snappy_v2_1.asset
+    guid: 08030b00868be43e0a69857192d8dc19

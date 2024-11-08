@@ -17,10 +17,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2e32c48cce0074ef8b14cf75f843f43e, type: 3}
   - {fileID: 8300000, guid: 92b38647bbcdf4c20b71a5c62833ae6e, type: 3}
   - {fileID: 8300000, guid: 713a64a5b26134d54ad46c8bdd50e423, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 7bce9e071bec841a593ad0410b9c02e4, type: 2}
-  - {fileID: 11400000, guid: a1f4112ceb85d4a1ebef6a5148a27947, type: 2}
-  - {fileID: 11400000, guid: 5d08b344780d94245ab0e16afb4e8fc1, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -30,3 +27,13 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drum_909_Snappy_Snare_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drum_909_Snappy_Snare_0.asset
+    guid: 7bce9e071bec841a593ad0410b9c02e4
+  - name: Drum_909_Snappy_Snare_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drum_909_Snappy_Snare_1.asset
+    guid: a1f4112ceb85d4a1ebef6a5148a27947
+  - name: Drum_909_Snappy_Snare_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drum_909_Snappy_Snare_2.asset
+    guid: 5d08b344780d94245ab0e16afb4e8fc1

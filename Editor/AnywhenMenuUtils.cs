@@ -18,19 +18,19 @@ public class AnywhenMenuUtils : MonoBehaviour
             var instrument = o as AnywhenSampleInstrument;
             if (instrument && instrument.clipType == AnywhenSampleInstrument.ClipTypes.NoteClips)
             {
-                foreach (var clip in instrument.audioClips)
-                {
-                    var path = AssetDatabase.GetAssetPath(clip);
-                    AssetDatabase.DeleteAsset(path);
-                }
-
-                instrument.audioClips = null;
+                //foreach (var clip in instrument.audioClips)
+                //{
+                //    var path = AssetDatabase.GetAssetPath(clip);
+                //    AssetDatabase.DeleteAsset(path);
+                //}
+//
+                //instrument.audioClips = null;
             }
         }
     }
 
 
-    [MenuItem("GameObject/Anywhen/Add Anywhen to scene")]
+   // [MenuItem("GameObject/Anywhen/Add Anywhen to scene")]
     public static void AddAnywhen()
     {
         Debug.Log("Adding Anywhen to active scene");

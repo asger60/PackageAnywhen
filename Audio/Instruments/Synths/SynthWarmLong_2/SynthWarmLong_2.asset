@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: SynthWarmLong_2
   m_EditorClassIdentifier: 
+  instrumentType: 36
   audioClips:
   - {fileID: 8300000, guid: 8b7df8c7ba4e848e097fe0d277a67229, type: 3}
   - {fileID: 8300000, guid: 9747cccf5e2264e9ebd43442e6f418bf, type: 3}
@@ -49,43 +50,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5002e55367cdb4e9e8dd9b37684749d0, type: 3}
   - {fileID: 8300000, guid: 6add6f61a7c1440108712f695275700c, type: 3}
   - {fileID: 8300000, guid: 6171da7f0e8d1481ebedff472f7f7adf, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 6bfc18a946c7b408cabb7f1ae67d3e01, type: 2}
-  - {fileID: 11400000, guid: 3646c8c1d24874b1f9ccda31f665c0db, type: 2}
-  - {fileID: 11400000, guid: 64fe875b4c19f482190d4576562f8713, type: 2}
-  - {fileID: 11400000, guid: b5f68b3a49b0d46cc86947747bd94efd, type: 2}
-  - {fileID: 11400000, guid: f1fc1a5e4db64410db8e59db13b5c708, type: 2}
-  - {fileID: 11400000, guid: 8f60e2704ad8b40e69318fc366bff0bc, type: 2}
-  - {fileID: 11400000, guid: 40c38ca9df8444788aeb86e32c1e4f9b, type: 2}
-  - {fileID: 11400000, guid: 3ac4da6124ef548c1b9344196b627b9a, type: 2}
-  - {fileID: 11400000, guid: 9a0f784b2f7a14580a150e1af53c5e87, type: 2}
-  - {fileID: 11400000, guid: b3a0c93adbbab4617b9967c161d955a9, type: 2}
-  - {fileID: 11400000, guid: 05104e1a987714d928270131a63c6a1a, type: 2}
-  - {fileID: 11400000, guid: 30f614ef8c7f5471fbab228d5222867a, type: 2}
-  - {fileID: 11400000, guid: 09b54e38c2eb14f24bbb04f7e5634f25, type: 2}
-  - {fileID: 11400000, guid: f83cb152848da42e899125ac70e1d312, type: 2}
-  - {fileID: 11400000, guid: 7164e104c890f4b4e863175c29572735, type: 2}
-  - {fileID: 11400000, guid: 2027a46d720824b648fd17cb190200fd, type: 2}
-  - {fileID: 11400000, guid: b43e499c10b324fc9aafeac27361f541, type: 2}
-  - {fileID: 11400000, guid: 58936c68c3196424e9eede0b6ec70553, type: 2}
-  - {fileID: 11400000, guid: 875fb198889e44cb18eadf9de1c649b2, type: 2}
-  - {fileID: 11400000, guid: 9f238dcc1fe634af4b3cf7affddd9ee8, type: 2}
-  - {fileID: 11400000, guid: 1b0e03849707c4298a533fa904f6ed28, type: 2}
-  - {fileID: 11400000, guid: f9a960c67bb78403dbe5f93b2644e06c, type: 2}
-  - {fileID: 11400000, guid: 82c5f7252cfe54292b9b6548c37bb9eb, type: 2}
-  - {fileID: 11400000, guid: 20d1761655d8343988218481585c1348, type: 2}
-  - {fileID: 11400000, guid: 29cd2611ebbfc49529e244106893b02e, type: 2}
-  - {fileID: 11400000, guid: 01ec3841698344a9785b293459949826, type: 2}
-  - {fileID: 11400000, guid: 3f0d942f1541c4cf9a7282404452554a, type: 2}
-  - {fileID: 11400000, guid: c9dbea285c9374cd0acda2b1e3745db2, type: 2}
-  - {fileID: 11400000, guid: a81d986c4980942b2932fde763528bbb, type: 2}
-  - {fileID: 11400000, guid: 28a20c2c04bac426ab44a892a7ba8937, type: 2}
-  - {fileID: 11400000, guid: 4590e4280215f4dc0a84c7a216f7ad3f, type: 2}
-  - {fileID: 11400000, guid: 8dcc3bf5d2254488f98dba14adc9b370, type: 2}
-  - {fileID: 11400000, guid: 358c8c00edf234d28b6b177687c2c018, type: 2}
-  - {fileID: 11400000, guid: 48c3c4c43d39c472cb6b45fc8a9c6468, type: 2}
-  - {fileID: 11400000, guid: 056fa1c4a32e64cb39a500057d9f934d, type: 2}
-  - {fileID: 11400000, guid: 2617da1e36dca49ab9f3d0534ea1f275, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -95,4 +60,112 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 36
+  clipDatas:
+  - name: 0 C_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/0 C_SynthWarmLong_2.asset
+    guid: 6bfc18a946c7b408cabb7f1ae67d3e01
+  - name: 1 Cis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/1 Cis_SynthWarmLong_2.asset
+    guid: 3646c8c1d24874b1f9ccda31f665c0db
+  - name: 2 D_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/2 D_SynthWarmLong_2.asset
+    guid: 64fe875b4c19f482190d4576562f8713
+  - name: 3 Dis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/3 Dis_SynthWarmLong_2.asset
+    guid: b5f68b3a49b0d46cc86947747bd94efd
+  - name: 4 E_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/4 E_SynthWarmLong_2.asset
+    guid: f1fc1a5e4db64410db8e59db13b5c708
+  - name: 5 F_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/5 F_SynthWarmLong_2.asset
+    guid: 8f60e2704ad8b40e69318fc366bff0bc
+  - name: 6 Fis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/6 Fis_SynthWarmLong_2.asset
+    guid: 40c38ca9df8444788aeb86e32c1e4f9b
+  - name: 7 G_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/7 G_SynthWarmLong_2.asset
+    guid: 3ac4da6124ef548c1b9344196b627b9a
+  - name: 8 Gis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/8 Gis_SynthWarmLong_2.asset
+    guid: 9a0f784b2f7a14580a150e1af53c5e87
+  - name: 9 A_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/9 A_SynthWarmLong_2.asset
+    guid: b3a0c93adbbab4617b9967c161d955a9
+  - name: 10 Hb_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/10 Hb_SynthWarmLong_2.asset
+    guid: 05104e1a987714d928270131a63c6a1a
+  - name: 11 H_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/11 H_SynthWarmLong_2.asset
+    guid: 30f614ef8c7f5471fbab228d5222867a
+  - name: 12 C_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/12 C_SynthWarmLong_2.asset
+    guid: 09b54e38c2eb14f24bbb04f7e5634f25
+  - name: 13 Cis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/13 Cis_SynthWarmLong_2.asset
+    guid: f83cb152848da42e899125ac70e1d312
+  - name: 14 D_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/14 D_SynthWarmLong_2.asset
+    guid: 7164e104c890f4b4e863175c29572735
+  - name: 15 Dis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/15 Dis_SynthWarmLong_2.asset
+    guid: 2027a46d720824b648fd17cb190200fd
+  - name: 16 E_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/16 E_SynthWarmLong_2.asset
+    guid: b43e499c10b324fc9aafeac27361f541
+  - name: 17 F_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/17 F_SynthWarmLong_2.asset
+    guid: 58936c68c3196424e9eede0b6ec70553
+  - name: 18 Fis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/18 Fis_SynthWarmLong_2.asset
+    guid: 875fb198889e44cb18eadf9de1c649b2
+  - name: 19 G_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/19 G_SynthWarmLong_2.asset
+    guid: 9f238dcc1fe634af4b3cf7affddd9ee8
+  - name: 20 Gis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/20 Gis_SynthWarmLong_2.asset
+    guid: 1b0e03849707c4298a533fa904f6ed28
+  - name: 21 A_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/21 A_SynthWarmLong_2.asset
+    guid: f9a960c67bb78403dbe5f93b2644e06c
+  - name: 22 Hb_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/22 Hb_SynthWarmLong_2.asset
+    guid: 82c5f7252cfe54292b9b6548c37bb9eb
+  - name: 23 H_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/23 H_SynthWarmLong_2.asset
+    guid: 20d1761655d8343988218481585c1348
+  - name: 24 C_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/24 C_SynthWarmLong_2.asset
+    guid: 29cd2611ebbfc49529e244106893b02e
+  - name: 25 Cis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/25 Cis_SynthWarmLong_2.asset
+    guid: 01ec3841698344a9785b293459949826
+  - name: 26 D_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/26 D_SynthWarmLong_2.asset
+    guid: 3f0d942f1541c4cf9a7282404452554a
+  - name: 27 Dis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/27 Dis_SynthWarmLong_2.asset
+    guid: c9dbea285c9374cd0acda2b1e3745db2
+  - name: 28 E_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/28 E_SynthWarmLong_2.asset
+    guid: a81d986c4980942b2932fde763528bbb
+  - name: 29 F_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/29 F_SynthWarmLong_2.asset
+    guid: 28a20c2c04bac426ab44a892a7ba8937
+  - name: 30 Fis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/30 Fis_SynthWarmLong_2.asset
+    guid: 4590e4280215f4dc0a84c7a216f7ad3f
+  - name: 31 G_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/31 G_SynthWarmLong_2.asset
+    guid: 8dcc3bf5d2254488f98dba14adc9b370
+  - name: 32 Gis_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/32 Gis_SynthWarmLong_2.asset
+    guid: 358c8c00edf234d28b6b177687c2c018
+  - name: 33 A_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/33 A_SynthWarmLong_2.asset
+    guid: 48c3c4c43d39c472cb6b45fc8a9c6468
+  - name: 34 Hb_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/34 Hb_SynthWarmLong_2.asset
+    guid: 056fa1c4a32e64cb39a500057d9f934d
+  - name: 35 H_SynthWarmLong_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthWarmLong_2/35 H_SynthWarmLong_2.asset
+    guid: 2617da1e36dca49ab9f3d0534ea1f275

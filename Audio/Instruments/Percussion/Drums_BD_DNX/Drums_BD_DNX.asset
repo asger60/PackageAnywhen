@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_BD_DNX
   m_EditorClassIdentifier: 
+  instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 02f0583ecc6a54200bff583defe0bab3, type: 2}
-  - {fileID: 11400000, guid: a7218753751f94d8394c42677f77e560, type: 2}
-  - {fileID: 11400000, guid: 7ef472a705c874714b2c95d3b03b52b2, type: 2}
-  - {fileID: 11400000, guid: eb8846de15d534b7c83dec04022768e1, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 50
+  clipDatas:
+  - name: Drums_BD_DNX_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DNX/Drums_BD_DNX_0A.asset
+    guid: 02f0583ecc6a54200bff583defe0bab3
+  - name: Drums_BD_DNX_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DNX/Drums_BD_DNX_0B.asset
+    guid: a7218753751f94d8394c42677f77e560
+  - name: Drums_BD_DNX_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DNX/Drums_BD_DNX_0C.asset
+    guid: 7ef472a705c874714b2c95d3b03b52b2
+  - name: Drums_BD_DNX_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DNX/Drums_BD_DNX_0D.asset
+    guid: eb8846de15d534b7c83dec04022768e1

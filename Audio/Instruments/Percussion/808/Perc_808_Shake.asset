@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 40
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 0cbf459318ceb4e699870efac4d10645, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Perc_808_Shake_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Perc_808_Shake_1.asset
+    guid: 0cbf459318ceb4e699870efac4d10645

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_909_HiHat
   m_EditorClassIdentifier: 
+  instrumentType: 40
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 424f8dba77c9f454f81e04c5ffb9963e, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -24,4 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 40
+  clipDatas:
+  - name: Drums_909_HiHat_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drums_909_HiHat_0.asset
+    guid: 424f8dba77c9f454f81e04c5ffb9963e

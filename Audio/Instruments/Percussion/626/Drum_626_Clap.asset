@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drum_626_Clap
   m_EditorClassIdentifier: 
+  instrumentType: 70
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 9a72c28f005f54592a3940799580dc31, type: 2}
-  - {fileID: 11400000, guid: 4578f458a305547cd9d70f71496d41eb, type: 2}
-  - {fileID: 11400000, guid: 5c36e66ed225044fe9bf350f9ac84a67, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -26,4 +24,13 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 70
+  clipDatas:
+  - name: Drum_626_Clap_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/626/Drum_626_Clap_0.asset
+    guid: 9a72c28f005f54592a3940799580dc31
+  - name: Drum_626_Clap_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/626/Drum_626_Clap_1.asset
+    guid: 4578f458a305547cd9d70f71496d41eb
+  - name: Drum_626_Clap_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/626/Drum_626_Clap_2.asset
+    guid: 5c36e66ed225044fe9bf350f9ac84a67

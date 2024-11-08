@@ -16,12 +16,12 @@ namespace Anywhen.Editor
             Debug.Log("Create new InstrumentObject at path: " + path);
             AssetDatabase.CreateAsset(asset, path + "/New InstrumentObject.asset");
             AssetDatabase.SaveAssets();
-            asset.audioClips = new AudioClip[Selection.objects.Length];
-            for (int i = 0; i < Selection.objects.Length; i++)
-            {
-                var o = Selection.objects[i];
-                asset.audioClips[i] = o as AudioClip;
-            }
+            //asset.audioClips = new AudioClip[Selection.objects.Length];
+            //for (int i = 0; i < Selection.objects.Length; i++)
+            //{
+            //    var o = Selection.objects[i];
+            //    asset.audioClips[i] = o as AudioClip;
+            //}
             
             Selection.activeObject = asset;
             EditorUtility.FocusProjectWindow();

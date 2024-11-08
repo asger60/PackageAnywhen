@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 4bf65ca7b46074434a575146622867fb, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: 8Bit_Percussive_BassDrum
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/Percussive/8Bit_Percussive_BassDrum.asset
+    guid: 4bf65ca7b46074434a575146622867fb

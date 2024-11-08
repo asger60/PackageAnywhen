@@ -33,6 +33,7 @@ public class InstrumentDatabase : MonoBehaviour
     }
 
 
+    [ContextMenu("unlink clips")]
     void UnlinkNoteCLips()
     {
         foreach (var instrument in instruments)

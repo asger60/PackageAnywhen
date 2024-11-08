@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_HiHat_CL78
   m_EditorClassIdentifier: 
+  instrumentType: 40
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 232e5df7c53744283ad15426b871004d, type: 2}
-  - {fileID: 11400000, guid: c3a12917c0f024a5685c80bc8751e1c3, type: 2}
-  - {fileID: 11400000, guid: 87582e50a6e3a47668c083a7a02c14d2, type: 2}
-  - {fileID: 11400000, guid: aaed39d5e5b6f4957857ec74293226d6, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 40
+  clipDatas:
+  - name: Drums_HiHat_CL78_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_HiHat_CL78/Drums_HiHat_CL78_0A.asset
+    guid: 232e5df7c53744283ad15426b871004d
+  - name: Drums_HiHat_CL78_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_HiHat_CL78/Drums_HiHat_CL78_0B.asset
+    guid: c3a12917c0f024a5685c80bc8751e1c3
+  - name: Drums_HiHat_CL78_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_HiHat_CL78/Drums_HiHat_CL78_0C.asset
+    guid: 87582e50a6e3a47668c083a7a02c14d2
+  - name: Drums_HiHat_CL78_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_HiHat_CL78/Drums_HiHat_CL78_0D.asset
+    guid: aaed39d5e5b6f4957857ec74293226d6

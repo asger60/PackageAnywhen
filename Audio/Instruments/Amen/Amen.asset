@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Amen
   m_EditorClassIdentifier: 
-  audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 3ae99ef740240417598c4cdaf94591c4, type: 2}
-  stopDuration: 0.1
   instrumentType: 0
+  audioClips: []
+  noteClips: []
+  stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
   loopSettings:
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 66150
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Amen8
+    path: Assets/PackageAnywhen/Audio/Instruments/Amen/Amen8.asset
+    guid: 3ae99ef740240417598c4cdaf94591c4

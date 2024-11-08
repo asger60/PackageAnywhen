@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: f07a6951866e0407b81e614e28e7f17d, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 0.395
+  clipDatas:
+  - name: Drum_ClickySnareHi_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Percs_Extra_aug_2024/Drum_ClickySnareHi/Drum_ClickySnareHi_0.asset
+    guid: f07a6951866e0407b81e614e28e7f17d

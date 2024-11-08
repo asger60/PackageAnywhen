@@ -15,8 +15,7 @@ MonoBehaviour:
   instrumentType: 80
   audioClips:
   - {fileID: 8300000, guid: 1aaeb942d1e65487a9df6735e4b1b4cf, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 8ec69ea99634d4385b6e1bfcb832dd38, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -26,3 +25,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 0.272
+  clipDatas:
+  - name: Drum_Elektro_Zapp
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/ElektroZapp/Drum_Elektro_Zapp.asset
+    guid: 8ec69ea99634d4385b6e1bfcb832dd38

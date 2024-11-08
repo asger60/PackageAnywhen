@@ -17,10 +17,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 441b7e7f8c1d74c279015d1d97e03dc9, type: 3}
   - {fileID: 8300000, guid: be019f3963a6647adad0ce71f0b57c36, type: 3}
   - {fileID: 8300000, guid: b6724618e138d4a97ae5fa686fa2217d, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 4cb1ccff98a164a11b556fe4b7349130, type: 2}
-  - {fileID: 11400000, guid: 1c5b805efa30f4c22be80a44f8204640, type: 2}
-  - {fileID: 11400000, guid: 167438eb86350486bbdf8b0e81eb39c6, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -30,3 +27,13 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drum_808_Snare_thin_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Snare_thin_0.asset
+    guid: 4cb1ccff98a164a11b556fe4b7349130
+  - name: Drum_808_Snare_thin_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Snare_thin_1.asset
+    guid: 1c5b805efa30f4c22be80a44f8204640
+  - name: Drum_808_Snare_thin_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Snare_thin_2.asset
+    guid: 167438eb86350486bbdf8b0e81eb39c6

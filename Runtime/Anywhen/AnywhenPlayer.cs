@@ -50,6 +50,15 @@ namespace Anywhen
             _loaded = true;
             _currentSong = anysong;
 
+            foreach (var songTrack in _currentSong.Tracks)
+            {
+                var i = songTrack.instrument as AnywhenSampleInstrument;
+                if (i != null)
+                {
+                    i.LoadClips();
+                }
+            }
+            
             foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)

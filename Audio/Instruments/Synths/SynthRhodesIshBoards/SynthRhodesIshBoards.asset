@@ -14,43 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 36
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: b82bcaa4834c44b7ba86db6096ae18dc, type: 2}
-  - {fileID: 11400000, guid: 3e17463a5c02e4d6e98fc7a7269a6a91, type: 2}
-  - {fileID: 11400000, guid: 94a2737d2949f47b8ad289650c4d50a1, type: 2}
-  - {fileID: 11400000, guid: 7e519c16bbcd64cf0aa722666b30f6a3, type: 2}
-  - {fileID: 11400000, guid: f84eb701ebb0943d19f5987ce31d51eb, type: 2}
-  - {fileID: 11400000, guid: 2c2c977fdb38c404cbbb2d4e107ce1e2, type: 2}
-  - {fileID: 11400000, guid: b5c01bc2eca234a52abc4fd8fdb7b212, type: 2}
-  - {fileID: 11400000, guid: e96b4503cb44842f68f3d7130417d24d, type: 2}
-  - {fileID: 11400000, guid: fcca0fea1b12843b49051c7cb49cd4cb, type: 2}
-  - {fileID: 11400000, guid: 928c6ebf7b1c541df8c243446747f419, type: 2}
-  - {fileID: 11400000, guid: b21851e956bc74bee846d8cf2b37194f, type: 2}
-  - {fileID: 11400000, guid: dfdccfed60e6e4dbab845557b4b95a94, type: 2}
-  - {fileID: 11400000, guid: 2e41ecfe9baf24475b4a798ea6fb22a5, type: 2}
-  - {fileID: 11400000, guid: 63507c0d188e741a391997f753a70372, type: 2}
-  - {fileID: 11400000, guid: d5db9bebafca44b08b565dfbd51104df, type: 2}
-  - {fileID: 11400000, guid: 3ee201e8710cb4a2097d0d75ab94c136, type: 2}
-  - {fileID: 11400000, guid: 7a4c9e5e712284110b13e8c3f47fca69, type: 2}
-  - {fileID: 11400000, guid: cf8df1e93f4c14dbd9ccdc0dcc957f42, type: 2}
-  - {fileID: 11400000, guid: 2e946a1f1b8ce4c63a2599b9f022003a, type: 2}
-  - {fileID: 11400000, guid: 222693ac1c3764bd1b8012b901f4c69c, type: 2}
-  - {fileID: 11400000, guid: 22232d66aac3645538d182ba09a7deb6, type: 2}
-  - {fileID: 11400000, guid: 4743d6f58655144c695bada203f9a85d, type: 2}
-  - {fileID: 11400000, guid: fd5776b48416f4c00b357062a57b4962, type: 2}
-  - {fileID: 11400000, guid: 47737e6bef51c49a6a6b3412a09121aa, type: 2}
-  - {fileID: 11400000, guid: 4b35eed671b2b4424b65124fb03a6081, type: 2}
-  - {fileID: 11400000, guid: 7a8d2e9f490d145189ccccba69189708, type: 2}
-  - {fileID: 11400000, guid: fd37af1423ea44151aac07c5eec601d6, type: 2}
-  - {fileID: 11400000, guid: d437959a4ccbc4e0b89012ad5fd95aae, type: 2}
-  - {fileID: 11400000, guid: 65d5c53e0bdd44fcab5aa9117742dbf8, type: 2}
-  - {fileID: 11400000, guid: 983122f6466204108b0b88b6c2a5b4ba, type: 2}
-  - {fileID: 11400000, guid: c926da9e98c9d4ad5a7a1f626a38ac71, type: 2}
-  - {fileID: 11400000, guid: 06bedbc5a805f4a6187dd806b579e944, type: 2}
-  - {fileID: 11400000, guid: 7a7e3ba61db9b4333a84241240717e5d, type: 2}
-  - {fileID: 11400000, guid: 492feeedfbd7741a9be394371444d70c, type: 2}
-  - {fileID: 11400000, guid: 40669fb4a4a0a44449f599d9f21227b6, type: 2}
-  - {fileID: 11400000, guid: df7f34bb94d46467baf79e9fc5d0059c, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -60,3 +24,138 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: 0 C_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/0 C_SynthRhodesIshBoards.asset
+    guid: b82bcaa4834c44b7ba86db6096ae18dc
+  - name: 1 Cis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/1 Cis_SynthRhodesIshBoards.asset
+    guid: 3e17463a5c02e4d6e98fc7a7269a6a91
+  - name: 2 D_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/2 D_SynthRhodesIshBoards.asset
+    guid: 94a2737d2949f47b8ad289650c4d50a1
+  - name: 3 Dis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/3 Dis_SynthRhodesIshBoards.asset
+    guid: 7e519c16bbcd64cf0aa722666b30f6a3
+  - name: 4 E_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/4 E_SynthRhodesIshBoards.asset
+    guid: f84eb701ebb0943d19f5987ce31d51eb
+  - name: 5 F_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/5 F_SynthRhodesIshBoards.asset
+    guid: 2c2c977fdb38c404cbbb2d4e107ce1e2
+  - name: 6 Fis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/6 Fis_SynthRhodesIshBoards.asset
+    guid: b5c01bc2eca234a52abc4fd8fdb7b212
+  - name: 7 G_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/7 G_SynthRhodesIshBoards.asset
+    guid: e96b4503cb44842f68f3d7130417d24d
+  - name: 8 Gis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/8 Gis_SynthRhodesIshBoards.asset
+    guid: fcca0fea1b12843b49051c7cb49cd4cb
+  - name: 9 A_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/9 A_SynthRhodesIshBoards.asset
+    guid: 928c6ebf7b1c541df8c243446747f419
+  - name: 10 Hb_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/10
+      Hb_SynthRhodesIshBoards.asset
+    guid: b21851e956bc74bee846d8cf2b37194f
+  - name: 11 H_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/11
+      H_SynthRhodesIshBoards.asset
+    guid: dfdccfed60e6e4dbab845557b4b95a94
+  - name: 12 C_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/12
+      C_SynthRhodesIshBoards.asset
+    guid: 2e41ecfe9baf24475b4a798ea6fb22a5
+  - name: 13 Cis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/13
+      Cis_SynthRhodesIshBoards.asset
+    guid: 63507c0d188e741a391997f753a70372
+  - name: 14 D_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/14
+      D_SynthRhodesIshBoards.asset
+    guid: d5db9bebafca44b08b565dfbd51104df
+  - name: 15 Dis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/15
+      Dis_SynthRhodesIshBoards.asset
+    guid: 3ee201e8710cb4a2097d0d75ab94c136
+  - name: 16 E_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/16
+      E_SynthRhodesIshBoards.asset
+    guid: 7a4c9e5e712284110b13e8c3f47fca69
+  - name: 17 F_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/17
+      F_SynthRhodesIshBoards.asset
+    guid: cf8df1e93f4c14dbd9ccdc0dcc957f42
+  - name: 18 Fis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/18
+      Fis_SynthRhodesIshBoards.asset
+    guid: 2e946a1f1b8ce4c63a2599b9f022003a
+  - name: 19 G_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/19
+      G_SynthRhodesIshBoards.asset
+    guid: 222693ac1c3764bd1b8012b901f4c69c
+  - name: 20 Gis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/20
+      Gis_SynthRhodesIshBoards.asset
+    guid: 22232d66aac3645538d182ba09a7deb6
+  - name: 21 A_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/21
+      A_SynthRhodesIshBoards.asset
+    guid: 4743d6f58655144c695bada203f9a85d
+  - name: 22 Hb_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/22
+      Hb_SynthRhodesIshBoards.asset
+    guid: fd5776b48416f4c00b357062a57b4962
+  - name: 23 H_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/23
+      H_SynthRhodesIshBoards.asset
+    guid: 47737e6bef51c49a6a6b3412a09121aa
+  - name: 24 C_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/24
+      C_SynthRhodesIshBoards.asset
+    guid: 4b35eed671b2b4424b65124fb03a6081
+  - name: 25 Cis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/25
+      Cis_SynthRhodesIshBoards.asset
+    guid: 7a8d2e9f490d145189ccccba69189708
+  - name: 26 D_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/26
+      D_SynthRhodesIshBoards.asset
+    guid: fd37af1423ea44151aac07c5eec601d6
+  - name: 27 Dis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/27
+      Dis_SynthRhodesIshBoards.asset
+    guid: d437959a4ccbc4e0b89012ad5fd95aae
+  - name: 28 E_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/28
+      E_SynthRhodesIshBoards.asset
+    guid: 65d5c53e0bdd44fcab5aa9117742dbf8
+  - name: 29 F_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/29
+      F_SynthRhodesIshBoards.asset
+    guid: 983122f6466204108b0b88b6c2a5b4ba
+  - name: 30 Fis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/30
+      Fis_SynthRhodesIshBoards.asset
+    guid: c926da9e98c9d4ad5a7a1f626a38ac71
+  - name: 31 G_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/31
+      G_SynthRhodesIshBoards.asset
+    guid: 06bedbc5a805f4a6187dd806b579e944
+  - name: 32 Gis_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/32
+      Gis_SynthRhodesIshBoards.asset
+    guid: 7a7e3ba61db9b4333a84241240717e5d
+  - name: 33 A_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/33
+      A_SynthRhodesIshBoards.asset
+    guid: 492feeedfbd7741a9be394371444d70c
+  - name: 34 Hb_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/34
+      Hb_SynthRhodesIshBoards.asset
+    guid: 40669fb4a4a0a44449f599d9f21227b6
+  - name: 35 H_SynthRhodesIshBoards
+    path: Assets/PackageAnywhen/Audio/Instruments/Synths/SynthRhodesIshBoards/35
+      H_SynthRhodesIshBoards.asset
+    guid: df7f34bb94d46467baf79e9fc5d0059c

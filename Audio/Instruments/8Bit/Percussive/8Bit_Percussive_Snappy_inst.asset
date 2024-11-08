@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: 8Bit_Percussive_Snappy_inst
   m_EditorClassIdentifier: 
+  instrumentType: 0
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 9a372d9217f40474783c943bd6cc38f2, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -24,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: 8Bit_Percussive_Snappy
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/Percussive/8Bit_Percussive_Snappy.asset
+    guid: 9a372d9217f40474783c943bd6cc38f2

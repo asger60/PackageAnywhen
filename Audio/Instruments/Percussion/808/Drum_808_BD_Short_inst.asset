@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 1f87e380c227041259b52229f8049381, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drum_808_BD_Short
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_BD_Short.asset
+    guid: 1f87e380c227041259b52229f8049381

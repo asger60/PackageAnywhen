@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_BD_DDM120
   m_EditorClassIdentifier: 
+  instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 4d7f10fda17364341838aa4fb3485d3a, type: 2}
-  - {fileID: 11400000, guid: db9faeb7087fe44648b87be6d336139f, type: 2}
-  - {fileID: 11400000, guid: 2ea257417e37249a483e57a7dc07e91e, type: 2}
-  - {fileID: 11400000, guid: ccbdd072f67bd42e491f5f446c87fcb5, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 50
+  clipDatas:
+  - name: Drums_BD_DDM120_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DDM120/Drums_BD_DDM120_0A.asset
+    guid: 4d7f10fda17364341838aa4fb3485d3a
+  - name: Drums_BD_DDM120_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DDM120/Drums_BD_DDM120_0B.asset
+    guid: db9faeb7087fe44648b87be6d336139f
+  - name: Drums_BD_DDM120_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DDM120/Drums_BD_DDM120_0C.asset
+    guid: 2ea257417e37249a483e57a7dc07e91e
+  - name: Drums_BD_DDM120_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_DDM120/Drums_BD_DDM120_0D.asset
+    guid: ccbdd072f67bd42e491f5f446c87fcb5

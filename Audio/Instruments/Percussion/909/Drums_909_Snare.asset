@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_909_Snare
   m_EditorClassIdentifier: 
+  instrumentType: 60
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 3190f33b354b247e98e036c08cbce978, type: 2}
-  - {fileID: 11400000, guid: eeb1f54dd54a54adea13c83c333b79c1, type: 2}
-  - {fileID: 11400000, guid: 5204efa694d3b41ab9572ab727e26b29, type: 2}
-  - {fileID: 11400000, guid: 4fdf768f3bb03440ba2770d3db71276f, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 60
+  clipDatas:
+  - name: Drums_909_Snare_0
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drums_909_Snare_0.asset
+    guid: 3190f33b354b247e98e036c08cbce978
+  - name: Drums_909_Snare_1
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drums_909_Snare_1.asset
+    guid: eeb1f54dd54a54adea13c83c333b79c1
+  - name: Drums_909_Snare_2
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drums_909_Snare_2.asset
+    guid: 5204efa694d3b41ab9572ab727e26b29
+  - name: Drums_909_Snare_3
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/909/Drums_909_Snare_3.asset
+    guid: 4fdf768f3bb03440ba2770d3db71276f

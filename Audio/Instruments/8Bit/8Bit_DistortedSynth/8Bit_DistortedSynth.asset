@@ -14,43 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 36
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 395fbbd58b8f642dda0ac49fe4698e6f, type: 2}
-  - {fileID: 11400000, guid: 4558e481547064218a0a12521a8cde1d, type: 2}
-  - {fileID: 11400000, guid: 96bf8631a6f584a088eefb62b8ee91a1, type: 2}
-  - {fileID: 11400000, guid: f6bdad5ca10d04fc58ba89ee7da2cfaf, type: 2}
-  - {fileID: 11400000, guid: 4420934b58b76488ba3f7d6df0181e25, type: 2}
-  - {fileID: 11400000, guid: 61dcc17081d914bed90e7474cd3b1fb2, type: 2}
-  - {fileID: 11400000, guid: 89afc217e609a4280ac3e8ccd7602caa, type: 2}
-  - {fileID: 11400000, guid: 00fbf1482e36547e596aaac3c79cd0af, type: 2}
-  - {fileID: 11400000, guid: 141e316bd1aa04b1fb635f444671a848, type: 2}
-  - {fileID: 11400000, guid: e30e97fcdf8784dd886961c93aacfa7c, type: 2}
-  - {fileID: 11400000, guid: a3f18b26203d3425b8f9c8969d9b1f52, type: 2}
-  - {fileID: 11400000, guid: 27ece80399a134838b5b0984e5119ccb, type: 2}
-  - {fileID: 11400000, guid: 45a3d7482df4c47d099c28c5b0f0c543, type: 2}
-  - {fileID: 11400000, guid: 659e4bc2b87ad479d9149897493e35f9, type: 2}
-  - {fileID: 11400000, guid: 5d2b985aebcea4eae9a124f7acb06da5, type: 2}
-  - {fileID: 11400000, guid: f634154b01fc947b286d7d2f4ffaf5cb, type: 2}
-  - {fileID: 11400000, guid: 2d8fd8c5fe88b4c18ab136051bd3d8d0, type: 2}
-  - {fileID: 11400000, guid: d860f931bc1a34b7ca037c17de7df3b2, type: 2}
-  - {fileID: 11400000, guid: 26f61fe473ca34548a6df0c97a6a8267, type: 2}
-  - {fileID: 11400000, guid: 2527ef929926344be8dce2624c7f612e, type: 2}
-  - {fileID: 11400000, guid: 0220e143b337d45e9b100b3260383b33, type: 2}
-  - {fileID: 11400000, guid: a793ac0249dee4eebbb68b622c36154f, type: 2}
-  - {fileID: 11400000, guid: 2e22905289eb1448bb02f3503d7b1bb8, type: 2}
-  - {fileID: 11400000, guid: 258d405c768a441f2b79c05414b7e414, type: 2}
-  - {fileID: 11400000, guid: d805f465faf074e74a5b981ea1932a05, type: 2}
-  - {fileID: 11400000, guid: 9249f525214784d088e22187edc5826a, type: 2}
-  - {fileID: 11400000, guid: 68e6312d5397f4382b00567bc204ca3b, type: 2}
-  - {fileID: 11400000, guid: 31bc263dfc2d8463893869751e7dd8de, type: 2}
-  - {fileID: 11400000, guid: de1bb9b54578f45289c067cd3856b19a, type: 2}
-  - {fileID: 11400000, guid: f01984d22bf8042f1b17c87746eea29d, type: 2}
-  - {fileID: 11400000, guid: 4c7b6422c5aa1486c9ffc4a789d3c73b, type: 2}
-  - {fileID: 11400000, guid: 3781b18e02ea94c09a8a2b1897a23a2d, type: 2}
-  - {fileID: 11400000, guid: 069fd2b9b3c514f88b8109f370f1fc57, type: 2}
-  - {fileID: 11400000, guid: 462a3055f5dad45d5af2bac5a1d5553c, type: 2}
-  - {fileID: 11400000, guid: aca13ebb6dcec494297cc12bd60e66f8, type: 2}
-  - {fileID: 11400000, guid: 67c11db593e8a4e2bafa88dd4bcdceba, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 0
   clipType: 1
@@ -60,3 +24,112 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: 0 C_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/0 C_8Bit_DistortedSynth.asset
+    guid: 395fbbd58b8f642dda0ac49fe4698e6f
+  - name: 1 Cis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/1 Cis_8Bit_DistortedSynth.asset
+    guid: 4558e481547064218a0a12521a8cde1d
+  - name: 2 D_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/2 D_8Bit_DistortedSynth.asset
+    guid: 96bf8631a6f584a088eefb62b8ee91a1
+  - name: 3 Dis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/3 Dis_8Bit_DistortedSynth.asset
+    guid: f6bdad5ca10d04fc58ba89ee7da2cfaf
+  - name: 4 E_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/4 E_8Bit_DistortedSynth.asset
+    guid: 4420934b58b76488ba3f7d6df0181e25
+  - name: 5 F_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/5 F_8Bit_DistortedSynth.asset
+    guid: 61dcc17081d914bed90e7474cd3b1fb2
+  - name: 6 Fis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/6 Fis_8Bit_DistortedSynth.asset
+    guid: 89afc217e609a4280ac3e8ccd7602caa
+  - name: 7 G_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/7 G_8Bit_DistortedSynth.asset
+    guid: 00fbf1482e36547e596aaac3c79cd0af
+  - name: 8 Gis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/8 Gis_8Bit_DistortedSynth.asset
+    guid: 141e316bd1aa04b1fb635f444671a848
+  - name: 9 A_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/9 A_8Bit_DistortedSynth.asset
+    guid: e30e97fcdf8784dd886961c93aacfa7c
+  - name: 10 Hb_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/10 Hb_8Bit_DistortedSynth.asset
+    guid: a3f18b26203d3425b8f9c8969d9b1f52
+  - name: 11 H_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/11 H_8Bit_DistortedSynth.asset
+    guid: 27ece80399a134838b5b0984e5119ccb
+  - name: 12 C_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/12 C_8Bit_DistortedSynth.asset
+    guid: 45a3d7482df4c47d099c28c5b0f0c543
+  - name: 13 Cis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/13 Cis_8Bit_DistortedSynth.asset
+    guid: 659e4bc2b87ad479d9149897493e35f9
+  - name: 14 D_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/14 D_8Bit_DistortedSynth.asset
+    guid: 5d2b985aebcea4eae9a124f7acb06da5
+  - name: 15 Dis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/15 Dis_8Bit_DistortedSynth.asset
+    guid: f634154b01fc947b286d7d2f4ffaf5cb
+  - name: 16 E_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/16 E_8Bit_DistortedSynth.asset
+    guid: 2d8fd8c5fe88b4c18ab136051bd3d8d0
+  - name: 17 F_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/17 F_8Bit_DistortedSynth.asset
+    guid: d860f931bc1a34b7ca037c17de7df3b2
+  - name: 18 Fis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/18 Fis_8Bit_DistortedSynth.asset
+    guid: 26f61fe473ca34548a6df0c97a6a8267
+  - name: 19 G_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/19 G_8Bit_DistortedSynth.asset
+    guid: 2527ef929926344be8dce2624c7f612e
+  - name: 20 Gis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/20 Gis_8Bit_DistortedSynth.asset
+    guid: 0220e143b337d45e9b100b3260383b33
+  - name: 21 A_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/21 A_8Bit_DistortedSynth.asset
+    guid: a793ac0249dee4eebbb68b622c36154f
+  - name: 22 Hb_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/22 Hb_8Bit_DistortedSynth.asset
+    guid: 2e22905289eb1448bb02f3503d7b1bb8
+  - name: 23 H_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/23 H_8Bit_DistortedSynth.asset
+    guid: 258d405c768a441f2b79c05414b7e414
+  - name: 24 C_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/24 C_8Bit_DistortedSynth.asset
+    guid: d805f465faf074e74a5b981ea1932a05
+  - name: 25 Cis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/25 Cis_8Bit_DistortedSynth.asset
+    guid: 9249f525214784d088e22187edc5826a
+  - name: 26 D_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/26 D_8Bit_DistortedSynth.asset
+    guid: 68e6312d5397f4382b00567bc204ca3b
+  - name: 27 Dis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/27 Dis_8Bit_DistortedSynth.asset
+    guid: 31bc263dfc2d8463893869751e7dd8de
+  - name: 28 E_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/28 E_8Bit_DistortedSynth.asset
+    guid: de1bb9b54578f45289c067cd3856b19a
+  - name: 29 F_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/29 F_8Bit_DistortedSynth.asset
+    guid: f01984d22bf8042f1b17c87746eea29d
+  - name: 30 Fis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/30 Fis_8Bit_DistortedSynth.asset
+    guid: 4c7b6422c5aa1486c9ffc4a789d3c73b
+  - name: 31 G_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/31 G_8Bit_DistortedSynth.asset
+    guid: 3781b18e02ea94c09a8a2b1897a23a2d
+  - name: 32 Gis_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/32 Gis_8Bit_DistortedSynth.asset
+    guid: 069fd2b9b3c514f88b8109f370f1fc57
+  - name: 33 A_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/33 A_8Bit_DistortedSynth.asset
+    guid: 462a3055f5dad45d5af2bac5a1d5553c
+  - name: 34 Hb_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/34 Hb_8Bit_DistortedSynth.asset
+    guid: aca13ebb6dcec494297cc12bd60e66f8
+  - name: 35 H_8Bit_DistortedSynth
+    path: Assets/PackageAnywhen/Audio/Instruments/8Bit/8Bit_DistortedSynth/35 H_8Bit_DistortedSynth.asset
+    guid: 67c11db593e8a4e2bafa88dd4bcdceba

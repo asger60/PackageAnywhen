@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drum_Handclap_Long_decay_inst
   m_EditorClassIdentifier: 
+  instrumentType: 70
   audioClips:
   - {fileID: 8300000, guid: c23d962f2cbf5438795a46e8a1ff469d, type: 3}
-  noteClips:
-  - {fileID: 11400000, guid: 81c8c7af6d3df4e4abed161ed7a0e1b3, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,4 +25,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 70
+  clipDatas:
+  - name: Drum_Handclap_Long_decay
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/claps/Drum_Handclap_Long_decay.asset
+    guid: 81c8c7af6d3df4e4abed161ed7a0e1b3

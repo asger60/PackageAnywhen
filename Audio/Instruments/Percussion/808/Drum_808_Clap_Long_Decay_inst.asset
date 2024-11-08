@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instrumentType: 70
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 459a7c71ec1df4b60b0a4c4e130729ae, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -25,3 +24,7 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
+  clipDatas:
+  - name: Drum_808_Clap_Long_Decay
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/808/Drum_808_Clap_Long_Decay.asset
+    guid: 459a7c71ec1df4b60b0a4c4e130729ae

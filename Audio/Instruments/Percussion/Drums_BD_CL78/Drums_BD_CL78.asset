@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf5aeb57c9d9498ab633ce5da3ab6f0, type: 3}
   m_Name: Drums_BD_CL78
   m_EditorClassIdentifier: 
+  instrumentType: 50
   audioClips: []
-  noteClips:
-  - {fileID: 11400000, guid: 7659594bff3a14cfa92c7dfaa26784bf, type: 2}
-  - {fileID: 11400000, guid: 33c71404df17848d5b855a8ec30e15c4, type: 2}
-  - {fileID: 11400000, guid: 4791dcd0cb58e4c1298e04288eb22b2b, type: 2}
-  - {fileID: 11400000, guid: 2d19771729448435898a707f5728019d, type: 2}
+  noteClips: []
   stopDuration: 0.1
   clipSelectType: 1
   clipType: 1
@@ -27,4 +24,16 @@ MonoBehaviour:
     loopLength: 0
     crossFadeDuration: 0
   volume: 1
-  instrumentType: 50
+  clipDatas:
+  - name: Drums_BD_CL78_0A
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_CL78/Drums_BD_CL78_0A.asset
+    guid: 7659594bff3a14cfa92c7dfaa26784bf
+  - name: Drums_BD_CL78_0B
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_CL78/Drums_BD_CL78_0B.asset
+    guid: 33c71404df17848d5b855a8ec30e15c4
+  - name: Drums_BD_CL78_0C
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_CL78/Drums_BD_CL78_0C.asset
+    guid: 4791dcd0cb58e4c1298e04288eb22b2b
+  - name: Drums_BD_CL78_0D
+    path: Assets/PackageAnywhen/Audio/Instruments/Percussion/Drums_BD_CL78/Drums_BD_CL78_0D.asset
+    guid: 2d19771729448435898a707f5728019d

@@ -11,8 +11,8 @@ namespace Anywhen.SettingsObjects
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
-        public AudioClip[] audioClips;
-        public AnywhenNoteClip[] noteClips;
+        //public AudioClip[] audioClips;
+        private AnywhenNoteClip[] _noteClips;
         public float stopDuration = 0.1f;
 
         public enum ClipSelectType
@@ -66,8 +66,9 @@ namespace Anywhen.SettingsObjects
 
         public AnywhenNoteClip GetNoteClip(int note)
         {
-            if (noteClips.Length == 0)
+            if (_noteClips == null || _noteClips.Length == 0)
             {
+                LoadClips();
                 return null;
             }
 
@@ -75,7 +76,7 @@ namespace Anywhen.SettingsObjects
             {
                 case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
-                    if (note >= noteClips.Length)
+                    if (note >= _noteClips.Length)
                     {
                         AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
                         return null;
@@ -87,100 +88,105 @@ namespace Anywhen.SettingsObjects
                         return null;
                     }
 
-                    return note >= noteClips.Length ? null : noteClips[note];
+                    return note >= _noteClips.Length ? null : _noteClips[note];
 
                 case ClipSelectType.RandomVariations:
-                    return noteClips[Random.Range(0, noteClips.Length)];
+                    return _noteClips[Random.Range(0, _noteClips.Length)];
 
                 case ClipSelectType.UnscaledNotes:
-                    return noteClips[Mathf.Clamp(note, 0, noteClips.Length)];
+                    return _noteClips[Mathf.Clamp(note, 0, _noteClips.Length)];
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public AudioClip GetAudioClip(int note)
-        {
-            if (audioClips.Length == 0) return null;
-            switch (clipSelectType)
-            {
-                case ClipSelectType.ScalePitchedNotes:
-                    note = AnywhenRuntime.Conductor.GetScaledNote(note);
-                    if (note >= audioClips.Length)
-                        AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
-                    return note >= audioClips.Length ? null : audioClips[note];
-
-                case ClipSelectType.RandomVariations:
-                    return audioClips[Random.Range(0, audioClips.Length)];
-                case ClipSelectType.UnscaledNotes:
-                    return audioClips[Mathf.Clamp(note, 0, audioClips.Length)];
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+        //public AudioClip GetAudioClip(int note)
+        //{
+        //    if (audioClips.Length == 0) return null;
+        //    switch (clipSelectType)
+        //    {
+        //        case ClipSelectType.ScalePitchedNotes:
+        //            note = AnywhenRuntime.Conductor.GetScaledNote(note);
+        //            if (note >= audioClips.Length)
+        //                AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
+        //            return note >= audioClips.Length ? null : audioClips[note];
+//
+        //        case ClipSelectType.RandomVariations:
+        //            return audioClips[Random.Range(0, audioClips.Length)];
+        //        case ClipSelectType.UnscaledNotes:
+        //            return audioClips[Mathf.Clamp(note, 0, audioClips.Length)];
+//
+        //        default:
+        //            throw new ArgumentOutOfRangeException();
+        //    }
+        //}
 #if UNITY_EDITOR
-        [ContextMenu("ConvertToNoteClips")]
-        void ConvertToNoteClips()
-        {
-            List<AnywhenNoteClip> newNoteClips = new List<AnywhenNoteClip>();
-
-            foreach (var audioClip in audioClips)
-            {
-                var activeObject = audioClip;
-                if (activeObject == null) return;
-
-                var newNoteClip = CreateInstance<AnywhenNoteClip>();
-
-                var directory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(activeObject));
-                var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(activeObject));
-                var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
-
-                var fullPath = directory + "/" + fileName;
-                AssetDatabase.CreateAsset(newNoteClip, fullPath + ".asset");
-
-                var clip = Instantiate<AudioClip>(activeObject);
-
-                extension = ".asset";
-                AnywhenRuntime.Log(fullPath + ".asset");
-                var newClipPath = "Assets/" + clip.name + extension;
-                //AssetDatabase.CreateAsset(clip, newClipPath);
-                //AssetDatabase.ImportAsset(newClipPath);
-                //AssetDatabase.SaveAssets();
-                //AssetDatabase.Refresh();
-                //AssetDatabase.AddObjectToAsset(clip, fullPath + ".asset");
-
-                newNoteClip.ReadAudioClip(activeObject);
-
-
-                //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
-                EditorUtility.SetDirty(newNoteClip);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                //Selection.activeObject = newNoteClip;
-                newNoteClips.Add(newNoteClip);
-            }
-
-            noteClips = newNoteClips.ToArray();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-        }
+        //[ContextMenu("ConvertToNoteClips")]
+        //void ConvertToNoteClips()
+        //{
+        //    List<AnywhenNoteClip> newNoteClips = new List<AnywhenNoteClip>();
+//
+        //    foreach (var audioClip in audioClips)
+        //    {
+        //        var activeObject = audioClip;
+        //        if (activeObject == null) return;
+//
+        //        var newNoteClip = CreateInstance<AnywhenNoteClip>();
+//
+        //        var directory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(activeObject));
+        //        var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(activeObject));
+        //        var extension = Path.GetExtension(AssetDatabase.GetAssetPath(activeObject));
+//
+        //        var fullPath = directory + "/" + fileName;
+        //        AssetDatabase.CreateAsset(newNoteClip, fullPath + ".asset");
+//
+        //        var clip = Instantiate<AudioClip>(activeObject);
+//
+        //        extension = ".asset";
+        //        AnywhenRuntime.Log(fullPath + ".asset");
+        //        var newClipPath = "Assets/" + clip.name + extension;
+        //        //AssetDatabase.CreateAsset(clip, newClipPath);
+        //        //AssetDatabase.ImportAsset(newClipPath);
+        //        //AssetDatabase.SaveAssets();
+        //        //AssetDatabase.Refresh();
+        //        //AssetDatabase.AddObjectToAsset(clip, fullPath + ".asset");
+//
+        //        newNoteClip.ReadAudioClip(activeObject);
+//
+//
+        //        //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(activeObject));
+        //        EditorUtility.SetDirty(newNoteClip);
+        //        AssetDatabase.SaveAssets();
+        //        AssetDatabase.Refresh();
+        //        //Selection.activeObject = newNoteClip;
+        //        newNoteClips.Add(newNoteClip);
+        //    }
+//
+        //    _noteClips = newNoteClips.ToArray();
+        //    AssetDatabase.SaveAssets();
+        //    AssetDatabase.Refresh();
+        //}
 
         public void PreviewSound()
         {
-            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, noteClips[0]);
+            
+            if (_noteClips == null || _noteClips.Length == 0)
+            {
+                LoadClips();
+            }
+            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, _noteClips[0]);
         }
 
         public void DeleteAudioCLips()
         {
-            foreach (var audioClip in audioClips)
-            {
-                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(audioClip));
-            }
-
-            audioClips = null;
-            clipType = ClipTypes.NoteClips;
+            //foreach (var audioClip in audioClips)
+            //{
+            //    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(audioClip));
+            //}
+//
+            //audioClips = null;
+            //clipType = ClipTypes.NoteClips;
         }
 
 
@@ -194,7 +200,8 @@ namespace Anywhen.SettingsObjects
                 loadedClips.Add(clip);
             }
 
-            noteClips = loadedClips.ToArray();
+            _noteClips = new AnywhenNoteClip[loadedClips.Count];
+            _noteClips = loadedClips.ToArray();
         }
 
 
@@ -211,11 +218,11 @@ namespace Anywhen.SettingsObjects
         [ContextMenu("UnlinkClips")]
         public void UnlinkClips()
         {
-            if (noteClips.Length == 0) return;
-            clipDatas = new ClipData[noteClips.Length];
-            for (var i = 0; i < noteClips.Length; i++)
+            if (_noteClips.Length == 0) return;
+            clipDatas = new ClipData[_noteClips.Length];
+            for (var i = 0; i < _noteClips.Length; i++)
             {
-                var noteClip = noteClips[i];
+                var noteClip = _noteClips[i];
                 var clipData = new ClipData
                 {
                     name = noteClip.name,
@@ -225,7 +232,7 @@ namespace Anywhen.SettingsObjects
                 clipDatas[i] = clipData;
             }
 
-            noteClips = null;
+            _noteClips = null;
             EditorUtility.SetDirty(this);
         }
 
