@@ -223,6 +223,8 @@ namespace Anywhen.SettingsObjects
                     }
                 }
 
+                Debug.Log("loading at path: " + path);
+
 
                 var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
                 loadedClips.Add(clip);
