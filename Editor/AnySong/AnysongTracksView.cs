@@ -3,171 +3,169 @@ using Anywhen.Composing;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Editor.AnySong
+
+public static class AnysongTracksView
 {
-    public static class AnysongTracksView
+    private static VisualElement _parent;
+
+    public static void Draw(VisualElement parent, AnysongObject currentSong)
     {
-        private static VisualElement _parent;
+        _parent = parent;
+        parent.Clear();
+        parent.Add(new Label("Tracks"));
 
-        public static void Draw(VisualElement parent, AnysongObject currentSong)
+
+        var spacer = new ToolbarSpacer
         {
-            _parent = parent;
-            parent.Clear();
-            parent.Add(new Label("Tracks"));
+            style = { height = 8 }
+        };
 
 
-            var spacer = new ToolbarSpacer
+        for (var i = 0; i < currentSong.Tracks.Count; i++)
+        {
+            var trackElement = new VisualElement
             {
-                style = { height = 8 }
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row,
+                    height = 45,
+                }
+            };
+            var soundControlElement = new VisualElement
+            {
+                style =
+                {
+                    width = 20,
+                    minWidth = 20,
+                },
+            };
+
+            var muteButton = new Button()
+            {
+                text = "M",
+                name = "MuteButton",
+                tooltip = i.ToString(),
+                style = { width = 20 }
             };
 
 
-            for (var i = 0; i < currentSong.Tracks.Count; i++)
+            muteButton.RegisterCallback<ClickEvent>((evt) =>
             {
-                var trackElement = new VisualElement
+                if (evt.currentTarget is not Button btn) return;
+                MuteTrackAtIndex(btn.tooltip);
+            });
+
+
+            var soloButton = new Button
+            {
+                text = "S",
+                name = "SoloButton",
+                tooltip = i.ToString(),
+                style = { width = 20 }
+            };
+
+            soloButton.RegisterCallback<ClickEvent>((evt) =>
+            {
+                if (evt.currentTarget is not Button btn) return;
+                SoloTrackAtIndex(btn.tooltip);
+            });
+
+            soundControlElement.Add(muteButton);
+            soundControlElement.Add(soloButton);
+
+
+            trackElement.Add(soundControlElement);
+
+
+            var thisTrack = currentSong.Tracks[i];
+            var instrumentName =
+                thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
+
+            var button = new Button
+            {
+                name = "TrackButton",
+                tooltip = 0 + "-" + i + "-" + 0,
+                text = instrumentName,
+                style =
                 {
-                    style =
-                    {
-                        alignItems = Align.Center,
-                        flexDirection = FlexDirection.Row, 
-                        height = 45,
-                    }
-                };
-                var soundControlElement = new VisualElement
-                {
-                    style =
-                    {
-                        width = 20,
-                        minWidth = 20,
-                    },
-                };
-
-                var muteButton = new Button()
-                {
-                    text = "M",
-                    name = "MuteButton",
-                    tooltip = i.ToString(),
-                    style = { width = 20 }
-                };
+                    width = new StyleLength(210),
+                    height = 40,
+                }
+            };
 
 
-                muteButton.RegisterCallback<ClickEvent>((evt) =>
-                {
-                    if (evt.currentTarget is not Button btn) return;
-                    MuteTrackAtIndex(btn.tooltip);
-                });
+            trackElement.Add(button);
+            parent.Add(trackElement);
+            parent.Add(spacer);
+        }
 
 
-                var soloButton = new Button
-                {
-                    text = "S",
-                    name = "SoloButton",
-                    tooltip = i.ToString(),
-                    style = { width = 20 }
-                };
-
-                soloButton.RegisterCallback<ClickEvent>((evt) =>
-                {
-                    if (evt.currentTarget is not Button btn) return;
-                    SoloTrackAtIndex(btn.tooltip);
-                });
-
-                soundControlElement.Add(muteButton);
-                soundControlElement.Add(soloButton);
+        parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+    }
 
 
-                trackElement.Add(soundControlElement);
+    public static void UpdateMuteSoleState()
+    {
+        UpdateMuteButtons();
+        UpdateSoloButtons();
+    }
 
+    static void UpdateSoloButtons()
+    {
+        int index = 0;
+        _parent.Query<Button>("SoloButton").ForEach((btn) =>
+        {
+            var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isSolo;
+            btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
+            index++;
+        });
+    }
 
-                var thisTrack = currentSong.Tracks[i];
-                var instrumentName =
-                    thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
+    static void UpdateMuteButtons()
+    {
+        int index = 0;
+        _parent.Query<Button>("MuteButton").ForEach((btn) =>
+        {
+            var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isMuted;
+            btn.style.backgroundColor = state ? AnysongEditorWindow.ColorGreyDark : StyleKeyword.Null;
+            btn.text = "M";
+            index++;
+        });
+    }
 
-                var button = new Button
-                {
-                    name = "TrackButton",
-                    tooltip = 0 + "-" + i + "-" + 0,
-                    text = instrumentName,
-                    style =
-                    {
-                        width = new StyleLength(210),
-                        height = 40,
-                    }
-                };
+    static void MuteTrackAtIndex(string indexString)
+    {
+        var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
+        track.isMuted = !track.isMuted;
+        UpdateMuteButtons();
+    }
 
+    static void SoloTrackAtIndex(string indexString)
+    {
+        var track = AnysongEditorWindow.GetCurrentSection().tracks[Int32.Parse(indexString)];
 
-                trackElement.Add(button);
-                parent.Add(trackElement);
-                parent.Add(spacer);
+        bool unSolo = track.isSolo;
+
+        foreach (var sectionTrack in AnysongEditorWindow.GetCurrentSection().tracks)
+        {
+            sectionTrack.isSolo = false;
+            if (sectionTrack == track && !unSolo)
+            {
+                sectionTrack.isSolo = true;
             }
 
-
-            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
-        }
-
-
-        public static void UpdateMuteSoleState()
-        {
-            UpdateMuteButtons();
-            UpdateSoloButtons();
-        }
-
-        static void UpdateSoloButtons()
-        {
-            int index = 0;
-            _parent.Query<Button>("SoloButton").ForEach((btn) =>
+            if (unSolo)
             {
-                var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isSolo;
-                btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
-                index++;
-            });
-        }
-
-        static void UpdateMuteButtons()
-        {
-            int index = 0;
-            _parent.Query<Button>("MuteButton").ForEach((btn) =>
-            {
-                var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isMuted;
-                btn.style.backgroundColor = state ? AnysongEditorWindow.ColorGreyDark : StyleKeyword.Null;
-                btn.text = "M";
-                index++;
-            });
-        }
-
-        static void MuteTrackAtIndex(string indexString)
-        {
-            var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
-            track.isMuted = !track.isMuted;
-            UpdateMuteButtons();
-        }
-
-        static void SoloTrackAtIndex(string indexString)
-        {
-            var track = AnysongEditorWindow.GetCurrentSection().tracks[Int32.Parse(indexString)];
-
-            bool unSolo = track.isSolo;
-
-            foreach (var sectionTrack in AnysongEditorWindow.GetCurrentSection().tracks)
-            {
-                sectionTrack.isSolo = false;
-                if (sectionTrack == track && !unSolo)
-                {
-                    sectionTrack.isSolo = true;
-                }
-
-                if (unSolo)
-                {
-                    sectionTrack.isMuted = false;
-                }
-                else
-                {
-                    sectionTrack.isMuted = sectionTrack != track;
-                }
+                sectionTrack.isMuted = false;
             }
-
-            UpdateSoloButtons();
-            UpdateMuteButtons();
+            else
+            {
+                sectionTrack.isMuted = sectionTrack != track;
+            }
         }
+
+        UpdateSoloButtons();
+        UpdateMuteButtons();
     }
 }

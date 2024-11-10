@@ -3,48 +3,46 @@ using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 
-namespace PackageAnywhen.Editor
+
+[CustomEditor(typeof(AnywhenNoteClip))]
+[CanEditMultipleObjects]
+public class AnywhenNoteClipInspector : UnityEditor.Editor
 {
-    [CustomEditor(typeof(AnywhenNoteClip))]
-    [CanEditMultipleObjects]
-    public class AnywhenNoteClipInspector : UnityEditor.Editor
+    private AudioClip _editorClip;
+    private AnywhenNoteClip _target;
+    private bool _noteDown;
+    private bool _isPlaying;
+
+    void OnEnable()
     {
-        private AudioClip _editorClip;
-        private AnywhenNoteClip _target;
-        private bool _noteDown;
-        private bool _isPlaying;
+        _target = (AnywhenNoteClip)target;
+    }
 
-        void OnEnable()
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        EditorGUILayout.LabelField("Samples", _target.clipSamples.Length.ToString());
+
+        if (_target.loopSettings.enabled)
         {
-            _target = (AnywhenNoteClip)target;
-        }
-
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            EditorGUILayout.LabelField("Samples", _target.clipSamples.Length.ToString());
-
-            if (_target.loopSettings.enabled)
+            _noteDown = GUILayout.Toggle(_noteDown, _noteDown ? "STOP" : "PLAY", "Button");
+            if (_noteDown && !_isPlaying)
             {
-                _noteDown = GUILayout.Toggle(_noteDown, _noteDown ? "STOP" : "PLAY", "Button");
-                if (_noteDown && !_isPlaying)
-                {
-                    //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(_target);
-                    _isPlaying = true;
-                }
-
-                if (!_noteDown)
-                {
-                    AnywhenRuntime.ClipNoteClipPreviewer.StopClip();
-                    _isPlaying = false;
-                }
+                //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(_target);
+                _isPlaying = true;
             }
-            else
+
+            if (!_noteDown)
             {
-                if (GUILayout.Button("PLAY"))
-                {
-                    //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip( _target);
-                }
+                AnywhenRuntime.ClipNoteClipPreviewer.StopClip();
+                _isPlaying = false;
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("PLAY"))
+            {
+                //AnywhenRuntime.ClipNoteClipPreviewer.PlayClip( _target);
             }
         }
     }

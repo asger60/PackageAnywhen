@@ -1,14 +1,14 @@
 using System;
 using Anywhen;
 using Anywhen.Composing;
+using Editor.AnySong;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Editor.AnySong
-{
+
     public class AnysongEditorWindow : EditorWindow
     {
         public static AnysongObject CurrentSong { get; private set; }
@@ -1030,4 +1030,3 @@ namespace Editor.AnySong
             return buttons;
         }
     }
-}
