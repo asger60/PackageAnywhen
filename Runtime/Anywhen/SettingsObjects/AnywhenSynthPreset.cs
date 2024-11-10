@@ -4,8 +4,7 @@ using Anywhen.Synth;
 using UnityEditor;
 using UnityEngine;
 
-namespace Anywhen.SettingsObjects
-{
+
     [CreateAssetMenu(fileName = "New synth preset", menuName = "UnitySynth/SynthPreset")]
     public class AnywhenSynthPreset : AnywhenInstrument
     {
@@ -81,4 +80,3 @@ namespace Anywhen.SettingsObjects
             isInit = false;
         }
     }
-}

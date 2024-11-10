@@ -6,7 +6,7 @@ using UnityEngine;
 
 [CustomEditor(typeof(AnywhenNoteClip))]
 [CanEditMultipleObjects]
-public class AnywhenNoteClipInspector : UnityEditor.Editor
+public class AnywhenNoteClipInspector : Editor
 {
     private AudioClip _editorClip;
     private AnywhenNoteClip _target;
