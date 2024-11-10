@@ -229,8 +229,12 @@ namespace Anywhen
             }
 
 
-            _currentSong.Reset();
-            _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
+            if (_currentSong)
+            {
+                _currentSong.Reset();
+                _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
+            }
+
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
