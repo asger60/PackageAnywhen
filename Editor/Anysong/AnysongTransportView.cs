@@ -3,8 +3,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Editor.AnySong
-{
+
     public static class AnysongTransportView
     {
         private static VisualElement _parent;
@@ -104,4 +103,3 @@ namespace Editor.AnySong
             _playButton.text = isPlaying ? "Stop" : "Play";
         }
     }
-}

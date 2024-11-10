@@ -5,8 +5,7 @@ using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor.AnySong
-{
+
     public static class AnysongStepsView
     {
         private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
@@ -266,4 +265,3 @@ namespace Editor.AnySong
             });
         }
     }
-}

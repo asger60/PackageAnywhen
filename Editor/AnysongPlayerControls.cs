@@ -6,8 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor
-{
+
     public class AnysongPlayerControls
     {
         private Sprite _tapeSprite1;
@@ -179,4 +178,3 @@ namespace Editor
             AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
         }
     }
-}

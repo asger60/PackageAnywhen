@@ -6,8 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor
-{
+
     [CustomEditor(typeof(AnywhenIntensitySetter))]
     public class AnywhenIntensitySetterInspector : UnityEditor.Editor
     {
@@ -111,4 +110,3 @@ namespace Editor
             return inspector;
         }
     }
-}

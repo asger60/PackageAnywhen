@@ -2,8 +2,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
-namespace Editor
-{
+
     public static class AnywhenBranding
     {
         public static VisualElement DrawBranding()
@@ -16,5 +15,5 @@ namespace Editor
             return element;
         }
     }
-}
+
 #endif

@@ -2,14 +2,12 @@
 using System;
 using Anywhen;
 using Anywhen.Composing;
-using Editor.AnySong;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor
-{
+
     [CustomEditor(typeof(AnywhenPlayer))]
     public class AnysongPlayerInspector : UnityEditor.Editor
     {
@@ -216,5 +214,5 @@ namespace Editor
             AnysongEditorWindow.ShowModuleWindow();
         }
     }
-}
+
 #endif

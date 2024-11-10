@@ -5,8 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor.AnySong
-{
+
     public static class AnysongSectionsView
     {
         private static VisualElement _parent;
@@ -131,4 +130,3 @@ namespace Editor.AnySong
             });
         }
     }
-}

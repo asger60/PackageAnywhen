@@ -4,8 +4,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Editor
-{
+
     [CustomEditor(typeof(AnywhenTrigger))]
     public class AnywhenTriggerInspector : UnityEditor.Editor
     {
@@ -107,4 +106,3 @@ namespace Editor
             return inspector;
         }
     }
-}
