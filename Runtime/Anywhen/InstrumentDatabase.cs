@@ -4,6 +4,7 @@ using System.Linq;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using UnityEditor;
 using UnityEngine;
 
 public class InstrumentDatabase : MonoBehaviour
@@ -58,7 +59,7 @@ public class InstrumentDatabase : MonoBehaviour
         }
     }
 
-
+#if UNITY_EDITOR
     public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)
     {
         if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
@@ -66,8 +67,9 @@ public class InstrumentDatabase : MonoBehaviour
         newLowdInstrument.Instrument = instrument;
         newLowdInstrument.clips = instrument.LoadClips();
         AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Add(newLowdInstrument);
+        EditorUtility.SetDirty(AnywhenRuntime.InstrumentDatabase);
     }
-
+#endif
     bool IsLoaded(AnywhenSampleInstrument instrument)
     {
         foreach (var loadedInstrument in LoadedInstruments)
