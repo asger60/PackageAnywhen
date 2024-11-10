@@ -1,5 +1,4 @@
-namespace UnitySynth.Runtime.Synth
-{
+
 
     public class SynthSettingsObjectEnvelope : SynthSettingsObjectBase
     {
@@ -10,4 +9,4 @@ namespace UnitySynth.Runtime.Synth
         public float sendAmount = 100;
 
     }
-}
+

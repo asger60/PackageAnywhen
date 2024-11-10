@@ -89,7 +89,6 @@
 //  is not implemented yet.
 
 using Anywhen.Synth.Filter;
-using UnitySynth.Runtime.Synth;
 
 namespace Anywhen.Synth
 {

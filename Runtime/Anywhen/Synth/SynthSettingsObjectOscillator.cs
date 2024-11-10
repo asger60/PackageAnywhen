@@ -1,6 +1,5 @@
 
-namespace UnitySynth.Runtime.Synth
-{
+
     public class SynthSettingsObjectOscillator : SynthSettingsObjectBase
     {
         public int tuning;
@@ -45,4 +44,3 @@ namespace UnitySynth.Runtime.Synth
             amplitude = 1;
         }
     }
-}

@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UnitySynth.Runtime.Synth
-{
+
     public class SynthSettingsObjectFilter : SynthSettingsObjectBase
     {
         public enum FilterTypes
@@ -53,4 +52,3 @@ namespace UnitySynth.Runtime.Synth
             formantSettings.vowel = 1;
         }
     }
-}

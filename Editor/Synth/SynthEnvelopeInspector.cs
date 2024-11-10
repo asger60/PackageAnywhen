@@ -1,6 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using UnitySynth.Runtime.Synth;
 
 public class SynthEnvelopeInspector : UnityEditor.Editor
 {

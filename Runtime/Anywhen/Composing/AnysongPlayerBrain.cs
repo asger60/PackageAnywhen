@@ -23,26 +23,14 @@ namespace Anywhen.Composing
         }
 
 
-        private static AnysongPlayerBrain _instance;
 
-        private static AnysongPlayerBrain Instance
-        {
-            get
-            {
-                if (_instance)
-                    return _instance;
-                _instance = FindAnyObjectByType<AnysongPlayerBrain>();
-                return _instance;
-            }
-        }
 
-        public static float GlobalIntensity => Instance.globalIntensity;
+        public static float GlobalIntensity => AnywhenRuntime.AnysongPlayerBrain.globalIntensity;
         private bool _isStarted;
-        public static bool IsStarted => Instance._isStarted;
+        public static bool IsStarted => AnywhenRuntime.AnysongPlayerBrain._isStarted;
 
         private void Awake()
         {
-            _instance = this;
             _currentPlayer = null;
         }
 
@@ -70,21 +58,21 @@ namespace Anywhen.Composing
         }
 
         public static void TransitionTo(AnywhenPlayer player, TransitionTypes transitionType) =>
-            Instance.HandleTransitionToPlayer(player, transitionType);
+            AnywhenRuntime.AnysongPlayerBrain.HandleTransitionToPlayer(player, transitionType);
 
 
         public static void SetGlobalIntensity(float intensity)
         {
             intensity = Mathf.Clamp01(intensity);
-            Instance.globalIntensity = intensity;
-            OnIntensityChanged?.Invoke(Instance.globalIntensity);
+            AnywhenRuntime.AnysongPlayerBrain.globalIntensity = intensity;
+            OnIntensityChanged?.Invoke(AnywhenRuntime.AnysongPlayerBrain.globalIntensity);
         }
 
         public static void ModifyGlobalIntensity(float amount)
         {
-            Instance.globalIntensity += amount;
-            Instance.globalIntensity = Mathf.Clamp01(Instance.globalIntensity);
-            OnIntensityChanged?.Invoke(Instance.globalIntensity);
+            AnywhenRuntime.AnysongPlayerBrain.globalIntensity += amount;
+            AnywhenRuntime.AnysongPlayerBrain.globalIntensity = Mathf.Clamp01(AnywhenRuntime.AnysongPlayerBrain.globalIntensity);
+            OnIntensityChanged?.Invoke(AnywhenRuntime.AnysongPlayerBrain.globalIntensity);
         }
 
 
@@ -161,12 +149,12 @@ namespace Anywhen.Composing
 
         public static AnywhenPlayer GetCurrentPlayer()
         {
-            return _instance._currentPlayer;
+            return AnywhenRuntime.AnysongPlayerBrain._currentPlayer;
         }
 
         public static void StopPlayer(AnywhenPlayer player, TransitionTypes transitionType)
         {
-            _instance.HandleTransitionToNothing(player, transitionType);
+            AnywhenRuntime.AnysongPlayerBrain.HandleTransitionToNothing(player, transitionType);
         }
     }
 }

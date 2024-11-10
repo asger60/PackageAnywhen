@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnitySynth.Runtime.Synth;
 
 namespace Anywhen.Synth.Filter
 {

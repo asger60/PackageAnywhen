@@ -19,11 +19,9 @@
 //  SOFTWARE."
 
 using System;
-using System.Runtime.CompilerServices;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
-using UnitySynth.Runtime.Synth;
 
 namespace Anywhen.Synth
 {

@@ -2,8 +2,7 @@ using System;
 using Anywhen.Synth;
 using UnityEngine;
 
-namespace UnitySynth.Runtime.Synth
-{
+
     public class SynthControlLFO : SynthControlBase
     {
         private UInt32 _phase = 0u; // using an integer type automatically ensures limits
@@ -80,4 +79,3 @@ namespace UnitySynth.Runtime.Synth
             return Mathf.Sin(ph01 * 6.28318530717959f);
         }
     }
-}

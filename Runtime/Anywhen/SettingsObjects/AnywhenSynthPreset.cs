@@ -3,7 +3,6 @@ using System.Linq;
 using Anywhen.Synth;
 using UnityEditor;
 using UnityEngine;
-using UnitySynth.Runtime.Synth;
 
 namespace Anywhen.SettingsObjects
 {

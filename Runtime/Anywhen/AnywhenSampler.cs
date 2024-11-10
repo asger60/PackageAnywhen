@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using Anywhen.Composing;
+﻿using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnitySynth.Runtime.Synth;
+
 
 namespace Anywhen
 {

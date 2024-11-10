@@ -1,5 +1,4 @@
-namespace UnitySynth.Runtime.Synth
-{
+
 
     public class SynthSettingsObjectLFO : SynthSettingsObjectBase
     {
@@ -10,4 +9,4 @@ namespace UnitySynth.Runtime.Synth
 
         public float sendAmount;
     }
-}
+

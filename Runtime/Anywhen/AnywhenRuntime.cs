@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using Anywhen.Composing;
 using UnityEngine;
 
 namespace Anywhen
@@ -28,6 +29,19 @@ namespace Anywhen
 
         private static AnywhenNoteClipPreviewer _noteClipPreviewer;
 
+        public static AnysongPlayerBrain AnysongPlayerBrain
+        {
+            get
+            {
+                if (!_anysongPlayerBrain)
+                    Instance.GetAnyComponents();
+                
+                return _anysongPlayerBrain;
+            }
+        }
+
+        private static AnysongPlayerBrain _anysongPlayerBrain;
+
         static AnywhenEventFunnel _eventFunnel;
         public static AnywhenSamplePlayer AnywhenSamplerHandler => _anywhenSamplerHandler;
 
@@ -38,7 +52,17 @@ namespace Anywhen
         public static AnywhenEventFunnel EventFunnel => _eventFunnel;
 
         private static InstrumentDatabase _instrumentDatabase;
-        public static InstrumentDatabase InstrumentDatabase => _instrumentDatabase;
+
+        public static InstrumentDatabase InstrumentDatabase
+        {
+            get
+            {
+                if (!_instrumentDatabase)
+                    Instance.GetAnyComponents();
+
+                return _instrumentDatabase;
+            }
+        }
 
         private static AnywhenRuntime _instance;
 
@@ -48,7 +72,8 @@ namespace Anywhen
             {
                 if (_instance == null)
                 {
-                    var anywhens = FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    var anywhens =
+                        FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     if (anywhens.Length == 0) return null;
                     _instance = anywhens[0];
 
@@ -151,6 +176,7 @@ namespace Anywhen
             TryGetComponent(out _conductor);
             TryGetComponent(out _anywhenSamplerHandler);
             TryGetComponent(out _eventFunnel);
+            TryGetComponent(out _anysongPlayerBrain);
             TryGetComponent(out _noteClipPreviewer);
             _anywhenSamplerHandler = GetComponentInChildren<AnywhenSamplePlayer>();
             _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();

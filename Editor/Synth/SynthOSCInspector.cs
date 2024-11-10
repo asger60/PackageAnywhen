@@ -1,7 +1,6 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnitySynth.Runtime.Synth;
 
 
 public class SynthOSCInspector : UnityEditor.Editor
