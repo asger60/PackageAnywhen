@@ -19,8 +19,9 @@ namespace Anywhen.Composing
         {
             None = 0,
             Bass = 10,
-           // Pad = 20,
-           // Lead = 30,
+
+            // Pad = 20,
+            // Lead = 30,
             NoteShort = 35,
             NoteLong = 36,
             [InspectorName("Rhythm/Hihat")] Hihat = 40,
@@ -29,8 +30,6 @@ namespace Anywhen.Composing
             [InspectorName("Rhythm/Clap")] Clap = 70,
             [InspectorName("Rhythm/Tick")] Tick = 80,
             [InspectorName("Rhythm/Tom")] Tom = 90,
-
-
         }
 
         public AnyTrackTypes trackType;
@@ -39,6 +38,7 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+            
         }
 
         public AnysongTrack Clone()
@@ -67,6 +67,9 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
+            
         }
+
+        
     }
 }

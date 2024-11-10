@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -12,7 +11,7 @@ namespace Anywhen.SettingsObjects
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
         //public AudioClip[] audioClips;
-        private AnywhenNoteClip[] _noteClips;
+        //private AnywhenNoteClip[] _noteClips;
         public float stopDuration = 0.1f;
 
         public enum ClipSelectType
@@ -66,17 +65,22 @@ namespace Anywhen.SettingsObjects
 
         public AnywhenNoteClip GetNoteClip(int note)
         {
-            if (_noteClips == null || _noteClips.Length == 0)
+            var clips = InstrumentDatabase.GetNoteClips(this);
+            if (clips == null)
             {
-                LoadClips();
                 return null;
             }
+            //if (_noteClips == null || _noteClips.Length == 0)
+            //{
+            //    LoadClips();
+            //    return null;
+            //}
 
             switch (clipSelectType)
             {
                 case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
-                    if (note >= _noteClips.Length)
+                    if (note >= clips.Count)
                     {
                         AnywhenRuntime.Log("note out of clip range", AnywhenRuntime.DebugMessageType.Warning);
                         return null;
@@ -88,13 +92,13 @@ namespace Anywhen.SettingsObjects
                         return null;
                     }
 
-                    return note >= _noteClips.Length ? null : _noteClips[note];
+                    return note >= clips.Count ? null : clips[note];
 
                 case ClipSelectType.RandomVariations:
-                    return _noteClips[Random.Range(0, _noteClips.Length)];
+                    return clips[Random.Range(0, clips.Count)];
 
                 case ClipSelectType.UnscaledNotes:
-                    return _noteClips[Mathf.Clamp(note, 0, _noteClips.Length)];
+                    return clips[Mathf.Clamp(note, 0, clips.Count)];
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -170,12 +174,8 @@ namespace Anywhen.SettingsObjects
 
         public void PreviewSound()
         {
-            if (_noteClips == null || _noteClips.Length == 0)
-            {
-                LoadClips();
-            }
-
-            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, _noteClips[0]);
+            var clips = LoadClips();
+            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, clips[0]);
         }
 
         public void DeleteAudioCLips()
@@ -190,10 +190,9 @@ namespace Anywhen.SettingsObjects
         }
 
 
-        [ContextMenu("load clipts")]
-        public void LoadClips()
+        public List<AnywhenNoteClip> LoadClips()
         {
-            List<AnywhenNoteClip> loadedClips = new System.Collections.Generic.List<AnywhenNoteClip>();
+            List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
 
             bool isInPackage = false;
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -213,7 +212,7 @@ namespace Anywhen.SettingsObjects
                     pathDirList.AddRange(pathDirs);
                     pathDirList.RemoveAt(0);
                     pathDirList.RemoveAt(0);
-                    path = "Packages/com.floppylub.anywhen/";
+                    path = "Packages/com.floppyclub.anywhen/";
                     for (var i = 0; i < pathDirList.Count; i++)
                     {
                         var dirName = pathDirList[i];
@@ -227,11 +226,14 @@ namespace Anywhen.SettingsObjects
 
 
                 var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
+                Debug.Log(clip);
+                
                 loadedClips.Add(clip);
             }
 
-            _noteClips = new AnywhenNoteClip[loadedClips.Count];
-            _noteClips = loadedClips.ToArray();
+            return loadedClips;
+            //_noteClips = new AnywhenNoteClip[loadedClips.Count];
+            //_noteClips = loadedClips.ToArray();
         }
 
 
@@ -248,22 +250,22 @@ namespace Anywhen.SettingsObjects
         [ContextMenu("UnlinkClips")]
         public void UnlinkClips()
         {
-            if (_noteClips.Length == 0) return;
-            clipDatas = new ClipData[_noteClips.Length];
-            for (var i = 0; i < _noteClips.Length; i++)
-            {
-                var noteClip = _noteClips[i];
-                var clipData = new ClipData
-                {
-                    name = noteClip.name,
-                    path = AssetDatabase.GetAssetPath(noteClip)
-                };
-                clipData.guid = AssetDatabase.AssetPathToGUID(clipData.path);
-                clipDatas[i] = clipData;
-            }
-
-            _noteClips = null;
-            EditorUtility.SetDirty(this);
+            //if (_noteClips.Length == 0) return;
+            //clipDatas = new ClipData[_noteClips.Length];
+            //for (var i = 0; i < _noteClips.Length; i++)
+            //{
+            //    var noteClip = _noteClips[i];
+            //    var clipData = new ClipData
+            //    {
+            //        name = noteClip.name,
+            //        path = AssetDatabase.GetAssetPath(noteClip)
+            //    };
+            //    clipData.guid = AssetDatabase.AssetPathToGUID(clipData.path);
+            //    clipDatas[i] = clipData;
+            //}
+//
+            //_noteClips = null;
+            //EditorUtility.SetDirty(this);
         }
 
 #endif

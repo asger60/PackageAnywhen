@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -34,6 +35,7 @@ namespace Anywhen
         [SerializeField] private bool followGlobalTempo = false;
         [SerializeField] private bool followGlobalIntensity = false;
 
+
         private void Awake()
         {
             trigger.OnTrigger += Play;
@@ -50,20 +52,29 @@ namespace Anywhen
             if (anysong == null) return;
             _currentSong = anysong;
 
-            foreach (var songTrack in _currentSong.Tracks)
-            {
-                var i = songTrack.instrument as AnywhenSampleInstrument;
-                if (i != null)
-                {
-                    i.LoadClips();
-                }
-            }
+            
+            //foreach (var songTrack in _currentSong.Tracks)
+            //{
+            //    var i = songTrack.instrument as AnywhenSampleInstrument;
+            //    if (i != null)
+            //    {
+            //        i.LoadClips();
+            //    }
+            //}
+
 
             foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
                 {
                     AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
+                }
+                else
+                {
+                    if (track.instrument is AnywhenSampleInstrument instrument)
+                    {
+                        InstrumentDatabase.LoadInstrumentNotes(instrument);
+                    }
                 }
             }
         }
@@ -133,10 +144,13 @@ namespace Anywhen
                         triggerStep.rootNote += rootNoteMod;
 
                         songTrack.TriggerStep(step, pattern, rootNoteMod);
+                        // TriggerStep(step,pattern, );
                     }
                 }
             }
         }
+
+
 
         public float GetIntensity()
         {
@@ -196,6 +210,7 @@ namespace Anywhen
 
         public void Play()
         {
+            
             if (_currentSong == null)
             {
                 Load(AnysongObject);
@@ -218,7 +233,8 @@ namespace Anywhen
             _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
+                _currentSong.Sections[0]));
 
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
@@ -253,7 +269,7 @@ namespace Anywhen
         public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
             _currentSong = anysongObject;
-
+Load(_currentSong);
             if (_currentSong != AnysongObject)
             {
                 print("preview other song");
@@ -348,7 +364,8 @@ namespace Anywhen
             {
                 if (currentTracks[i].trackType != AnysongTrack.AnyTrackTypes.None)
                 {
-                    var newInstrument = AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(currentTracks[i].trackType);
+                    var newInstrument =
+                        AnywhenRuntime.InstrumentDatabase.GetInstrumentOfType(currentTracks[i].trackType);
                     if (newInstrument)
                     {
                         currentTracks[i].instrument = newInstrument;
@@ -400,5 +417,7 @@ namespace Anywhen
             followGlobalIntensity = newValue;
             EditorUtility.SetDirty(this);
         }
+
+   
     }
 }

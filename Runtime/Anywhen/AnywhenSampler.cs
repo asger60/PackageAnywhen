@@ -12,8 +12,6 @@ namespace Anywhen
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenSampler : MonoBehaviour
     {
-        private AudioClip _queuedClip;
-
         public bool IsReady { get; private set; }
         public bool IsArmed => _isArmed;
         private bool _isArmed;
@@ -21,23 +19,43 @@ namespace Anywhen
         private AudioSource _audioSource;
 
 
-        private AnywhenMetronome.TickRate _tickRate;
         public AnywhenSampleInstrument Instrument => _instrument;
-        protected AnywhenSampleInstrument _instrument;
+        private AnywhenSampleInstrument _instrument;
         public bool IsStopping => _isStopping;
         private bool _isStopping;
-        private bool _playingNoteClip;
         public int CurrentNote => _currentNote;
         private int _currentNote;
         protected float Volume;
         private AnysongTrack _track;
 
-        public void Init(AnywhenMetronome.TickRate tickRate)
+        private bool _isLooping;
+
+        private bool _isPlaying;
+        private bool _scheduledPlay;
+        public double ScheduledPlayTime => _scheduledPlayTime;
+        public bool IsPlaying => _isPlaying;
+
+        private double _scheduledPlayTime = -1;
+        private double _scheduledStopTime;
+        private AnywhenNoteClip _noteClip;
+        ADSR _adsr = new();
+        private bool _useEnvelope;
+
+        private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
+        private float _bufferFadeValue, _buffer2FadeValue;
+
+
+        private double _samplePosBuffer1 /*, _samplePosBuffer2*/;
+        private double _sampleStepFrac;
+        private double _currentPitch;
+        private float _pitch;
+        private float _ampMod;
+
+        public void Init()
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             TryGetComponent(out _audioSource);
             IsReady = true;
-            _tickRate = tickRate;
             _audioSource.playOnAwake = true;
             _audioSource.clip = myClip;
             _adsr = new ADSR();
@@ -45,19 +63,8 @@ namespace Anywhen
         }
 
 
-        private void Update()
-        {
-            if (_playingNoteClip) return;
-            if (_isArmed && !_audioSource.isPlaying)
-            {
-                _isArmed = false;
-                IsReady = true;
-            }
-        }
-
-
-        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument newSettings,
-            AnysongTrack track = null)
+        public void NoteOn(int note, double playTime, double stopTime, float volume,
+            AnywhenSampleInstrument newSettings, AnysongTrack track = null)
         {
             SetReady(false);
             _instrument = newSettings;
@@ -71,104 +78,33 @@ namespace Anywhen
             _currentNote = note;
             _scheduledPlayTime = playTime;
             _track = track;
-            switch (_instrument.clipType)
+
+            var noteClip = _instrument.GetNoteClip(note);
+            if (noteClip != null)
             {
-                case AnywhenSampleInstrument.ClipTypes.AudioClips:
-                    Debug.LogWarning("audioclips is not supported anymore");
-                    //var audioClip = _instrument.GetAudioClip(note);
-//
-                    //if (audioClip != null)
-                    //{
-                    //    _queuedClip = audioClip;
-                    //    _isArmed = true;
-                    //    _audioSource.clip = _queuedClip;
-                    //    _audioSource.Stop();
-                    //    _audioSource.volume = volume * _instrument.volume;
-                    //    _audioSource.time = 0;
-                    //    //_audioSource.outputAudioMixerGroup = mixerChannel;
-                    //    _playingNoteClip = false;
-                    //    _audioSource.PlayScheduled(_scheduledPlayTime);
-                    //}
-                    //else
-                    //{
-                    //    Debug.LogWarning("failed to find AudioClip");
-                    //    SetReady(true);
-                    //}
-
-                    break;
-                case AnywhenSampleInstrument.ClipTypes.NoteClips:
-                    var noteClip = _instrument.GetNoteClip(note);
-                    if (noteClip != null)
-                    {
-                        Volume = volume;
-                        _isArmed = true;
-                        _playingNoteClip = true;
-                        _audioSource.Stop();
-                        PlayScheduled(noteClip);
-                        _hasScheduledStop = false;
-                        if (stopTime > 0)
-                        {
-                            StopScheduled(stopTime);
-                            _hasScheduledStop = true;
-                        }
-                    }
-                    else
-                    {
-                        AnywhenRuntime.Log("failed to find NoteClip", AnywhenRuntime.DebugMessageType.Warning);
-                        SetReady(true);
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                Volume = volume;
+                _isArmed = true;
+                _audioSource.Stop();
+                PlayScheduled(noteClip);
+                if (stopTime > 0)
+                {
+                    StopScheduled(stopTime);
+                }
+            }
+            else
+            {
+                AnywhenRuntime.Log("failed to find NoteClip", AnywhenRuntime.DebugMessageType.Warning);
+                SetReady(true);
             }
         }
 
-        private bool _hasScheduledStop;
 
         public void NoteOff(double stopTime)
         {
             _isStopping = true;
-            if (_playingNoteClip)
-            {
-                StopScheduled(stopTime);
-            }
-            else
-            {
-                _audioSource.SetScheduledEndTime(stopTime);
-                StartCoroutine(FadeOut((float)stopTime));
-            }
+            StopScheduled(stopTime);
         }
 
-        IEnumerator FadeOut(float fadeTime)
-        {
-            float startVolume = _audioSource.volume;
-            float t = 0;
-            while (t / fadeTime < 1)
-            {
-                _audioSource.volume = Mathf.Lerp(startVolume, 0, t / fadeTime);
-                t += Time.deltaTime;
-                yield return 0;
-            }
-
-            _audioSource.Stop();
-        }
-
-        IEnumerator WaitAndStop(float stopTime)
-        {
-            yield return new WaitForSeconds(stopTime);
-            float startVolume = _audioSource.volume;
-            float duration = _instrument.stopDuration;
-            float f = 0;
-            while (f < duration)
-            {
-                _audioSource.volume = Mathf.Lerp(startVolume, 0, f / duration);
-                f += Time.deltaTime;
-                yield return 0;
-            }
-
-            _audioSource.Stop();
-        }
 
         void Reset()
         {
@@ -180,42 +116,10 @@ namespace Anywhen
 
         public float GetDurationToEnd()
         {
-            if (_playingNoteClip)
-            {
-                //todo, make this better
-                return 0;
-            }
-
-            if (_audioSource.clip == null) return 0;
-            if (!_audioSource.isPlaying) return 0;
-            return _audioSource.clip.length - _audioSource.time;
+            //todo, make this better
+            return 0;
         }
 
-        public void SetMixerGroup(AudioMixerGroup group)
-        {
-            _audioSource.outputAudioMixerGroup = group;
-        }
-
-
-        private bool _isLooping;
-
-        private bool _isPlaying;
-        private bool _scheduledPlay;
-        public double ScheduledPlayTime => _scheduledPlayTime;
-        public bool IsPlaying => _isPlaying;
-
-        private double _scheduledPlayTime = -1;
-        private double _scheduledStopTime;
-        private AnywhenNoteClip _noteClip;
-        ADSR _adsr = new ADSR();
-        private bool _useEnvelope;
-
-        private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
-
-        //private bool _alternateBuffer;
-        //private float _buffer1Amp, _buffer2Amp;
-        private float _bufferFadeValue, _buffer2FadeValue;
-        //private double _bufferCrossFadeStepValue = 0.0025f;
 
         protected void StopScheduled(double absoluteTime)
         {
@@ -229,17 +133,9 @@ namespace Anywhen
 
         protected void PlayScheduled(AnywhenNoteClip clip)
         {
-            //_alternateBuffer = false;
-            //_buffer1Amp = 1;
-            //_buffer2Amp = 0;
             _samplePosBuffer1 = 0;
-            //_samplePosBuffer2 = 0;
-
-
             _noteClip = clip;
-
             _scheduledPlay = true;
-
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _pitch = 1;
@@ -251,17 +147,15 @@ namespace Anywhen
                 if (_track != null)
                     currentEnvelopeSettings = _track.trackEnvelope;
                 else
-                    currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings(0,1,1,0);
+                    currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings(0, 1, 1, 0);
             }
 
-            if (clip.envelopeSettings.enabled)
-            {
-                currentEnvelopeSettings = clip.envelopeSettings;
-            }
 
             _useEnvelope = currentEnvelopeSettings.enabled;
             if (_useEnvelope)
+            {
                 SetEnvelope(currentEnvelopeSettings);
+            }
 
 
             _currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
@@ -274,8 +168,6 @@ namespace Anywhen
             {
                 _currentLoopSettings = clip.loopSettings;
             }
-
-            //_bufferCrossFadeStepValue = 0.2f / _currentLoopSettings.crossFadeDuration;
 
 
             _isLooping = _currentLoopSettings.enabled;
@@ -291,12 +183,6 @@ namespace Anywhen
             _adsr.Reset();
         }
 
-
-        private double _samplePosBuffer1 /*, _samplePosBuffer2*/;
-        private double _sampleStepFrac;
-        private double _currentPitch;
-        private float _pitch;
-        private float _ampMod;
 
         void OnAudioFilterRead(float[] data, int channels)
         {
@@ -359,14 +245,19 @@ namespace Anywhen
                 double f1 = _samplePosBuffer1 - sampleIndex1;
                 var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
                 var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
-                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) + (f1 * _noteClip.clipSamples[sourceSample2]);
+                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
+                            (f1 * _noteClip.clipSamples[sourceSample2]);
 
                 data[i] = ((float)(e1)) * _ampMod * _instrument.volume * Volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
-                _currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
+
+                //_currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
+
+
                 i++;
             }
+
         }
 
         void DSP_HandleLooping()
@@ -388,6 +279,11 @@ namespace Anywhen
                 _currentNote = -1000;
                 _isPlaying = false;
             }
+        }
+
+        public void SetInstrument(AnywhenSampleInstrument instrument)
+        {
+            _instrument = instrument;
         }
     }
 }

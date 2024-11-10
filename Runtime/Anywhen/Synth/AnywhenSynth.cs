@@ -62,7 +62,7 @@ namespace Anywhen.Synth
         private const int QueueCapacity = 16;
         private readonly float[] _lastBuffer = new float[2048];
         private readonly object _bufferMutex = new object();
-        private bool _debugBufferEnabled = false;
+        //private bool _debugBufferEnabled = false;
 
         private EventQueue.QueuedEvent _nextEvent;
         private EventQueue.QueuedEvent _offEvent;

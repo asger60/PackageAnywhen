@@ -8,8 +8,8 @@ namespace Anywhen
     {
         public void PlayClip(AnywhenSampleInstrument instrument, AnywhenNoteClip clip)
         {
-            Init(AnywhenMetronome.TickRate.None);
-            _instrument = instrument;
+            Init();
+            SetInstrument( instrument);
             Volume = instrument.volume;
             PlayScheduled(clip);
         }
