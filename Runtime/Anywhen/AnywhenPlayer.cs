@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -12,7 +11,6 @@ namespace Anywhen
     [AddComponentMenu("Anywhen/AnywhenPlayer")]
     public class AnywhenPlayer : MonoBehaviour
     {
-        [SerializeField] private AnysongObject songObject;
         public AnysongObject AnysongObject => songObject;
         private AnywhenInstrument[] _instruments;
         private AnysongObject _currentSong;
@@ -20,14 +18,15 @@ namespace Anywhen
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
         int _currentSectionIndex = 0;
         public int CurrentSectionIndex => _currentSectionIndex;
-        [SerializeField] private AnywhenTrigger trigger;
         public int currentSongPackIndex;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
-
+        
+        
+        [SerializeField] private AnysongObject songObject;
         [SerializeField] private int currentPlayerTempo = -100;
         [SerializeField] private int rootNoteMod;
-
+        [SerializeField] private AnywhenTrigger trigger;
         [SerializeField] private AnysongTrack[] customTracks;
         [SerializeField] private AnysongTrack[] currentTracks;
         [SerializeField] private bool isCustomized;
@@ -51,17 +50,7 @@ namespace Anywhen
         {
             if (anysong == null) return;
             _currentSong = anysong;
-
             
-            //foreach (var songTrack in _currentSong.Tracks)
-            //{
-            //    var i = songTrack.instrument as AnywhenSampleInstrument;
-            //    if (i != null)
-            //    {
-            //        i.LoadClips();
-            //    }
-            //}
-
 
             foreach (var track in currentTracks)
             {
