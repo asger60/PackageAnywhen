@@ -2,11 +2,15 @@
 ## Prerequisites
 - Make sure you have git installed
 ## Installing the Anywhen package in Unity Package Manager
+* Installing the Anywhen system
 - Open the Package Manager window (Window → Package Manager)
 - Click the plus (+) icon in the top left corner
 - Select “Add package from git URL….”
 - Paste in this URL https://github.com/asger60/PackageAnywhen.git
 - Click add (to the right of the address) and wait - it will take some time to install
+* Installing the song packs
+- Again in the package manager, go through the ass process, and basic Anywhen songpack from here: https://github.com/asger60/AnywhenTrackPack1 
+
 ## AnywhenPlayer
 The AnywhenPlayer is the main component for selecting and controlling playback of Anywhen songs. It has a built in song browser, and settings for handling triggering and transitions between songs, as well as customisation options for the current song.
 Add a AnywhenPlayer to your scene:
