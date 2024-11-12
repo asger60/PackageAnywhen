@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +23,7 @@ namespace Anywhen.Composing
         public Sprite packImage;
         public Color editorBackgroundColor;
 
-        public string description;
+        [Multiline] public string description;
 
         public void ClearSongs()
         {
@@ -42,11 +41,10 @@ namespace Anywhen.Composing
             {
                 songNames[i] = song[i].name + ".asset";
                 var o = song[i];
-                Debug.Log(o);
             }
         }
 
-        public static T[] GetAtPath<T>(string path) where T : UnityEngine.Object
+        private static T[] GetAtPath<T>(string path) where T : Object
         {
             var assets = AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { path });
             List<T> foundAssets = new List<T>();
@@ -56,31 +54,8 @@ namespace Anywhen.Composing
                 foundAssets.Add(AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid)));
             }
 
-            // if you want to skip the convertion to array, simply change method return type
             return foundAssets.ToArray();
 
-
-            //List<T> al = new List<T>();
-            //string[] fileEntries = Directory.GetFiles(Application.dataPath + "/" + path);
-            //foreach (string fileName in fileEntries)
-            //{
-            //    int index = fileName.LastIndexOf("/");
-            //    string localPath = "Assets/" + path;
-//
-            //    if (index > 0)
-            //        localPath += fileName.Substring(index);
-//
-            //    var t = (T)AssetDatabase.LoadAssetAtPath(localPath, typeof(T));
-//
-            //    if (t != null)
-            //        al.Add(t);
-            //}
-//
-            //T[] result = new T[al.Count];
-            //for (int i = 0; i < al.Count; i++)
-            //    result[i] = (T)al[i];
-//
-            //return result;
         }
     }
 }
