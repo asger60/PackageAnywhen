@@ -21,8 +21,8 @@ namespace Anywhen
         public int currentSongPackIndex;
         private NoteEvent[] _lastTrackNote;
         private int _currentBar;
-        
-        
+
+
         [SerializeField] private AnysongObject songObject;
         [SerializeField] private int currentPlayerTempo = -100;
         [SerializeField] private int rootNoteMod;
@@ -33,7 +33,7 @@ namespace Anywhen
         [SerializeField] private float intensity = 1;
         [SerializeField] private bool followGlobalTempo = false;
         [SerializeField] private bool followGlobalIntensity = false;
-
+        [SerializeField] private bool sectionsAutoAdvance = true;
 
         private void Awake()
         {
@@ -50,7 +50,7 @@ namespace Anywhen
         {
             if (anysong == null) return;
             _currentSong = anysong;
-            
+
 
             foreach (var track in currentTracks)
             {
@@ -140,7 +140,6 @@ namespace Anywhen
         }
 
 
-
         public float GetIntensity()
         {
             if (Application.isPlaying && followGlobalIntensity)
@@ -153,19 +152,23 @@ namespace Anywhen
         {
             _currentSong.Reset();
             _currentBar = 0;
+            if (!sectionsAutoAdvance)
+                return;
+
             if (AnysongPlayerBrain.SectionLockIndex > -1)
             {
-                _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
+                SetSection(AnysongPlayerBrain.SectionLockIndex);
             }
             else
             {
-                _currentSectionIndex++;
-                _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
-                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-                {
-                    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                    track.Reset();
-                }
+                
+                SetSection(_currentSectionIndex+1);
+               
+                //for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                //{
+                //    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                //    track.Reset();
+                //}
             }
         }
 
@@ -199,7 +202,6 @@ namespace Anywhen
 
         public void Play()
         {
-            
             if (_currentSong == null)
             {
                 Load(AnysongObject);
@@ -262,7 +264,7 @@ namespace Anywhen
         public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
             _currentSong = anysongObject;
-Load(_currentSong);
+            Load(_currentSong);
             if (_currentSong != AnysongObject)
             {
                 print("preview other song");
@@ -388,6 +390,18 @@ Load(_currentSong);
             intensity = newIntensity;
         }
 
+
+        public void SetSection(int sectionIndex)
+        {
+            _currentSectionIndex = sectionIndex;
+            _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+        }
+
+        public void SetSectionsAutoAdvance(bool state)
+        {
+            sectionsAutoAdvance = state;
+        }
+
         public void ModifyIntensity(float newIntensity)
         {
             intensity += newIntensity;
@@ -410,7 +424,5 @@ Load(_currentSong);
             followGlobalIntensity = newValue;
             EditorUtility.SetDirty(this);
         }
-
-   
     }
 }
