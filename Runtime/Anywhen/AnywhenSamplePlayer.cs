@@ -62,7 +62,7 @@ namespace Anywhen
                 }
             }
 
-            print("#AudioSystem#didn't find a free sampler - returning the one with the oldest source");
+            AnywhenRuntime.Log("didn't find a free sampler - returning the one with the oldest source");
             //didn't find a free sampler - returning the one with the oldest source
             float shortestDuration = float.MaxValue;
             AnywhenSampler oldestAnywhenSampler = null;

@@ -202,9 +202,9 @@ namespace Anywhen.SettingsObjects
                 isInPackage = true;
             }
 
-            foreach (var clipString in clipDatas)
+            foreach (var clipData in clipDatas)
             {
-                var path = clipString.path;
+                var path = clipData.path;
                 if (isInPackage)
                 {
                     var pathDirs = path.Split("/");
@@ -222,18 +222,14 @@ namespace Anywhen.SettingsObjects
                     }
                 }
 
-                //Debug.Log("loading at path: " + path);
 
+                //var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
+                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(AssetDatabase.GUIDToAssetPath(clipData.guid));
 
-                var clip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
-                //Debug.Log(clip);
-                
                 loadedClips.Add(clip);
             }
 
             return loadedClips;
-            //_noteClips = new AnywhenNoteClip[loadedClips.Count];
-            //_noteClips = loadedClips.ToArray();
         }
 
 
