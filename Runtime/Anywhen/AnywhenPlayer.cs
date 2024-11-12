@@ -133,7 +133,6 @@ namespace Anywhen
                         triggerStep.rootNote += rootNoteMod;
 
                         songTrack.TriggerStep(step, pattern, rootNoteMod);
-                        // TriggerStep(step,pattern, );
                     }
                 }
             }
@@ -161,9 +160,8 @@ namespace Anywhen
             }
             else
             {
-                
-                SetSection(_currentSectionIndex+1);
-               
+                SetSection(_currentSectionIndex + 1);
+
                 //for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
                 //{
                 //    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
@@ -393,8 +391,14 @@ namespace Anywhen
 
         public void SetSection(int sectionIndex)
         {
+            songObject.Reset();
             _currentSectionIndex = sectionIndex;
             _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            {
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                track.Reset();
+            }
         }
 
         public void SetSectionsAutoAdvance(bool state)
