@@ -35,6 +35,9 @@ namespace Anywhen
         [SerializeField] private bool followGlobalIntensity = false;
         [SerializeField] private bool sectionsAutoAdvance = true;
 
+
+        [SerializeField] private AnysongObject customSong;
+
         private void Awake()
         {
             trigger.OnTrigger += Play;
@@ -52,8 +55,6 @@ namespace Anywhen
             _currentSong = anysong;
 
 
-            
-            
             foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
@@ -70,6 +71,13 @@ namespace Anywhen
             }
         }
 
+
+        [ContextMenu("Load custom song")]
+        void LoadCustomSong()
+        {
+            if (customSong == null) return;
+            Load(customSong);
+        }
 
         private void OnBar()
         {
@@ -121,8 +129,8 @@ namespace Anywhen
                 {
                     step = pattern.GetStep(_triggerStepIndex);
                 }
-                
-                
+
+
                 pattern.Advance();
 
 
@@ -144,6 +152,7 @@ namespace Anywhen
                     }
                 }
             }
+
             _triggerStepIndex = -1;
         }
 
@@ -399,11 +408,12 @@ namespace Anywhen
 
 
         private int _triggerStepIndex = -1;
+
         public void TriggerStepIndex(int stepIndex)
         {
             _triggerStepIndex = stepIndex;
         }
-        
+
         public void SetSection(int sectionIndex)
         {
             _currentSectionIndex = sectionIndex;
