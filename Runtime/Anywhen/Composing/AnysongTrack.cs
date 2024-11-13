@@ -54,14 +54,14 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, int rootMod)
+        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, AnywhenMetronome.TickRate tickRate, int rootMod)
         {
             _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote + rootMod);
             _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, this);
             foreach (var repeat in anyPatternStep.GetRepeats(pattern.rootNote, volume))
             {
-                AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, this);
+                AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, tickRate, this);
             }
         }
 

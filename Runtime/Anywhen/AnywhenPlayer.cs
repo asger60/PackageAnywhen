@@ -148,7 +148,7 @@ namespace Anywhen
                         var triggerStep = step.Clone();
                         triggerStep.rootNote += rootNoteMod;
 
-                        songTrack.TriggerStep(step, pattern, rootNoteMod);
+                        songTrack.TriggerStep(step, pattern, AnywhenMetronome.TickRate.Sub16, rootNoteMod);
                     }
                 }
             }
@@ -180,11 +180,11 @@ namespace Anywhen
             {
                 SetSection(_currentSectionIndex + 1);
 
-                //for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-                //{
-                //    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                //    track.Reset();
-                //}
+                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                {
+                    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                    track.Reset();
+                }
             }
         }
 
@@ -431,7 +431,7 @@ namespace Anywhen
                             var triggerStep = step.Clone();
                             triggerStep.rootNote += rootNoteMod;
 
-                            songTrack.TriggerStep(step, pattern, rootNoteMod);
+                            songTrack.TriggerStep(step, pattern, AnywhenMetronome.TickRate.None, rootNoteMod);
                         }
                     }
                 }                

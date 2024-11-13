@@ -7,14 +7,12 @@ namespace Anywhen
 {
     public class AnywhenEventFunnel : MonoBehaviour
     {
-        public void HandleNoteEvent(NoteEvent e, AnywhenInstrument anywhenSettings,
-            AnysongTrack track = null)
+        public void HandleNoteEvent(NoteEvent e, AnywhenInstrument anywhenSettings, AnysongTrack track = null)
         {
             switch (anywhenSettings)
             {
                 case AnywhenSampleInstrument instrumentObject:
-                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, AnywhenMetronome.TickRate.Sub16,
-                        track);
+                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, AnywhenMetronome.TickRate.Sub16, track);
                     break;
                 case AnywhenSettingsScale settingsObjectScale:
                     AnywhenScalePlayer.Instance.HandleEvent(e, settingsObjectScale);
@@ -25,13 +23,12 @@ namespace Anywhen
             }
         }
 
-        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings,
-            AnywhenMetronome.TickRate tickRate)
+        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate, AnysongTrack track)
         {
             switch (anywhenSettings)
             {
                 case AnywhenSampleInstrument instrumentObject:
-                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, tickRate);
+                    AnywhenRuntime.AnywhenSamplerHandler.HandleEvent(e, instrumentObject, tickRate, track);
                     break;
 
                 case AnywhenSettingsScale settingsObjectScale:
