@@ -84,7 +84,7 @@ public class AnysongEditorWindow : EditorWindow
         // EditorPrefs.SetString("AnysongPlayer", AssetDatabase.GetAssetPath(_currentRuntimeSongPlayer));
 
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
-        Debug.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
+        AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
         window.Show(true);
         window.CreateGUI();
     }

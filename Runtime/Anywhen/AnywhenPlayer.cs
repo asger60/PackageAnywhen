@@ -52,6 +52,8 @@ namespace Anywhen
             _currentSong = anysong;
 
 
+            
+            
             foreach (var track in currentTracks)
             {
                 if (track.instrument is AnywhenSynthPreset preset)
@@ -115,6 +117,13 @@ namespace Anywhen
                 var track = _currentSong.Tracks[trackIndex];
                 var pattern = sectionTrack.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
+                if (_triggerStepIndex > 0)
+                {
+                    step = pattern.GetStep(_triggerStepIndex);
+                    _triggerStepIndex = -1;
+                }
+                
+                
                 pattern.Advance();
 
 
@@ -389,9 +398,15 @@ namespace Anywhen
         }
 
 
+        private int _triggerStepIndex = -1;
+        public void TriggerStepIndex(int stepIndex)
+        {
+            _triggerStepIndex = stepIndex;
+        }
+        
         public void SetSection(int sectionIndex)
         {
-            songObject.Reset();
+            //songObject.Reset();
             _currentSectionIndex = sectionIndex;
             _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)

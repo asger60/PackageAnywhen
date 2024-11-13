@@ -82,6 +82,12 @@ namespace Anywhen.Composing
             _internalIndex = (int)Mathf.Repeat(_internalIndex, patternLength);
         }
 
+        public AnyPatternStep GetStep(int stepIndex)
+        {
+            return steps[stepIndex];
+        }
+
+        
         public AnyPatternStep GetCurrentStep()
         {
             return steps[_internalIndex];
