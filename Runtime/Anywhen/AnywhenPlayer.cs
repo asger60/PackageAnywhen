@@ -407,9 +407,40 @@ namespace Anywhen
         }
 
 
-        public void TriggerStepIndex(int stepIndex)
+        public void TriggerStepIndex(int stepIndex, bool instant = false)
         {
-            _triggerStepIndex = stepIndex;
+            if (instant)
+            {
+                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                {
+                    var sectionTrack = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                    var track = _currentSong.Tracks[trackIndex];
+                    var pattern = sectionTrack.GetPlayingPattern();
+                    var step = pattern.GetStep(stepIndex);
+                    
+                    if (sectionTrack.isMuted) continue;
+                    
+                    if (step.noteOn || step.noteOff)
+                    {
+                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
+                        float thisRnd = Random.Range(0, 1f);
+                        if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                        {
+                            var songTrack = currentTracks[trackIndex];
+
+                            var triggerStep = step.Clone();
+                            triggerStep.rootNote += rootNoteMod;
+
+                            songTrack.TriggerStep(step, pattern, rootNoteMod);
+                        }
+                    }
+                }                
+            }
+            else
+            {
+                _triggerStepIndex = stepIndex;
+            }
+            
         }
 
         public void SetSection(int sectionIndex)
