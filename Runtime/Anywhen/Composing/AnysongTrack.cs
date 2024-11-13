@@ -38,7 +38,6 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-            
         }
 
         public AnysongTrack Clone()
@@ -58,7 +57,7 @@ namespace Anywhen.Composing
         {
             _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote + rootMod);
             _lastTrackEvent.velocity *= volume;
-            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, this);
+            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, tickRate, this);
             foreach (var repeat in anyPatternStep.GetRepeats(pattern.rootNote, volume))
             {
                 AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, tickRate, this);
@@ -67,9 +66,6 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
-            
         }
-
-        
     }
 }
