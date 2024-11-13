@@ -117,10 +117,9 @@ namespace Anywhen
                 var track = _currentSong.Tracks[trackIndex];
                 var pattern = sectionTrack.GetPlayingPattern();
                 var step = pattern.GetCurrentStep();
-                if (_triggerStepIndex > 0)
+                if (_triggerStepIndex >= 0)
                 {
                     step = pattern.GetStep(_triggerStepIndex);
-                    _triggerStepIndex = -1;
                 }
                 
                 
@@ -145,6 +144,7 @@ namespace Anywhen
                     }
                 }
             }
+            _triggerStepIndex = -1;
         }
 
 
