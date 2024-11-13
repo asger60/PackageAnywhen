@@ -37,6 +37,8 @@ namespace Anywhen
 
 
         [SerializeField] private AnysongObject customSong;
+        private int _triggerStepIndex = -1;
+
 
         private void Awake()
         {
@@ -76,7 +78,7 @@ namespace Anywhen
         void LoadCustomSong()
         {
             if (customSong == null) return;
-            Load(customSong);
+            EditorSetSongAndPackObject(customSong, 0);
         }
 
         private void OnBar()
@@ -283,7 +285,7 @@ namespace Anywhen
             Load(_currentSong);
             if (_currentSong != AnysongObject)
             {
-                print("preview other song");
+                AnywhenRuntime.Log("preview other song");
                 currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
                 for (var i = 0; i < _currentSong.Tracks.Count; i++)
                 {
@@ -407,7 +409,6 @@ namespace Anywhen
         }
 
 
-        private int _triggerStepIndex = -1;
 
         public void TriggerStepIndex(int stepIndex)
         {
