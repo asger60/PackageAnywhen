@@ -63,23 +63,21 @@ namespace Anywhen
                 {
                     AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
                 }
-                else
+            }
+            LoadInstruments();
+        }
+
+        public void LoadInstruments()
+        {
+            foreach (var track in currentTracks)
+            {
+                if (track.instrument is AnywhenSampleInstrument instrument)
                 {
-                    if (track.instrument is AnywhenSampleInstrument instrument)
-                    {
-                        InstrumentDatabase.LoadInstrumentNotes(instrument);
-                    }
+                    InstrumentDatabase.LoadInstrumentNotes(instrument);
                 }
             }
         }
 
-
-        [ContextMenu("Load custom song")]
-        void LoadCustomSong()
-        {
-            if (customSong == null) return;
-            EditorSetSongAndPackObject(customSong, 0);
-        }
 
         private void OnBar()
         {
@@ -407,7 +405,6 @@ namespace Anywhen
         {
             intensity = newIntensity;
         }
-
 
 
         public void TriggerStepIndex(int stepIndex)

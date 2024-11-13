@@ -173,6 +173,17 @@ public class AnysongPlayerInspector : UnityEditor.Editor
             _anywhenPlayer.EditorSetSongAndPackObject(customSong, 0);
         };
         foldOut.Add(loadCusomButton);
+
+        var loadInstrumentsButton = new Button();
+        loadInstrumentsButton.text = "Load instruments";
+        loadInstrumentsButton.clicked += () =>
+        {
+            _anywhenPlayer.LoadInstruments();
+        };
+        
+        
+        foldOut.Add(loadInstrumentsButton);
+        
         _root.Add(foldOut);
         return _root;
     }
