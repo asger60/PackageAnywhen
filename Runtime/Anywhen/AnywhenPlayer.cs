@@ -406,14 +406,8 @@ namespace Anywhen
         
         public void SetSection(int sectionIndex)
         {
-            //songObject.Reset();
             _currentSectionIndex = sectionIndex;
             _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                track.Reset();
-            }
         }
 
         public void SetSectionsAutoAdvance(bool state)
