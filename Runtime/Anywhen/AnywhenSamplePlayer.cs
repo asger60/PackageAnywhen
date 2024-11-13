@@ -80,18 +80,11 @@ namespace Anywhen
         }
 
 
-        public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings,
-            AnywhenMetronome.TickRate rate,
-            AnysongTrack track = null)
+        public void HandleEvent(NoteEvent e, AnywhenSampleInstrument anywhenInstrumentSettings, AnywhenMetronome.TickRate rate, AnysongTrack track = null)
         {
             switch (e.state)
             {
                 case NoteEvent.EventTypes.NoteOff:
-                    //if (anywhenInstrumentSettings.instrumentType != AnywhenSampleInstrument.InstrumentType.Sustained)
-                    //{
-                    //    Debug.LogWarning("trying to stop an instrument that is not set to sustained");
-                    //    return;
-                    //}
 
                     foreach (var thisSampler in _allSamplers)
                     {
@@ -122,8 +115,7 @@ namespace Anywhen
                             foreach (var thisSampler in _allSamplers)
                             {
                                 if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note &&
-                                    thisSampler.ScheduledPlayTime == playTime)
+                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note && thisSampler.ScheduledPlayTime == playTime)
                                 {
                                     return;
                                 }
@@ -134,7 +126,7 @@ namespace Anywhen
 
                         if (anywhenSampler == null)
                         {
-                            //Debug.LogWarning("no available samplers ");
+                            AnywhenRuntime.Log("no available samplers ");
                             return;
                         }
 

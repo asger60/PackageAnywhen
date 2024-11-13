@@ -63,6 +63,7 @@ namespace Anywhen
         public void NoteOn(int note, double playTime, double stopTime, float volume,
             AnywhenSampleInstrument newSettings, AnysongTrack track = null)
         {
+            
             SetReady(false);
             _instrument = newSettings;
             if (_instrument == null)

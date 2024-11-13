@@ -231,7 +231,7 @@ namespace Anywhen
         {
             return playbackRate switch
             {
-                TickRate.None => 0,
+                TickRate.None => AudioSettings.dspTime,
                 TickRate.Sub2 => _nextTime2,
                 TickRate.Sub4 => _nextTime4,
                 TickRate.Sub8 => _nextTime8,
