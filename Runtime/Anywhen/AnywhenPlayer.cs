@@ -411,34 +411,44 @@ namespace Anywhen
         {
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                var sectionTrack = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                if (sectionTrack.isMuted) continue;
-                var track = _currentSong.Tracks[trackIndex];
-                var pattern = sectionTrack.GetPlayingPattern();
-                var step = pattern.GetCurrentStep();
-                if (stepIndex >= 0)
+                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
                 {
-                    step = pattern.GetStep(stepIndex);
-                }
+                    var section = _currentSong.Sections[sectionIndex];
+                    var sectionTrack = section.tracks[trackIndex];
+                    if (sectionTrack.isMuted) continue;
 
-                if (_triggerStepIndex >= 0)
-                {
-                    step = pattern.GetStep(_triggerStepIndex);
-                }
-                pattern.Advance();
 
-                if (step.noteOn || step.noteOff)
-                {
-                    float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
-                    float thisRnd = Random.Range(0, 1f);
-                    if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                    var track = _currentSong.Tracks[trackIndex];
+                    var pattern = sectionTrack.GetPlayingPattern();
+
+                    var step = pattern.GetCurrentStep();
+
+                    if (stepIndex >= 0)
                     {
-                        var songTrack = currentTracks[trackIndex];
+                        step = pattern.GetStep(stepIndex);
+                    }
+                    else if (_triggerStepIndex >= 0)
+                    {
+                        step = pattern.GetStep(_triggerStepIndex);
+                    }
+                    else
+                    {
+                        pattern.Advance();
+                    }
 
-                        var triggerStep = step.Clone();
-                        triggerStep.rootNote += rootNoteMod;
+                    if (sectionIndex == _currentSectionIndex && (step.noteOn || step.noteOff))
+                    {
+                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
+                        float thisRnd = Random.Range(0, 1f);
+                        if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+                        {
+                            var songTrack = currentTracks[trackIndex];
 
-                        songTrack.TriggerStep(step, pattern, tickRate, rootNoteMod);
+                            var triggerStep = step.Clone();
+                            triggerStep.rootNote += rootNoteMod;
+
+                            songTrack.TriggerStep(step, pattern, tickRate, rootNoteMod);
+                        }
                     }
                 }
             }
