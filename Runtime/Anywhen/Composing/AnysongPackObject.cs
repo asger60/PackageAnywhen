@@ -29,6 +29,7 @@ namespace Anywhen.Composing
         {
             _songs?.Clear();
         }
+#if UNITY_EDITOR
 
 
         [ContextMenu("Get songs")]
@@ -55,7 +56,8 @@ namespace Anywhen.Composing
             }
 
             return foundAssets.ToArray();
-
         }
+
+#endif
     }
 }

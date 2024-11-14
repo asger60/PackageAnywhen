@@ -64,10 +64,9 @@ namespace Anywhen
                     AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
                 }
             }
-
-            LoadInstruments();
         }
 
+#if UNITY_EDITOR
         public void LoadInstruments()
         {
             foreach (var track in currentTracks)
@@ -78,6 +77,7 @@ namespace Anywhen
                 }
             }
         }
+#endif
 
 
         private void OnBar()
@@ -116,45 +116,8 @@ namespace Anywhen
         private void OnTick16()
         {
             if (!_isRunning) return;
-
             _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
-
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
-            //for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            //{
-            //    var sectionTrack = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-            //    var track = _currentSong.Tracks[trackIndex];
-            //    var pattern = sectionTrack.GetPlayingPattern();
-            //    var step = pattern.GetCurrentStep();
-            //    if (_triggerStepIndex >= 0)
-            //    {
-            //        step = pattern.GetStep(_triggerStepIndex);
-            //    }
-//
-//
-            //    pattern.Advance();
-//
-//
-            //    if (sectionTrack.isMuted) continue;
-//
-//
-            //    if (step.noteOn || step.noteOff)
-            //    {
-            //        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
-            //        float thisRnd = Random.Range(0, 1f);
-            //        if (thisRnd < step.chance && step.mixWeight < thisIntensity)
-            //        {
-            //            var songTrack = currentTracks[trackIndex];
-//
-            //            var triggerStep = step.Clone();
-            //            triggerStep.rootNote += rootNoteMod;
-//
-            //            songTrack.TriggerStep(step, pattern, AnywhenMetronome.TickRate.Sub16, rootNoteMod);
-            //        }
-            //    }
-            //}
-//
-            //_triggerStepIndex = -1;
         }
 
 
@@ -222,7 +185,6 @@ namespace Anywhen
             if (_currentSong == null)
             {
                 Load(AnysongObject);
-                //return;
             }
 
             if (!AnysongPlayerBrain.IsStarted)
@@ -232,7 +194,7 @@ namespace Anywhen
 
             if (Application.isPlaying && AnysongPlayerBrain.GetCurrentPlayer() == this)
             {
-                Debug.Log("retriggering player that is already playing");
+                AnywhenRuntime.Log("retriggering player that is already playing");
                 return;
             }
 
@@ -245,8 +207,7 @@ namespace Anywhen
 
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
-                _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
 
             AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
@@ -365,7 +326,7 @@ namespace Anywhen
         public void EditorSetRootNote(int newValue)
         {
             rootNoteMod = newValue;
-            EditorUtility.SetDirty(this);
+            
         }
 
         public void EditorRandomizeSounds()
@@ -388,7 +349,7 @@ namespace Anywhen
             }
 
             isCustomized = true;
-            EditorUtility.SetDirty(this);
+            
         }
 
         public void EditorRestoreSounds()
@@ -496,13 +457,13 @@ namespace Anywhen
         public void EditorSetGlobelTempo(bool newValue)
         {
             followGlobalTempo = newValue;
-            EditorUtility.SetDirty(this);
+            
         }
 
         public void EditorSetFollowGlobalIntensity(bool newValue)
         {
             followGlobalIntensity = newValue;
-            EditorUtility.SetDirty(this);
+            
         }
     }
 }

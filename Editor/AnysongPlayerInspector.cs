@@ -77,6 +77,7 @@ public class AnysongPlayerInspector : UnityEditor.Editor
             bool wasPlaying = AnywhenRuntime.IsPreviewing;
             _anysongPlayerControls.Stop();
             _anywhenPlayer.EditorRandomizeSounds();
+            EditorUtility.SetDirty(_anywhenPlayer);
             if (wasPlaying)
             {
                 _anysongPlayerControls.Play();
@@ -89,6 +90,7 @@ public class AnysongPlayerInspector : UnityEditor.Editor
             {
                 _anywhenPlayer.EditorSetRootNote(Int32.Parse(button.text));
                 RefreshActiveRootNoteButton();
+                EditorUtility.SetDirty(_anywhenPlayer);
             };
         });
         RefreshActiveRootNoteButton();
@@ -143,11 +145,13 @@ public class AnysongPlayerInspector : UnityEditor.Editor
         {
             _tempoAnySlider.SetIsEnabled(!evt.newValue);
             _anywhenPlayer.EditorSetGlobelTempo(evt.newValue);
+            EditorUtility.SetDirty(_anywhenPlayer);
         });
         globalIntensityToggle.RegisterValueChangedCallback(evt =>
         {
             _intensityAnySlider.SetIsEnabled(!evt.newValue);
             _anywhenPlayer.EditorSetFollowGlobalIntensity(evt.newValue);
+            EditorUtility.SetDirty(_anywhenPlayer);
         });
 
 

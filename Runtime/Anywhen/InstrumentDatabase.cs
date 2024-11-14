@@ -4,14 +4,15 @@ using System.Linq;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class InstrumentDatabase : MonoBehaviour
 {
     [SerializeField] private AnywhenInstrument[] instruments;
 
-    [SerializeField] public Dictionary<AnywhenSampleInstrument, List<AnywhenNoteClip>> LoadedNotes = new();
 
     [Serializable]
     public struct LoadedInstrument
@@ -46,7 +47,7 @@ public class InstrumentDatabase : MonoBehaviour
         return array.OrderBy(x => random.Next()).ToArray();
     }
 
-
+#if UNITY_EDITOR
     [ContextMenu("unlink clips")]
     void UnlinkNoteCLips()
     {
@@ -59,7 +60,7 @@ public class InstrumentDatabase : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
+
     public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)
     {
         if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
