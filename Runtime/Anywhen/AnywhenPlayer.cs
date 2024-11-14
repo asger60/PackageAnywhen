@@ -326,7 +326,6 @@ namespace Anywhen
         public void EditorSetRootNote(int newValue)
         {
             rootNoteMod = newValue;
-            
         }
 
         public void EditorRandomizeSounds()
@@ -349,7 +348,6 @@ namespace Anywhen
             }
 
             isCustomized = true;
-            
         }
 
         public void EditorRestoreSounds()
@@ -392,10 +390,9 @@ namespace Anywhen
                     {
                         step = pattern.GetStep(_triggerStepIndex);
                     }
-                    else
-                    {
-                        pattern.Advance();
-                    }
+
+                    pattern.Advance();
+
 
                     if (sectionIndex == _currentSectionIndex && (step.noteOn || step.noteOff))
                     {
@@ -457,13 +454,11 @@ namespace Anywhen
         public void EditorSetGlobelTempo(bool newValue)
         {
             followGlobalTempo = newValue;
-            
         }
 
         public void EditorSetFollowGlobalIntensity(bool newValue)
         {
             followGlobalIntensity = newValue;
-            
         }
     }
 }
