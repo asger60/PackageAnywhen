@@ -391,7 +391,8 @@ namespace Anywhen
                         step = pattern.GetStep(_triggerStepIndex);
                     }
 
-                    pattern.Advance();
+                    if (tickRate != AnywhenMetronome.TickRate.None)
+                        pattern.Advance();
 
 
                     if (sectionIndex == _currentSectionIndex && (step.noteOn || step.noteOff))
