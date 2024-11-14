@@ -151,12 +151,12 @@ public class AnysongPlayerInspector : UnityEditor.Editor
         });
 
 
-        var foldOut = new Foldout();
-        foldOut.text = "Advanced stuff";
-        foldOut.value = false;
+        var foldOut = new Foldout
+        {
+            text = "Advanced stuff",
+            value = false
+        };
 
-        
-        
 
         var loadCusomButton = new Button();
         var customSongProperty = serializedObject.FindProperty("customSong");
@@ -171,11 +171,14 @@ public class AnysongPlayerInspector : UnityEditor.Editor
             var customSong = (AnysongObject)customSongProperty.objectReferenceValue;
             _anysongPlayerControls.SetSongObject(customSong);
             _anywhenPlayer.EditorSetSongAndPackObject(customSong, 0);
+            EditorUtility.SetDirty(_anywhenPlayer);
         };
         foldOut.Add(loadCusomButton);
 
-        var loadInstrumentsButton = new Button();
-        loadInstrumentsButton.text = "Load instruments";
+        var loadInstrumentsButton = new Button
+        {
+            text = "Load instruments"
+        };
         loadInstrumentsButton.clicked += () =>
         {
             _anywhenPlayer.LoadInstruments();
