@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
-using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -173,7 +172,6 @@ namespace Anywhen
         protected internal void AttachToMetronome()
         {
             if (_isRunning) return;
-            //if (!_loaded) return;
             _isRunning = true;
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
@@ -207,9 +205,12 @@ namespace Anywhen
 
             _currentBar = 0;
             var section = _currentSong.Sections[_currentSectionIndex];
+            
+            
+            AttachToMetronome();
+            
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
-
-            AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
+            //AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
         public void Stop()
