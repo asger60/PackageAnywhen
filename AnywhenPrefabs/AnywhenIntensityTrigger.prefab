@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8207662452618103203
+--- !u!1 &5159430530538944970
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5538231729666420669}
-  - component: {fileID: 985398207751296918}
+  - component: {fileID: 1006355961753827176}
+  - component: {fileID: 6461139122626046810}
   m_Layer: 0
-  m_Name: AnywhenPlayer
+  m_Name: AnywhenIntensityTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5538231729666420669
+--- !u!4 &1006355961753827176
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207662452618103203}
+  m_GameObject: {fileID: 5159430530538944970}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,28 +32,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &985398207751296918
+--- !u!114 &6461139122626046810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207662452618103203}
+  m_GameObject: {fileID: 5159430530538944970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fbc0e794f0964dd6ae15ae07b1374e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 71c9c59b9555441e789d4559dfd8f289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerTransitionsType: 0
-  currentSongPackIndex: 0
-  songObject: {fileID: 0}
-  currentPlayerTempo: 100
-  rootNoteMod: 0
-  customTracks: []
-  currentTracks: []
-  isCustomized: 0
-  intensity: 1
-  followGlobalTempo: 0
-  followGlobalIntensity: 0
-  sectionsAutoAdvance: 1
-  customSong: {fileID: 0}
+  triggerObject: {fileID: 0}
+  triggerObjectType: 0
+  triggerObjectTag: 
+  triggerObjectName: 
+  triggerType: 0
+  intensityTarget: 1
+  targetPlayer: {fileID: 0}
+  intensityUpdateMode: 0
+  intensitySetValue: 0
+  intensityModifyValue: 0

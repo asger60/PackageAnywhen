@@ -1,14 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Anywhen.Composing
 {
     public class AnysongPlayerBrain : MonoBehaviour
     {
-        AnywhenPlayer _currentPlayer;
-
-
-        private AnywhenPlayer _nextUpPlayer, _stopPlayer;
+        private AnywhenPlayer _stopPlayer;
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
 
@@ -22,21 +20,44 @@ namespace Anywhen.Composing
             CrossFade
         }
 
+        public enum TransitionMode
+        {
+            OvertakeInstant,
+            OvertakeNextBar,
+            MixInstant,
+            MixNextBar
+        }
 
-
+        public enum TriggerBehaviour
+        {
+            StartPlayer,
+            StopPlayer
+        }
 
         public static float GlobalIntensity => AnywhenRuntime.AnysongPlayerBrain.globalIntensity;
         private bool _isStarted;
         public static bool IsStarted => AnywhenRuntime.AnysongPlayerBrain._isStarted;
+        private List<AnywhenPlayer> _players = new List<AnywhenPlayer>();
 
-        private void Awake()
+
+        private class NextUpPlayer
         {
-            _currentPlayer = null;
+            public AnywhenPlayer Player;
+            public TransitionMode TransitionMode;
+            public TriggerBehaviour TriggerBehaviour;
+
+            public NextUpPlayer(AnywhenPlayer player, TransitionMode transitionMode, TriggerBehaviour triggerBehaviour)
+            {
+                Player = player;
+                TransitionMode = transitionMode;
+                TriggerBehaviour = triggerBehaviour;
+            }
         }
+
+        private NextUpPlayer _nextPlayer;
 
         private void Start()
         {
-            SetGlobalIntensity(1);
             SetSectionLock(-1);
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
@@ -44,21 +65,29 @@ namespace Anywhen.Composing
 
         private void OnNextBar()
         {
-            if (_nextUpPlayer != null)
+            if (_nextPlayer != null)
             {
-                TransitionNow(_nextUpPlayer);
-                _nextUpPlayer = null;
-            }
+                if (_nextPlayer.TriggerBehaviour == TriggerBehaviour.StartPlayer)
+                {
+                    if (_nextPlayer.TransitionMode == TransitionMode.OvertakeNextBar)
+                    {
+                        StopAllPlayers();
+                    }
+                    _nextPlayer.Player.Play();
+                }
 
-            if (_stopPlayer != null)
-            {
-                TransitionNow(null);
-                _stopPlayer = null;
+                if (_nextPlayer.TriggerBehaviour == TriggerBehaviour.StopPlayer)
+                {
+                    _nextPlayer.Player.Stop();
+                }                
+
+                _nextPlayer = null;
             }
         }
 
-        public static void TransitionTo(AnywhenPlayer player, TransitionTypes transitionType) =>
-            AnywhenRuntime.AnysongPlayerBrain.HandleTransitionToPlayer(player, transitionType);
+
+        public static void TransitionTo(AnywhenPlayer player, TriggerBehaviour triggerBehaviour, TransitionMode transitionType) =>
+            AnywhenRuntime.AnysongPlayerBrain.HandleTransitionToPlayer(player, triggerBehaviour, transitionType);
 
 
         public static void SetGlobalIntensity(float intensity)
@@ -76,85 +105,76 @@ namespace Anywhen.Composing
         }
 
 
-        private void HandleTransitionToPlayer(AnywhenPlayer player, TransitionTypes transitionType)
+        void StopAllPlayers()
+        {
+            for (var i = _players.Count - 1; i >= 0; i--)
+            {
+                var player = _players[i];
+                player.Stop();
+            }
+
+            _players.Clear();
+        }
+
+        public static void RegisterPlay(AnywhenPlayer player)
+        {
+            AnywhenRuntime.AnysongPlayerBrain._players.Add(player);
+        }
+
+        private void HandleTransitionToPlayer(AnywhenPlayer player, TriggerBehaviour triggerBehaviour, TransitionMode transitionType)
         {
             _isStarted = true;
             if (AnywhenRuntime.IsPreviewing)
             {
-                TransitionNow(player);
+                StopAllPlayers();
+                player.Play();
                 return;
             }
 
 
             switch (transitionType)
             {
-                case TransitionTypes.Instant:
-                    TransitionNow(player);
-                    break;
-                case TransitionTypes.NextBar:
-                    _nextUpPlayer = player;
-                    break;
-                case TransitionTypes.CrossFade:
-                    _nextUpPlayer = player;
-                    _nextUpPlayer.AttachToMetronome();
-                    break;
+                case TransitionMode.OvertakeInstant:
+                    if (triggerBehaviour == TriggerBehaviour.StartPlayer)
+                    {
+                        StopAllPlayers();
+                        player.Play();
+                    }
 
+                    if (triggerBehaviour == TriggerBehaviour.StopPlayer)
+                    {
+                        player.Stop();
+                    }
+                    break;
+                case TransitionMode.OvertakeNextBar:
+                    _nextPlayer = new NextUpPlayer(player, transitionType, triggerBehaviour);
+                    break;
+                case TransitionMode.MixInstant:
+                    if (triggerBehaviour == TriggerBehaviour.StartPlayer)
+                        player.Play();
+                    if (triggerBehaviour == TriggerBehaviour.StopPlayer)
+                        player.Stop();
+
+                    break;
+                case TransitionMode.MixNextBar:
+                    _nextPlayer = new NextUpPlayer(player, transitionType, triggerBehaviour);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void HandleTransitionToNothing(AnywhenPlayer player, TransitionTypes transitionType)
-        {
-            switch (transitionType)
-            {
-                case TransitionTypes.Instant:
-                    TransitionNow(null);
-                    break;
-                case TransitionTypes.NextBar:
-                    _stopPlayer = player;
-                    break;
-                case TransitionTypes.CrossFade:
-                    Debug.LogWarning("stopping doesn't support crossfade");
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        void TransitionNow(AnywhenPlayer newPlayer)
-        {
-            if (_currentPlayer != null)
-            {
-                _currentPlayer.ReleaseFromMetronome();
-            }
-
-            if (newPlayer != null)
-            {
-                _currentPlayer = newPlayer;
-                _currentPlayer.AttachToMetronome();
-            }
-            else
-            {
-                _currentPlayer?.ReleaseFromMetronome();
-                _currentPlayer = null;
-            }
-        }
 
         public static void SetSectionLock(int index)
         {
             SectionLockIndex = index;
         }
 
-        public static AnywhenPlayer GetCurrentPlayer()
-        {
-            return AnywhenRuntime.AnysongPlayerBrain._currentPlayer;
-        }
 
-        public static void StopPlayer(AnywhenPlayer player, TransitionTypes transitionType)
+        public static void RegisterStop(AnywhenPlayer anywhenPlayer)
         {
-            AnywhenRuntime.AnysongPlayerBrain.HandleTransitionToNothing(player, transitionType);
+            if (AnywhenRuntime.AnysongPlayerBrain._players.Contains(anywhenPlayer))
+                AnywhenRuntime.AnysongPlayerBrain._players.Remove(anywhenPlayer);
         }
     }
 }

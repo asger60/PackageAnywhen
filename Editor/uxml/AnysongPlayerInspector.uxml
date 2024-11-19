@@ -27,6 +27,9 @@
                     <ui:Toggle label="Follow global intensity" value="false" name="FollowIntensityToggle" />
                 </ui:VisualElement>
             </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; min-height: 30px; border-left-color: rgb(149, 149, 149); border-right-color: rgb(149, 149, 149); border-top-color: rgb(149, 149, 149); border-bottom-color: rgb(149, 149, 149); border-left-width: 1px; border-bottom-width: 1px; border-right-width: 1px; -unity-text-align: middle-left; justify-content: center;">
+                <ui:Toggle label="Play on awake" name="PlayOnAwakeToggle" />
+            </ui:VisualElement>
             <ui:Foldout text="Customize" focusable="false" value="false" style="margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 0; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(149, 149, 149); border-right-color: rgb(149, 149, 149); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgb(149, 149, 149); padding-left: 20px;">
                 <ui:VisualElement style="flex-grow: 1; padding-left: -20px; position: relative; left: -20px; bottom: 0; margin-bottom: 20px;">
                     <ui:VisualElement style="flex-grow: 1;">
@@ -50,7 +53,7 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:Foldout>
-            <ui:VisualElement name="NoTriggerElement" style="flex-grow: 1; height: auto; max-height: none; min-height: auto; border-top-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgb(204, 204, 204); border-right-color: rgb(204, 204, 204); border-top-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgb(250, 220, 139);">
+            <ui:VisualElement name="NoTriggerElement" style="flex-grow: 1; height: auto; max-height: none; min-height: auto; border-top-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgb(204, 204, 204); border-right-color: rgb(204, 204, 204); border-top-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgb(250, 220, 139); display: none;">
                 <ui:Label tabindex="-1" text="No activation trigger assigned" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; color: rgb(0, 0, 0); -unity-text-align: middle-center; min-height: 25px; align-self: auto;" />
                 <ui:VisualElement style="flex-grow: 1; flex-direction: row; min-height: 25px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgb(237, 189, 59);">
                     <ui:Button text="Create trigger" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateTriggerButton" style="flex-grow: 1; color: rgb(0, 0, 0); padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; background-color: rgba(188, 188, 188, 0); border-left-color: rgb(56, 56, 56); border-right-color: rgb(56, 56, 56); border-top-color: rgb(56, 56, 56); border-bottom-color: rgb(56, 56, 56); border-bottom-width: 1px; border-left-width: 0; border-top-width: 1px; border-right-width: 0;" />

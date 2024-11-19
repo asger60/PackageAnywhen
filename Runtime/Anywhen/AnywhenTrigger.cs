@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    [AddComponentMenu("Anywhen/AnywhenTrigger")]
+    [AddComponentMenu("")]
     public class AnywhenTrigger : MonoBehaviour
     {
-        public Action OnTrigger;
 
         public enum TriggerTypes
         {
@@ -34,11 +33,8 @@ namespace Anywhen
         }
 
         [SerializeField] private GameObject triggerObject;
-
         [SerializeField] private TriggerObjectTypes triggerObjectType;
-
         [SerializeField] private string triggerObjectTag;
-
         [SerializeField] private string triggerObjectName;
 
         public TriggerTypes triggerType;
@@ -136,13 +132,11 @@ namespace Anywhen
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
 
-        private void Trigger()
+        protected virtual void Trigger()
         {
-            OnTrigger?.Invoke();
         }
     }
 }

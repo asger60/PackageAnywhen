@@ -103,34 +103,37 @@ public class AnysongPlayerInspector : UnityEditor.Editor
 
         Refresh();
 
-        var songObject = serializedObject.FindProperty("songObject");
-        var songObjectField = new PropertyField(songObject);
-        songObjectField.BindProperty(songObject);
-        _root.Add(songObjectField);
+        var playToggle = _root.Q<Toggle>("PlayOnAwakeToggle");
+        playToggle.BindProperty(serializedObject.FindProperty("playOnAwake"));
+        
+        //var songObject = serializedObject.FindProperty("songObject");
+        //var songObjectField = new PropertyField(songObject);
+        //songObjectField.BindProperty(songObject);
+        //_root.Add(songObjectField);
 
-        var triggerObject = serializedObject.FindProperty("trigger");
-
-
-        var noTriggerElement = _root.Q<VisualElement>("NoTriggerElement");
-        var createTriggerButton = _root.Q<Button>("CreateTriggerButton");
-        var locateTriggerButton = _root.Q<Button>("LocateTriggerButton");
-        createTriggerButton.clicked += CreateTriggerButtonOnclicked;
-        locateTriggerButton.clicked += LocateTriggerButtonOnclicked;
+        //var triggerObject = serializedObject.FindProperty("trigger");
 
 
-        noTriggerElement.style.display = triggerObject.objectReferenceValue == null
-            ? new StyleEnum<DisplayStyle>(StyleKeyword.Auto)
-            : new StyleEnum<DisplayStyle>(DisplayStyle.None);
-
-        var triggerObjectField = new PropertyField(triggerObject);
-        triggerObjectField.BindProperty(triggerObject);
-        _root.Add(triggerObjectField);
+        //var noTriggerElement = _root.Q<VisualElement>("NoTriggerElement");
+        //var createTriggerButton = _root.Q<Button>("CreateTriggerButton");
+        //var locateTriggerButton = _root.Q<Button>("LocateTriggerButton");
+        //createTriggerButton.clicked += CreateTriggerButtonOnclicked;
+        //locateTriggerButton.clicked += LocateTriggerButtonOnclicked;
 
 
-        var transitionTypeObject = serializedObject.FindProperty("triggerTransitionsType");
-        var transitionObjectField = new PropertyField(transitionTypeObject);
-        transitionObjectField.BindProperty(transitionTypeObject);
-        _root.Add(transitionObjectField);
+        //noTriggerElement.style.display = triggerObject.objectReferenceValue == null
+        //    ? new StyleEnum<DisplayStyle>(StyleKeyword.Auto)
+        //    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+        //var triggerObjectField = new PropertyField(triggerObject);
+        //triggerObjectField.BindProperty(triggerObject);
+        //_root.Add(triggerObjectField);
+
+
+        //var transitionTypeObject = serializedObject.FindProperty("triggerTransitionsType");
+        //var transitionObjectField = new PropertyField(transitionTypeObject);
+        //transitionObjectField.BindProperty(transitionTypeObject);
+        //_root.Add(transitionObjectField);
 
 
         var globalTempoToggle = _root.Q<Toggle>("FollowTempoToggle");
@@ -210,15 +213,15 @@ public class AnysongPlayerInspector : UnityEditor.Editor
         });
     }
 
-    private void LocateTriggerButtonOnclicked()
-    {
-        _anywhenPlayer.EditorLocateTrigger();
-    }
-
-    private void CreateTriggerButtonOnclicked()
-    {
-        _anywhenPlayer.EditorCreateTrigger();
-    }
+    //private void LocateTriggerButtonOnclicked()
+    //{
+    //    _anywhenPlayer.EditorLocateTrigger();
+    //}
+//
+    //private void CreateTriggerButtonOnclicked()
+    //{
+    //    _anywhenPlayer.EditorCreateTrigger();
+    //}
 
     private void OnBrowseWindowClosed(bool didLoad)
     {

@@ -5,39 +5,10 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
-    [CustomEditor(typeof(AnywhenTrigger))]
-    public class AnywhenTriggerInspector : UnityEditor.Editor
+    public class AnywhenTriggerInspector 
     {
-        private VisualElement _targetObjectTypeElement;
-        private VisualElement _targetObjectElement;
 
-        public override VisualElement CreateInspectorGUI()
-        {
-            VisualElement inspector = new VisualElement();
-            inspector.Add(AnywhenBranding.DrawBranding());
-            _targetObjectTypeElement = new VisualElement();
-            _targetObjectElement = new VisualElement();
-
-
-            var triggerType = serializedObject.FindProperty("triggerType");
-
-            var triggerTypeField = new PropertyField(triggerType);
-            triggerTypeField.BindProperty(triggerType);
-            inspector.Add(triggerTypeField);
-            triggerTypeField.RegisterValueChangeCallback(evt =>
-            {
-                _targetObjectElement.Clear();
-                _targetObjectTypeElement.Clear();
-                _targetObjectTypeElement.Add(AddTargetTypeControls());
-            });
-
-
-            inspector.Add(_targetObjectTypeElement);
-            inspector.Add(_targetObjectElement);
-            return inspector;
-        }
-
-        VisualElement AddTargetTypeControls()
+        public static VisualElement AddTargetTypeControls(SerializedObject serializedObject, VisualElement targetObjectElement)
         {
             VisualElement inspector = new VisualElement();
             var triggerType = serializedObject.FindProperty("triggerType");
@@ -58,15 +29,15 @@ using UnityEngine.UIElements;
                 inspector.Add(triggerObjectTypeField);
                 triggerObjectTypeField.RegisterValueChangeCallback(evt =>
                 {
-                    _targetObjectElement.Clear();
-                    _targetObjectElement.Add(AddTargetObjectControls());
+                    targetObjectElement.Clear();
+                    targetObjectElement.Add(AddTargetObjectControls(serializedObject));
                 });
             }
 
             return inspector;
         }
 
-        VisualElement AddTargetObjectControls()
+        private static VisualElement AddTargetObjectControls(SerializedObject serializedObject)
         {
             VisualElement inspector = new VisualElement();
             var triggerType = serializedObject.FindProperty("triggerObjectType");
@@ -85,9 +56,7 @@ using UnityEngine.UIElements;
                     var targetTag = serializedObject.FindProperty("triggerObjectTag");
                     var targetTagField = new TagField("Trigger tag");
                     targetTagField.labelElement.AddToClassList(PropertyField.inspectorElementUssClassName);
-
-                    //targetTagField.labelElement.style.width = new StyleLength(new Length(40, LengthUnit.Percent));
-
+                    
                     targetTagField.BindProperty(targetTag);
                     inspector.Add(targetTagField);
                     break;

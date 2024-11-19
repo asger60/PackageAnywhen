@@ -1,17 +1,13 @@
 using System;
 using Anywhen.Composing;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {
-    [AddComponentMenu("Anywhen/AnywhenIntensitySetter")]
-    public class AnywhenIntensitySetter : MonoBehaviour
+    [AddComponentMenu("Anywhen/AnywhenIntensityTrigger")]
+    public class AnywhenIntensityTrigger : AnywhenTrigger
     {
-        [FormerlySerializedAs("anywhenTrigger")] [SerializeField]
-        private AnywhenTrigger trigger;
-
-
+        
         enum IntensityTarget
         {
             Global,
@@ -19,7 +15,6 @@ namespace Anywhen
         }
 
         [SerializeField] private IntensityTarget intensityTarget;
-
         [SerializeField] private AnywhenPlayer targetPlayer;
 
         public enum ValueChangeModes
@@ -30,18 +25,10 @@ namespace Anywhen
 
         [SerializeField] private ValueChangeModes intensityUpdateMode;
 
-        [Range(0, 100f)] [SerializeField] private float intensitySetValue;
-
+        [Range(0, 100f)] [SerializeField] private float intensitySetValue = 100;
         [Range(-100, 100f)] [SerializeField] private float intensityModifyValue;
-
-        void Start()
-        {
-            if (!trigger)
-                TryGetComponent(out trigger);
-            trigger.OnTrigger += Trigger;
-        }
-
-        private void Trigger()
+        
+        protected override void Trigger()
         {
             switch (intensityUpdateMode)
             {

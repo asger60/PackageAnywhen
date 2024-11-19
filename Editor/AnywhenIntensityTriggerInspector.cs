@@ -1,14 +1,11 @@
-using System;
 using Anywhen;
 using UnityEditor;
-using UnityEditor.Graphs;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 
-    [CustomEditor(typeof(AnywhenIntensitySetter))]
-    public class AnywhenIntensitySetterInspector : UnityEditor.Editor
+    [CustomEditor(typeof(AnywhenIntensityTrigger))]
+    public class AnywhenIntensityTriggerInspector : Editor
     {
         private VisualElement _targetObjectTypeElement;
 
@@ -17,6 +14,26 @@ using UnityEngine.UIElements;
             VisualElement inspector = new VisualElement();
             inspector.Add(AnywhenBranding.DrawBranding());
 
+
+            var triggerType = serializedObject.FindProperty("triggerType");
+
+            var triggerTypeField = new PropertyField(triggerType);
+            triggerTypeField.BindProperty(triggerType);
+            inspector.Add(triggerTypeField);
+            
+            var triggerTypeElement = new VisualElement();
+            var triggerObjectTypeElement = new VisualElement();
+            
+            triggerTypeField.RegisterValueChangeCallback(evt =>
+            {
+                triggerTypeElement.Clear();
+                triggerObjectTypeElement.Clear();
+                triggerObjectTypeElement.Add( AnywhenTriggerInspector.AddTargetTypeControls(serializedObject, triggerTypeElement));
+            });
+            
+            inspector.Add(triggerObjectTypeElement);
+            inspector.Add(triggerTypeElement);
+            
             _targetObjectTypeElement = new VisualElement();
             var trigger = serializedObject.FindProperty("trigger");
             inspector.Add(new PropertyField(trigger));
@@ -48,12 +65,11 @@ using UnityEngine.UIElements;
             
             inspector.Add(targetElement);
 
-            var triggerType = serializedObject.FindProperty("intensityUpdateMode");
-
-            var triggerTypeField = new PropertyField(triggerType);
-            triggerTypeField.BindProperty(triggerType);
-            inspector.Add(triggerTypeField);
-            triggerTypeField.RegisterValueChangeCallback(evt =>
+            var intensityUpdateMode = serializedObject.FindProperty("intensityUpdateMode");
+            var intensityUpdateModeField = new PropertyField(intensityUpdateMode);
+            intensityUpdateModeField.BindProperty(intensityUpdateMode);
+            inspector.Add(intensityUpdateModeField);
+            intensityUpdateModeField.RegisterValueChangeCallback(evt =>
             {
                 _targetObjectTypeElement.Clear();
                 _targetObjectTypeElement.Add(AddTargetTypeControls());
@@ -69,7 +85,7 @@ using UnityEngine.UIElements;
             VisualElement inspector = new VisualElement();
             var triggerType = serializedObject.FindProperty("intensityUpdateMode");
 
-            if ((AnywhenIntensitySetter.ValueChangeModes)triggerType.enumValueIndex == AnywhenIntensitySetter.ValueChangeModes.Modify)
+            if ((AnywhenIntensityTrigger.ValueChangeModes)triggerType.enumValueIndex == AnywhenIntensityTrigger.ValueChangeModes.Modify)
             {
                 var label = new Label("The music intensity will be modified by this amount everytime this component is triggered.")
                 {
@@ -88,7 +104,7 @@ using UnityEngine.UIElements;
                 inspector.Add(triggerObjectTypeField);
             }
 
-            if ((AnywhenIntensitySetter.ValueChangeModes)triggerType.enumValueIndex == AnywhenIntensitySetter.ValueChangeModes.Set)
+            if ((AnywhenIntensityTrigger.ValueChangeModes)triggerType.enumValueIndex == AnywhenIntensityTrigger.ValueChangeModes.Set)
             {
                 var label = new Label("The music intensity will be set to this exact value everytime this component is triggered")
                 {

@@ -25,7 +25,7 @@ namespace Anywhen
         [SerializeField] private AnysongObject songObject;
         [SerializeField] private int currentPlayerTempo = -100;
         [SerializeField] private int rootNoteMod;
-        [SerializeField] private AnywhenTrigger trigger;
+        //[SerializeField] private AnywhenTrigger trigger;
         [SerializeField] private AnysongTrack[] customTracks;
         [SerializeField] private AnysongTrack[] currentTracks;
         [SerializeField] private bool isCustomized;
@@ -37,17 +37,19 @@ namespace Anywhen
 
         [SerializeField] private AnysongObject customSong;
         private int _triggerStepIndex = -1;
-
+        [SerializeField] private bool playOnAwake;
 
         private void Awake()
         {
-            trigger.OnTrigger += Play;
+           // trigger.OnTrigger += Play;
         }
 
 
         private void Start()
         {
             Load(songObject);
+            if(playOnAwake)
+                Play();
         }
 
         private void Load(AnysongObject anysong)
@@ -190,11 +192,11 @@ namespace Anywhen
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
             }
 
-            if (Application.isPlaying && AnysongPlayerBrain.GetCurrentPlayer() == this)
-            {
-                AnywhenRuntime.Log("retriggering player that is already playing");
-                return;
-            }
+            //if (Application.isPlaying && AnysongPlayerBrain.GetCurrentPlayer() == this)
+            //{
+            //    AnywhenRuntime.Log("retriggering player that is already playing");
+            //    return;
+            //}
 
 
             if (_currentSong)
@@ -208,14 +210,16 @@ namespace Anywhen
             
             
             AttachToMetronome();
-            
+            AnysongPlayerBrain.RegisterPlay(this);
+
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
             //AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
         public void Stop()
         {
-            AnysongPlayerBrain.StopPlayer(this, AnysongPlayerBrain.TransitionTypes.Instant);
+            AnysongPlayerBrain.RegisterStop(this);
+            ReleaseFromMetronome();
         }
 
 
@@ -276,15 +280,15 @@ namespace Anywhen
             }
         }
 
-        public void EditorCreateTrigger()
-        {
-            trigger = gameObject.AddComponent<AnywhenTrigger>();
-        }
-
-        public void EditorLocateTrigger()
-        {
-            trigger = GetComponentInChildren<AnywhenTrigger>();
-        }
+        //public void EditorCreateTrigger()
+        //{
+        //    trigger = gameObject.AddComponent<AnywhenTrigger>();
+        //}
+//
+        //public void EditorLocateTrigger()
+        //{
+        //    trigger = GetComponentInChildren<AnywhenTrigger>();
+        //}
 
 
         public int[] EditorGetPlayingTrackPatternIndexes()

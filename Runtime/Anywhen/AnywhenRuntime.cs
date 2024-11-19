@@ -150,7 +150,7 @@ namespace Anywhen
                 _anywhenSynthHandler.ClearPresets();
                 _anywhenSynthHandler.Init();
                 _anywhenSamplerHandler.Init();
-                //targetPlayer.Load();
+
                 targetPlayer.Play();
                 Metronome.Play();
             }
