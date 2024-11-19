@@ -8,6 +8,8 @@
 - Select “Add package from git URL….”
 - Paste in this URL https://github.com/asger60/PackageAnywhen.git
 - Click add (to the right of the address) and wait for it to install
+
+See this page https://docs.unity3d.com/Manual/upm-ui-giturl.html if you are getting git errors when trying to install.   
   
 **Installing a song pack**
 - Again in the package manager, go through the ass process, and basic Anywhen songpack from here: https://github.com/asger60/AnywhenTrackPack1
