@@ -56,6 +56,7 @@ namespace Anywhen.SettingsObjects
                 this.decay = decay;
                 this.sustain = sustain;
                 this.release = release;
+                this.enabled = true;
             }
         }
 

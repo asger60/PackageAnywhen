@@ -75,7 +75,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         this.duration = duration;
-        this.envelope = envelope;
+        this. envelope = envelope;
     }
 
 
