@@ -8,17 +8,20 @@ namespace Anywhen
     {
         [SerializeField] private AnywhenPlayer anywhenPlayer;
 
-        
+
         [SerializeField] private AnysongPlayerBrain.TriggerBehaviour triggerBehaviour;
-        
+
 
         [SerializeField] private AnysongPlayerBrain.TransitionMode transitionMode;
 
         protected override void Trigger()
         {
+            if (anywhenPlayer == null)
+            {
+                AnywhenRuntime.Log("No player assigned in AnywhenPlayerTrigger", AnywhenRuntime.DebugMessageType.Error);
+                return;
+            }
             AnysongPlayerBrain.TransitionTo(anywhenPlayer, triggerBehaviour, transitionMode);
-
-           
         }
     }
 }

@@ -16,27 +16,30 @@ namespace Anywhen
         private AudioSource _audioSource;
 
 
-        public AnywhenSampleInstrument Instrument => _instrument;
-        private AnywhenSampleInstrument _instrument;
+        public AnywhenSampleInstrument Instrument => _playbackSettings.Instrument;
+
+        //private AnywhenSampleInstrument _instrument;
         public bool IsStopping => _isStopping;
         private bool _isStopping;
-        public int CurrentNote => _currentNote;
-        private int _currentNote;
-        protected float Volume;
-        private AnysongTrack _track;
 
-        private bool _isLooping;
+        public int CurrentNote => _playbackSettings.Note;
+
+        //private int _currentNote;
+        //protected float Volume;
+        //private AnysongTrack _track;
+
+        //private bool _isLooping;
 
         private bool _isPlaying;
         private bool _scheduledPlay;
-        public double ScheduledPlayTime => _scheduledPlayTime;
+        public double ScheduledPlayTime => _playbackSettings.PlayTime;
         public bool IsPlaying => _isPlaying;
 
-        private double _scheduledPlayTime = -1;
-        private double _scheduledStopTime;
+        //private double _scheduledPlayTime = -1;
+        //private double _scheduledStopTime;
         private AnywhenNoteClip _noteClip;
-        ADSR _adsr = new();
-        private bool _useEnvelope;
+        private ADSR _adsr = new();
+        private bool UseEnvelope => _playbackSettings.Envelope.enabled;
 
         private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
         private float _bufferFadeValue, _buffer2FadeValue;
@@ -44,9 +47,39 @@ namespace Anywhen
 
         private double _samplePosBuffer1 /*, _samplePosBuffer2*/;
         private double _sampleStepFrac;
+
         private double _currentPitch;
-        private float _pitch;
+
+        //private float _pitch;
         private float _ampMod;
+
+        struct PlaybackSettings
+        {
+            public double PlayTime, StopTime;
+            public float Volume;
+            public float Pitch;
+            public int Note;
+            public AnywhenSampleInstrument Instrument;
+            public AnywhenSampleInstrument.EnvelopeSettings Envelope;
+            public AnysongTrack Track;
+            public AnywhenNoteClip NoteClip;
+
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note, AnywhenSampleInstrument instrument,
+                AnywhenSampleInstrument.EnvelopeSettings envelope, AnywhenNoteClip noteClip, AnysongTrack track)
+            {
+                PlayTime = playTime;
+                StopTime = stopTime;
+                Volume = volume;
+                Pitch = pitch;
+                Note = note;
+                Instrument = instrument;
+                Envelope = envelope;
+                Track = track;
+                NoteClip = noteClip;
+            }
+        }
+
+        private PlaybackSettings _playbackSettings;
 
         public void Init()
         {
@@ -60,29 +93,38 @@ namespace Anywhen
         }
 
 
-        public void NoteOn(int note, double playTime, double stopTime, float volume,
-            AnywhenSampleInstrument newSettings, AnysongTrack track = null)
+        //public void NoteOn(NoteEvent noteEvent, double playTime, double stopTime, AnywhenSampleInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope) {}
+
+        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope, AnysongTrack track = null)
         {
-            
             SetReady(false);
-            _instrument = newSettings;
-            if (_instrument == null)
+            //_instrument = newSettings;
+            if (instrument == null)
             {
-                //Debug.Log("settings was null");
                 SetReady(true);
                 return;
             }
 
-            _currentNote = note;
-            _scheduledPlayTime = playTime;
-            _track = track;
 
-            var noteClip = _instrument.GetNoteClip(note);
+            //_currentNote = note;
+            //_scheduledPlayTime = playTime;
+            //_track = track;
+
+            var noteClip = instrument.GetNoteClip(note);
             if (noteClip != null)
             {
-                Volume = volume;
+                
+                if (track != null && track.trackEnvelope.enabled)
+                {
+                    envelope = track.trackEnvelope;
+                }
+
+
+                _playbackSettings = new PlaybackSettings(playTime, stopTime, volume, 1, note, instrument, envelope, noteClip, track);
+                //Volume = volume;
                 _isArmed = true;
                 _audioSource.Stop();
+                SetEnvelope(envelope);
                 PlayScheduled(noteClip);
                 if (stopTime > 0)
                 {
@@ -107,7 +149,7 @@ namespace Anywhen
         void Reset()
         {
             _isStopping = false;
-            _instrument = null;
+            _playbackSettings.Instrument = null;
             IsReady = true;
             _isArmed = false;
         }
@@ -121,12 +163,12 @@ namespace Anywhen
 
         protected void StopScheduled(double absoluteTime)
         {
-            _scheduledStopTime = absoluteTime;
+            _playbackSettings.StopTime = absoluteTime;
         }
 
         public void SetPitch(float pitchValue)
         {
-            _pitch = pitchValue;
+            _playbackSettings.Pitch = pitchValue;
         }
 
         protected void PlayScheduled(AnywhenNoteClip clip)
@@ -136,31 +178,14 @@ namespace Anywhen
             _scheduledPlay = true;
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
-            _pitch = 1;
-
-            var currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings();
-
-            if (_instrument != null)
-            {
-                if (_track != null)
-                    currentEnvelopeSettings = _track.trackEnvelope;
-                else
-                    currentEnvelopeSettings = new AnywhenSampleInstrument.EnvelopeSettings(0, 1, 1, 0);
-            }
-
-
-            _useEnvelope = currentEnvelopeSettings.enabled;
-            if (_useEnvelope)
-            {
-                SetEnvelope(currentEnvelopeSettings);
-            }
-
+            _playbackSettings.Pitch = 1;
+            
 
             _currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
-            if (_instrument != null)
-            {
-                _currentLoopSettings = _instrument.loopSettings;
-            }
+            //if (_playbackSettings.Instrument != null)
+            //{
+            //    _currentLoopSettings = _instrument.loopSettings;
+            //}
 
             if (clip.loopSettings.enabled)
             {
@@ -168,8 +193,8 @@ namespace Anywhen
             }
 
 
-            _isLooping = _currentLoopSettings.enabled;
-            _scheduledStopTime = -1;
+            //_isLooping = _currentLoopSettings.enabled;
+            _playbackSettings.StopTime = -1;
         }
 
         void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
@@ -189,7 +214,7 @@ namespace Anywhen
                 return;
             }
 
-            if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _scheduledPlayTime)
+            if (!_isPlaying && _scheduledPlay && AudioSettings.dspTime >= _playbackSettings.PlayTime)
             {
                 _isPlaying = true;
                 _scheduledPlay = false;
@@ -199,22 +224,22 @@ namespace Anywhen
 
             if (!_isPlaying) return;
 
-            if (_scheduledStopTime >= 0 && AudioSettings.dspTime > _scheduledStopTime)
+            if (_playbackSettings.StopTime >= 0 && AudioSettings.dspTime > _playbackSettings.StopTime)
             {
-                _scheduledStopTime = -1;
+                _playbackSettings.StopTime = -1;
                 _adsr.SetGate(false);
-                _isLooping = false;
+                //_isLooping = false;
             }
 
             DSP_WriteToBuffer(data);
 
 
-            if (_isLooping)
-            {
-                DSP_HandleLooping();
-            }
+            //if (_isLooping)
+            //{
+            //    DSP_HandleLooping();
+            //}
 
-            if (_useEnvelope && _adsr.IsIdle)
+            if (UseEnvelope && _adsr.IsIdle)
             {
                 SetReady(true);
             }
@@ -234,7 +259,7 @@ namespace Anywhen
             while (i < data.Length)
             {
                 _ampMod = 1;
-                if (_useEnvelope)
+                if (UseEnvelope)
                 {
                     _ampMod *= _adsr.Process();
                 }
@@ -246,7 +271,7 @@ namespace Anywhen
                 double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
                             (f1 * _noteClip.clipSamples[sourceSample2]);
 
-                data[i] = ((float)(e1)) * _ampMod * _instrument.volume * Volume;
+                data[i] = ((float)(e1)) * _ampMod * _playbackSettings.Instrument.volume * _playbackSettings.Volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
 
@@ -255,7 +280,6 @@ namespace Anywhen
 
                 i++;
             }
-
         }
 
         void DSP_HandleLooping()
@@ -274,14 +298,14 @@ namespace Anywhen
             if (state)
             {
                 _isArmed = false;
-                _currentNote = -1000;
+                _playbackSettings.Note = -1000;
                 _isPlaying = false;
             }
         }
 
-        public void SetInstrument(AnywhenSampleInstrument instrument)
+        protected void SetInstrument(AnywhenSampleInstrument instrument)
         {
-            _instrument = instrument;
+            _playbackSettings.Instrument = instrument;
         }
     }
 }

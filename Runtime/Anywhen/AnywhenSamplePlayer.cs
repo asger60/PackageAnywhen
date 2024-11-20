@@ -115,7 +115,7 @@ namespace Anywhen
                             foreach (var thisSampler in _allSamplers)
                             {
                                 if (thisSampler.Instrument != anywhenInstrumentSettings) continue;
-                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note && thisSampler.ScheduledPlayTime == playTime)
+                                if (thisSampler.IsArmed && thisSampler.CurrentNote == note && Math.Abs(thisSampler.ScheduledPlayTime - playTime) < .01f)
                                 {
                                     return;
                                 }
@@ -135,7 +135,7 @@ namespace Anywhen
                             ? -1
                             : AnywhenMetronome.Instance.GetScheduledPlaytime(rate) + e.duration;
 
-                        anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings, track);
+                        anywhenSampler.NoteOn(note, playTime, stopTime, e.velocity, anywhenInstrumentSettings, e.envelope, track);
                     }
 
                     break;

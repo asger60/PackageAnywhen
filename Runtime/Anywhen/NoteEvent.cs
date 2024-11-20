@@ -1,4 +1,5 @@
 using System;
+using Anywhen.SettingsObjects;
 
 
 [Serializable]
@@ -22,6 +23,7 @@ public struct NoteEvent
     public float expression2;
     public float velocity;
     public float duration;
+    public AnywhenSampleInstrument.EnvelopeSettings envelope;
 
 
     public NoteEvent(EventTypes state)
@@ -34,6 +36,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note)
@@ -46,6 +49,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note, float duration)
@@ -58,6 +62,20 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         this.duration = duration;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+    }
+
+    public NoteEvent(int note, float duration, AnywhenSampleInstrument.EnvelopeSettings envelope)
+    {
+        this.state = EventTypes.NoteOn;
+        notes = new[] { note };
+        drift = 0;
+        chordStrum = new double[] { 0 };
+        expression1 = 0;
+        expression2 = 0;
+        velocity = 1;
+        this.duration = duration;
+        this.envelope = envelope;
     }
 
 
@@ -71,6 +89,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note, EventTypes state)
@@ -83,6 +102,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note, float noteDuration, EventTypes state)
@@ -96,6 +116,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = 1;
         duration = noteDuration;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note, EventTypes state, float volume)
@@ -109,6 +130,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = volume;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
     public NoteEvent(int note, EventTypes state, float volume, double drift)
@@ -122,6 +144,7 @@ public struct NoteEvent
         expression2 = 0;
         velocity = volume;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 
 
@@ -137,6 +160,22 @@ public struct NoteEvent
         this.velocity = 1;
         this.velocity = velocity;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+    }
+
+    public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum,
+        float expression1, float expression2, AnywhenSampleInstrument.EnvelopeSettings envelope)
+    {
+        this.state = state;
+        this.drift = drift;
+        this.notes = notes;
+        this.chordStrum = chordStrum;
+        this.expression1 = expression1;
+        this.expression2 = expression2;
+        this.velocity = 1;
+        this.velocity = velocity;
+        duration = -1;
+        this.envelope = envelope;
     }
 
     [Obsolete("Obsolete")]
@@ -152,5 +191,6 @@ public struct NoteEvent
         this.velocity = 1;
         this.velocity = velocity;
         duration = -1;
+        envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 }

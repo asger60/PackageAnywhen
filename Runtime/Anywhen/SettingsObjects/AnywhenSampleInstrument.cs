@@ -12,7 +12,7 @@ namespace Anywhen.SettingsObjects
     {
         //public AudioClip[] audioClips;
         //private AnywhenNoteClip[] _noteClips;
-        public float stopDuration = 0.1f;
+        //public float stopDuration = 0.1f;
 
         public enum ClipSelectType
         {
@@ -21,15 +21,15 @@ namespace Anywhen.SettingsObjects
             UnscaledNotes
         }
 
-        public enum ClipTypes
-        {
-            AudioClips,
-            NoteClips
-        }
+        //public enum ClipTypes
+        //{
+        //    AudioClips,
+        //    NoteClips
+        //}
 
         public ClipSelectType clipSelectType;
 
-        public ClipTypes clipType;
+        //public ClipTypes clipType;
 
         [Serializable]
         public struct LoopSettings

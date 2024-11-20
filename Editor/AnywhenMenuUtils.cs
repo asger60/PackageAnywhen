@@ -8,25 +8,7 @@ using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 public class AnywhenMenuUtils : MonoBehaviour
 {
-    [MenuItem("GameObject/Anywhen/[DEBUG] Remove audioclips")]
-    public static void RemoveAudioClips()
-    {
-        foreach (var o in Selection.objects)
-        {
-            Debug.Log(o.name);
-            var instrument = o as AnywhenSampleInstrument;
-            if (instrument && instrument.clipType == AnywhenSampleInstrument.ClipTypes.NoteClips)
-            {
-                //foreach (var clip in instrument.audioClips)
-                //{
-                //    var path = AssetDatabase.GetAssetPath(clip);
-                //    AssetDatabase.DeleteAsset(path);
-                //}
-//
-                //instrument.audioClips = null;
-            }
-        }
-    }
+
 
 
    // [MenuItem("GameObject/Anywhen/Add Anywhen to scene")]
