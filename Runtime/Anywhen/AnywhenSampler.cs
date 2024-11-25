@@ -41,7 +41,7 @@ namespace Anywhen
         private ADSR _adsr = new();
         private bool UseEnvelope => _playbackSettings.Envelope.enabled;
 
-        private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
+        //private AnywhenSampleInstrument.LoopSettings _currentLoopSettings;
         private float _bufferFadeValue, _buffer2FadeValue;
 
 
@@ -95,7 +95,8 @@ namespace Anywhen
 
         //public void NoteOn(NoteEvent noteEvent, double playTime, double stopTime, AnywhenSampleInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope) {}
 
-        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope, AnysongTrack track = null)
+        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument instrument,
+            AnywhenSampleInstrument.EnvelopeSettings envelope, AnysongTrack track = null)
         {
             SetReady(false);
             //_instrument = newSettings;
@@ -113,7 +114,6 @@ namespace Anywhen
             var noteClip = instrument.GetNoteClip(note);
             if (noteClip != null)
             {
-                
                 if (track != null && track.trackEnvelope.enabled)
                 {
                     envelope = track.trackEnvelope;
@@ -179,21 +179,19 @@ namespace Anywhen
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _playbackSettings.Pitch = 1;
-            
 
-            _currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
+
+            //_currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
             //if (_playbackSettings.Instrument != null)
             //{
             //    _currentLoopSettings = _instrument.loopSettings;
             //}
-
-            if (clip.loopSettings.enabled)
-            {
-                _currentLoopSettings = clip.loopSettings;
-            }
-
-
+            //if (clip.loopSettings.enabled)
+            //{
+            //    _currentLoopSettings = clip.loopSettings;
+            //}
             //_isLooping = _currentLoopSettings.enabled;
+
             _playbackSettings.StopTime = -1;
         }
 
@@ -282,14 +280,14 @@ namespace Anywhen
             }
         }
 
-        void DSP_HandleLooping()
-        {
-            if ((int)_samplePosBuffer1 >= _currentLoopSettings.loopStart)
-            {
-                _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
-                                    (_sampleStepFrac * _currentPitch);
-            }
-        }
+        //void DSP_HandleLooping()
+        //{
+        //    if ((int)_samplePosBuffer1 >= _currentLoopSettings.loopStart)
+        //    {
+        //        _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
+        //                            (_sampleStepFrac * _currentPitch);
+        //    }
+        //}
 
 
         public void SetReady(bool state)

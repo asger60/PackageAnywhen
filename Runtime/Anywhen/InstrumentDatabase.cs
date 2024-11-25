@@ -48,17 +48,7 @@ public class InstrumentDatabase : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    [ContextMenu("unlink clips")]
-    void UnlinkNoteCLips()
-    {
-        foreach (var instrument in instruments)
-        {
-            if (instrument is AnywhenSampleInstrument sampleInstrument)
-            {
-                sampleInstrument.UnlinkClips();
-            }
-        }
-    }
+
 
 
     public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)

@@ -10,9 +10,6 @@ namespace Anywhen.SettingsObjects
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
-        //public AudioClip[] audioClips;
-        //private AnywhenNoteClip[] _noteClips;
-        //public float stopDuration = 0.1f;
 
         public enum ClipSelectType
         {
@@ -21,24 +18,19 @@ namespace Anywhen.SettingsObjects
             UnscaledNotes
         }
 
-        //public enum ClipTypes
-        //{
-        //    AudioClips,
-        //    NoteClips
-        //}
+
 
         public ClipSelectType clipSelectType;
 
-        //public ClipTypes clipType;
 
-        [Serializable]
-        public struct LoopSettings
-        {
-            public bool enabled;
-            public int loopStart;
-            public int loopLength;
-            public int crossFadeDuration;
-        }
+        //[Serializable]
+        //public struct LoopSettings
+        //{
+        //    public bool enabled;
+        //    public int loopStart;
+        //    public int loopLength;
+        //    public int crossFadeDuration;
+        //}
 
 
         [Serializable]
@@ -60,7 +52,6 @@ namespace Anywhen.SettingsObjects
             }
         }
 
-        public LoopSettings loopSettings;
         [Range(0, 1f)] public float volume = 1;
 
 
@@ -71,11 +62,7 @@ namespace Anywhen.SettingsObjects
             {
                 return null;
             }
-            //if (_noteClips == null || _noteClips.Length == 0)
-            //{
-            //    LoadClips();
-            //    return null;
-            //}
+
 
             switch (clipSelectType)
             {
@@ -176,21 +163,12 @@ namespace Anywhen.SettingsObjects
         public void PreviewSound()
         {
             var clips = LoadClips();
+            InstrumentDatabase.LoadInstrumentNotes(this);
             AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, clips[0]);
         }
 
-        public void DeleteAudioCLips()
-        {
-            //foreach (var audioClip in audioClips)
-            //{
-            //    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(audioClip));
-            //}
-//
-            //audioClips = null;
-            //clipType = ClipTypes.NoteClips;
-        }
 
-
+        
         public List<AnywhenNoteClip> LoadClips()
         {
             List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();
@@ -245,24 +223,23 @@ namespace Anywhen.SettingsObjects
         public ClipData[] clipDatas;
 
         [ContextMenu("UnlinkClips")]
-        public void UnlinkClips()
+        public void LinkClips(AnywhenNoteClip[] noteClips)
         {
-            //if (_noteClips.Length == 0) return;
-            //clipDatas = new ClipData[_noteClips.Length];
-            //for (var i = 0; i < _noteClips.Length; i++)
-            //{
-            //    var noteClip = _noteClips[i];
-            //    var clipData = new ClipData
-            //    {
-            //        name = noteClip.name,
-            //        path = AssetDatabase.GetAssetPath(noteClip)
-            //    };
-            //    clipData.guid = AssetDatabase.AssetPathToGUID(clipData.path);
-            //    clipDatas[i] = clipData;
-            //}
-//
-            //_noteClips = null;
-            //EditorUtility.SetDirty(this);
+            if (noteClips.Length == 0) return;
+            clipDatas = new ClipData[noteClips.Length];
+            for (var i = 0; i < noteClips.Length; i++)
+            {
+                var noteClip = noteClips[i];
+                var clipData = new ClipData
+                {
+                    name = noteClip.name,
+                    path = AssetDatabase.GetAssetPath(noteClip)
+                };
+                clipData.guid = AssetDatabase.AssetPathToGUID(clipData.path);
+                clipDatas[i] = clipData;
+            }
+
+            EditorUtility.SetDirty(this);
         }
 
 #endif

@@ -9,9 +9,10 @@ namespace Anywhen
         public void PlayClip(AnywhenSampleInstrument instrument, AnywhenNoteClip clip)
         {
             Init();
-            SetInstrument( instrument);
+            SetInstrument(instrument);
             //Volume = instrument.volume;
-            PlayScheduled(clip);
+            NoteOn(0, 0, -1, 1, instrument,new AnywhenSampleInstrument.EnvelopeSettings(0,0,1,0));
+            //PlayScheduled(clip);
         }
 
         public void StopClip()

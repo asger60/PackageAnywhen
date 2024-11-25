@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Anywhen;
-using Anywhen.SettingsObjects;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,15 +7,10 @@ using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 public class AnywhenMenuUtils : MonoBehaviour
 {
-
-
-
-   // [MenuItem("GameObject/Anywhen/Add Anywhen to scene")]
+    
     public static void AddAnywhen()
     {
         Debug.Log("Adding Anywhen to active scene");
-
-
         for (int i = 0; i < SceneManager.GetActiveScene().rootCount; i++)
         {
             var currentAnywhen = SceneManager.GetActiveScene().GetRootGameObjects()[i]

@@ -24,17 +24,17 @@ public class AnywhenSampleInstrumentInspector : UnityEditor.Editor
             text = "Preview"
         };
         previewButton.clicked += () => { _anywhenSampleInstrument.PreviewSound(); };
-        var deleteButton = new Button
-        {
-            text = "Delete AudioClips",
-            style = { backgroundColor = new StyleColor(Color.red)}
-        };
-        deleteButton.clicked += () => { _anywhenSampleInstrument.DeleteAudioCLips(); };
+        //var deleteButton = new Button
+        //{
+        //    text = "Delete AudioClips",
+        //    style = { backgroundColor = new StyleColor(Color.red)}
+        //};
+        //deleteButton.clicked += () => { _anywhenSampleInstrument.DeleteAudioClips(); };
 
         InspectorElement.FillDefaultInspector(inspector, serializedObject, this);
 
         inspector.Add(previewButton);
-        inspector.Add(deleteButton);
+        //inspector.Add(deleteButton);
         return inspector;
     }
 }
