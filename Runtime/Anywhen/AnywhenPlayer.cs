@@ -335,7 +335,6 @@ namespace Anywhen
 
         public void EditorRandomizeSounds()
         {
-            print("randomize");
             customTracks = new AnysongTrack[currentTracks.Length];
             for (var i = 0; i < currentTracks.Length; i++)
             {
@@ -432,6 +431,21 @@ namespace Anywhen
             else
             {
                 _triggerStepIndex = stepIndex;
+            }
+        }
+
+        public void SetStepIndex(int stepIndex)
+        {
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            {
+                foreach (var section in _currentSong.Sections)
+                {
+                    var sectionTrack = section.tracks[trackIndex];
+                    foreach (var pattern in sectionTrack.patterns)
+                    {
+                        pattern.SetStepIndex(stepIndex);
+                    }
+                }
             }
         }
 

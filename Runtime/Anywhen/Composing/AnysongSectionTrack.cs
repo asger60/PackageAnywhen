@@ -104,7 +104,6 @@ namespace Anywhen.Composing
                         if (thisTriggerChance > thisRnd)
                         {
                             _currentPatternIndex = i;
-                            //_currentPattern = anyPattern;
                             didFindPattern = true;
                             break;
                         }
@@ -126,6 +125,7 @@ namespace Anywhen.Composing
             }
 
             _currentPattern = patterns[_currentPatternIndex];
+            _currentPattern.SetStepIndex(0);
         }
 
 
