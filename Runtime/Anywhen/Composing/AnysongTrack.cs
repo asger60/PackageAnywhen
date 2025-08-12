@@ -15,6 +15,8 @@ namespace Anywhen.Composing
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
 
+        public bool monophonic;
+
         public enum AnyTrackTypes
         {
             None = 0,
@@ -53,8 +55,13 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, AnywhenMetronome.TickRate tickRate, int rootMod)
+        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, AnywhenMetronome.TickRate tickRate,
+            int rootMod)
         {
+            if (monophonic)
+                AnywhenRuntime.EventFunnel.HandleNoteEvent(new NoteEvent(NoteEvent.EventTypes.NoteOff), instrument, tickRate,
+                    this);
+
             _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote + rootMod);
             _lastTrackEvent.velocity *= volume;
             AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, tickRate, this);

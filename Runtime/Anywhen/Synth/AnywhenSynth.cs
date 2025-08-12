@@ -19,7 +19,6 @@
 //  SOFTWARE."
 
 using System;
-using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
 

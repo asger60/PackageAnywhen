@@ -191,13 +191,7 @@ namespace Anywhen
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
             }
-
-            //if (Application.isPlaying && AnysongPlayerBrain.GetCurrentPlayer() == this)
-            //{
-            //    AnywhenRuntime.Log("retriggering player that is already playing");
-            //    return;
-            //}
-
+            
 
             if (_currentSong)
             {
@@ -211,9 +205,7 @@ namespace Anywhen
             
             AttachToMetronome();
             AnysongPlayerBrain.RegisterPlay(this);
-
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
-            //AnysongPlayerBrain.TransitionTo(this, triggerTransitionsType);
         }
 
         public void Stop()
@@ -279,16 +271,7 @@ namespace Anywhen
                 }
             }
         }
-
-        //public void EditorCreateTrigger()
-        //{
-        //    trigger = gameObject.AddComponent<AnywhenTrigger>();
-        //}
-//
-        //public void EditorLocateTrigger()
-        //{
-        //    trigger = GetComponentInChildren<AnywhenTrigger>();
-        //}
+        
 
 
         public int[] EditorGetPlayingTrackPatternIndexes()

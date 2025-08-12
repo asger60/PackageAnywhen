@@ -23,7 +23,8 @@ namespace Anywhen
             }
         }
 
-        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate, AnysongTrack track)
+        public void HandleNoteEvent(NoteEvent e, AnywhenSettingsBase anywhenSettings, AnywhenMetronome.TickRate tickRate,
+            AnysongTrack track)
         {
             switch (anywhenSettings)
             {

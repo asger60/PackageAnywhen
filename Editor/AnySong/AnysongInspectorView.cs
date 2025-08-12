@@ -118,7 +118,10 @@ public static class AnysongInspectorView
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
 
+        _parent.Add(CreatePropertyFieldWithCallback(
+            selection.CurrentSongTrackProperty.FindPropertyRelative("monophonic"), null));
 
+        
         var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
         if (trackTypeProperty.enumValueIndex == 0)
         {

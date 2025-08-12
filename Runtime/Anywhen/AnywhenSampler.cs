@@ -122,6 +122,7 @@ namespace Anywhen
 
                 _playbackSettings = new PlaybackSettings(playTime, stopTime, volume, 1, note, instrument, envelope, noteClip, track);
                 //Volume = volume;
+                
                 _isArmed = true;
                 _audioSource.Stop();
                 SetEnvelope(envelope);
