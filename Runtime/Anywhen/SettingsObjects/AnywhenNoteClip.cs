@@ -10,14 +10,14 @@ namespace Anywhen.SettingsObjects
     public class AnywhenNoteClip : AnywhenSettingsBase
     {
         //public AudioClip sourceClip;
-
         public float[] clipSamples;
         public int frequency;
         public int channels;
 
         //public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;
-
         //public AnywhenSampleInstrument.LoopSettings loopSettings;
+        
+        
 #if UNITY_EDITOR
         private void ReadAudioClip(AudioClip audioClip)
         {
@@ -97,7 +97,7 @@ namespace Anywhen.SettingsObjects
             Selection.activeObject = newInstrument;
         }
 
-        private static AnywhenNoteClip CreateNewAsset(AudioClip audioClip, string directory)
+        public static AnywhenNoteClip CreateNewAsset(AudioClip audioClip, string directory)
         {
             var newNoteClip = CreateInstance<AnywhenNoteClip>();
             var fileName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(audioClip));

@@ -10,14 +10,12 @@ namespace Anywhen.SettingsObjects
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
-
         public enum ClipSelectType
         {
             ScalePitchedNotes,
             RandomVariations,
             UnscaledNotes
         }
-
 
 
         public ClipSelectType clipSelectType;
@@ -53,7 +51,14 @@ namespace Anywhen.SettingsObjects
         }
 
         [Range(0, 1f)] public float volume = 1;
+        [SerializeField] private int originalTempo = 100;
+        [SerializeField] private bool tempoControlPitch;
+        public bool TempoControlPitch => tempoControlPitch;
 
+        public float GetPitchFromTempo(float tempo)
+        {
+            return tempo / originalTempo;
+        }
 
         public AnywhenNoteClip GetNoteClip(int note)
         {
@@ -162,13 +167,11 @@ namespace Anywhen.SettingsObjects
 
         public void PreviewSound()
         {
-            var clips = LoadClips();
             InstrumentDatabase.LoadInstrumentNotes(this);
-            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this, clips[0]);
+            AnywhenRuntime.ClipNoteClipPreviewer.PlayClip(this);
         }
 
 
-        
         public List<AnywhenNoteClip> LoadClips()
         {
             List<AnywhenNoteClip> loadedClips = new List<AnywhenNoteClip>();

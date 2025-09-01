@@ -66,7 +66,7 @@ namespace Anywhen
         }
 
         public DebugSettings debugSettings;
-
+        public int GetTempo() => Bpm;
 
         private void Start()
         {

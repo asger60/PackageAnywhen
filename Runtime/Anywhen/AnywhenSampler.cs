@@ -21,7 +21,7 @@ namespace Anywhen
         //private AnywhenSampleInstrument _instrument;
 
         public int CurrentNote => _currentPlaybackSettings.Note;
-        
+
 
         private bool _isPlaying;
         private bool _scheduledPlay;
@@ -33,7 +33,7 @@ namespace Anywhen
 
 
         private AnywhenNoteClip NoteClip => _currentPlaybackSettings.NoteClip;
-        
+
         private ADSR _adsr = new();
         private bool UseEnvelope => _currentPlaybackSettings.Envelope.enabled;
 
@@ -61,7 +61,8 @@ namespace Anywhen
             public AnysongTrack Track;
             public AnywhenNoteClip NoteClip;
 
-            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note, AnywhenSampleInstrument instrument,
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note,
+                AnywhenSampleInstrument instrument,
                 AnywhenSampleInstrument.EnvelopeSettings envelope, AnywhenNoteClip noteClip, AnysongTrack track)
             {
                 PlayTime = playTime;
@@ -111,10 +112,10 @@ namespace Anywhen
                 {
                     envelope = track.trackEnvelope;
                 }
-                
+
                 _isArmed = true;
                 PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, instrument, envelope, noteClip, track));
-                
+
                 if (stopTime > 0)
                 {
                     StopScheduled(stopTime);
@@ -168,7 +169,6 @@ namespace Anywhen
         }
 
 
-
         void InitPlay()
         {
             _currentPlaybackSettings = _nextPlaybackSettings;
@@ -176,6 +176,11 @@ namespace Anywhen
             _scheduledPlay = false;
             _sampleStepFrac = _currentPlaybackSettings.NoteClip.frequency / _currentSampleRate;
             _currentPitch = 1;
+            if (Instrument.TempoControlPitch)
+            {
+                _currentPitch = Instrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
+            }
+
             _currentPlaybackSettings.Pitch = 1;
             _currentPlaybackSettings.StopTime = -1;
             _isPlaying = true;
@@ -196,7 +201,6 @@ namespace Anywhen
 
         void OnAudioFilterRead(float[] data, int channels)
         {
-
             if (_scheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
             {
                 InitPlay();

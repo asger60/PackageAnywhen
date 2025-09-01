@@ -15,10 +15,26 @@ public class InstrumentDatabase : MonoBehaviour
 
 
     [Serializable]
-    public struct LoadedInstrument
+    public struct LoadedInstrument : IEquatable<LoadedInstrument>
     {
         public AnywhenSampleInstrument Instrument;
         public List<AnywhenNoteClip> clips;
+
+        public bool Equals(LoadedInstrument other)
+        {
+            return Equals(Instrument, other.Instrument);
+        }
+
+        public void SetClips(List<AnywhenNoteClip> newClips)
+        {
+            clips.Clear();
+            clips.AddRange(newClips);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Instrument, clips);
+        }
     }
 
     public List<LoadedInstrument> LoadedInstruments = new List<LoadedInstrument>();
@@ -50,14 +66,29 @@ public class InstrumentDatabase : MonoBehaviour
 #if UNITY_EDITOR
 
 
-
     public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)
     {
-        if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
-        var newLowdInstrument = new LoadedInstrument();
-        newLowdInstrument.Instrument = instrument;
-        newLowdInstrument.clips = instrument.LoadClips();
-        AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Add(newLowdInstrument);
+        //if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
+        var newLoadInstrument = new LoadedInstrument
+        {
+            Instrument = instrument,
+            clips = instrument.LoadClips()
+        };
+        if (!AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Contains(newLoadInstrument))
+        {
+            AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Add(newLoadInstrument);
+        }
+        else
+        {
+            foreach (var instrumentDatabase in AnywhenRuntime.InstrumentDatabase.LoadedInstruments)
+            {
+                if (instrumentDatabase.Instrument == instrument)
+                {
+                    instrumentDatabase.SetClips(instrument.LoadClips());
+                }
+            }
+        }
+
         EditorUtility.SetDirty(AnywhenRuntime.InstrumentDatabase);
     }
 #endif
