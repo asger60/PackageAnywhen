@@ -53,6 +53,8 @@ namespace Anywhen
         //private float _pitch;
         private float _ampMod;
 
+        public double SampleposBuffer1 => _samplePosBuffer1;
+
         struct PlaybackSettings
         {
             public double PlayTime, StopTime;
@@ -93,23 +95,16 @@ namespace Anywhen
         }
 
 
-        //public void NoteOn(NoteEvent noteEvent, double playTime, double stopTime, AnywhenSampleInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope) {}
-
         public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument instrument,
             AnywhenSampleInstrument.EnvelopeSettings envelope, AnysongTrack track = null)
         {
             SetReady(false);
-            //_instrument = newSettings;
             if (instrument == null)
             {
                 SetReady(true);
                 return;
             }
 
-
-            //_currentNote = note;
-            //_scheduledPlayTime = playTime;
-            //_track = track;
 
             var noteClip = instrument.GetNoteClip(note);
             if (noteClip != null)
@@ -121,8 +116,7 @@ namespace Anywhen
 
 
                 _playbackSettings = new PlaybackSettings(playTime, stopTime, volume, 1, note, instrument, envelope, noteClip, track);
-                //Volume = volume;
-                
+
                 _isArmed = true;
                 _audioSource.Stop();
                 SetEnvelope(envelope);
@@ -157,8 +151,9 @@ namespace Anywhen
 
         public float GetDurationToEnd()
         {
-            //todo, make this better
-            return 0;
+            var timeToPlay = (float)(ScheduledPlayTime - AudioSettings.dspTime);
+            timeToPlay = Mathf.Max(timeToPlay, 0);
+            return timeToPlay - (float)(_noteClip.clipSamples.Length - _samplePosBuffer1);
         }
 
 
@@ -172,7 +167,7 @@ namespace Anywhen
             _playbackSettings.Pitch = pitchValue;
         }
 
-        protected void PlayScheduled(AnywhenNoteClip clip)
+        private void PlayScheduled(AnywhenNoteClip clip)
         {
             _samplePosBuffer1 = 0;
             _noteClip = clip;
@@ -180,18 +175,7 @@ namespace Anywhen
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _playbackSettings.Pitch = 1;
-
-
-            //_currentLoopSettings = new AnywhenSampleInstrument.LoopSettings();
-            //if (_playbackSettings.Instrument != null)
-            //{
-            //    _currentLoopSettings = _instrument.loopSettings;
-            //}
-            //if (clip.loopSettings.enabled)
-            //{
-            //    _currentLoopSettings = clip.loopSettings;
-            //}
-            //_isLooping = _currentLoopSettings.enabled;
+            
 
             _playbackSettings.StopTime = -1;
         }
