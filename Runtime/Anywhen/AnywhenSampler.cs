@@ -29,7 +29,8 @@ namespace Anywhen
         public bool IsPlaying => _isPlaying;
 
 
-        private AnywhenNoteClip _noteClip => _currentPlaybackSettings.NoteClip;
+        private AnywhenNoteClip NoteClip => _currentPlaybackSettings.NoteClip;
+        
         private ADSR _adsr = new();
         private bool UseEnvelope => _currentPlaybackSettings.Envelope.enabled;
 
@@ -139,10 +140,10 @@ namespace Anywhen
 
         public float GetDurationToEnd()
         {
-            if (!_noteClip) return 0;
+            if (!NoteClip) return 0;
             var timeToPlay = (float)(ScheduledPlayTime - AudioSettings.dspTime);
             timeToPlay = Mathf.Max(timeToPlay, 0);
-            return timeToPlay + (float)(_noteClip.clipSamples.Length - _samplePosBuffer1);
+            return timeToPlay + (float)(NoteClip.clipSamples.Length - _samplePosBuffer1);
         }
 
 
@@ -178,6 +179,7 @@ namespace Anywhen
             _scheduledPlay = false;
             SetEnvelope(_currentPlaybackSettings.Envelope);
             _adsr.SetGate(true);
+            SetReady(false);
         }
 
         void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
@@ -192,7 +194,6 @@ namespace Anywhen
 
         void OnAudioFilterRead(float[] data, int channels)
         {
-
 
             if (_scheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
             {
@@ -221,7 +222,7 @@ namespace Anywhen
             }
 
 
-            if (_samplePosBuffer1 >= _noteClip.clipSamples.Length || _ampMod <= 0)
+            if (_samplePosBuffer1 >= NoteClip.clipSamples.Length || _ampMod <= 0)
             {
                 _adsr.SetGate(false);
                 SetReady(true);
@@ -242,10 +243,10 @@ namespace Anywhen
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
                 double f1 = _samplePosBuffer1 - sampleIndex1;
-                var sourceSample1 = Mathf.Min((sampleIndex1), _noteClip.clipSamples.Length - 1);
-                var sourceSample2 = Mathf.Min((sampleIndex1) + 1, _noteClip.clipSamples.Length - 1);
-                double e1 = ((1 - f1) * _noteClip.clipSamples[sourceSample1]) +
-                            (f1 * _noteClip.clipSamples[sourceSample2]);
+                var sourceSample1 = Mathf.Min((sampleIndex1), NoteClip.clipSamples.Length - 1);
+                var sourceSample2 = Mathf.Min((sampleIndex1) + 1, NoteClip.clipSamples.Length - 1);
+                double e1 = ((1 - f1) * NoteClip.clipSamples[sourceSample1]) +
+                            (f1 * NoteClip.clipSamples[sourceSample2]);
 
                 data[i] = ((float)(e1)) * _ampMod * _currentPlaybackSettings.Instrument.volume * _currentPlaybackSettings.Volume;
 
