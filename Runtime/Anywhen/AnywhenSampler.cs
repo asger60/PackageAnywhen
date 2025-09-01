@@ -153,7 +153,7 @@ namespace Anywhen
         {
             var timeToPlay = (float)(ScheduledPlayTime - AudioSettings.dspTime);
             timeToPlay = Mathf.Max(timeToPlay, 0);
-            return timeToPlay - (float)(_noteClip.clipSamples.Length - _samplePosBuffer1);
+            return timeToPlay + (float)(_noteClip.clipSamples.Length - _samplePosBuffer1);
         }
 
 
@@ -175,8 +175,6 @@ namespace Anywhen
             _sampleStepFrac = clip.frequency / (float)AudioSettings.outputSampleRate;
             _currentPitch = 1;
             _playbackSettings.Pitch = 1;
-            
-
             _playbackSettings.StopTime = -1;
         }
 
