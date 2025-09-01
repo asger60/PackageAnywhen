@@ -25,6 +25,9 @@ namespace Anywhen
 
         private bool _isPlaying;
         private bool _scheduledPlay;
+
+        public bool ScheduledPlay => _scheduledPlay;
+
         public double ScheduledPlayTime => _currentPlaybackSettings.PlayTime;
         public bool IsPlaying => _isPlaying;
 
@@ -176,7 +179,6 @@ namespace Anywhen
             _currentPlaybackSettings.Pitch = 1;
             _currentPlaybackSettings.StopTime = -1;
             _isPlaying = true;
-            _scheduledPlay = false;
             SetEnvelope(_currentPlaybackSettings.Envelope);
             _adsr.SetGate(true);
             SetReady(false);
