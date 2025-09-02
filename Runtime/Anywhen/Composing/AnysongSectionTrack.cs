@@ -153,7 +153,10 @@ namespace Anywhen.Composing
         {
             _currentPatternBar = 0;
             if (patterns.Count > 0)
+            {
                 _currentPattern = patterns[0];
+            }
+            
             foreach (var pattern in patterns)
             {
                 pattern.Reset();
