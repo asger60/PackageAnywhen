@@ -128,6 +128,12 @@ namespace Anywhen.Composing
             _currentPattern.SetStepIndex(0);
         }
 
+        public void SetCurrentPatternIndex(int index)
+        {
+            _currentPatternIndex = index;
+            _currentPattern = patterns[_currentPatternIndex];
+            _currentPattern.SetStepIndex(0);
+        }
 
         public void Reset()
         {
