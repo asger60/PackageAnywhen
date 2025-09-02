@@ -20,7 +20,7 @@ namespace Anywhen.Composing
 
         public List<AnyPattern> patterns;
 
-        
+
         public bool isMuted;
         public bool isSolo;
         private int _selectedTrackPatternIndex;
@@ -87,7 +87,17 @@ namespace Anywhen.Composing
 
         public void AdvancePlayingPattern()
         {
-            _currentPatternBar++;
+            if (_resetOnNextBar)
+            {
+                _currentPatternBar = 0;
+                _currentPatternIndex = 0;
+                _resetOnNextBar = false;
+            }
+            else
+            {
+                _currentPatternBar++;
+            }
+
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
@@ -130,10 +140,14 @@ namespace Anywhen.Composing
 
         public void SetCurrentPatternIndex(int index)
         {
-            _currentPatternIndex = index;
+            _currentPatternIndex = Mathf.Clamp(index, 0, patterns.Count);
             _currentPattern = patterns[_currentPatternIndex];
             _currentPattern.SetStepIndex(0);
         }
+
+        private bool _resetOnNextBar;
+        public void ResetOnNextBar() => _resetOnNextBar = true;
+
 
         public void Reset()
         {
