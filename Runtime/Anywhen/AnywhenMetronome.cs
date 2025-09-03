@@ -56,8 +56,8 @@ namespace Anywhen
         public static AnywhenMetronome Instance => AnywhenRuntime.Metronome;
         public bool debugMode;
         private bool _isStopped;
-        
-        
+
+
         [Serializable]
         public struct DebugSettings
         {
@@ -110,10 +110,10 @@ namespace Anywhen
             sub2 = 0;
             _nextTime16 = AudioSettings.dspTime + bufferTime;
 
-
+            OnNextBar?.Invoke();
             OnTick16 += DebugOnTick16;
         }
-        
+
 
         private void DebugOnTick16()
         {
@@ -134,13 +134,13 @@ namespace Anywhen
                 NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
                 AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
             }
-            
+
             if (debugSettings.debug4 && Sub16 % 4 == 0)
             {
                 NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
                 AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
             }
-            
+
             if (debugSettings.debug8 && Sub16 % 2 == 0)
             {
                 NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
@@ -251,7 +251,6 @@ namespace Anywhen
             return (float)GetScheduledPlaytime(playbackRate) - (float)AudioSettings.dspTime;
         }
 
-        
 
         public void Stop()
         {
