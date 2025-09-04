@@ -182,7 +182,7 @@ namespace Anywhen
             }
 
             _currentPlaybackSettings.Pitch = 1;
-            _currentPlaybackSettings.StopTime = -1;
+            //_currentPlaybackSettings.StopTime = -1;
             _isPlaying = true;
             SetEnvelope(_currentPlaybackSettings.Envelope);
             _adsr.SetGate(true);

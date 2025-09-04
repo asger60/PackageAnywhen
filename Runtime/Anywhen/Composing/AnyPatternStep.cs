@@ -11,7 +11,7 @@ public class AnyPatternStep
 {
     public bool noteOn;
     public bool noteOff;
-    [Range(0, 10f)] public float duration;
+    [Range(0.01f, 1f)] public float duration;
     [Range(-0.5f, 0.5f)] public float offset;
     [Range(0, 1f)] public float velocity;
 

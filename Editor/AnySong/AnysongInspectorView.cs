@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -276,9 +275,9 @@ public static class AnysongInspectorView
         boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOn"), didUpdate));
         boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOff"), didUpdate));
         _parent.Add(boxTriggering);
+        _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
 
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
-        _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
         var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);
