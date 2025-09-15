@@ -16,7 +16,6 @@ public struct NoteEvent
 
     public double drift;
 
-    //public AnywhenMetronome.TickRate quantization;
     public int[] notes;
     public double[] chordStrum;
     public float expression1;

@@ -42,14 +42,10 @@ namespace Anywhen
 
         private static AnysongPlayerBrain _anysongPlayerBrain;
 
-        static AnywhenEventFunnel _eventFunnel;
-        public static AnywhenSamplePlayer AnywhenSamplerHandler => _anywhenSamplerHandler;
 
-        private static AnywhenSamplePlayer _anywhenSamplerHandler;
 
         public static AnywhenSynthPlayer AnywhenSynthHandler => _anywhenSynthHandler;
         private static AnywhenSynthPlayer _anywhenSynthHandler;
-        public static AnywhenEventFunnel EventFunnel => _eventFunnel;
 
         private static InstrumentDatabase _instrumentDatabase;
 
@@ -149,7 +145,6 @@ namespace Anywhen
                 Instance.GetAnyComponents();
                 _anywhenSynthHandler.ClearPresets();
                 _anywhenSynthHandler.Init();
-                _anywhenSamplerHandler.Init();
 
                 targetPlayer.Play();
                 Metronome.Play();
@@ -166,7 +161,6 @@ namespace Anywhen
         public void Init()
         {
             GetAnyComponents();
-            _anywhenSamplerHandler.CreateSamplers();
             _anywhenSynthHandler.CreateSynths();
         }
 
@@ -174,11 +168,8 @@ namespace Anywhen
         {
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
-            TryGetComponent(out _anywhenSamplerHandler);
-            TryGetComponent(out _eventFunnel);
             TryGetComponent(out _anysongPlayerBrain);
             TryGetComponent(out _noteClipPreviewer);
-            _anywhenSamplerHandler = GetComponentInChildren<AnywhenSamplePlayer>();
             _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
         }

@@ -54,22 +54,7 @@ namespace Anywhen.Composing
             };
             return clone;
         }
-
-        public void TriggerStep(AnyPatternStep anyPatternStep, AnyPattern pattern, AnywhenMetronome.TickRate tickRate,
-            int rootMod)
-        {
-            if (monophonic)
-                AnywhenRuntime.EventFunnel.HandleNoteEvent(new NoteEvent(NoteEvent.EventTypes.NoteOff), instrument, tickRate,
-                    this);
-
-            _lastTrackEvent = anyPatternStep.GetEvent(pattern.rootNote + rootMod);
-            _lastTrackEvent.velocity *= volume;
-            AnywhenRuntime.EventFunnel.HandleNoteEvent(_lastTrackEvent, instrument, tickRate, this);
-            foreach (var repeat in anyPatternStep.GetRepeats(pattern.rootNote, volume))
-            {
-                AnywhenRuntime.EventFunnel.HandleNoteEvent(repeat, instrument, tickRate, this);
-            }
-        }
+        
 
         public void Reset()
         {

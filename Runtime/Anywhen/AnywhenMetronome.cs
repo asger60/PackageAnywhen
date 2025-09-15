@@ -111,42 +111,10 @@ namespace Anywhen
             _nextTime16 = AudioSettings.dspTime + bufferTime;
 
             OnNextBar?.Invoke();
-            OnTick16 += DebugOnTick16;
         }
 
 
-        private void DebugOnTick16()
-        {
-            if (debugSettings.debug16)
-            {
-                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-            }
 
-            if (debugSettings.debugBar && Sub16 == 0)
-            {
-                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-            }
-
-            if (debugSettings.debug2 && Sub16 % 8 == 0)
-            {
-                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-            }
-
-            if (debugSettings.debug4 && Sub16 % 4 == 0)
-            {
-                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-            }
-
-            if (debugSettings.debug8 && Sub16 % 2 == 0)
-            {
-                NoteEvent e = new NoteEvent(0, NoteEvent.EventTypes.NoteOn);
-                AnywhenSamplePlayer.Instance.HandleEvent(e, debugSettings.debugAnywhenInstrument, TickRate.Sub16);
-            }
-        }
 
         public void Update()
         {

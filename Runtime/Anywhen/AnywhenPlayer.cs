@@ -8,23 +8,19 @@ using Random = UnityEngine.Random;
 namespace Anywhen
 {
     [AddComponentMenu("Anywhen/AnywhenPlayer")]
-    public class AnywhenPlayer : MonoBehaviour
+    public class AnywhenPlayer : AnywhenPlayerBase
     {
         public AnysongObject AnysongObject => songObject;
         private AnywhenInstrument[] _instruments;
-        private AnysongObject _currentSong;
-        private bool _isRunning;
         public AnysongPlayerBrain.TransitionTypes triggerTransitionsType;
-        int _currentSectionIndex = 0;
-        public int CurrentSectionIndex => _currentSectionIndex;
         public int currentSongPackIndex;
         private NoteEvent[] _lastTrackNote;
-        private int _currentBar;
-
 
         [SerializeField] private AnysongObject songObject;
         [SerializeField] private int currentPlayerTempo = -100;
+
         [SerializeField] private int rootNoteMod;
+
         //[SerializeField] private AnywhenTrigger trigger;
         [SerializeField] private AnysongTrack[] customTracks;
         [SerializeField] private AnysongTrack[] currentTracks;
@@ -32,30 +28,24 @@ namespace Anywhen
         [SerializeField] private float intensity = 1;
         [SerializeField] private bool followGlobalTempo = false;
         [SerializeField] private bool followGlobalIntensity = false;
-        [SerializeField] private bool sectionsAutoAdvance = true;
 
 
         [SerializeField] private AnysongObject customSong;
-        private int _triggerStepIndex = -1;
         [SerializeField] private bool playOnAwake;
-
-        private void Awake()
-        {
-           // trigger.OnTrigger += Play;
-        }
 
 
         private void Start()
         {
             Load(songObject);
-            if(playOnAwake)
+            SetupVoices(songObject.Tracks);
+            if (playOnAwake)
                 Play();
         }
 
         private void Load(AnysongObject anysong)
         {
-            if (anysong == null) return;
-            _currentSong = anysong;
+            if (!anysong) return;
+            CurrentSong = anysong;
 
 
             foreach (var track in currentTracks)
@@ -81,23 +71,23 @@ namespace Anywhen
 #endif
 
 
-        private void OnBar()
+        protected override void OnBar()
         {
-            if (!_isRunning) return;
-            _currentBar++;
+            if (!IsRunning) return;
+            CurrentBar++;
             if (AnysongPlayerBrain.SectionLockIndex > -1)
             {
-                _currentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
+                CurrentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
             }
 
-            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
+            CurrentSectionIndex = Mathf.Min(CurrentSectionIndex, CurrentSong.Sections.Count - 1);
 
-            var thisSection = _currentSong.Sections[_currentSectionIndex];
-            int progress = (int)Mathf.Repeat(_currentBar, thisSection.sectionLength);
+            var thisSection = CurrentSong.Sections[CurrentSectionIndex];
+            int progress = (int)Mathf.Repeat(CurrentBar, thisSection.sectionLength);
 
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
             {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                var track = CurrentSong.Sections[CurrentSectionIndex].tracks[trackIndex];
                 track.AdvancePlayingPattern();
             }
 
@@ -107,18 +97,10 @@ namespace Anywhen
             }
 
 
-            var section = _currentSong.Sections[_currentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSectionIndex];
 
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar,
-                _currentSong.Sections[0]));
-        }
-
-
-        private void OnTick16()
-        {
-            if (!_isRunning) return;
-            _currentSectionIndex = Mathf.Min(_currentSectionIndex, _currentSong.Sections.Count - 1);
-            TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar,
+                CurrentSong.Sections[0]));
         }
 
 
@@ -132,8 +114,8 @@ namespace Anywhen
 
         void NextSection()
         {
-            _currentSong.Reset();
-            _currentBar = 0;
+            CurrentSong.Reset();
+            CurrentBar = 0;
             if (!sectionsAutoAdvance)
                 return;
 
@@ -143,11 +125,11 @@ namespace Anywhen
             }
             else
             {
-                SetSection(_currentSectionIndex + 1);
+                SetSection(CurrentSectionIndex + 1);
 
-                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
                 {
-                    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                    var track = CurrentSong.Sections[CurrentSectionIndex].tracks[trackIndex];
                     track.Reset();
                 }
             }
@@ -164,135 +146,43 @@ namespace Anywhen
             ReleaseFromMetronome();
         }
 
-        protected internal void ReleaseFromMetronome()
-        {
-            _isRunning = false;
-            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-            AnywhenRuntime.Metronome.OnNextBar -= OnBar;
-        }
 
-        protected internal void AttachToMetronome()
+        public override void Play()
         {
-            if (_isRunning) return;
-            _isRunning = true;
-            AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-            AnywhenRuntime.Metronome.OnNextBar += OnBar;
-            _currentSong.Reset();
-        }
-
-        public void Play()
-        {
-            if (_currentSong == null)
+            if (!CurrentSong)
             {
                 Load(AnysongObject);
             }
 
+            
+            
             if (!AnysongPlayerBrain.IsStarted)
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
             }
-            
 
-            if (_currentSong)
+
+            if (CurrentSong)
             {
-                _currentSong.Reset();
-                _currentSectionIndex = Random.Range(0, _currentSong.Sections.Count - 1);
+                CurrentSong.Reset();
+                CurrentSectionIndex = Random.Range(0, CurrentSong.Sections.Count - 1);
             }
 
-            _currentBar = 0;
-            var section = _currentSong.Sections[_currentSectionIndex];
-            
-            
+            CurrentBar = 0;
+            var section = CurrentSong.Sections[CurrentSectionIndex];
+
+            SetupVoices(CurrentSong.Tracks);
             AttachToMetronome();
             AnysongPlayerBrain.RegisterPlay(this);
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(_currentBar, _currentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
 
-        public void Stop()
+        public override void Stop()
         {
             AnysongPlayerBrain.RegisterStop(this);
             ReleaseFromMetronome();
         }
 
-
-        public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
-        {
-            songObject = newSong;
-            currentSongPackIndex = packIndex;
-            if (AnywhenRuntime.IsPreviewing)
-            {
-                Load(newSong);
-            }
-
-            currentTracks = new AnysongTrack[newSong.Tracks.Count];
-            for (var i = 0; i < newSong.Tracks.Count; i++)
-            {
-                var track = newSong.Tracks[i];
-                currentTracks[i] = new AnysongTrack();
-                currentTracks[i] = track;
-            }
-
-            isCustomized = false;
-        }
-
-
-        public void EditorSetPreviewSong(AnysongObject anysongObject)
-        {
-            _currentSong = anysongObject;
-            Load(_currentSong);
-            if (_currentSong != AnysongObject)
-            {
-                AnywhenRuntime.Log("preview other song");
-                currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
-                for (var i = 0; i < _currentSong.Tracks.Count; i++)
-                {
-                    currentTracks[i] = _currentSong.Tracks[i].Clone();
-                }
-            }
-
-
-            if (_currentSong == AnysongObject)
-            {
-                if (isCustomized)
-                {
-                    currentTracks = new AnysongTrack[customTracks.Length];
-                    for (var i = 0; i < customTracks.Length; i++)
-                    {
-                        currentTracks[i] = customTracks[i].Clone();
-                    }
-                }
-                else
-                {
-                    currentTracks = new AnysongTrack[AnysongObject.Tracks.Count];
-                    for (var i = 0; i < AnysongObject.Tracks.Count; i++)
-                    {
-                        currentTracks[i] = AnysongObject.Tracks[i];
-                    }
-                }
-            }
-        }
-        
-
-
-        public int[] EditorGetPlayingTrackPatternIndexes()
-        {
-            List<int> returnList = new List<int>();
-            for (var i = 0; i < _currentSong.Sections[_currentSectionIndex].tracks.Count; i++)
-            {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[i];
-
-                returnList.Add(track.GetPlayingPatternIndex());
-            }
-
-            return returnList.ToArray();
-        }
-
-
-        public void EditorSetTempo(int newTempo)
-        {
-            currentPlayerTempo = newTempo;
-            AnywhenRuntime.Metronome.SetTempo(newTempo);
-        }
 
         public int GetTempo()
         {
@@ -310,6 +200,122 @@ namespace Anywhen
         public bool GetUseGlobalIntensity() => followGlobalIntensity;
         public bool GetUseGlobalTempo() => followGlobalTempo;
 
+
+        public void SetIntensity(float newIntensity)
+        {
+            intensity = newIntensity;
+        }
+
+        //void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
+        //{
+        //    for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
+        //    {
+        //        for (var sectionIndex = 0; sectionIndex < CurrentSong.Sections.Count; sectionIndex++)
+        //        {
+        //            var section = CurrentSong.Sections[sectionIndex];
+        //            var sectionTrack = section.tracks[trackIndex];
+        //            if (sectionTrack.isMuted) continue;
+//
+//
+        //            var track = CurrentSong.Tracks[trackIndex];
+        //            var pattern = sectionTrack.GetPlayingPattern();
+//
+        //            var step = pattern.GetCurrentStep();
+//
+        //            if (stepIndex >= 0)
+        //            {
+        //                step = pattern.GetStep(stepIndex);
+        //            }
+        //            else if (_triggerStepIndex >= 0)
+        //            {
+        //                step = pattern.GetStep(_triggerStepIndex);
+        //            }
+//
+        //            if (tickRate != AnywhenMetronome.TickRate.None)
+        //                pattern.Advance();
+//
+//
+        //            if (sectionIndex == CurrentSectionIndex && (step.noteOn || step.noteOff))
+        //            {
+        //                float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
+        //                float thisRnd = Random.Range(0, 1f);
+        //                if (thisRnd < step.chance && step.mixWeight < thisIntensity)
+        //                {
+        //                    var songTrack = currentTracks[trackIndex];
+//
+        //                    var triggerStep = step.Clone();
+        //                    triggerStep.rootNote += rootNoteMod;
+//
+        //                    songTrack.TriggerStep(step, pattern, tickRate, rootNoteMod);
+        //                }
+        //            }
+        //        }
+        //    }
+//
+        //    if (_triggerStepIndex >= 0)
+        //    {
+        //        _triggerStepIndex = -1;
+        //    }
+        //}
+
+        public void TriggerStepIndex(int stepIndex, bool instant = false)
+        {
+            if (instant)
+            {
+                TriggerStepIndex(stepIndex);
+            }
+            else
+            {
+                _triggerStepIndex = stepIndex;
+            }
+        }
+
+        public void SetStepIndex(int stepIndex)
+        {
+            for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
+            {
+                foreach (var section in CurrentSong.Sections)
+                {
+                    var sectionTrack = section.tracks[trackIndex];
+                    foreach (var pattern in sectionTrack.patterns)
+                    {
+                        pattern.SetStepIndex(stepIndex);
+                    }
+                }
+            }
+        }
+
+        public void SetSection(int sectionIndex)
+        {
+            CurrentSectionIndex = sectionIndex;
+            CurrentSectionIndex = (int)Mathf.Repeat(CurrentSectionIndex, CurrentSong.Sections.Count);
+        }
+
+        public void SetSectionsAutoAdvance(bool state)
+        {
+            sectionsAutoAdvance = state;
+        }
+
+        public void ModifyIntensity(float newIntensity)
+        {
+            intensity += newIntensity;
+        }
+
+
+        public void EditorSetSection(int sectionIndex)
+        {
+            CurrentSectionIndex = sectionIndex;
+        }
+
+        public void EditorSetGlobelTempo(bool newValue)
+        {
+            followGlobalTempo = newValue;
+        }
+
+        public void EditorSetFollowGlobalIntensity(bool newValue)
+        {
+            followGlobalIntensity = newValue;
+        }
 
         public void EditorSetRootNote(int newValue)
         {
@@ -339,129 +345,92 @@ namespace Anywhen
 
         public void EditorRestoreSounds()
         {
-            currentTracks = new AnysongTrack[_currentSong.Tracks.Count];
-            for (var i = 0; i < _currentSong.Tracks.Count; i++)
+            currentTracks = new AnysongTrack[CurrentSong.Tracks.Count];
+            for (var i = 0; i < CurrentSong.Tracks.Count; i++)
             {
-                var track = _currentSong.Tracks[i];
+                var track = CurrentSong.Tracks[i];
                 currentTracks[i] = new AnysongTrack();
                 currentTracks[i] = track.Clone();
             }
         }
 
-        public void SetIntensity(float newIntensity)
+
+        public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
-            intensity = newIntensity;
+            songObject = newSong;
+            currentSongPackIndex = packIndex;
+            if (AnywhenRuntime.IsPreviewing)
+            {
+                Load(newSong);
+            }
+
+            currentTracks = new AnysongTrack[newSong.Tracks.Count];
+            for (var i = 0; i < newSong.Tracks.Count; i++)
+            {
+                var track = newSong.Tracks[i];
+                currentTracks[i] = new AnysongTrack();
+                currentTracks[i] = track;
+            }
+
+            isCustomized = false;
         }
 
-        void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
+
+        public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            CurrentSong = anysongObject;
+            Load(CurrentSong);
+            if (CurrentSong != AnysongObject)
             {
-                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
+                AnywhenRuntime.Log("preview other song");
+                currentTracks = new AnysongTrack[CurrentSong.Tracks.Count];
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
                 {
-                    var section = _currentSong.Sections[sectionIndex];
-                    var sectionTrack = section.tracks[trackIndex];
-                    if (sectionTrack.isMuted) continue;
-
-
-                    var track = _currentSong.Tracks[trackIndex];
-                    var pattern = sectionTrack.GetPlayingPattern();
-
-                    var step = pattern.GetCurrentStep();
-
-                    if (stepIndex >= 0)
-                    {
-                        step = pattern.GetStep(stepIndex);
-                    }
-                    else if (_triggerStepIndex >= 0)
-                    {
-                        step = pattern.GetStep(_triggerStepIndex);
-                    }
-
-                    if (tickRate != AnywhenMetronome.TickRate.None)
-                        pattern.Advance();
-
-
-                    if (sectionIndex == _currentSectionIndex && (step.noteOn || step.noteOff))
-                    {
-                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(GetIntensity()));
-                        float thisRnd = Random.Range(0, 1f);
-                        if (thisRnd < step.chance && step.mixWeight < thisIntensity)
-                        {
-                            var songTrack = currentTracks[trackIndex];
-
-                            var triggerStep = step.Clone();
-                            triggerStep.rootNote += rootNoteMod;
-
-                            songTrack.TriggerStep(step, pattern, tickRate, rootNoteMod);
-                        }
-                    }
+                    currentTracks[i] = CurrentSong.Tracks[i].Clone();
                 }
             }
 
-            if (_triggerStepIndex >= 0)
-            {
-                _triggerStepIndex = -1;
-            }
-        }
 
-        public void TriggerStepIndex(int stepIndex, bool instant = false)
-        {
-            if (instant)
+            if (CurrentSong == AnysongObject)
             {
-                TriggerStep(stepIndex, AnywhenMetronome.TickRate.None);
-            }
-            else
-            {
-                _triggerStepIndex = stepIndex;
-            }
-        }
-
-        public void SetStepIndex(int stepIndex)
-        {
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                foreach (var section in _currentSong.Sections)
+                if (isCustomized)
                 {
-                    var sectionTrack = section.tracks[trackIndex];
-                    foreach (var pattern in sectionTrack.patterns)
+                    currentTracks = new AnysongTrack[customTracks.Length];
+                    for (var i = 0; i < customTracks.Length; i++)
                     {
-                        pattern.SetStepIndex(stepIndex);
+                        currentTracks[i] = customTracks[i].Clone();
+                    }
+                }
+                else
+                {
+                    currentTracks = new AnysongTrack[AnysongObject.Tracks.Count];
+                    for (var i = 0; i < AnysongObject.Tracks.Count; i++)
+                    {
+                        currentTracks[i] = AnysongObject.Tracks[i];
                     }
                 }
             }
         }
 
-        public void SetSection(int sectionIndex)
+
+        public int[] EditorGetPlayingTrackPatternIndexes()
         {
-            _currentSectionIndex = sectionIndex;
-            _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, _currentSong.Sections.Count);
+            List<int> returnList = new List<int>();
+            for (var i = 0; i < CurrentSong.Sections[CurrentSectionIndex].tracks.Count; i++)
+            {
+                var track = CurrentSong.Sections[CurrentSectionIndex].tracks[i];
+
+                returnList.Add(track.GetPlayingPatternIndex());
+            }
+
+            return returnList.ToArray();
         }
 
-        public void SetSectionsAutoAdvance(bool state)
-        {
-            sectionsAutoAdvance = state;
-        }
 
-        public void ModifyIntensity(float newIntensity)
+        public void EditorSetTempo(int newTempo)
         {
-            intensity += newIntensity;
-        }
-
-
-        public void EditorSetSection(int sectionIndex)
-        {
-            _currentSectionIndex = sectionIndex;
-        }
-
-        public void EditorSetGlobelTempo(bool newValue)
-        {
-            followGlobalTempo = newValue;
-        }
-
-        public void EditorSetFollowGlobalIntensity(bool newValue)
-        {
-            followGlobalIntensity = newValue;
+            currentPlayerTempo = newTempo;
+            AnywhenRuntime.Metronome.SetTempo(newTempo);
         }
     }
 }
