@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
+    [RequireComponent(typeof(AudioSource))]
     public class AnywhenPlayerBase : MonoBehaviour
     {
         private bool _isMuted;
@@ -77,20 +78,29 @@ namespace Anywhen
                     }
                 }
 
-                return bestVoice ? bestVoice : voices[0];
+                return bestVoice ?? voices[0];
             }
         }
 
-        private readonly List<PlayerVoices> _voicesList = new();
+        private List<PlayerVoices> _voicesList = new();
+
+        private void Start()
+        {
+            AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
+            AudioSource source = GetComponent<AudioSource>();
+            source.playOnAwake = true;
+            source.clip = myClip;
+            source.Play();
+        }
 
         protected void SetupVoices(List<AnysongTrack> tracks)
         {
             _voicesList.Clear();
-            foreach (var anywhenVoice in transform.gameObject.GetComponentsInChildren<AnywhenVoice>())
-            {
-                DestroyImmediate(anywhenVoice.gameObject);
-            }
-            
+            //foreach (var anywhenVoice in transform.gameObject.GetComponentsInChildren<AnywhenVoice>())
+            //{
+            //    DestroyImmediate(anywhenVoice.gameObject);
+            //}
+
             foreach (var songTrack in tracks)
             {
                 List<AnywhenVoice> voices = new();
@@ -110,17 +120,17 @@ namespace Anywhen
                     {
                         var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
                         var newVoice = newSampler.GetComponent<AnywhenVoice>();
-                        var source = newVoice.GetComponent<AudioSource>();
-                        if (outputMixerGroup)
-                            source.outputAudioMixerGroup = outputMixerGroup;
+                        //var source = newVoice.GetComponent<AudioSource>();
+                        //if (outputMixerGroup)
+                        //    source.outputAudioMixerGroup = outputMixerGroup;
                         voices.Add(newVoice);
                     }
                 }
 
-                foreach (var anywhenSampler in voices)
-                {
-                    anywhenSampler.Init();
-                }
+                //foreach (var anywhenSampler in voices)
+                //{
+                //    anywhenSampler.Init();
+                //}
 
                 _voicesList.Add(new PlayerVoices(songTrack.instrument, songTrack, voices.ToArray()));
             }
@@ -198,7 +208,7 @@ namespace Anywhen
             foreach (var note in s.notes)
             {
                 var voice = GetVoice(songTrack);
-                if (voice)
+                if (voice != null)
                 {
                     var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate) +
                                    (AnywhenMetronome.Instance.GetLength(tickRate) * thisStep.offset);
@@ -287,6 +297,7 @@ namespace Anywhen
                 CurrentSong.Reset();
                 _currentSectionIndex = 0;
             }
+
             SetupVoices(CurrentSong.Tracks);
 
             for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
@@ -387,6 +398,31 @@ namespace Anywhen
         public void SetIsMuted(bool state)
         {
             _isMuted = state;
+        }
+
+        void OnAudioFilterRead(float[] data, int channels)
+        {
+            if (!IsRunning) return;
+            
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = 0f;
+            }
+
+            
+            // Mix in each voice group
+            foreach (var voice in _voicesList)
+            {
+
+                foreach (var anywhenVoice in voice.voices)
+                {
+                    var voiceDSP = anywhenVoice.UpdateDSP();
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        data[i] += voiceDSP[i];
+                    }
+                }
+            }
         }
     }
 }

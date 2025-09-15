@@ -184,42 +184,10 @@ namespace Anywhen
 
         void OnAudioFilterRead(float[] data, int channels)
         {
-            if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
-            {
-                InitPlay();
-            }
-
-            if (!_isPlaying) return;
-
-            if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
-            {
-                _currentPlaybackSettings.StopTime = -1;
-                _adsr.SetGate(false);
-            }
-
-            DSP_WriteToBuffer(data);
-
-
-            //if (_isLooping)
-            //{
-            //    DSP_HandleLooping();
-            //}
-
-            if (UseEnvelope && _adsr.IsIdle)
-            {
-                SetReady();
-            }
-
-
-            if (_samplePosBuffer1 >= NoteClip.clipSamples.Length || _ampMod <= 0)
-            {
-                _adsr.SetGate(false);
-                SetReady();
-            }
         }
 
 
-        void DSP_WriteToBuffer(float[] data)
+        float[] DSP_WriteToBuffer(float[] data)
         {
             int i = 0;
             while (i < data.Length)
@@ -246,6 +214,8 @@ namespace Anywhen
 
                 i++;
             }
+
+            return data;
         }
 
         //void DSP_HandleLooping()
@@ -270,6 +240,47 @@ namespace Anywhen
         protected void SetInstrument(AnywhenSampleInstrument instrument)
         {
             _currentPlaybackSettings.Instrument = instrument;
+        }
+
+        public float[] UpdateDSP()
+        {
+            float[] data = new float[2048];
+            if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
+            {
+                InitPlay();
+            }
+
+            if (!_isPlaying) return data;
+
+            if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
+            {
+                _currentPlaybackSettings.StopTime = -1;
+                _adsr.SetGate(false);
+            }
+
+
+            //if (_isLooping)
+            //{
+            //    DSP_HandleLooping();
+            //}
+
+            if (UseEnvelope && _adsr.IsIdle)
+            {
+                SetReady();
+                return data;
+            }
+
+
+            if (_samplePosBuffer1 >= NoteClip.clipSamples.Length/* || _ampMod <= 0*/)
+            {
+                _adsr.SetGate(false);
+                SetReady();
+                return data;
+            }
+
+            print("writing data ");
+            data = DSP_WriteToBuffer(data);
+            return data;
         }
     }
 }

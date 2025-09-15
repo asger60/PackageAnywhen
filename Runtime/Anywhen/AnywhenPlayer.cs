@@ -382,7 +382,6 @@ namespace Anywhen
             Load(CurrentSong);
             if (CurrentSong != AnysongObject)
             {
-                AnywhenRuntime.Log("preview other song");
                 currentTracks = new AnysongTrack[CurrentSong.Tracks.Count];
                 for (var i = 0; i < CurrentSong.Tracks.Count; i++)
                 {

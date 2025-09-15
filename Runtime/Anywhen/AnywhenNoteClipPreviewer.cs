@@ -8,7 +8,7 @@ namespace Anywhen
     {
         public void PlayClip(AnywhenSampleInstrument instrument)
         {
-            Init();
+            //Init();
             SetInstrument(instrument);
             NoteOn(0, 0, -1, 1, instrument,new AnywhenSampleInstrument.EnvelopeSettings(0,0,1,0));
         }

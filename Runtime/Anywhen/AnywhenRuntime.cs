@@ -169,7 +169,7 @@ namespace Anywhen
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
             TryGetComponent(out _anysongPlayerBrain);
-            TryGetComponent(out _noteClipPreviewer);
+           // TryGetComponent(out _noteClipPreviewer);
             _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
         }
