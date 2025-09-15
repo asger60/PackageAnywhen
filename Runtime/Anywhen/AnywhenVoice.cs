@@ -6,15 +6,13 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    [ExecuteInEditMode]
-    [RequireComponent(typeof(AudioSource))]
-    public class AnywhenVoice : MonoBehaviour
+    public class AnywhenVoice 
     {
         public bool IsReady { get; private set; }
         public bool HasScheduledPlay => _hasScheduledPlay;
         private bool _hasScheduledPlay;
 
-        private AudioSource _audioSource;
+        //private AudioSource _audioSource;
 
         public AnywhenSampleInstrument Instrument => _currentPlaybackSettings.Instrument;
 
@@ -78,16 +76,16 @@ namespace Anywhen
         private PlaybackSettings _nextPlaybackSettings;
         private float _currentSampleRate;
 
-        public void Init()
+        public void Init(int currentSamleRate)
         {
-            AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
-            TryGetComponent(out _audioSource);
+            //AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
+            //TryGetComponent(out _audioSource);
             IsReady = true;
-            _audioSource.playOnAwake = true;
-            _audioSource.clip = myClip;
+            //_audioSource.playOnAwake = true;
+            //_audioSource.clip = myClip;
             _adsr = new ADSR();
-            _audioSource.Play();
-            _currentSampleRate = (float)AudioSettings.outputSampleRate;
+            //_audioSource.Play();
+            _currentSampleRate = currentSamleRate;
         }
 
 
@@ -278,9 +276,7 @@ namespace Anywhen
                 return data;
             }
 
-            print("writing data ");
-            data = DSP_WriteToBuffer(data);
-            return data;
+            return DSP_WriteToBuffer(data);
         }
     }
 }

@@ -107,30 +107,30 @@ namespace Anywhen
 
                 if (songTrack.monophonic)
                 {
-                    var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
-                    var newVoice = newSampler.GetComponent<AnywhenVoice>();
-                    var source = newSampler.GetComponent<AudioSource>();
-                    if (outputMixerGroup)
-                        source.outputAudioMixerGroup = outputMixerGroup;
-                    voices.Add(newVoice);
+                    //var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
+                    //var newVoice = newSampler.GetComponent<AnywhenVoice>();
+                    //var source = newSampler.GetComponent<AudioSource>();
+                    //if (outputMixerGroup)
+                    //    source.outputAudioMixerGroup = outputMixerGroup;
+                    voices.Add(new AnywhenVoice());
                 }
                 else
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
-                        var newVoice = newSampler.GetComponent<AnywhenVoice>();
+                        //var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
+                        //var newVoice = newSampler.GetComponent<AnywhenVoice>();
                         //var source = newVoice.GetComponent<AudioSource>();
                         //if (outputMixerGroup)
                         //    source.outputAudioMixerGroup = outputMixerGroup;
-                        voices.Add(newVoice);
+                        voices.Add(new AnywhenVoice());
                     }
                 }
 
-                //foreach (var anywhenSampler in voices)
-                //{
-                //    anywhenSampler.Init();
-                //}
+                foreach (var anywhenSampler in voices)
+                {
+                    anywhenSampler.Init(AudioSettings.outputSampleRate);
+                }
 
                 _voicesList.Add(new PlayerVoices(songTrack.instrument, songTrack, voices.ToArray()));
             }
