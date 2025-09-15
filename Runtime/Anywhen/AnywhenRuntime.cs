@@ -27,7 +27,7 @@ namespace Anywhen
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
 
-        private static AnywhenNoteClipPreviewer _noteClipPreviewer;
+        private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
         public static AnysongPlayerBrain AnysongPlayerBrain
         {
@@ -44,8 +44,6 @@ namespace Anywhen
 
 
 
-        public static AnywhenSynthPlayer AnywhenSynthHandler => _anywhenSynthHandler;
-        private static AnywhenSynthPlayer _anywhenSynthHandler;
 
         private static InstrumentDatabase _instrumentDatabase;
 
@@ -114,17 +112,16 @@ namespace Anywhen
             if (_executeInEditMode)
             {
                 Metronome.Update();
-                AnywhenSynthHandler.LateUpdate();
             }
         }
 
-        public static AnywhenNoteClipPreviewer ClipNoteClipPreviewer
+        public static AnywhenSampleNoteClipPreviewer ClipSampleNoteClipPreviewer
         {
             get
             {
-                if (_noteClipPreviewer == null)
+                if (_sampleNoteClipPreviewer == null)
                     Instance.GetAnyComponents();
-                return _noteClipPreviewer;
+                return _sampleNoteClipPreviewer;
             }
         }
 
@@ -143,8 +140,6 @@ namespace Anywhen
             if (state)
             {
                 Instance.GetAnyComponents();
-                _anywhenSynthHandler.ClearPresets();
-                _anywhenSynthHandler.Init();
 
                 targetPlayer.Play();
                 Metronome.Play();
@@ -152,7 +147,6 @@ namespace Anywhen
             else
             {
                 targetPlayer?.Stop();
-                _anywhenSynthHandler.ClearPresets();
             }
 
             _executeInEditMode = state;
@@ -161,7 +155,6 @@ namespace Anywhen
         public void Init()
         {
             GetAnyComponents();
-            _anywhenSynthHandler.CreateSynths();
         }
 
         void GetAnyComponents()
@@ -169,8 +162,6 @@ namespace Anywhen
             TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
             TryGetComponent(out _anysongPlayerBrain);
-           // TryGetComponent(out _noteClipPreviewer);
-            _anywhenSynthHandler = GetComponentInChildren<AnywhenSynthPlayer>();
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
         }
 

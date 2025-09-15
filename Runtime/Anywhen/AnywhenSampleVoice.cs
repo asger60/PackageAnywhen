@@ -1,17 +1,12 @@
 ﻿using System;
-using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
 
 namespace Anywhen
 {
-    public class AnywhenVoice : AnywhenVoiceBase
+    public class AnywhenSampleVoice : AnywhenVoiceBase
     {
-        public bool IsReady { get; private set; }
-        public bool HasScheduledPlay => _hasScheduledPlay;
-        private bool _hasScheduledPlay;
-
         //private AudioSource _audioSource;
 
         public AnywhenSampleInstrument Instrument => _currentPlaybackSettings.Instrument;
@@ -58,7 +53,7 @@ namespace Anywhen
 
             public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note,
                 AnywhenSampleInstrument instrument,
-                AnywhenSampleInstrument.EnvelopeSettings envelope, AnywhenNoteClip noteClip, AnysongTrack track)
+                AnywhenSampleInstrument.EnvelopeSettings envelope, AnywhenNoteClip noteClip)
             {
                 PlayTime = playTime;
                 StopTime = stopTime;
@@ -76,7 +71,7 @@ namespace Anywhen
         private PlaybackSettings _nextPlaybackSettings;
         private float _currentSampleRate;
 
-        public void Init(int currentSamleRate)
+        public override void Init(int currentSampleRate)
         {
             //AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             //TryGetComponent(out _audioSource);
@@ -85,27 +80,26 @@ namespace Anywhen
             //_audioSource.clip = myClip;
             _adsr = new ADSR();
             //_audioSource.Play();
-            _currentSampleRate = currentSamleRate;
+            _currentSampleRate = currentSampleRate;
         }
 
+     
 
-        public void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenSampleInstrument instrument,
-            AnywhenSampleInstrument.EnvelopeSettings envelope, AnysongTrack track = null)
+        public override void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenInstrument instrument,
+            AnywhenSampleInstrument.EnvelopeSettings envelope)
         {
-            if (!instrument)
+            var thisInstrument = instrument as AnywhenSampleInstrument;
+            if (!thisInstrument)
             {
                 return;
             }
 
-            var noteClip = instrument.GetNoteClip(note);
+            var noteClip = thisInstrument.GetNoteClip(note);
             if (noteClip)
             {
-                if (track != null && track.trackEnvelope.enabled)
-                {
-                    envelope = track.trackEnvelope;
-                }
+                
 
-                PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, instrument, envelope, noteClip, track));
+                PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, thisInstrument, envelope, noteClip));
                 if (stopTime > 0) StopScheduled(stopTime);
             }
             else
@@ -121,7 +115,7 @@ namespace Anywhen
         }
 
 
-        public float GetDurationToEnd()
+        public override float GetDurationToEnd()
         {
             if (!NoteClip) return 0;
             var timeToPlay = (float)(ScheduledPlayTime - AudioSettings.dspTime);
@@ -269,7 +263,7 @@ namespace Anywhen
             }
 
 
-            if (_samplePosBuffer1 >= NoteClip.clipSamples.Length/* || _ampMod <= 0*/)
+            if (_samplePosBuffer1 >= NoteClip.clipSamples.Length /* || _ampMod <= 0*/)
             {
                 _adsr.SetGate(false);
                 SetReady();

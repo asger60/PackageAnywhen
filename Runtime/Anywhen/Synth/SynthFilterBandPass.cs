@@ -60,10 +60,6 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
-            if (AnywhenRuntime.SampleRate == 0)
-            {
-                print("mmdk");
-            }
             var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / AnywhenRuntime.SampleRate);
             _vD = 1f / _q;
             _vF = (1.85f - 0.75f * _vD * f) * f;

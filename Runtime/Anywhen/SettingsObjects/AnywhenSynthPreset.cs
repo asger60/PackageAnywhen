@@ -22,17 +22,17 @@ using UnityEngine;
         public SynthSettingsObjectBase[] filterModifiers;
 
 
-        private AnywhenSynth _runtimeSynth;
+        private AnywhenSynthVoice _runtimeSynthVoice;
 
-        public void BindToRuntime(AnywhenSynth synth)
+        public void BindToRuntime(AnywhenSynthVoice synthVoice)
         {
-            _runtimeSynth = synth;
+            _runtimeSynthVoice = synthVoice;
         }
 
         public void RebuildSynth()
         {
-            if (_runtimeSynth != null)
-                _runtimeSynth.RebuildSynth();
+            if (_runtimeSynthVoice != null)
+                _runtimeSynthVoice.RebuildSynth();
         }
 #if UNITY_EDITOR
         [ContextMenu("Clean up preset object")]

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Anywhen
 {
     [RequireComponent(typeof(AudioSource))]
-    public class AnywhenNoteClipPreviewer : AnywhenVoice
+    public class AnywhenSampleNoteClipPreviewer : AnywhenSampleVoice
     {
         public void PlayClip(AnywhenSampleInstrument instrument)
         {

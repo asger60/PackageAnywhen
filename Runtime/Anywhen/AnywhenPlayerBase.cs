@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Serialization;
@@ -28,8 +29,6 @@ namespace Anywhen
         internal AnysongObject CurrentSong;
         [SerializeField] protected bool sectionsAutoAdvance = true;
 
-        [FormerlySerializedAs("anywhenSamplerPrefab")] [SerializeField]
-        AnywhenVoice anywhenVoicePrefab;
 
         [SerializeField] protected AudioMixerGroup outputMixerGroup;
 
@@ -42,18 +41,18 @@ namespace Anywhen
         public class PlayerVoices
         {
             public AnywhenInstrument instrument;
-            [FormerlySerializedAs("trackType")] public AnysongTrack track;
+            public AnysongTrack track;
 
-            public AnywhenVoice[] voices;
+            public AnywhenVoiceBase[] voices;
 
-            public PlayerVoices(AnywhenInstrument instrument, AnysongTrack type, AnywhenVoice[] voices)
+            public PlayerVoices(AnywhenInstrument instrument, AnysongTrack type, AnywhenVoiceBase[] voices)
             {
                 this.instrument = instrument;
                 this.track = type;
                 this.voices = voices;
             }
 
-            public AnywhenVoice GetVoice()
+            public AnywhenVoiceBase GetVoice()
             {
                 foreach (var voiceVoice in voices)
                 {
@@ -65,7 +64,7 @@ namespace Anywhen
                 }
 
                 float maxTime = float.MaxValue;
-                AnywhenVoice bestVoice = null;
+                AnywhenVoiceBase bestVoice = null;
 
                 foreach (var voiceVoice in voices)
                 {
@@ -107,7 +106,7 @@ namespace Anywhen
 
             foreach (var songTrack in tracks)
             {
-                List<AnywhenVoice> voices = new();
+                List<AnywhenVoiceBase> voices = new();
 
                 if (songTrack.monophonic)
                 {
@@ -115,8 +114,18 @@ namespace Anywhen
                     //var newVoice = newSampler.GetComponent<AnywhenVoice>();
                     //var source = newSampler.GetComponent<AudioSource>();
                     //if (outputMixerGroup)
-                    //    source.outputAudioMixerGroup = outputMixerGroup;
-                    voices.Add(new AnywhenVoice());
+                    //    source.outputAudioMixerGroup = outputMixerGroup;  
+                    if (songTrack.instrument is AnywhenSampleInstrument)
+                    {
+                        voices.Add(new AnywhenSampleVoice());
+                    }
+
+                    if (songTrack.instrument is AnywhenSynthPreset preset)
+                    {
+                        var newSynthVoice = new AnywhenSynthVoice();
+                        newSynthVoice.SetPreset(preset);
+                        voices.Add(newSynthVoice);
+                    }
                 }
                 else
                 {
@@ -127,7 +136,10 @@ namespace Anywhen
                         //var source = newVoice.GetComponent<AudioSource>();
                         //if (outputMixerGroup)
                         //    source.outputAudioMixerGroup = outputMixerGroup;
-                        voices.Add(new AnywhenVoice());
+                        if (songTrack.instrument is AnywhenSampleInstrument)
+                        {
+                            voices.Add(new AnywhenSampleVoice());
+                        }
                     }
                 }
 
@@ -338,7 +350,7 @@ namespace Anywhen
             }
         }
 
-        protected virtual AnywhenVoice GetVoice(AnysongTrack track)
+        protected virtual AnywhenVoiceBase GetVoice(AnysongTrack track)
         {
             foreach (var voice in _voicesList)
             {
@@ -407,7 +419,7 @@ namespace Anywhen
         void OnAudioFilterRead(float[] data, int channels)
         {
             if (!IsRunning) return;
-            
+
             for (int i = 0; i < data.Length; i++)
             {
                 data[i] = 0f;
@@ -419,7 +431,7 @@ namespace Anywhen
             {
                 foreach (var anywhenVoice in voice.voices)
                 {
-                    var voiceDSP = anywhenVoice.UpdateDSP(data.Length, _numBuffers);
+                    var voiceDSP = anywhenVoice.UpdateDSP(data.Length, channels);
                     for (int i = 0; i < data.Length; i++)
                     {
                         data[i] += voiceDSP[i];

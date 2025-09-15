@@ -51,10 +51,10 @@ namespace Anywhen
 
             foreach (var track in currentTracks)
             {
-                if (track.instrument is AnywhenSynthPreset preset)
-                {
-                    AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
-                }
+                //if (track.instrument is AnywhenSynthPreset preset)
+                //{
+                //    AnywhenRuntime.AnywhenSynthHandler.RegisterPreset(preset);
+                //}
             }
         }
 

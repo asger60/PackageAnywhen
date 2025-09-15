@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth.Filter
 {
-    public abstract class SynthFilterBase : MonoBehaviour
+    public abstract class SynthFilterBase
     {
         public SynthSettingsObjectFilter settings;
         public abstract void SetExpression(float data);

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthControlBase : MonoBehaviour
+    public class SynthControlBase
     {
     
 

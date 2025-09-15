@@ -19,18 +19,19 @@
 //  SOFTWARE."
 
 using System;
+using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Anywhen.Synth
 {
-    [RequireComponent(typeof(AudioSource))]
-    public class AnywhenSynth : MonoBehaviour
+    public class AnywhenSynthVoice : AnywhenVoiceBase
     {
         [Serializable]
         struct SynthVoiceGroup
         {
-            public SynthOscillator[] _oscillators;
+            public SynthOscillator[] oscillators;
         }
 
         private SynthVoiceGroup[] _voices;
@@ -71,7 +72,6 @@ namespace Anywhen.Synth
         [SerializeField] private AnywhenSynthPreset _preset;
         public AnywhenSynthPreset Preset => _preset;
         private int _noteOnCount;
-        public AudioSource _audioSource;
         private bool _isCreated;
 
         /// Public interface
@@ -90,6 +90,11 @@ namespace Anywhen.Synth
             }
         }
 
+        public override void NoteOn(int note, double playTime, double duration, float volume, AnywhenInstrument instrument,
+            AnywhenSampleInstrument.EnvelopeSettings envelope)
+        {
+        }
+
 
         public void SetPreset(AnywhenSynthPreset preset)
         {
@@ -106,25 +111,14 @@ namespace Anywhen.Synth
             {
                 _isInitialized = false;
                 _preset = null;
-                foreach (var childT in GetComponentsInChildren<Transform>())
-                {
-                    if (childT == this.transform) continue;
-                    DestroyImmediate(childT.gameObject);
-                }
+
 
                 _voices = null;
                 _voiceFrequencyModifiers = null;
                 _amplitudeModifiers = null;
                 _filterModifiers = null;
                 _filters = null;
-
-                //Clear();
             }
-        }
-
-        private void OnDestroy()
-        {
-            SetPreset(null);
         }
 
 
@@ -140,16 +134,14 @@ namespace Anywhen.Synth
             {
                 var oscillatorSetting = _preset.oscillatorSettings[i];
 
-                var go = new GameObject("Oscillator " + oscillatorSetting.oscillatorType);
-                go.transform.SetParent(transform);
                 bool isNoise = oscillatorSetting.oscillatorType == SynthSettingsObjectOscillator.OscillatorType.Noise;
-                _voices[i]._oscillators = new SynthOscillator[isNoise ? 1 : _preset.voices];
+                _voices[i].oscillators = new SynthOscillator[isNoise ? 1 : _preset.voices];
 
-                for (int j = 0; j < _voices[i]._oscillators.Length; j++)
+                for (int j = 0; j < _voices[i].oscillators.Length; j++)
                 {
-                    var newOSC = go.AddComponent<SynthOscillator>();
+                    var newOSC = new SynthOscillator();
                     newOSC.UpdateSettings(oscillatorSetting);
-                    _voices[i]._oscillators[j] = newOSC;
+                    _voices[i].oscillators[j] = newOSC;
                 }
             }
 
@@ -159,9 +151,7 @@ namespace Anywhen.Synth
                 {
                     case SynthSettingsObjectFilter.FilterTypes.LowPass:
 
-                        var modGO = new GameObject("LowPassFilter");
-                        modGO.transform.SetParent(transform);
-                        var newFilter = modGO.AddComponent<SynthFilterLowPass>();
+                        var newFilter = new SynthFilterLowPass();
                         newFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFilter;
 
@@ -169,18 +159,14 @@ namespace Anywhen.Synth
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.BandPass:
 
-                        var phFilterGO = new GameObject("BandPassFilter");
-                        phFilterGO.transform.SetParent(transform);
-                        var newHPFilter = phFilterGO.AddComponent<SynthFilterBandPass>();
+                        var newHPFilter = new SynthFilterBandPass(_sampleRate);
                         newHPFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newHPFilter;
 
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.Formant:
 
-                        var formantFilterGO = new GameObject("FormantFilter");
-                        formantFilterGO.transform.SetParent(transform);
-                        var newFormantFilter = formantFilterGO.AddComponent<SynthFilterFormant>();
+                        var newFormantFilter = new SynthFilterBandPass(_sampleRate);
                         newFormantFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFormantFilter;
 
@@ -198,18 +184,14 @@ namespace Anywhen.Synth
                 {
                     case SynthSettingsObjectLFO lfo:
                     {
-                        var modGO = new GameObject("Frequency Modifier LFO");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlLFO>();
+                        var newController = new SynthControlLFO();
                         newController.UpdateSettings(lfo);
                         _voiceFrequencyModifiers[i] = newController;
                         break;
                     }
                     case SynthSettingsObjectEnvelope envelope:
                     {
-                        var modGO = new GameObject("Frequency Modifier Envelope");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlEnvelope>();
+                        var newController = new SynthControlEnvelope();
                         newController.UpdateSettings(envelope);
                         _voiceFrequencyModifiers[i] = newController;
                         break;
@@ -224,19 +206,14 @@ namespace Anywhen.Synth
                 {
                     case SynthSettingsObjectLFO lfo:
                     {
-                        var modGO = new GameObject("Amplitude Modifier LFO");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlLFO>();
+                        var newController = new SynthControlLFO();
                         newController.UpdateSettings(lfo);
                         _amplitudeModifiers[i] = newController;
-                        print("create lfo");
                         break;
                     }
                     case SynthSettingsObjectEnvelope envelope:
                     {
-                        var modGO = new GameObject("Amplitude Modifier Envelope");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlEnvelope>();
+                        var newController = new SynthControlEnvelope();
                         newController.UpdateSettings(envelope);
                         _amplitudeModifiers[i] = newController;
                         break;
@@ -251,18 +228,14 @@ namespace Anywhen.Synth
                 {
                     case SynthSettingsObjectLFO lfo:
                     {
-                        var modGO = new GameObject("Filter Modifier LFO");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlLFO>();
+                        var newController = new SynthControlLFO();
                         newController.UpdateSettings(lfo);
                         _filterModifiers[i] = newController;
                         break;
                     }
                     case SynthSettingsObjectEnvelope envelope:
                     {
-                        var modGO = new GameObject("Filter Modifier Envelope");
-                        modGO.transform.SetParent(transform);
-                        var newController = modGO.AddComponent<SynthControlEnvelope>();
+                        var newController = new SynthControlEnvelope();
                         newController.UpdateSettings(envelope);
                         _filterModifiers[i] = newController;
                         break;
@@ -272,7 +245,7 @@ namespace Anywhen.Synth
 
             foreach (var voice in _voices)
             {
-                foreach (var synthOscillator in voice._oscillators)
+                foreach (var synthOscillator in voice.oscillators)
                 {
                     synthOscillator.Init();
                 }
@@ -341,9 +314,9 @@ namespace Anywhen.Synth
                 {
                     foreach (var voice in _voices)
                     {
-                        for (int i = 0; i < voice._oscillators.Length; i++)
+                        for (int i = 0; i < voice.oscillators.Length; i++)
                         {
-                            var osc = voice._oscillators[i];
+                            var osc = voice.oscillators[i];
                             osc.SetNote(_currentNoteEvent.notes[0], AnywhenRuntime.SampleRate);
                             osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                         }
@@ -355,12 +328,12 @@ namespace Anywhen.Synth
                     {
                         for (int i = 0; i < _currentNoteEvent.notes.Length; i++)
                         {
-                            if (i >= voice._oscillators.Length)
+                            if (i >= voice.oscillators.Length)
                             {
                                 break;
                             }
 
-                            var osc = voice._oscillators[i];
+                            var osc = voice.oscillators[i];
                             int currentNote = _currentNoteEvent.notes[i];
 
 
@@ -439,28 +412,13 @@ namespace Anywhen.Synth
         }
 
 
-        public void SetLateInit()
-        {
-            if (!_preset) return;
-            _isInitialized = true;
-        }
-
-        private void Create()
-        {
-            AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
-            TryGetComponent(out _audioSource);
-            _audioSource.clip = myClip;
-            _audioSource.playOnAwake = true;
-            _isCreated = true;
-        }
+        int _sampleRate;
 
         /// Internal
-        public void Init()
+        public override void Init(int sampleRate)
         {
-            if (!_isCreated)
-            {
-                Create();
-            }
+            _sampleRate = sampleRate;
+
 
             if (FreqTab == null)
             {
@@ -471,18 +429,21 @@ namespace Anywhen.Synth
                     FreqTab[i] = Midi2Freq(i);
                 }
             }
+
             _noteOnQueue = new EventQueue(QueueCapacity);
+            RebuildSynth();
+
             ResetVoices();
-            _audioSource?.Play();
+            _isInitialized = true;
         }
-        
+
 
         private void ResetVoices()
         {
             if (_voices == null) return;
             foreach (var voice in _voices)
             {
-                foreach (var synthOscillator in voice._oscillators)
+                foreach (var synthOscillator in voice.oscillators)
                 {
                     synthOscillator.ResetPhase();
                     synthOscillator.SetInactive();
@@ -490,12 +451,14 @@ namespace Anywhen.Synth
             }
         }
 
-        private void RenderFloat32StereoInterleaved(float[] buffer, int sampleFrames)
+        private float[] RenderFloat32StereoInterleaved(float[] buffer, int sampleFrames)
         {
-            if (!_isInitialized) return;
+            if (!_isInitialized) return buffer;
 
             int smp = 0;
             int bufferIndex = 0;
+
+
 
 
             // Render loop
@@ -537,7 +500,7 @@ namespace Anywhen.Synth
                 int numOsc = 0;
                 foreach (var voice in _voices)
                 {
-                    foreach (var synthOscillator in voice._oscillators)
+                    foreach (var synthOscillator in voice.oscillators)
                     {
                         if (!synthOscillator.IsActive) break;
 
@@ -565,7 +528,7 @@ namespace Anywhen.Synth
                 // Update oscillators
                 foreach (var voice in _voices)
                 {
-                    foreach (var synthOscillator in voice._oscillators)
+                    foreach (var synthOscillator in voice.oscillators)
                     {
                         synthOscillator.DoUpdate();
                     }
@@ -583,6 +546,8 @@ namespace Anywhen.Synth
                     audioFilterBase.HandleModifiers(currentMod);
                 }
             }
+
+            return buffer;
         }
 
 
@@ -590,6 +555,33 @@ namespace Anywhen.Synth
         private static float Midi2Freq(int note)
         {
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
+        }
+
+        public override float[] UpdateDSP(int bufferSize, int channels)
+        {
+            if (!_isInitialized) return new float[bufferSize];
+
+            if (channels == 2)
+            {
+                // Cache this for the entire buffer, we don't need to check for
+                // every sample if new events have been enqueued.
+                // This assumes that no other methods call GetFrontAndDequeue.
+                HandleQueue(_noteOnQueue.GetSize());
+
+                int sampleFrames = bufferSize / 2;
+
+                return RenderFloat32StereoInterleaved(new float[bufferSize], sampleFrames);
+
+                //if (_debugBufferEnabled)
+                //{
+                //    lock (_bufferMutex)
+                //    {
+                //        Array.Copy(data, _lastBuffer, data.Length);
+                //    }
+                //}
+            }
+
+            return new float[bufferSize];
         }
     }
 }

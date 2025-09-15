@@ -130,9 +130,9 @@ namespace Anywhen.Synth
         {
             _sampleRate = sampleRate;
 
-            _synthFilterBandPass1 = gameObject.AddComponent<SynthFilterBandPass>();
-            _synthFilterBandPass2 = gameObject.AddComponent<SynthFilterBandPass>();
-            _synthFilterBandPass3 = gameObject.AddComponent<SynthFilterBandPass>();
+            _synthFilterBandPass1 = new SynthFilterBandPass(sampleRate);
+            _synthFilterBandPass2 = new SynthFilterBandPass(sampleRate);
+            _synthFilterBandPass3 = new SynthFilterBandPass(sampleRate);
             _currentVowel = _vowels[3];
 
             _synthFilterBandPass1.Init(sampleRate);
