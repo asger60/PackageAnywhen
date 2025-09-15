@@ -35,7 +35,8 @@ namespace Anywhen
 
 
         bool _resetOnNextBar;
-
+        private int _bufferSize;
+        private int _numBuffers;
 
         [Serializable]
         public class PlayerVoices
@@ -84,8 +85,11 @@ namespace Anywhen
 
         private List<PlayerVoices> _voicesList = new();
 
-        private void Start()
+        protected virtual void Start()
         {
+            AudioSettings.GetDSPBufferSize(out _bufferSize, out _numBuffers);
+            print("buffersize " + _bufferSize);
+
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             AudioSource source = GetComponent<AudioSource>();
             source.playOnAwake = true;
@@ -409,14 +413,13 @@ namespace Anywhen
                 data[i] = 0f;
             }
 
-            
+
             // Mix in each voice group
             foreach (var voice in _voicesList)
             {
-
                 foreach (var anywhenVoice in voice.voices)
                 {
-                    var voiceDSP = anywhenVoice.UpdateDSP();
+                    var voiceDSP = anywhenVoice.UpdateDSP(data.Length, _numBuffers);
                     for (int i = 0; i < data.Length; i++)
                     {
                         data[i] += voiceDSP[i];

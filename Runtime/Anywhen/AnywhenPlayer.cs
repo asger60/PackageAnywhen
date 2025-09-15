@@ -34,8 +34,9 @@ namespace Anywhen
         [SerializeField] private bool playOnAwake;
 
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             Load(songObject);
             SetupVoices(songObject.Tracks);
             if (playOnAwake)

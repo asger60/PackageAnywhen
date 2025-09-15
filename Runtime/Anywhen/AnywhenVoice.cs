@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    public class AnywhenVoice 
+    public class AnywhenVoice : AnywhenVoiceBase
     {
         public bool IsReady { get; private set; }
         public bool HasScheduledPlay => _hasScheduledPlay;
@@ -240,9 +240,9 @@ namespace Anywhen
             _currentPlaybackSettings.Instrument = instrument;
         }
 
-        public float[] UpdateDSP()
+        public override float[] UpdateDSP(int bufferSize, int channels)
         {
-            float[] data = new float[2048];
+            float[] data = new float[bufferSize];
             if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
             {
                 InitPlay();
