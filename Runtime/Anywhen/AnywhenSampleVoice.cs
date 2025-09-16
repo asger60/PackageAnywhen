@@ -13,11 +13,8 @@ namespace Anywhen
 
         public int CurrentNote => _currentPlaybackSettings.Note;
 
-        private bool _isPlaying;
-
 
         public double ScheduledPlayTime => _currentPlaybackSettings.PlayTime;
-        public bool IsPlaying => _isPlaying;
 
 
         private AnywhenNoteClip NoteClip => _currentPlaybackSettings.NoteClip;
@@ -71,8 +68,10 @@ namespace Anywhen
         private PlaybackSettings _nextPlaybackSettings;
         private float _currentSampleRate;
 
-        public override void Init(int currentSampleRate)
+        public override void Init(int currentSampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
+            _thisInstrument = instrument as AnywhenSampleInstrument;
+            _envelope = envelopeSettings;
             //AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             //TryGetComponent(out _audioSource);
             IsReady = true;
@@ -83,23 +82,16 @@ namespace Anywhen
             _currentSampleRate = currentSampleRate;
         }
 
-     
+        AnywhenSampleInstrument _thisInstrument;
+        AnywhenSampleInstrument.EnvelopeSettings _envelope;
 
-        public override void NoteOn(int note, double playTime, double stopTime, float volume, AnywhenInstrument instrument,
-            AnywhenSampleInstrument.EnvelopeSettings envelope)
+
+        public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
-            var thisInstrument = instrument as AnywhenSampleInstrument;
-            if (!thisInstrument)
-            {
-                return;
-            }
-
-            var noteClip = thisInstrument.GetNoteClip(note);
+            var noteClip = _thisInstrument.GetNoteClip(note);
             if (noteClip)
             {
-                
-
-                PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, thisInstrument, envelope, noteClip));
+                PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument, _envelope, noteClip));
                 if (stopTime > 0) StopScheduled(stopTime);
             }
             else

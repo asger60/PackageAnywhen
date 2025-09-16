@@ -10,7 +10,7 @@ namespace Anywhen
         {
             //Init();
             SetInstrument(instrument);
-            NoteOn(0, 0, -1, 1, instrument,new AnywhenSampleInstrument.EnvelopeSettings(0,0,1,0));
+            NoteOn(0, 0, -1, 1);
         }
 
         public void StopClip()

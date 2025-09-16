@@ -31,7 +31,7 @@ namespace Anywhen.Synth
         [Serializable]
         struct SynthVoiceGroup
         {
-            public SynthOscillator[] oscillators;
+            public SynthOscillator[] Oscillators;
         }
 
         private SynthVoiceGroup[] _voices;
@@ -90,13 +90,26 @@ namespace Anywhen.Synth
             }
         }
 
-        public override void NoteOn(int note, double playTime, double duration, float volume, AnywhenInstrument instrument,
-            AnywhenSampleInstrument.EnvelopeSettings envelope)
+        public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
+            PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, AnywhenRuntime.Conductor.GetScaledNote(note)));
+            if (stopTime > 0) StopScheduled(stopTime);
+        }
+
+        protected void StopScheduled(double absoluteTime)
+        {
+            _nextPlaybackSettings.StopTime = absoluteTime;
+        }
+
+        private void PlayScheduled(PlaybackSettings nextUp)
+        {
+            _nextPlaybackSettings = nextUp;
+            _hasScheduledPlay = true;
+            IsReady = false;
         }
 
 
-        public void SetPreset(AnywhenSynthPreset preset)
+        private void SetPreset(AnywhenSynthPreset preset)
         {
             _isInitialized = false;
 
@@ -135,13 +148,13 @@ namespace Anywhen.Synth
                 var oscillatorSetting = _preset.oscillatorSettings[i];
 
                 bool isNoise = oscillatorSetting.oscillatorType == SynthSettingsObjectOscillator.OscillatorType.Noise;
-                _voices[i].oscillators = new SynthOscillator[isNoise ? 1 : _preset.voices];
+                _voices[i].Oscillators = new SynthOscillator[isNoise ? 1 : _preset.voices];
 
-                for (int j = 0; j < _voices[i].oscillators.Length; j++)
+                for (int j = 0; j < _voices[i].Oscillators.Length; j++)
                 {
-                    var newOSC = new SynthOscillator();
-                    newOSC.UpdateSettings(oscillatorSetting);
-                    _voices[i].oscillators[j] = newOSC;
+                    var newOsc = new SynthOscillator();
+                    newOsc.UpdateSettings(oscillatorSetting);
+                    _voices[i].Oscillators[j] = newOsc;
                 }
             }
 
@@ -159,9 +172,9 @@ namespace Anywhen.Synth
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.BandPass:
 
-                        var newHPFilter = new SynthFilterBandPass(_sampleRate);
-                        newHPFilter.SetSettings(_preset.filterSettings[i]);
-                        _filters[i] = newHPFilter;
+                        var newHpFilter = new SynthFilterBandPass(_sampleRate);
+                        newHpFilter.SetSettings(_preset.filterSettings[i]);
+                        _filters[i] = newHpFilter;
 
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.Formant:
@@ -245,7 +258,7 @@ namespace Anywhen.Synth
 
             foreach (var voice in _voices)
             {
-                foreach (var synthOscillator in voice.oscillators)
+                foreach (var synthOscillator in voice.Oscillators)
                 {
                     synthOscillator.Init();
                 }
@@ -314,9 +327,9 @@ namespace Anywhen.Synth
                 {
                     foreach (var voice in _voices)
                     {
-                        for (int i = 0; i < voice.oscillators.Length; i++)
+                        for (int i = 0; i < voice.Oscillators.Length; i++)
                         {
-                            var osc = voice.oscillators[i];
+                            var osc = voice.Oscillators[i];
                             osc.SetNote(_currentNoteEvent.notes[0], AnywhenRuntime.SampleRate);
                             osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                         }
@@ -328,12 +341,12 @@ namespace Anywhen.Synth
                     {
                         for (int i = 0; i < _currentNoteEvent.notes.Length; i++)
                         {
-                            if (i >= voice.oscillators.Length)
+                            if (i >= voice.Oscillators.Length)
                             {
                                 break;
                             }
 
-                            var osc = voice.oscillators[i];
+                            var osc = voice.Oscillators[i];
                             int currentNote = _currentNoteEvent.notes[i];
 
 
@@ -379,12 +392,6 @@ namespace Anywhen.Synth
         }
 
 
-        //private void Start()
-        //{
-        //    Init();
-        //}
-
-
         private void OnAudioFilterRead(float[] data, int channels)
         {
             if (_isInitialized)
@@ -415,10 +422,10 @@ namespace Anywhen.Synth
         int _sampleRate;
 
         /// Internal
-        public override void Init(int sampleRate)
+        public override void Init(int sampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
+            SetPreset(instrument as AnywhenSynthPreset);
             _sampleRate = sampleRate;
-
 
             if (FreqTab == null)
             {
@@ -443,7 +450,7 @@ namespace Anywhen.Synth
             if (_voices == null) return;
             foreach (var voice in _voices)
             {
-                foreach (var synthOscillator in voice.oscillators)
+                foreach (var synthOscillator in voice.Oscillators)
                 {
                     synthOscillator.ResetPhase();
                     synthOscillator.SetInactive();
@@ -457,8 +464,6 @@ namespace Anywhen.Synth
 
             int smp = 0;
             int bufferIndex = 0;
-
-
 
 
             // Render loop
@@ -500,7 +505,7 @@ namespace Anywhen.Synth
                 int numOsc = 0;
                 foreach (var voice in _voices)
                 {
-                    foreach (var synthOscillator in voice.oscillators)
+                    foreach (var synthOscillator in voice.Oscillators)
                     {
                         if (!synthOscillator.IsActive) break;
 
@@ -528,7 +533,7 @@ namespace Anywhen.Synth
                 // Update oscillators
                 foreach (var voice in _voices)
                 {
-                    foreach (var synthOscillator in voice.oscillators)
+                    foreach (var synthOscillator in voice.Oscillators)
                     {
                         synthOscillator.DoUpdate();
                     }
@@ -557,28 +562,177 @@ namespace Anywhen.Synth
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
 
+        void InitPlay()
+        {
+            _currentPlaybackSettings = _nextPlaybackSettings;
+            _currentPlaybackSettings.Pitch = 1;
+
+            _isPlaying = true;
+            _hasScheduledPlay = false;
+            ResetVoices();
+
+            foreach (var voice in _voices)
+            {
+                for (int i = 0; i < voice.Oscillators.Length; i++)
+                {
+                    var osc = voice.Oscillators[i];
+                    osc.SetNote(_currentPlaybackSettings.Note, AnywhenRuntime.SampleRate);
+                    osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
+                }
+            }
+
+            foreach (var ampModifier in _amplitudeModifiers)
+            {
+                ampModifier.NoteOn();
+            }
+
+            foreach (var filterModifier in _filterModifiers)
+            {
+                filterModifier.NoteOn();
+            }
+
+            foreach (var frequencyModifier in _voiceFrequencyModifiers)
+            {
+                frequencyModifier.NoteOn();
+            }
+        }
+
+        void StopPlay()
+        {
+            foreach (var ampModifier in _amplitudeModifiers)
+            {
+                ampModifier.NoteOff();
+            }
+
+            foreach (var filterModifier in _filterModifiers)
+            {
+                filterModifier.NoteOff();
+            }
+
+            foreach (var frequencyModifier in _voiceFrequencyModifiers)
+            {
+                frequencyModifier.NoteOff();
+            }
+        }
+
         public override float[] UpdateDSP(int bufferSize, int channels)
         {
             if (!_isInitialized) return new float[bufferSize];
 
+
+            if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
+            {
+                InitPlay();
+            }
+
+            if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
+            {
+                _currentPlaybackSettings.StopTime = -1;
+                StopPlay();
+            }
+
+            if (!_isPlaying) return new float[bufferSize];
+
+            float[] buffer = new float[bufferSize];
             if (channels == 2)
             {
-                // Cache this for the entire buffer, we don't need to check for
-                // every sample if new events have been enqueued.
-                // This assumes that no other methods call GetFrontAndDequeue.
+                // Handle queued events - this is crucial for processing note on/off events
                 HandleQueue(_noteOnQueue.GetSize());
 
                 int sampleFrames = bufferSize / 2;
+                int bufferIndex = 0;
 
-                return RenderFloat32StereoInterleaved(new float[bufferSize], sampleFrames);
+                // Render loop
+                for (int smp = 0; smp < sampleFrames; ++smp)
+                {
+                    // Update modulators
+                    foreach (var frequencyModifier in _voiceFrequencyModifiers)
+                    {
+                        frequencyModifier.DoUpdate();
+                    }
 
-                //if (_debugBufferEnabled)
-                //{
-                //    lock (_bufferMutex)
-                //    {
-                //        Array.Copy(data, _lastBuffer, data.Length);
-                //    }
-                //}
+                    foreach (var amplitudeModifier in _amplitudeModifiers)
+                    {
+                        amplitudeModifier.DoUpdate();
+                    }
+
+                    foreach (var filterModifier in _filterModifiers)
+                    {
+                        filterModifier.DoUpdate();
+                    }
+
+                    // Calculate modulation values
+                    float ampMod = 1;
+                    foreach (var ampModifier in _amplitudeModifiers)
+                    {
+                        ampMod *= ampModifier.Process();
+                    }
+
+
+                    float voiceFreqMod = 1;
+                    foreach (var frequencyModifier in _voiceFrequencyModifiers)
+                    {
+                        voiceFreqMod *= frequencyModifier.Process();
+                    }
+
+                    // Generate oscillator output
+                    float oscillatorOutput = 0;
+                    int totalActiveOsc = 0;
+
+                    foreach (var voice in _voices)
+                    {
+                        foreach (var synthOscillator in voice.Oscillators)
+                        {
+                            if (!synthOscillator.IsActive) continue;
+
+                            synthOscillator.SetPitchMod(voiceFreqMod, _sampleRate);
+                            oscillatorOutput += synthOscillator.Process();
+                            totalActiveOsc++;
+                        }
+                    }
+
+                    // Avoid division by zero
+                    if (totalActiveOsc > 0)
+                    {
+                        oscillatorOutput /= totalActiveOsc;
+                    }
+
+                    float sample = oscillatorOutput * ampMod;
+
+                    // Apply filters
+                    for (var i = 0; i < _filters.Length; i++)
+                    {
+                        var audioFilterBase = _filters[i];
+                        audioFilterBase.SetParameters(_preset.filterSettings[i]);
+                        sample = audioFilterBase.Process(sample);
+                    }
+
+                    buffer[bufferIndex++] = sample;
+                    buffer[bufferIndex++] = sample;
+
+                    // Update oscillator phases
+                    foreach (var voice in _voices)
+                    {
+                        foreach (var synthOscillator in voice.Oscillators)
+                        {
+                            synthOscillator.DoUpdate();
+                        }
+                    }
+
+                    // Handle filter modulation
+                    foreach (var audioFilterBase in _filters)
+                    {
+                        float currentMod = 1;
+                        foreach (var filterModifier in _filterModifiers)
+                        {
+                            currentMod *= filterModifier.Process();
+                        }
+
+                        audioFilterBase.HandleModifiers(currentMod);
+                    }
+                }
+
+                return buffer;
             }
 
             return new float[bufferSize];

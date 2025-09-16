@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
@@ -87,7 +88,6 @@ namespace Anywhen
         protected virtual void Start()
         {
             AudioSettings.GetDSPBufferSize(out _bufferSize, out _numBuffers);
-            print("buffersize " + _bufferSize);
 
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             AudioSource source = GetComponent<AudioSource>();
@@ -99,10 +99,6 @@ namespace Anywhen
         protected void SetupVoices(List<AnysongTrack> tracks)
         {
             _voicesList.Clear();
-            //foreach (var anywhenVoice in transform.gameObject.GetComponentsInChildren<AnywhenVoice>())
-            //{
-            //    DestroyImmediate(anywhenVoice.gameObject);
-            //}
 
             foreach (var songTrack in tracks)
             {
@@ -110,20 +106,18 @@ namespace Anywhen
 
                 if (songTrack.monophonic)
                 {
-                    //var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
-                    //var newVoice = newSampler.GetComponent<AnywhenVoice>();
-                    //var source = newSampler.GetComponent<AudioSource>();
-                    //if (outputMixerGroup)
-                    //    source.outputAudioMixerGroup = outputMixerGroup;  
                     if (songTrack.instrument is AnywhenSampleInstrument)
                     {
-                        voices.Add(new AnywhenSampleVoice());
+                        var newVoice = new AnywhenSampleVoice();
+                        newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                        voices.Add(newVoice);
                     }
 
                     if (songTrack.instrument is AnywhenSynthPreset preset)
                     {
                         var newSynthVoice = new AnywhenSynthVoice();
-                        newSynthVoice.SetPreset(preset);
+                        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+
                         voices.Add(newSynthVoice);
                     }
                 }
@@ -131,22 +125,22 @@ namespace Anywhen
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        //var newSampler = (GameObject)(Instantiate(Resources.Load("AnywhenSampler"), transform));
-                        //var newVoice = newSampler.GetComponent<AnywhenVoice>();
-                        //var source = newVoice.GetComponent<AudioSource>();
-                        //if (outputMixerGroup)
-                        //    source.outputAudioMixerGroup = outputMixerGroup;
                         if (songTrack.instrument is AnywhenSampleInstrument)
                         {
-                            voices.Add(new AnywhenSampleVoice());
+                            var newVoice = new AnywhenSampleVoice();
+                            newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                            voices.Add(newVoice);
+                        }
+
+                        if (songTrack.instrument is AnywhenSynthPreset preset)
+                        {
+                            var newSynthVoice = new AnywhenSynthVoice();
+                            newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                            voices.Add(newSynthVoice);
                         }
                     }
                 }
 
-                foreach (var anywhenSampler in voices)
-                {
-                    anywhenSampler.Init(AudioSettings.outputSampleRate);
-                }
 
                 _voicesList.Add(new PlayerVoices(songTrack.instrument, songTrack, voices.ToArray()));
             }
@@ -215,8 +209,8 @@ namespace Anywhen
             //thisStep.rootNote += rootNoteMod;
             thisStep.velocity *= _playerVolume;
 
-            var sampleInstrument = songTrack.instrument as AnywhenSampleInstrument;
-            if (!sampleInstrument) return;
+            var instrumentPreset = songTrack.instrument;
+            if (!instrumentPreset) return;
 
 
             var s = thisStep.GetEvent(0);
@@ -230,7 +224,7 @@ namespace Anywhen
                                    (AnywhenMetronome.Instance.GetLength(tickRate) * thisStep.offset);
                     var volume = thisStep.velocity * songTrack.volume;
                     var envelope = songTrack.trackEnvelope;
-                    voice.NoteOn(note, playTime, playTime + thisStep.duration, volume, sampleInstrument, envelope);
+                    voice.NoteOn(note, playTime, playTime + thisStep.duration, volume);
                 }
             }
         }

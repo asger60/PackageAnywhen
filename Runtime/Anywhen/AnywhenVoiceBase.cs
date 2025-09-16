@@ -9,17 +9,42 @@ namespace Anywhen
         public bool HasScheduledPlay => _hasScheduledPlay;
 
         internal bool _hasScheduledPlay;
-        public virtual void NoteOn(int note, double playTime, double duration, float volume, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope)
+        protected bool _isPlaying;
+        public bool IsPlaying => _isPlaying;
+
+        protected struct PlaybackSettings
         {
-            
+            public double PlayTime, StopTime;
+            public float Volume;
+            public float Pitch;
+            public int Note;
+
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note)
+            {
+                PlayTime = playTime;
+                StopTime = stopTime;
+                Volume = volume;
+                Pitch = pitch;
+                Note = note;
+            }
         }
-        public virtual void Init(int sampleRate) {}
+
+        protected PlaybackSettings _currentPlaybackSettings;
+        protected PlaybackSettings _nextPlaybackSettings;
+
+        public virtual void NoteOn(int note, double playTime, double duration, float volume)
+        {
+        }
+
+        public virtual void Init(int sampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope)
+        {
+        }
 
         public virtual float GetDurationToEnd()
         {
             return 0;
         }
-        
+
         public virtual float[] UpdateDSP(int bufferSize, int channels)
         {
             return new float[bufferSize];

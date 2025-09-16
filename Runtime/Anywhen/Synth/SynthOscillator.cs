@@ -136,19 +136,19 @@ namespace Anywhen.Synth
         {
             _isActive = true;
             _currentNote = note + settings.tuning;
-            set_freq(Synth.AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
         public void SetPitchMod(float amount, int sampleRate)
         {
             _pitchModAmount = Remap(amount, -1, 1, 0.5f, 2);
-            set_freq(Synth.AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
         public void SetFineTuning(float amount, int sampleRate)
         {
             _fineTune = amount;
-            set_freq(Synth.AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
         float Remap(float value, float from1, float to1, float from2, float to2)
