@@ -76,7 +76,6 @@ public class AnysongPlayerInspector : UnityEditor.Editor
         {
             bool wasPlaying = AnywhenRuntime.IsPreviewing;
             _anysongPlayerControls.Stop();
-            _anywhenPlayer.EditorRandomizeSounds();
             EditorUtility.SetDirty(_anywhenPlayer);
             if (wasPlaying)
             {
@@ -95,7 +94,6 @@ public class AnysongPlayerInspector : UnityEditor.Editor
         });
         RefreshActiveRootNoteButton();
         var restoreButton = _root.Q<Button>("ButtonRestoreInstruments");
-        restoreButton.clicked += () => { _anywhenPlayer.EditorRestoreSounds(); };
 
         var editButton = _root.Q<Button>("ButtonEdit");
         editButton.clicked += Edit;

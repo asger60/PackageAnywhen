@@ -96,7 +96,6 @@ using UnityEngine.UIElements;
 
         public static void RefreshSectionLocked()
         {
-            Debug.Log("refres toggle");
             _parent.Query<Button>("SectionLockButton").ForEach(button =>
             {
                 button.style.backgroundColor = IsSectionLocked()

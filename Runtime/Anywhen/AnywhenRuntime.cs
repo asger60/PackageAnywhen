@@ -140,7 +140,6 @@ namespace Anywhen
             if (state)
             {
                 Instance.GetAnyComponents();
-
                 targetPlayer.Play();
                 Metronome.Play();
             }

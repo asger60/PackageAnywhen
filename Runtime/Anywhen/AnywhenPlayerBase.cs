@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
+    [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenPlayerBase : MonoBehaviour
     {
@@ -223,7 +222,6 @@ namespace Anywhen
                     var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate) +
                                    (AnywhenMetronome.Instance.GetLength(tickRate) * thisStep.offset);
                     var volume = thisStep.velocity * songTrack.volume;
-                    var envelope = songTrack.trackEnvelope;
                     voice.NoteOn(note, playTime, playTime + thisStep.duration, volume);
                 }
             }

@@ -176,7 +176,7 @@ public class AnysongEditorWindow : EditorWindow
         rootVisualElement.Clear();
         if (CurrentSong == null)
         {
-            Debug.Log("Current song is null");
+            //Debug.Log("Current song is null");
             CurrentSong = Selection.activeObject as AnysongObject;
             if (CurrentSong == null)
             {

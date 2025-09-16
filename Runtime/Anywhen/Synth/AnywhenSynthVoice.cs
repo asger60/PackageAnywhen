@@ -22,7 +22,6 @@ using System;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Anywhen.Synth
 {
@@ -44,7 +43,6 @@ namespace Anywhen.Synth
         private SynthControlBase[] _amplitudeModifiers;
         private SynthControlBase[] _filterModifiers;
 
-
         private SynthFilterBase[] _filters;
 
         private bool _isInitialized = false;
@@ -52,43 +50,15 @@ namespace Anywhen.Synth
         // Current MIDI evt
         private int _currentVelocity;
 
-        private EventQueue _noteOnQueue;
-
 
         public static float[] FreqTab;
 
-        private const int QueueCapacity = 16;
-        private readonly float[] _lastBuffer = new float[2048];
-        private readonly object _bufferMutex = new object();
-        //private bool _debugBufferEnabled = false;
+        private AnywhenSynthPreset _preset;
 
-        private EventQueue.QueuedEvent _nextEvent;
-        private EventQueue.QueuedEvent _offEvent;
-
-        private NoteEvent _currentNoteEvent;
-        private bool _noteOnWaiting;
-        private bool _noteOffWaiting;
-
-        [SerializeField] private AnywhenSynthPreset _preset;
-        public AnywhenSynthPreset Preset => _preset;
-        private int _noteOnCount;
         private bool _isCreated;
 
         /// Public interface
-        public void HandleEventScheduled(NoteEvent noteEvent, double scheduledPlayTime)
-        {
-            if (noteEvent.state == NoteEvent.EventTypes.NoteOn)
-            {
-                _noteOnQueue.Enqueue(noteEvent, scheduledPlayTime);
-                _noteOnCount++;
-            }
-            else
-            {
-                _offEvent = new EventQueue.QueuedEvent();
-                _offEvent.Set(noteEvent, scheduledPlayTime);
-                _noteOffWaiting = true;
-            }
-        }
+
 
         public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
@@ -264,159 +234,10 @@ namespace Anywhen.Synth
                 }
             }
 
-            _noteOnCount = 0;
-            _noteOnWaiting = false;
-            _noteOffWaiting = false;
         }
 
 
-        void HandleQueue(int queueSize)
-        {
-            // Event handling
-            // This is sample accurate event handling.
-            // If it's too slow, we can decide to only handle 1 event per buffer and
-            // move this code outside the loop.
-            while (true)
-            {
-                if (_noteOffWaiting && _offEvent.EventTime <= AudioSettings.dspTime)
-                {
-                    _offEvent.NoteEvent.velocity = _currentNoteEvent.velocity;
-                    HandleEventNow(_offEvent);
-                    _noteOffWaiting = false;
-                }
-
-                if (!_noteOnWaiting && _noteOnCount > 0)
-                {
-                    if (_noteOnQueue.GetFrontAndDequeue(ref _nextEvent))
-                    {
-                        _noteOnWaiting = true;
-                        _noteOnCount--;
-                    }
-                }
-
-                if (_noteOnWaiting)
-                {
-                    if (_nextEvent.EventTime <= AudioSettings.dspTime)
-                    {
-                        HandleEventNow(_nextEvent);
-                        _noteOnWaiting = false;
-                    }
-                    else
-                    {
-                        // we assume that queued events are in order, so if it's not
-                        // now, we stop getting events from the queue
-                        break;
-                    }
-                }
-                else
-                {
-                    // no more events
-                    break;
-                }
-            }
-        }
-
-        // This should only be called from OnAudioFilterRead
-        private void HandleEventNow(EventQueue.QueuedEvent currentEvent)
-        {
-            _currentNoteEvent = currentEvent.NoteEvent;
-            if (currentEvent.NoteEvent.state == NoteEvent.EventTypes.NoteOn)
-            {
-                ResetVoices();
-                if (_preset.unison)
-                {
-                    foreach (var voice in _voices)
-                    {
-                        for (int i = 0; i < voice.Oscillators.Length; i++)
-                        {
-                            var osc = voice.Oscillators[i];
-                            osc.SetNote(_currentNoteEvent.notes[0], AnywhenRuntime.SampleRate);
-                            osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var voice in _voices)
-                    {
-                        for (int i = 0; i < _currentNoteEvent.notes.Length; i++)
-                        {
-                            if (i >= voice.Oscillators.Length)
-                            {
-                                break;
-                            }
-
-                            var osc = voice.Oscillators[i];
-                            int currentNote = _currentNoteEvent.notes[i];
-
-
-                            osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
-                            osc.SetNote(currentNote, AnywhenRuntime.SampleRate);
-                        }
-                    }
-                }
-
-
-                foreach (var ampModifier in _amplitudeModifiers)
-                {
-                    ampModifier.NoteOn();
-                }
-
-                foreach (var filterModifier in _filterModifiers)
-                {
-                    filterModifier.NoteOn();
-                }
-
-                foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                {
-                    frequencyModifier.NoteOn();
-                }
-            }
-            else if (currentEvent.NoteEvent.state == NoteEvent.EventTypes.NoteOff)
-            {
-                foreach (var ampModifier in _amplitudeModifiers)
-                {
-                    ampModifier.NoteOff();
-                }
-
-                foreach (var filterModifier in _filterModifiers)
-                {
-                    filterModifier.NoteOff();
-                }
-
-                foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                {
-                    frequencyModifier.NoteOff();
-                }
-            }
-        }
-
-
-        private void OnAudioFilterRead(float[] data, int channels)
-        {
-            if (_isInitialized)
-            {
-                if (channels == 2)
-                {
-                    // Cache this for the entire buffer, we don't need to check for
-                    // every sample if new events have been enqueued.
-                    // This assumes that no other methods call GetFrontAndDequeue.
-                    HandleQueue(_noteOnQueue.GetSize());
-
-                    int sampleFrames = data.Length / 2;
-
-                    RenderFloat32StereoInterleaved(data, sampleFrames);
-
-                    //if (_debugBufferEnabled)
-                    //{
-                    //    lock (_bufferMutex)
-                    //    {
-                    //        Array.Copy(data, _lastBuffer, data.Length);
-                    //    }
-                    //}
-                }
-            }
-        }
+        
 
 
         int _sampleRate;
@@ -437,7 +258,6 @@ namespace Anywhen.Synth
                 }
             }
 
-            _noteOnQueue = new EventQueue(QueueCapacity);
             RebuildSynth();
 
             ResetVoices();
@@ -458,103 +278,7 @@ namespace Anywhen.Synth
             }
         }
 
-        private float[] RenderFloat32StereoInterleaved(float[] buffer, int sampleFrames)
-        {
-            if (!_isInitialized) return buffer;
-
-            int smp = 0;
-            int bufferIndex = 0;
-
-
-            // Render loop
-            for (; smp < sampleFrames; ++smp)
-            {
-                foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                {
-                    frequencyModifier.DoUpdate();
-                }
-
-                foreach (var amplitudeModifier in _amplitudeModifiers)
-                {
-                    amplitudeModifier.DoUpdate();
-                }
-
-                foreach (var filterModifier in _filterModifiers)
-                {
-                    filterModifier.DoUpdate();
-                }
-
-
-                float ampMod = 1;
-                foreach (var ampModifier in _amplitudeModifiers)
-                {
-                    ampMod *= ampModifier.Process();
-                }
-
-                ampMod *= _currentNoteEvent.velocity;
-
-
-                float voiceFreqMod = 1;
-                foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                {
-                    voiceFreqMod *= frequencyModifier.Process();
-                }
-
-
-                float oscillatorOutput = 0;
-                int numOsc = 0;
-                foreach (var voice in _voices)
-                {
-                    foreach (var synthOscillator in voice.Oscillators)
-                    {
-                        if (!synthOscillator.IsActive) break;
-
-                        synthOscillator.SetPitchMod(voiceFreqMod, AnywhenRuntime.SampleRate);
-                        oscillatorOutput += synthOscillator.Process();
-                        numOsc++;
-                    }
-
-                    oscillatorOutput /= numOsc;
-                }
-
-                float sample = oscillatorOutput * ampMod;
-                // Filter entire buffer
-                for (var i = 0; i < _filters.Length; i++)
-                {
-                    var audioFilterBase = _filters[i];
-                    audioFilterBase.SetParameters(_preset.filterSettings[i]);
-                    sample = audioFilterBase.Process(sample);
-                }
-
-                buffer[bufferIndex++] = sample;
-                buffer[bufferIndex++] = sample;
-
-
-                // Update oscillators
-                foreach (var voice in _voices)
-                {
-                    foreach (var synthOscillator in voice.Oscillators)
-                    {
-                        synthOscillator.DoUpdate();
-                    }
-                }
-
-
-                foreach (var audioFilterBase in _filters)
-                {
-                    float currentMod = 1;
-                    foreach (var filterModifier in _filterModifiers)
-                    {
-                        currentMod *= filterModifier.Process();
-                    }
-
-                    audioFilterBase.HandleModifiers(currentMod);
-                }
-            }
-
-            return buffer;
-        }
-
+  
 
         /// Internals
         private static float Midi2Freq(int note)
@@ -562,7 +286,7 @@ namespace Anywhen.Synth
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
 
-        void InitPlay()
+        void StartPlay()
         {
             _currentPlaybackSettings = _nextPlaybackSettings;
             _currentPlaybackSettings.Pitch = 1;
@@ -622,7 +346,7 @@ namespace Anywhen.Synth
 
             if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
             {
-                InitPlay();
+                StartPlay();
             }
 
             if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
@@ -636,9 +360,6 @@ namespace Anywhen.Synth
             float[] buffer = new float[bufferSize];
             if (channels == 2)
             {
-                // Handle queued events - this is crucial for processing note on/off events
-                HandleQueue(_noteOnQueue.GetSize());
-
                 int sampleFrames = bufferSize / 2;
                 int bufferIndex = 0;
 
