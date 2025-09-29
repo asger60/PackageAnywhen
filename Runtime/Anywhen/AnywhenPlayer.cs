@@ -38,11 +38,7 @@ namespace Anywhen
                 Play();
         }
 
-        private void Load(AnysongObject anysong)
-        {
-            if (!anysong) return;
-            CurrentSong = anysong;
-        }
+        
 
 #if UNITY_EDITOR
         public void LoadInstruments()
@@ -85,9 +81,7 @@ namespace Anywhen
 
 
             var section = CurrentSong.Sections[CurrentSectionIndex];
-
-            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar,
-                CurrentSong.Sections[0]));
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
 
 
@@ -141,8 +135,7 @@ namespace Anywhen
                 Load(AnysongObject);
             }
 
-            
-            
+
             if (!AnysongPlayerBrain.IsStarted)
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
@@ -193,7 +186,6 @@ namespace Anywhen
             intensity = newIntensity;
         }
 
-      
 
         public void TriggerStepIndex(int stepIndex, bool instant = false)
         {
@@ -260,7 +252,6 @@ namespace Anywhen
         }
 
 
-
         public void EditorSetSongAndPackObject(AnysongObject newSong, int packIndex)
         {
             songObject = newSong;
@@ -274,12 +265,11 @@ namespace Anywhen
 
         public void EditorSetPreviewSong(AnysongObject anysongObject)
         {
-            CurrentSong = anysongObject;
             Load(CurrentSong);
         }
 
 
-        public int[] EditorGetPlayingTrackPatternIndexes()
+        public override int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
             for (var i = 0; i < CurrentSong.Sections[CurrentSectionIndex].tracks.Count; i++)

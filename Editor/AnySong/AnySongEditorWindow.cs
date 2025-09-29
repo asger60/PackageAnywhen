@@ -25,7 +25,7 @@ public class AnysongEditorWindow : EditorWindow
     public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
     public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
-    private static AnywhenPlayer _currentRuntimeSongPlayer;
+    private static AnywhenPlayerBase _currentRuntimeSongPlayer;
     private AnyPatternStep _stepCopy;
 
     private AnysongSection _sectionCopy;
@@ -75,14 +75,11 @@ public class AnysongEditorWindow : EditorWindow
         window.CreateGUI();
     }
 
-    public static void LoadSong(AnysongObject songObject, AnywhenPlayer anywhenPlayer)
+    public static void LoadSong(AnysongObject songObject, AnywhenPlayerBase anywhenPlayer)
     {
         _currentRuntimeSongPlayer = anywhenPlayer;
-
         CurrentSong = songObject;
         EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
-        // EditorPrefs.SetString("AnysongPlayer", AssetDatabase.GetAssetPath(_currentRuntimeSongPlayer));
-
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
         AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
         window.Show(true);
@@ -94,7 +91,6 @@ public class AnysongEditorWindow : EditorWindow
     private static void ToggleIsPlaying()
     {
         _isPLaying = !_isPLaying;
-
         if (_isPLaying)
         {
             if (_currentRuntimeSongPlayer == null)
@@ -144,15 +140,15 @@ public class AnysongEditorWindow : EditorWindow
     }
 
 
-    static AnywhenPlayer AttemptToFindPlayer()
+    static AnywhenComposerPlayer AttemptToFindPlayer()
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             foreach (var rootGameObject in SceneManager.GetSceneAt(i).GetRootGameObjects())
             {
-                foreach (var songPlayer in rootGameObject.GetComponentsInChildren<AnywhenPlayer>())
+                foreach (var songPlayer in rootGameObject.GetComponentsInChildren<AnywhenComposerPlayer>())
                 {
-                    if (songPlayer.AnysongObject == CurrentSong)
+                    if (songPlayer.CurrentSong == CurrentSong)
                         return songPlayer;
                 }
             }
@@ -176,12 +172,8 @@ public class AnysongEditorWindow : EditorWindow
         rootVisualElement.Clear();
         if (CurrentSong == null)
         {
-            //Debug.Log("Current song is null");
-            CurrentSong = Selection.activeObject as AnysongObject;
-            if (CurrentSong == null)
-            {
-                CurrentSong = AssetDatabase.LoadAssetAtPath<AnysongObject>(EditorPrefs.GetString("AnyLoadedSong"));
-            }
+            Debug.Log("Current song is null");
+            return;
         }
 
         _currentSelection = new AnySelection
@@ -303,10 +295,7 @@ public class AnysongEditorWindow : EditorWindow
             AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
         });
 
-        _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt =>
-        {
-            SetTestIntensity(evt.newValue);
-        });
+        _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
     }
 
 
@@ -327,7 +316,7 @@ public class AnysongEditorWindow : EditorWindow
 
     static void OnBar()
     {
-        if (CurrentSong != _currentRuntimeSongPlayer.AnysongObject) return;
+        if (CurrentSong != _currentRuntimeSongPlayer.CurrentSong) return;
         AnysongSectionsView.HilightSection(_currentRuntimeSongPlayer.CurrentSectionIndex,
             _currentSelection.CurrentSectionIndex);
 
@@ -832,20 +821,18 @@ public class AnysongEditorWindow : EditorWindow
                     .RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
                 _inspectorPanel.Q<Button>("ScrubBack").RegisterCallback((ClickEvent ev) => { ScrubPattern(1); });
 
-                _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) =>
-                {
-                    RandomizeMelody();
-                });
-                _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) =>
-                {
-                    RandomizeRhythm();
-                });
+                _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
+                _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
 
 
                 HandlePatternUtilsLogic();
                 break;
             case InspectorModes.Track:
-                AnysongInspectorView.DrawTrack(_currentSelection);
+                AnysongInspectorView.DrawTrack(_currentSelection, () =>
+                {
+                   
+                    _currentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack);
+                });
 
                 break;
             case InspectorModes.Step:
@@ -855,10 +842,7 @@ public class AnysongEditorWindow : EditorWindow
                 break;
             case InspectorModes.Progression:
                 AnysongInspectorView.DrawProgression(_currentSelection);
-                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) =>
-                {
-                    CreatePattern(_currentSelection.CurrentTrackIndex);
-                });
+                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreatePattern(_currentSelection.CurrentTrackIndex); });
                 break;
 
             default:
@@ -888,19 +872,13 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandlePatternUtilsLogic()
     {
-        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-        {
-            CopyPattern(_currentSelection.CurrentPattern);
-        });
+        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
         _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
     }
 
     void HandleStepUtilsLogic()
     {
-        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-        {
-            CopyStep(_currentSelection.CurrentStep);
-        });
+        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyStep(_currentSelection.CurrentStep); });
         _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) =>
         {
             PasteStep(_currentSelection.CurrentPattern, _currentSelection.CurrentStep);

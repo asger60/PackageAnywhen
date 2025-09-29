@@ -125,7 +125,6 @@ namespace Anywhen
 
             Sub16++;
 
-
             if (Sub16 % 2 == 0)
             {
                 _nextTime8 = _nextTime16 + _sub8Length;

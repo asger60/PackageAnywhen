@@ -103,16 +103,16 @@ public static class AnysongInspectorView
     }
 
 
-    public static void DrawTrack(AnysongEditorWindow.AnySelection selection)
+    public static void DrawTrack(AnysongEditorWindow.AnySelection selection, Action didUpdateInstrument)
     {
         _parent.Clear();
         Draw(_parent);
         var instrumentProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("instrument");
 
-        _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, null));
-        _parent.Add(
-            CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
-                null));
+
+        _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
+        _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
+            null));
 
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
@@ -120,7 +120,7 @@ public static class AnysongInspectorView
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("monophonic"), null));
 
-        
+
         var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
         if (trackTypeProperty.enumValueIndex == 0)
         {
@@ -344,7 +344,12 @@ public static class AnysongInspectorView
     {
         var propertyField = new PropertyField(property);
         propertyField.BindProperty(property);
-        propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
+        propertyField.RegisterValueChangeCallback((ev) =>
+        {
+            didUpdate?.Invoke();
+        });
+        
+        
         return propertyField;
     }
 }

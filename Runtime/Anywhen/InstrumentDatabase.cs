@@ -92,9 +92,9 @@ public class InstrumentDatabase : MonoBehaviour
         EditorUtility.SetDirty(AnywhenRuntime.InstrumentDatabase);
     }
 #endif
-    bool IsLoaded(AnywhenSampleInstrument instrument)
+    public static bool IsLoaded(AnywhenSampleInstrument instrument)
     {
-        foreach (var loadedInstrument in LoadedInstruments)
+        foreach (var loadedInstrument in AnywhenRuntime.InstrumentDatabase.LoadedInstruments)
         {
             if (loadedInstrument.Instrument == instrument) return true;
         }

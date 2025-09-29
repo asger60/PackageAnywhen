@@ -9,14 +9,13 @@ using UnityEngine.UIElements;
 
 
 [CustomEditor(typeof(AnywhenPlayer))]
-public class AnysongPlayerInspector : UnityEditor.Editor
+public class AnysongPlayerInspector : Editor
 {
     private Button _playButton, _browseButton;
     private AnywhenPlayer _anywhenPlayer;
     private AnysongPackObject[] _packObjects;
     private AnysongPackObject _currentPack;
     private Image _packArtImage;
-    public static Color AccentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
     private VisualElement _root;
     private AnysongPlayerControls _anysongPlayerControls;
     private int _currentPackIndex;
@@ -210,16 +209,7 @@ public class AnysongPlayerInspector : UnityEditor.Editor
             }
         });
     }
-
-    //private void LocateTriggerButtonOnclicked()
-    //{
-    //    _anywhenPlayer.EditorLocateTrigger();
-    //}
-//
-    //private void CreateTriggerButtonOnclicked()
-    //{
-    //    _anywhenPlayer.EditorCreateTrigger();
-    //}
+    
 
     private void OnBrowseWindowClosed(bool didLoad)
     {

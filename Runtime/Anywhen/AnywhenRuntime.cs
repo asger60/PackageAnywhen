@@ -134,7 +134,7 @@ namespace Anywhen
         }
 
 
-        public static void SetPreviewMode(bool state, AnywhenPlayer targetPlayer)
+        public static void SetPreviewMode(bool state, AnywhenPlayerBase targetPlayer)
         {
             Instance._isPreviewing = state;
             if (state)
@@ -175,7 +175,7 @@ namespace Anywhen
 
         public static void Log(string message, DebugMessageType debugMessageType = DebugMessageType.Log)
         {
-            if (!_instance.logErrors) return;
+            if (!Instance.logErrors) return;
             switch (debugMessageType)
             {
                 case DebugMessageType.Log:

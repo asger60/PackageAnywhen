@@ -49,6 +49,12 @@ namespace Anywhen
 
         public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
+            if (note > 20)
+            {
+                AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
+                
+                return;
+            }
             _currentNoteClip = _thisInstrument.GetNoteClip(note);
             if (_currentNoteClip)
             {
