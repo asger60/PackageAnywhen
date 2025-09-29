@@ -15,4 +15,19 @@ public class AnywhenComposerPlayer : AnywhenPlayerBase
         }
     }
 #endif
+
+    public override void Play()
+    {
+        base.Play();
+        var section = CurrentSong.Sections[CurrentSectionIndex];
+        AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
+    }
+
+    protected override void OnBar()
+    {
+        if (!IsRunning) return;
+        base.OnBar();
+        var section = CurrentSong.Sections[CurrentSectionIndex];
+        AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
+    }
 }
