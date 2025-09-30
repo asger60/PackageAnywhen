@@ -1,5 +1,4 @@
 using Anywhen.SettingsObjects;
-using UnityEngine;
 
 namespace Anywhen
 {
@@ -14,18 +13,21 @@ namespace Anywhen
 
         protected struct PlaybackSettings
         {
-            public double PlayTime, StopTime;
+            public double PlayTime;
+            public double StopTime;
             public float Volume;
             public float Pitch;
             public int Note;
+            public AnywhenNoteClip NoteClip;
 
-            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note)
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note, AnywhenNoteClip noteClip = null)
             {
                 PlayTime = playTime;
                 StopTime = stopTime;
                 Volume = volume;
                 Pitch = pitch;
                 Note = note;
+                NoteClip = noteClip;
             }
         }
 
@@ -35,6 +37,7 @@ namespace Anywhen
         public virtual void NoteOn(int note, double playTime, double duration, float volume)
         {
         }
+
 
         public virtual void Init(int sampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope)
         {

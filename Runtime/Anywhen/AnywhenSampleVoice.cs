@@ -58,20 +58,12 @@ namespace Anywhen
             if (note > 20)
             {
                 AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
-
                 return;
             }
 
-            _currentNoteClip = _thisInstrument.GetNoteClip(note);
-            if (_currentNoteClip)
-            {
-                PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note));
-                if (stopTime > 0) StopScheduled(stopTime);
-            }
-            else
-            {
-                AnywhenRuntime.Log("failed to find NoteClip", AnywhenRuntime.DebugMessageType.Warning);
-            }
+
+            PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
+            if (stopTime > 0) StopScheduled(stopTime);
         }
 
 
@@ -83,6 +75,8 @@ namespace Anywhen
 
         public override float GetDurationToEnd()
         {
+            if (!_currentNoteClip) return 0;
+
             var timeToPlay = (float)(ScheduledPlayTime - AudioSettings.dspTime);
             timeToPlay = Mathf.Max(timeToPlay, 0);
             return timeToPlay + (float)(_currentNoteClip.clipSamples.Length - _samplePosBuffer1);
@@ -111,6 +105,9 @@ namespace Anywhen
         void InitPlay()
         {
             _currentPlaybackSettings = _nextPlaybackSettings;
+
+            _currentNoteClip = _currentPlaybackSettings.NoteClip;
+
             _samplePosBuffer1 = 0;
 
             _sampleStepFrac = _currentNoteClip.frequency / _currentSampleRate;
@@ -221,6 +218,9 @@ namespace Anywhen
                 SetReady();
                 return data;
             }
+
+            if (!_currentNoteClip)
+                return data;
 
 
             if (_samplePosBuffer1 >= _currentNoteClip.clipSamples.Length /* || _ampMod <= 0*/)

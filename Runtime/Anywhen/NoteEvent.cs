@@ -147,7 +147,7 @@ public struct NoteEvent
     }
 
 
-    public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum,
+    public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum, float duration,
         float expression1, float expression2)
     {
         this.state = state;
@@ -158,7 +158,7 @@ public struct NoteEvent
         this.expression2 = expression2;
         this.velocity = 1;
         this.velocity = velocity;
-        duration = -1;
+        this.duration = duration;
         envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
     }
 

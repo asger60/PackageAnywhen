@@ -173,7 +173,7 @@ namespace Anywhen
         }
 
 
-        public double GetLength(TickRate tickRate)
+        public double GetLength(TickRate tickRate = TickRate.Sub16)
         {
             switch (tickRate)
             {
@@ -194,7 +194,7 @@ namespace Anywhen
         }
 
 
-        public double GetScheduledPlaytime(TickRate playbackRate)
+        public double GetScheduledPlaytime(TickRate playbackRate = TickRate.Sub16)
         {
             return playbackRate switch
             {

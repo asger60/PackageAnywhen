@@ -46,18 +46,18 @@ namespace Anywhen
             public AnywhenInstrument instrument;
             public AnysongTrack track;
 
-            public AnywhenVoiceBase[] voices;
+            public AnywhenVoiceBase[] Voices;
 
             public PlayerVoices(AnywhenInstrument instrument, AnysongTrack type, AnywhenVoiceBase[] voices)
             {
                 this.instrument = instrument;
                 this.track = type;
-                this.voices = voices;
+                this.Voices = voices;
             }
 
             public AnywhenVoiceBase GetVoice()
             {
-                foreach (var voiceVoice in voices)
+                foreach (var voiceVoice in Voices)
                 {
                     if (voiceVoice.HasScheduledPlay) continue;
                     if (voiceVoice.IsReady)
@@ -69,7 +69,7 @@ namespace Anywhen
                 float maxTime = float.MaxValue;
                 AnywhenVoiceBase bestVoice = null;
 
-                foreach (var voiceVoice in voices)
+                foreach (var voiceVoice in Voices)
                 {
                     if (voiceVoice.HasScheduledPlay) continue;
 
@@ -81,7 +81,7 @@ namespace Anywhen
                     }
                 }
 
-                return bestVoice ?? voices[0];
+                return bestVoice ?? Voices[0];
             }
         }
 
@@ -162,7 +162,7 @@ namespace Anywhen
                 {
                     var section = currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
-
+                    if (sectionTrack.isMuted) continue;
 
                     var track = currentSong.Tracks[trackIndex];
                     var pattern = sectionTrack.GetPlayingPattern();
@@ -206,26 +206,29 @@ namespace Anywhen
         {
             var songTrack = currentSong.Tracks[trackIndex];
 
-            var thisStep = step.Clone();
-            //thisStep.rootNote += rootNoteMod;
-            thisStep.velocity *= _playerVolume;
-
-            var instrumentPreset = songTrack.instrument;
-            if (!instrumentPreset) return;
-
-
-            var s = thisStep.GetEvent(0);
-
-            foreach (var note in s.notes)
+            var noteEvents = step.GetNoteEvents(0);
+            foreach (var noteEvent in noteEvents)
             {
-                var voice = GetVoice(songTrack);
-                if (voice != null)
-                {
-                    var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime(tickRate) +
-                                   (AnywhenMetronome.Instance.GetLength(tickRate) * thisStep.offset);
-                    var volume = thisStep.velocity * songTrack.volume;
-                    voice.NoteOn(note, playTime, playTime + thisStep.duration, volume);
-                }
+                HandleNoteEvent(noteEvent, songTrack, _playerVolume);
+            }
+        }
+
+
+
+        protected void HandleNoteEvent(NoteEvent noteEvent, AnysongTrack track, float playerVolume)
+        {
+            for (var i = 0; i < noteEvent.notes.Length; i++)
+            {
+                var note = noteEvent.notes[i];
+                var voice = GetVoice(track);
+                if (voice == null) continue;
+
+                var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() +
+                               (AnywhenMetronome.Instance.GetLength() * noteEvent.drift) +
+                               noteEvent.chordStrum[i];
+
+                var volume = noteEvent.velocity * track.volume * playerVolume;
+                voice.NoteOn(note, playTime, playTime + noteEvent.duration, volume);
             }
         }
 
@@ -423,7 +426,7 @@ namespace Anywhen
             // Mix in each voice group
             foreach (var voice in _voicesList)
             {
-                foreach (var anywhenVoice in voice.voices)
+                foreach (var anywhenVoice in voice.Voices)
                 {
                     var voiceDSP = anywhenVoice.UpdateDSP(data.Length, channels);
                     for (int i = 0; i < data.Length; i++)

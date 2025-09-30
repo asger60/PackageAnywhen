@@ -69,42 +69,39 @@ public class AnyPatternStep
     }
 
 
-    public NoteEvent GetEvent(int patternRoot)
+    NoteEvent GetEvent(int patternRoot)
     {
         NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
         if (noteOff)
             type = NoteEvent.EventTypes.NoteOff;
 
-        var e = new NoteEvent(GetNotes(patternRoot), type, velocity,
-            offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16),
-            CreateStrum(GetNotes(patternRoot).Length), expression, 1)
-        {
-            duration = duration
-        };
+        var e = new NoteEvent(
+            GetNotes(patternRoot),
+            state: type,
+            velocity: velocity,
+            drift: offset * AnywhenMetronome.Instance.GetLength(),
+            chordStrum: CreateStrum(GetNotes(patternRoot).Length),
+            duration: duration,
+            expression1: expression,
+            expression2: 1
+        );
+
+
         return e;
     }
 
-    public NoteEvent[] GetRepeats(int patternRoot, float trackVolume)
+    public NoteEvent[] GetNoteEvents(int patternRoot)
     {
-        NoteEvent[] events = new NoteEvent[stepRepeats];
+        NoteEvent[] events = new NoteEvent[stepRepeats + 1];
+        events[0] = GetEvent(patternRoot);
+        if (stepRepeats == 0) return events;
+        double subDivisionDuration = AnywhenMetronome.Instance.GetLength() / ((int)repeatRate + 2);
 
-        for (int i = 0; i < stepRepeats; i++)
+        for (int i = 1; i <= stepRepeats; i++)
         {
-            NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
-            if (noteOff)
-                type = NoteEvent.EventTypes.NoteOff;
-
-            var e = new NoteEvent(GetNotes(patternRoot), type, velocity * trackVolume,
-                offset * AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16) +
-                (AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16) / ((int)repeatRate + 2) *
-                 (i + 1)),
-                CreateStrum(GetNotes(patternRoot).Length), expression, 1)
-            {
-                duration = duration
-            };
-            events[i] = e;
+            events[i] = GetEvent(patternRoot);
+            events[i].drift += subDivisionDuration * i;
         }
-
 
         return events;
     }
@@ -117,11 +114,10 @@ public class AnyPatternStep
         }
 
         var notes = new double[count];
-        var maxLength = AnywhenMetronome.Instance.GetLength(AnywhenMetronome.TickRate.Sub16);
+        var maxLength = AnywhenMetronome.Instance.GetLength();
         for (int i = 0; i < notes.Length; i++)
         {
-            notes[i] = (maxLength * (strumAmount) * (float)i / (count - 1))
-                       + maxLength * Random.Range(0, strumRandom);
+            notes[i] = (maxLength * (strumAmount) * (float)i / (count - 1)) + maxLength * Random.Range(0, strumRandom);
         }
 
         return notes;
