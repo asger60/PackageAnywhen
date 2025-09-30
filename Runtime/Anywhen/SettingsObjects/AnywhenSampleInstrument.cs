@@ -34,11 +34,11 @@ namespace Anywhen.SettingsObjects
         [Serializable]
         public struct EnvelopeSettings
         {
-            public bool enabled;
-            [Range(0, 10f)] public float attack;
-            [Range(0, 5f)] public float decay;
+            //public bool enabled;
+            [Range(0, 2f)] public float attack;
+            [Range(0, 1f)] public float decay;
             [Range(0, 1f)] public float sustain;
-            [Range(0, 10f)] public float release;
+            [Range(0, 3f)] public float release;
 
             public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
             {
@@ -46,7 +46,7 @@ namespace Anywhen.SettingsObjects
                 this.decay = decay;
                 this.sustain = sustain;
                 this.release = release;
-                this.enabled = true;
+                //this.enabled = true;
             }
         }
 

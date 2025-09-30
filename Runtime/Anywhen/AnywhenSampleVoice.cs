@@ -49,12 +49,19 @@ namespace Anywhen
 
         public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
+            if (AudioSettings.dspTime > playTime)
+            {
+                AnywhenRuntime.Log("Trying to schedule a play at a time that has allready been..", AnywhenRuntime.DebugMessageType.Warning);
+                return;
+            }
+
             if (note > 20)
             {
                 AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
-                
+
                 return;
             }
+
             _currentNoteClip = _thisInstrument.GetNoteClip(note);
             if (_currentNoteClip)
             {
@@ -185,7 +192,7 @@ namespace Anywhen
         {
             _thisInstrument = instrument;
         }
-        
+
 
         public override float[] UpdateDSP(int bufferSize, int channels)
         {

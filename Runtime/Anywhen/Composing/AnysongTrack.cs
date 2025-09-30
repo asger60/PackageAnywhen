@@ -9,13 +9,13 @@ namespace Anywhen.Composing
     {
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
-        private NoteEvent _lastTrackEvent;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
 
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
 
-        public bool monophonic;
+        //public bool monophonic;
+        [Range(1, 8)] public int voices = 4;
 
         public enum AnyTrackTypes
         {
@@ -40,6 +40,7 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+            trackEnvelope = new AnywhenSampleInstrument.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
         }
 
         public AnysongTrack Clone()
@@ -54,7 +55,7 @@ namespace Anywhen.Composing
             };
             return clone;
         }
-        
+
 
         public void Reset()
         {

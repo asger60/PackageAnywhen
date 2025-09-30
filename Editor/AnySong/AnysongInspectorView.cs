@@ -117,8 +117,11 @@ public static class AnysongInspectorView
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
 
+        //_parent.Add(CreatePropertyFieldWithCallback(
+        //   selection.CurrentSongTrackProperty.FindPropertyRelative("monophonic"), null));
+
         _parent.Add(CreatePropertyFieldWithCallback(
-            selection.CurrentSongTrackProperty.FindPropertyRelative("monophonic"), null));
+            selection.CurrentSongTrackProperty.FindPropertyRelative("voices"), null));
 
 
         var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
@@ -344,12 +347,9 @@ public static class AnysongInspectorView
     {
         var propertyField = new PropertyField(property);
         propertyField.BindProperty(property);
-        propertyField.RegisterValueChangeCallback((ev) =>
-        {
-            didUpdate?.Invoke();
-        });
-        
-        
+        propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
+
+
         return propertyField;
     }
 }

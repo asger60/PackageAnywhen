@@ -26,7 +26,7 @@ namespace Anywhen
 
         private float _playerVolume = 1;
         protected int _triggerStepIndex = -1;
-        internal int CurrentBar;
+        protected int CurrentBar;
         [SerializeField] private AnysongObject currentSong;
         public AnysongObject CurrentSong => currentSong;
 
@@ -105,7 +105,25 @@ namespace Anywhen
             {
                 List<AnywhenVoiceBase> voices = new();
 
-                if (songTrack.monophonic)
+                //if (songTrack.monophonic)
+                //{
+                //    if (songTrack.instrument is AnywhenSampleInstrument)
+                //    {
+                //        var newVoice = new AnywhenSampleVoice();
+                //        newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                //        voices.Add(newVoice);
+                //    }
+//
+                //    if (songTrack.instrument is AnywhenSynthPreset preset)
+                //    {
+                //        var newSynthVoice = new AnywhenSynthVoice();
+                //        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                //        voices.Add(newSynthVoice);
+                //    }
+                //}
+                //else
+                //{
+                for (int i = 0; i < songTrack.voices; i++)
                 {
                     if (songTrack.instrument is AnywhenSampleInstrument)
                     {
@@ -118,29 +136,10 @@ namespace Anywhen
                     {
                         var newSynthVoice = new AnywhenSynthVoice();
                         newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
-
                         voices.Add(newSynthVoice);
                     }
                 }
-                else
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (songTrack.instrument is AnywhenSampleInstrument)
-                        {
-                            var newVoice = new AnywhenSampleVoice();
-                            newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
-                            voices.Add(newVoice);
-                        }
-
-                        if (songTrack.instrument is AnywhenSynthPreset preset)
-                        {
-                            var newSynthVoice = new AnywhenSynthVoice();
-                            newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
-                            voices.Add(newSynthVoice);
-                        }
-                    }
-                }
+                //}
 
 
                 _voicesList.Add(new PlayerVoices(songTrack.instrument, songTrack, voices.ToArray()));
