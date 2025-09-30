@@ -86,6 +86,7 @@ namespace Anywhen
         }
 
         private List<PlayerVoices> _voicesList = new();
+        public List<PlayerVoices> VoicesList => _voicesList;
 
         protected virtual void Start()
         {
