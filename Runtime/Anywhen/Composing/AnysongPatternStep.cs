@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using Anywhen;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 
 [Serializable]
-public class AnyPatternStep
+public class AnysongPatternStep
 {
     public bool noteOn;
     public bool noteOff;
@@ -123,9 +122,9 @@ public class AnyPatternStep
         return notes;
     }
 
-    public AnyPatternStep Clone()
+    public AnysongPatternStep Clone()
     {
-        var clone = (AnyPatternStep)MemberwiseClone();
+        var clone = (AnysongPatternStep)MemberwiseClone();
         clone.chordNotes = new List<int>();
         foreach (var note in chordNotes)
         {

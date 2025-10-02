@@ -11,7 +11,7 @@ namespace Anywhen.Composing
         public List<float> triggerChances = new List<float>();
 
 
-        public List<AnyPatternStep> steps;
+        public List<AnysongPatternStep> steps;
         public int rootNote = 0;
         [Range(0, 16)] public int patternLength = 16;
         private int _internalIndex;
@@ -21,10 +21,10 @@ namespace Anywhen.Composing
         {
             triggerChances.AddRange(new[] { 0f, 0f, 0f, 0f });
 
-            steps = new List<AnyPatternStep>();
+            steps = new List<AnysongPatternStep>();
             for (int i = 0; i < 16; i++)
             {
-                var newStep = new AnyPatternStep();
+                var newStep = new AnysongPatternStep();
                 newStep.Init();
                 steps.Add(newStep);
             }
@@ -34,7 +34,7 @@ namespace Anywhen.Composing
         {
             var clone = new AnyPattern
             {
-                steps = new List<AnyPatternStep>()
+                steps = new List<AnysongPatternStep>()
             };
             for (var i = 0; i < 16; i++)
             {
@@ -54,7 +54,7 @@ namespace Anywhen.Composing
         public void Scrub(int direction)
         {
             Debug.Log("Scrub " + direction);
-            var stepsArray = new AnyPatternStep[16];
+            var stepsArray = new AnysongPatternStep[16];
             for (int i = 0; i < 16; i++)
             {
                 var index = (int)Mathf.Repeat(i + direction, 16);
@@ -82,7 +82,7 @@ namespace Anywhen.Composing
             _internalIndex = (int)Mathf.Repeat(_internalIndex, patternLength);
         }
 
-        public AnyPatternStep GetStep(int stepIndex)
+        public AnysongPatternStep GetStep(int stepIndex)
         {
             return steps[stepIndex];
         }
@@ -93,7 +93,7 @@ namespace Anywhen.Composing
             _internalIndex = stepIndex;
         }
         
-        public AnyPatternStep GetCurrentStep()
+        public AnysongPatternStep GetCurrentStep()
         {
             return steps[_internalIndex];
         }

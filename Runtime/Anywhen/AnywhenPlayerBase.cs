@@ -182,7 +182,7 @@ namespace Anywhen
             }
         }
 
-        protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnyPatternStep step)
+        protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnysongPatternStep step)
         {
             var songTrack = currentSong.Tracks[trackIndex];
 

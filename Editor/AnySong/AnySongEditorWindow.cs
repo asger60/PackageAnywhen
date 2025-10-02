@@ -47,7 +47,7 @@ public class AnysongEditorWindow : EditorWindow
         }
     }
 
-    private AnyPatternStep _stepCopy;
+    private AnysongPatternStep _stepCopy;
 
     private AnysongSection _sectionCopy;
     AnyPattern _patternCopy;
@@ -62,7 +62,7 @@ public class AnysongEditorWindow : EditorWindow
         public AnysongTrack CurrentSongTrack;
         public AnysongSection CurrentSection;
         public AnysongSectionTrack CurrentSectionTrack;
-        public AnyPatternStep CurrentStep;
+        public AnysongPatternStep CurrentStep;
         public AnyPattern CurrentPattern;
         public SerializedProperty CurrentSectionProperty;
         public SerializedProperty CurrentSongTrackProperty;
@@ -732,7 +732,7 @@ public class AnysongEditorWindow : EditorWindow
             .patterns[patternIndex];
     }
 
-    public static AnyPatternStep GetPatternStepFromTooltip(string tooltip)
+    public static AnysongPatternStep GetPatternStepFromTooltip(string tooltip)
     {
         var str = tooltip.Split("-");
         int stepIndex = Int32.Parse(str[0]);
@@ -826,13 +826,13 @@ public class AnysongEditorWindow : EditorWindow
     }
 
 
-    void CopyStep(AnyPatternStep step)
+    void CopyStep(AnysongPatternStep step)
     {
         Debug.Log("Copy step");
         _stepCopy = step.Clone();
     }
 
-    void PasteStep(AnyPattern pattern, AnyPatternStep step)
+    void PasteStep(AnyPattern pattern, AnysongPatternStep step)
     {
         Debug.Log("paste step");
         for (var i = 0; i < pattern.steps.Count; i++)
