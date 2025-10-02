@@ -73,9 +73,7 @@ namespace Anywhen
                 _pitchSettings.frequency = _currentTrack.pitchLFOFrequency;
                 _pitchSettings.sendAmount = _currentTrack.pitchLFOAmplitude;
                 _pitchSettings.fadeInDuration = 0;
-                Debug.Log(_currentTrack.pitchLFOAmplitude);
                 _pitchLFO.UpdateSettings(_pitchSettings);
-                Debug.Log(_pitchLFO.settings.frequency);
             }
             
             SetEnvelope(_currentTrack.trackEnvelope);

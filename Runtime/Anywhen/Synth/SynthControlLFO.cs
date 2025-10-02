@@ -21,7 +21,7 @@ public class SynthControlLFO : SynthControlBase
         Debug.Log("UpdateSettings " + settings.sendAmount);
         _isActive = true;
         _phase = 0u;
-        _currentAmp = 0;
+        _currentAmp = 1;
         _fadeInStart = (float)AudioSettings.dspTime;
         _fadeInEnd = (float)AudioSettings.dspTime + settings.fadeInDuration;
         SetFreq(settings.frequency);
@@ -42,8 +42,8 @@ public class SynthControlLFO : SynthControlBase
 
     public override void DoUpdate()
     {
-        if (!_isActive) return;
-        _currentAmp = Mathf.InverseLerp(_fadeInStart, _fadeInEnd, (float)AudioSettings.dspTime);
+        //if (!_isActive) return;
+        //_currentAmp = Mathf.InverseLerp(_fadeInStart, _fadeInEnd, (float)AudioSettings.dspTime);
         _phase += freq__ph_p_smp;
     }
 
