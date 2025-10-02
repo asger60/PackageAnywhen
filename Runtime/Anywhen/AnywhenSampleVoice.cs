@@ -107,7 +107,7 @@ namespace Anywhen
             _currentPlaybackSettings = _nextPlaybackSettings;
 
             _currentNoteClip = _currentPlaybackSettings.NoteClip;
-
+            if(_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
 
             _sampleStepFrac = _currentNoteClip.frequency / _currentSampleRate;

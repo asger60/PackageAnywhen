@@ -48,6 +48,19 @@ namespace Anywhen.SettingsObjects
                 this.release = release;
                 //this.enabled = true;
             }
+
+            public bool IsUnset()
+            {
+                return attack == 0 && decay == 0 && sustain == 0 && release == 0;
+            }
+
+            public void Initialize()
+            {
+                attack = 0.01f;
+                decay = 0.1f;
+                sustain = 1f;
+                release = 0.1f;
+            }
         }
 
         [Range(0, 1f)] public float volume = 1;

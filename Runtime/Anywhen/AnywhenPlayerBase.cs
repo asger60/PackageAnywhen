@@ -37,8 +37,6 @@ namespace Anywhen
 
 
         bool _resetOnNextBar;
-        private int _bufferSize;
-        private int _numBuffers;
 
         [Serializable]
         public class PlayerVoices
@@ -51,8 +49,8 @@ namespace Anywhen
             public PlayerVoices(AnywhenInstrument instrument, AnysongTrack type, AnywhenVoiceBase[] voices)
             {
                 this.instrument = instrument;
-                this.track = type;
-                this.Voices = voices;
+                track = type;
+                Voices = voices;
             }
 
             public AnywhenVoiceBase GetVoice()
@@ -90,7 +88,6 @@ namespace Anywhen
 
         protected virtual void Start()
         {
-            AudioSettings.GetDSPBufferSize(out _bufferSize, out _numBuffers);
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             AudioSource source = GetComponent<AudioSource>();
             source.playOnAwake = true;
@@ -98,32 +95,17 @@ namespace Anywhen
             source.Play();
         }
 
-        protected void SetupVoices(List<AnysongTrack> tracks)
+        public void SetupVoices(List<AnysongTrack> tracks = null)
         {
             _voicesList.Clear();
-
+            tracks ??= currentSong.Tracks;
+            
             foreach (var songTrack in tracks)
             {
+                if(!songTrack.instrument) continue;
+                
                 List<AnywhenVoiceBase> voices = new();
 
-                //if (songTrack.monophonic)
-                //{
-                //    if (songTrack.instrument is AnywhenSampleInstrument)
-                //    {
-                //        var newVoice = new AnywhenSampleVoice();
-                //        newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
-                //        voices.Add(newVoice);
-                //    }
-//
-                //    if (songTrack.instrument is AnywhenSynthPreset preset)
-                //    {
-                //        var newSynthVoice = new AnywhenSynthVoice();
-                //        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
-                //        voices.Add(newSynthVoice);
-                //    }
-                //}
-                //else
-                //{
                 for (int i = 0; i < songTrack.voices; i++)
                 {
                     if (songTrack.instrument is AnywhenSampleInstrument)
@@ -140,8 +122,6 @@ namespace Anywhen
                         voices.Add(newSynthVoice);
                     }
                 }
-                //}
-
 
                 _voicesList.Add(new PlayerVoices(songTrack.instrument, songTrack, voices.ToArray()));
             }
@@ -212,7 +192,6 @@ namespace Anywhen
                 HandleNoteEvent(noteEvent, songTrack, _playerVolume);
             }
         }
-
 
 
         protected void HandleNoteEvent(NoteEvent noteEvent, AnysongTrack track, float playerVolume)
@@ -356,7 +335,7 @@ namespace Anywhen
                     return voice.GetVoice();
             }
 
-            print("no voice found for track " + track.trackType);
+            AnywhenRuntime.Log("no voice found for track " + track.trackType, AnywhenRuntime.DebugMessageType.Warning);
             return null;
         }
 
@@ -474,6 +453,17 @@ namespace Anywhen
 
             if (didLoad)
                 SetupVoices(currentSong.Tracks);
+        }
+
+        public void LoadInstruments()
+        {
+            foreach (var track in currentSong.Tracks)
+            {
+                if (track.instrument is AnywhenSampleInstrument instrument)
+                {
+                    InstrumentDatabase.LoadInstrumentNotes(instrument);
+                }
+            }
         }
     }
 }

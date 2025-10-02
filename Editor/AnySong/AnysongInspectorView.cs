@@ -111,14 +111,11 @@ public static class AnysongInspectorView
 
 
         _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
-        _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
-            null));
+        
 
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
 
-        //_parent.Add(CreatePropertyFieldWithCallback(
-        //   selection.CurrentSongTrackProperty.FindPropertyRelative("monophonic"), null));
 
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("voices"), null));
@@ -127,13 +124,10 @@ public static class AnysongInspectorView
         var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
         if (trackTypeProperty.enumValueIndex == 0)
         {
-            Debug.Log("no track type set");
             var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
             if (instrument)
             {
-                var index = Array.IndexOf(Enum.GetValues(typeof(AnysongTrack.AnyTrackTypes)),
-                    instrument.InstrumentType);
-                Debug.Log(" set " + (int)index);
+                var index = Array.IndexOf(Enum.GetValues(typeof(AnysongTrack.AnyTrackTypes)), instrument.InstrumentType);
                 selection.CurrentSongTrack.trackType = instrument.InstrumentType;
                 EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             }
@@ -141,6 +135,9 @@ public static class AnysongInspectorView
 
         _parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
 
+        
+        _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
+                    null));
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
     }
@@ -211,8 +208,7 @@ public static class AnysongInspectorView
 
                 barRowLabel.text = "";
                 patternHeaderRow.Add(barRowLabel);
-
-
+                
                 triggerRowLabel.text = "Trigger chance";
 
                 var patternsHolder = new VisualElement();
