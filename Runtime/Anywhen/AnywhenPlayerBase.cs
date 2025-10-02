@@ -99,11 +99,11 @@ namespace Anywhen
         {
             _voicesList.Clear();
             tracks ??= currentSong.Tracks;
-            
+
             foreach (var songTrack in tracks)
             {
-                if(!songTrack.instrument) continue;
-                
+                if (!songTrack.instrument) continue;
+
                 List<AnywhenVoiceBase> voices = new();
 
                 for (int i = 0; i < songTrack.voices; i++)
@@ -111,14 +111,17 @@ namespace Anywhen
                     if (songTrack.instrument is AnywhenSampleInstrument)
                     {
                         var newVoice = new AnywhenSampleVoice();
-                        newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                        newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack);
+                        
+                        
+
                         voices.Add(newVoice);
                     }
 
                     if (songTrack.instrument is AnywhenSynthPreset preset)
                     {
                         var newSynthVoice = new AnywhenSynthVoice();
-                        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack.trackEnvelope);
+                        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack);
                         voices.Add(newSynthVoice);
                     }
                 }

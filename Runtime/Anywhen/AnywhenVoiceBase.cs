@@ -1,3 +1,4 @@
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 
 namespace Anywhen
@@ -20,7 +21,8 @@ namespace Anywhen
             public int Note;
             public AnywhenNoteClip NoteClip;
 
-            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note, AnywhenNoteClip noteClip = null)
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note,
+                AnywhenNoteClip noteClip = null)
             {
                 PlayTime = playTime;
                 StopTime = stopTime;
@@ -39,7 +41,7 @@ namespace Anywhen
         }
 
 
-        public virtual void Init(int sampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelope)
+        public virtual void Init(int sampleRate, AnywhenInstrument instrument, AnysongTrack track)
         {
         }
 

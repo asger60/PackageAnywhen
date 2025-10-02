@@ -1,4 +1,5 @@
 ﻿using System;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
@@ -31,27 +32,31 @@ namespace Anywhen
         public double SampleposBuffer1 => _samplePosBuffer1;
 
         AnywhenNoteClip _currentNoteClip;
+        SynthControlLFO _pitchLFO;
 
         private float _currentSampleRate;
+        AnysongTrack _currentTrack;
+        private SynthSettingsObjectLFO _pitchSettings;
 
-        public override void Init(int currentSampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
+        public override void Init(int currentSampleRate, AnywhenInstrument instrument, AnysongTrack track)
         {
+            _currentTrack = track;
             _thisInstrument = instrument as AnywhenSampleInstrument;
-            _envelope = envelopeSettings;
             IsReady = true;
             _adsr = new ADSR();
             _currentSampleRate = currentSampleRate;
         }
 
+
         AnywhenSampleInstrument _thisInstrument;
-        AnywhenSampleInstrument.EnvelopeSettings _envelope;
 
 
         public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
             if (AudioSettings.dspTime > playTime)
             {
-                AnywhenRuntime.Log("Trying to schedule a play at a time that has allready been..", AnywhenRuntime.DebugMessageType.Warning);
+                AnywhenRuntime.Log("Trying to schedule a play at a time that has allready been..",
+                    AnywhenRuntime.DebugMessageType.Warning);
                 return;
             }
 
@@ -61,6 +66,19 @@ namespace Anywhen
                 return;
             }
 
+            if (_currentTrack.enablePitchLFO)
+            {
+                _pitchLFO ??= new SynthControlLFO();
+                _pitchSettings ??= ScriptableObject.CreateInstance<SynthSettingsObjectLFO>();
+                _pitchSettings.frequency = _currentTrack.pitchLFOFrequency;
+                _pitchSettings.sendAmount = _currentTrack.pitchLFOAmplitude;
+                _pitchSettings.fadeInDuration = 0;
+                Debug.Log(_currentTrack.pitchLFOAmplitude);
+                _pitchLFO.UpdateSettings(_pitchSettings);
+                Debug.Log(_pitchLFO.settings.frequency);
+            }
+            
+            SetEnvelope(_currentTrack.trackEnvelope);
 
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
             if (stopTime > 0) StopScheduled(stopTime);
@@ -107,7 +125,7 @@ namespace Anywhen
             _currentPlaybackSettings = _nextPlaybackSettings;
 
             _currentNoteClip = _currentPlaybackSettings.NoteClip;
-            if(_currentNoteClip == null) return;
+            if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
 
             _sampleStepFrac = _currentNoteClip.frequency / _currentSampleRate;
@@ -122,9 +140,12 @@ namespace Anywhen
             _isPlaying = true;
             _hasScheduledPlay = false;
 
-            SetEnvelope(_envelope);
             _adsr.SetGate(true);
+
+            if (_currentTrack.enablePitchLFO) _pitchLFO.NoteOn();
+            //_adsr.Reset();
         }
+
 
         void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
@@ -145,6 +166,11 @@ namespace Anywhen
 
                 _ampMod *= _adsr.Process();
 
+                if (_currentTrack.enablePitchLFO)
+                {
+                    _pitchLFO.DoUpdate();
+                    _currentPitch = _pitchLFO.Process();
+                }
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
                 double f1 = _samplePosBuffer1 - sampleIndex1;

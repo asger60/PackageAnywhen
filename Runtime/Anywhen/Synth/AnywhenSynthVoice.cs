@@ -19,6 +19,7 @@
 //  SOFTWARE."
 
 using System;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
@@ -58,8 +59,6 @@ namespace Anywhen.Synth
         private bool _isCreated;
 
         /// Public interface
-
-
         public override void NoteOn(int note, double playTime, double stopTime, float volume)
         {
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, AnywhenRuntime.Conductor.GetScaledNote(note)));
@@ -233,17 +232,13 @@ namespace Anywhen.Synth
                     synthOscillator.Init();
                 }
             }
-
         }
-
-
-        
 
 
         int _sampleRate;
 
         /// Internal
-        public override void Init(int sampleRate, AnywhenInstrument instrument, AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
+        public override void Init(int sampleRate, AnywhenInstrument instrument, AnysongTrack track)
         {
             SetPreset(instrument as AnywhenSynthPreset);
             _sampleRate = sampleRate;
@@ -278,7 +273,6 @@ namespace Anywhen.Synth
             }
         }
 
-  
 
         /// Internals
         private static float Midi2Freq(int note)

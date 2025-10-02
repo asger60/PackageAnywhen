@@ -10,6 +10,9 @@ namespace Anywhen.Composing
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
+        public bool enablePitchLFO;
+        [Range(1, 100)] public float pitchLFOFrequency;
+        [Range(0, 100)] public float pitchLFOAmplitude;
 
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });

@@ -139,6 +139,16 @@ public static class AnysongInspectorView
                     null));
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
+        
+        _parent.Add(CreatePropertyFieldWithCallback(
+            selection.CurrentSongTrackProperty.FindPropertyRelative("enablePitchLFO"), didUpdateInstrument));
+        
+        _parent.Add(CreatePropertyFieldWithCallback(
+            selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOFrequency"), didUpdateInstrument));
+        
+        _parent.Add(CreatePropertyFieldWithCallback(
+            selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOAmplitude"), didUpdateInstrument));
+
     }
 
     public static void DrawProgression(AnysongEditorWindow.AnySelection selection)

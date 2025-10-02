@@ -772,7 +772,10 @@ public class AnysongEditorWindow : EditorWindow
                 break;
             case InspectorModes.Track:
                 AnysongInspectorView.DrawTrack(_currentSelection,
-                    () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack); });
+                    () =>
+                    {
+                        CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack);
+                    });
 
                 break;
             case InspectorModes.Step:
