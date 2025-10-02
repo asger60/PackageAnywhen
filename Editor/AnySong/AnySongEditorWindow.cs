@@ -3,7 +3,6 @@ using Anywhen;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -26,6 +25,7 @@ public class AnysongEditorWindow : EditorWindow
     public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
     private static AnywhenPlayerBase _currentRuntimeSongPlayer;
+
 
     private static AnywhenPlayerBase CurrentRuntimeSongPlayer
     {
@@ -87,11 +87,11 @@ public class AnysongEditorWindow : EditorWindow
     }
 
 
-    public static void ShowModuleWindow()
+    public static void ShowModuleWindow(AnysongObject songObject)
     {
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
         window.Show(true);
-        window.titleContent = new GUIContent("Anysong window");
+        window.titleContent = new GUIContent("Anysong window - " + songObject.name);
         window.minSize = new Vector2(450, 200);
         window.CreateGUI();
     }
@@ -113,6 +113,15 @@ public class AnysongEditorWindow : EditorWindow
         EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
         AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
+
+        // Set the default UXML template if not already set
+        if (!window.uxmlAsset)
+            window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
+
+
+        if (!window.styleAsset)
+            window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
+
         window.Show(true);
 
         foreach (var track in songObject.Tracks)
@@ -147,6 +156,8 @@ public class AnysongEditorWindow : EditorWindow
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
             AnywhenRuntime.Metronome.OnNextBar -= OnBar;
             AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
+            AnysongStepsView.ResetTriggered();
+            AnysongProgressionsView.ResetTriggered();
         }
     }
 
@@ -166,7 +177,8 @@ public class AnysongEditorWindow : EditorWindow
     private VisualElement _tracksPanel;
     private VisualElement _inspectorPanel;
     private VisualElement _progressionPanel;
-
+    [SerializeField] VisualTreeAsset uxmlAsset;
+    [SerializeField] StyleSheet styleAsset;
 
     public void CreateGUI()
     {
@@ -177,6 +189,21 @@ public class AnysongEditorWindow : EditorWindow
             rootVisualElement.Add(new Label("No song loaded"));
             return;
         }
+
+        if (uxmlAsset)
+        {
+            uxmlAsset.CloneTree(rootVisualElement);
+        }
+        else
+        {
+            rootVisualElement.Add(new Label("failed to load uxml"));
+            return;
+        }
+
+        if (styleAsset)
+            rootVisualElement.styleSheets.Add(styleAsset);
+        else
+            rootVisualElement.Add(new Label("failed to load uss"));
 
         _currentSelection = new AnySelection
         {
@@ -196,83 +223,15 @@ public class AnysongEditorWindow : EditorWindow
             CreateNewTrack();
         }
 
-        _transportPanel = new VisualElement()
-        {
-            style =
-            {
-                height = 40,
-                minHeight = 40,
-            }
-        };
+        _transportPanel = rootVisualElement.Q<VisualElement>("Transport");
+        _sectionsPanel = rootVisualElement.Q<VisualElement>("SectionsContainer");
+        _tracksPanel = rootVisualElement.Q<VisualElement>("TracksContainer");
+        _progressionPanel = rootVisualElement.Q<VisualElement>("PatternsContainer");
+        _inspectorPanel = rootVisualElement.Q<VisualElement>("InspectorContainer");
+        _sequencesPanel = rootVisualElement.Q<VisualElement>("SequencesContainer");
 
-        _sectionsPanel = new VisualElement()
-        {
-            style =
-            {
-                flexDirection = FlexDirection.Row,
-                height = 60,
-            }
-        };
-
-
-        rootVisualElement.Add(_transportPanel);
-        rootVisualElement.Add(_sectionsPanel);
-
-        VisualElement columnsPanel = new VisualElement()
-        {
-            style =
-            {
-                flexDirection = FlexDirection.Row
-            }
-        };
-
-        rootVisualElement.Add(columnsPanel);
-
-        var mainContent = new VisualElement()
-        {
-            style =
-            {
-                flexBasis = new StyleLength(Length.Percent(100)),
-                flexDirection = FlexDirection.Row,
-            }
-        };
-
-        _mainViewPanel = new ScrollView(ScrollViewMode.Vertical);
-
-
-        _tracksPanel = new VisualElement()
-        {
-            style = { width = new StyleLength(300), }
-        };
-
-
-        _progressionPanel = new VisualElement()
-        {
-            style = { width = 80, }
-        };
-
-
-        _inspectorPanel = new ScrollView(ScrollViewMode.Vertical)
-        {
-            style = { width = 500, }
-        };
-
-        _sequencesPanel = new VisualElement()
-        {
-            style = { flexBasis = new StyleLength(Length.Percent(100)) }
-        };
-
-
-        mainContent.Add(_tracksPanel);
-        mainContent.Add(_progressionPanel);
-        mainContent.Add(_sequencesPanel);
-        _mainViewPanel.Add(mainContent);
-
-        columnsPanel.Add(_mainViewPanel);
-        columnsPanel.Add(_inspectorPanel);
 
         AnysongTransportView.Draw(_transportPanel, CurrentSong);
-
         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
         AnysongTracksView.Draw(_tracksPanel, CurrentSong);
         AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
@@ -282,11 +241,10 @@ public class AnysongEditorWindow : EditorWindow
         HandleTransportLogic();
         HandleSectionsLogic();
         HandleTracksLogic();
-        HandleProgressionLogic();
         HandleSequencesLogic();
-        HandlePatternsLogic();
         RegisterKeyboardInputs();
         RegisterScrollWheelInputs();
+        HandleProgressionLogic();
     }
 
     void HandleTransportLogic()
@@ -299,7 +257,6 @@ public class AnysongEditorWindow : EditorWindow
 
         _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
     }
-
 
     private static void OnTick16()
     {
@@ -319,14 +276,13 @@ public class AnysongEditorWindow : EditorWindow
     static void OnBar()
     {
         if (CurrentSong != CurrentRuntimeSongPlayer.CurrentSong) return;
-        AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex,
-            _currentSelection.CurrentSectionIndex);
+        AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
 
         var ints = CurrentRuntimeSongPlayer.EditorGetPlayingTrackPatternIndexes();
         for (var i = 0; i < ints.Length; i++)
         {
             var patternIndex = ints[i];
-            AnysongStepsView.HilightPattern(i, patternIndex, _currentSelection.CurrentPatternIndex);
+            AnysongProgressionsView.HilightPattern(i, patternIndex, _currentSelection.CurrentPatternIndex);
         }
     }
 
@@ -411,7 +367,7 @@ public class AnysongEditorWindow : EditorWindow
                     AnysongStepsView.Draw(_sequencesPanel);
                     AnysongStepsView.RefreshPatterns();
                     HandleSequencesLogic();
-                    HandlePatternsLogic();
+                    //HandlePatternsLogic();
                     RefreshSectionLockIndex();
                     HandleSectionsLogic();
                     HandleProgressionLogic();
@@ -461,24 +417,33 @@ public class AnysongEditorWindow : EditorWindow
                 }
             });
         });
-        _sequencesPanel.Query<Button>("AddButton").ForEach(button =>
+        _progressionPanel.Query<Button>("AddButton").ForEach(button =>
         {
             button.RegisterCallback((ClickEvent ev) =>
             {
                 if (ev.currentTarget is Button btn)
                 {
                     CreatePattern(Int32.Parse(btn.tooltip));
+                    AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
+                    AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
+                    HandleProgressionLogic();
+                    AnysongStepsView.RefreshPatterns();
                 }
             });
         });
-        _sequencesPanel.Query<Button>("RemoveButton").ForEach(button =>
+
+        _progressionPanel.Query<Button>("PatternButton").ForEach((button) =>
         {
-            button.RegisterCallback((ClickEvent ev) =>
+            button.RegisterCallback<ClickEvent>((evt) =>
             {
-                if (ev.currentTarget is Button btn)
-                {
-                    DeletePattern(Int32.Parse(btn.tooltip));
-                }
+                if (evt.currentTarget is not Button btn) return;
+                _currentSelection = GetSelectionFromTooltip(btn.tooltip);
+                AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
+                AnysongStepsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
+                AnysongStepsView.RefreshPatterns();
+
+                _currentPatternIsBase = _currentSelection.CurrentPatternIndex == 0;
+                SetInspectorMode(InspectorModes.Pattern);
             });
         });
     }
@@ -498,7 +463,7 @@ public class AnysongEditorWindow : EditorWindow
         AnysongStepsView.Draw(_sequencesPanel);
         AnysongStepsView.RefreshPatterns();
         HandleSequencesLogic();
-        HandlePatternsLogic();
+        //HandlePatternsLogic();
         HandleProgressionLogic();
     }
 
@@ -513,10 +478,10 @@ public class AnysongEditorWindow : EditorWindow
         _currentSelection.CurrentPatternIndex = thisTrack.patterns.Count - 1;
         thisTrack.SetSelectedPattern(thisTrack.patterns.Count - 1);
         AnysongStepsView.Draw(_sequencesPanel);
-
         AnysongStepsView.RefreshPatterns();
+        AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
         HandleSequencesLogic();
-        HandlePatternsLogic();
+        //HandlePatternsLogic();
         HandleProgressionLogic();
     }
 
@@ -590,13 +555,8 @@ public class AnysongEditorWindow : EditorWindow
     void PasteSection()
     {
         Debug.Log("PasteSection");
-
-
         CurrentSong.Sections[_currentSelection.CurrentSectionIndex] = _sectionCopy.Clone();
-
         AnysongStepsView.RefreshPatterns();
-
-
         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
         HandleSectionsLogic();
     }
@@ -653,24 +613,6 @@ public class AnysongEditorWindow : EditorWindow
         });
     }
 
-    void HandlePatternsLogic()
-    {
-        _sequencesPanel.Query<Button>("PatternButton").ForEach((button) =>
-        {
-            button.RegisterCallback<ClickEvent>((evt) =>
-            {
-                if (evt.currentTarget is not Button btn) return;
-                _currentSelection = GetSelectionFromTooltip(btn.tooltip);
-
-                AnysongStepsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex,
-                    _currentSelection.CurrentPatternIndex);
-                AnysongStepsView.RefreshPatterns();
-
-                _currentPatternIsBase = _currentSelection.CurrentPatternIndex == 0;
-                SetInspectorMode(InspectorModes.Pattern);
-            });
-        });
-    }
 
     private void OnPointerEnterEvent(PointerEnterEvent evt)
     {
@@ -981,12 +923,12 @@ public class AnysongEditorWindow : EditorWindow
 
         if (addButton)
         {
-            var newSddButton = new Button
+            var newAddButton = new Button
             {
                 name = "AddButton",
                 text = "+"
             };
-            buttons.Add(newSddButton);
+            buttons.Add(newAddButton);
         }
 
         if (removeButton)

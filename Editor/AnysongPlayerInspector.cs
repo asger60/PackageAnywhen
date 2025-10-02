@@ -242,7 +242,7 @@ public class AnysongPlayerInspector : Editor
         if (_anywhenPlayer.AnysongObject == null) return;
         var anysongPlayer = target as AnywhenPlayer;
         AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject, anysongPlayer);
-        AnysongEditorWindow.ShowModuleWindow();
+        AnysongEditorWindow.ShowModuleWindow(anysongPlayer?.AnysongObject);
     }
 }
 

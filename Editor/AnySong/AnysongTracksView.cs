@@ -12,7 +12,6 @@ public static class AnysongTracksView
     {
         _parent = parent;
         parent.Clear();
-        parent.Add(new Label("Tracks"));
 
 
         var spacer = new ToolbarSpacer
@@ -46,8 +45,8 @@ public static class AnysongTracksView
                 text = "M",
                 name = "MuteButton",
                 tooltip = i.ToString(),
-                style = { width = 20 }
             };
+            muteButton.AddToClassList("track-mix-button");
 
 
             muteButton.RegisterCallback<ClickEvent>((evt) =>
@@ -62,8 +61,8 @@ public static class AnysongTracksView
                 text = "S",
                 name = "SoloButton",
                 tooltip = i.ToString(),
-                style = { width = 20 }
             };
+            soloButton.AddToClassList("track-mix-button");
 
             soloButton.RegisterCallback<ClickEvent>((evt) =>
             {
@@ -93,7 +92,7 @@ public static class AnysongTracksView
                     height = 40,
                 }
             };
-
+            button.AddToClassList("track-edit-button");
 
             trackElement.Add(button);
             parent.Add(trackElement);
@@ -117,7 +116,11 @@ public static class AnysongTracksView
         _parent.Query<Button>("SoloButton").ForEach((btn) =>
         {
             var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isSolo;
-            btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
+            //btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
+            if (state)
+                btn.AddToClassList("track-mix-button-solo");
+            else
+                btn.RemoveFromClassList("track-mix-button-solo");
             index++;
         });
     }
@@ -128,7 +131,11 @@ public static class AnysongTracksView
         _parent.Query<Button>("MuteButton").ForEach((btn) =>
         {
             var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isMuted;
-            btn.style.backgroundColor = state ? AnysongEditorWindow.ColorGreyDark : StyleKeyword.Null;
+            if (state)
+                btn.AddToClassList("track-mix-button-muted");
+            else
+                btn.RemoveFromClassList("track-mix-button-muted");
+
             btn.text = "M";
             index++;
         });

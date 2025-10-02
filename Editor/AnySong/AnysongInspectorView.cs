@@ -13,7 +13,6 @@ public static class AnysongInspectorView
     public static void Draw(VisualElement parent)
     {
         _parent = parent;
-        _parent.Add(new Label("Inspector"));
     }
 
     static VisualElement Spacer()

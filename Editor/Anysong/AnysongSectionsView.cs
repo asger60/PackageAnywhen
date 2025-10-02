@@ -1,88 +1,37 @@
 using System;
-using System.Drawing;
 using Anywhen.Composing;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 
-    public static class AnysongSectionsView
+public static class AnysongSectionsView
+{
+    private static VisualElement _parent;
+
+    public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
     {
-        private static VisualElement _parent;
-
-        public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
+        _parent = parent;
+        parent.Clear();
+        var headerElement = new VisualElement
         {
-            _parent = parent;
-            parent.Clear();
-            var headerElement = new VisualElement
+            style =
             {
-                style =
-                {
-                    alignItems = Align.Center,
-                    flexDirection = FlexDirection.Row
-                }
-            };
-            parent.Add(headerElement);
-
-
-            var spacer = new ToolbarSpacer
-            {
-                style = { width = 8 }
-            };
-
-
-            for (var i = 0; i < currentSong.Sections.Count; i++)
-            {
-                var sectionElement = new VisualElement
-                {
-                    style =
-                    {
-                        alignItems = Align.Center,
-                        flexDirection = FlexDirection.Row
-                    }
-                };
-
-
-                var button = new Button
-                {
-                    name = "SectionButton",
-                    tooltip = i.ToString(),
-                    text = "Section " + i,
-                    style =
-                    {
-                        width = new StyleLength(currentSong.Sections[i].sectionLength*25),
-                        height = 20,
-                        backgroundColor = i == currentSelectionIndex
-                            ? AnysongEditorWindow.ColorGreyDark
-                            : AnysongEditorWindow.ColorGreyDefault,
-                    }
-                };
-
-
-                sectionElement.Add(button);
-                parent.Add(sectionElement);
-                parent.Add(spacer);
+                alignItems = Align.Center,
+                flexDirection = FlexDirection.Row
             }
+        };
+        parent.Add(headerElement);
 
-            var lockButton = new Button
-            {
-                name = "SectionLockButton",
-                text = "Lock",
-                style =
-                {
-                    alignItems = Align.Center,
-                    flexDirection = FlexDirection.Row,
-                    width = new StyleLength(35),
-                    height = 20,
-                    backgroundColor = IsSectionLocked()
-                        ? AnysongEditorWindow.ColorGreyDark
-                        : AnysongEditorWindow.ColorGreyDefault,
-                }
-            };
 
-            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+        var spacer = new ToolbarSpacer
+        {
+            style = { width = 8 }
+        };
 
-            var lockElement = new VisualElement
+
+        for (var i = 0; i < currentSong.Sections.Count; i++)
+        {
+            var sectionElement = new VisualElement
             {
                 style =
                 {
@@ -90,42 +39,83 @@ using UnityEngine.UIElements;
                     flexDirection = FlexDirection.Row
                 }
             };
-            parent.Add(lockElement);
-            lockElement.Add(lockButton);
+
+
+            var button = new Button
+            {
+                name = "SectionButton",
+                tooltip = i.ToString(),
+                text = "Section " + i,
+            };
+
+            button.AddToClassList("section-edit-button");
+            if (i == currentSelectionIndex)
+                button.AddToClassList("editing");
+
+
+            sectionElement.Add(button);
+            parent.Add(sectionElement);
+            parent.Add(spacer);
         }
 
-        public static void RefreshSectionLocked()
+        var lockButton = new Button
         {
-            _parent.Query<Button>("SectionLockButton").ForEach(button =>
+            name = "SectionLockButton",
+            text = "Lock",
+            style =
             {
-                button.style.backgroundColor = IsSectionLocked()
+                alignItems = Align.Center,
+                flexDirection = FlexDirection.Row,
+                width = new StyleLength(35),
+                height = 20,
+                backgroundColor = IsSectionLocked()
                     ? AnysongEditorWindow.ColorGreyDark
-                    : AnysongEditorWindow.ColorGreyDefault;
-            });
-        }
+                    : AnysongEditorWindow.ColorGreyDefault,
+            }
+        };
 
-        public static bool IsSectionLocked()
-        {
-            return AnysongEditorWindow.CurrentSectionLockIndex > -1;
-        }
+        parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
 
-        public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
+        var lockElement = new VisualElement
         {
-            _parent.Query<Button>("SectionButton").ForEach(button =>
+            style =
             {
-                int thisIndex = Int32.Parse(button.tooltip);
-                if (thisIndex == currentSectionIndex)
-                {
-                    button.style.backgroundColor = AnysongEditorWindow.ColorHilight4;
-                    button.style.color = AnysongEditorWindow.ColorGreyDark;
-                }
-                else
-                {
-                    button.style.color = UnityEngine.Color.white;
-                    button.style.backgroundColor = thisIndex == currentSelectionIndex
-                        ? AnysongEditorWindow.ColorGreyDark
-                        : AnysongEditorWindow.ColorGreyDefault;
-                }
-            });
-        }
+                alignItems = Align.Center,
+                flexDirection = FlexDirection.Row
+            }
+        };
+        parent.Add(lockElement);
+        lockElement.Add(lockButton);
     }
+
+    public static void RefreshSectionLocked()
+    {
+        _parent.Query<Button>("SectionLockButton").ForEach(button =>
+        {
+            button.style.backgroundColor = IsSectionLocked()
+                ? AnysongEditorWindow.ColorGreyDark
+                : AnysongEditorWindow.ColorGreyDefault;
+        });
+    }
+
+    public static bool IsSectionLocked()
+    {
+        return AnysongEditorWindow.CurrentSectionLockIndex > -1;
+    }
+
+    public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
+    {
+        _parent.Query<Button>("SectionButton").ForEach(button =>
+        {
+            int thisIndex = Int32.Parse(button.tooltip);
+            if (thisIndex == currentSectionIndex)
+            {
+                button.AddToClassList("triggered");
+            }
+            else
+            {
+                button.RemoveFromClassList("triggered");
+            }
+        });
+    }
+}

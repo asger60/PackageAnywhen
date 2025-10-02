@@ -82,7 +82,7 @@ public class AnysongComposerInspector : Editor
     {
         if (_anywhenPlayer.CurrentSong == null) return;
         AnysongEditorWindow.LoadSong(_anywhenPlayer.CurrentSong, _anywhenPlayer);
-        AnysongEditorWindow.ShowModuleWindow();
+        AnysongEditorWindow.ShowModuleWindow(_anywhenPlayer.CurrentSong);
     }
 
     void LoadSounds()

@@ -15,6 +15,7 @@ public class AnysongObjectInspector : UnityEditor.Editor
         //GUILayout.Label("loading is now done from the antwhen song player");
         if (GUILayout.Button("Edit song"))
         {
+            AnysongEditorWindow.ShowModuleWindow(target as AnysongObject);
             AnysongEditorWindow.LoadSong(target as AnysongObject, null);
         }
 
