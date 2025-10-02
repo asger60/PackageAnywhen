@@ -9,12 +9,10 @@ using UnityEngine.UIElements;
 public static class AnysongStepsView
 {
     private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
-    private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
 
     public static void Draw(VisualElement parent)
     {
         _stepButtonsHolders.Clear();
-        _patternButtonsHolders.Clear();
         parent.Clear();
         var spacer = new VisualElement
         {
@@ -75,15 +73,8 @@ public static class AnysongStepsView
                 tooltip = stepIndex + "-" + trackIndex + "-" + patternIndex,
 
                 text = thisStep.rootNote.ToString(),
-
-                //style =
-                //{
-                //    color = GetTextColorFromButtonState(thisStep),
-                //    backgroundColor = stepIndex > currentSectionTrack.patterns[patternIndex].patternLength
-                //        ? Color.clear
-                //        : GetBackgroundColorFromButtonState(thisStep)
-                //}
             };
+
             if (thisStep.noteOn && !thisStep.IsChord)
                 button.AddToClassList("pattern-step-note-mono");
 
@@ -109,8 +100,7 @@ public static class AnysongStepsView
             {
                 var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
                 button.text = thisStep.rootNote.ToString();
-                //button.style.backgroundColor = GetBackgroundColorFromButtonState(thisStep);
-                //button.style.color = GetTextColorFromButtonState(thisStep);
+
                 button.RemoveFromClassList("pattern-step-note-mono");
                 button.RemoveFromClassList("pattern-step-note-poly");
                 if (thisStep.noteOn && !thisStep.IsChord)
@@ -120,10 +110,8 @@ public static class AnysongStepsView
                     button.AddToClassList("pattern-step-note-poly");
 
                 var str = button.tooltip.Split("-");
-                int buttonTrackIndex =
-                    Int32.Parse(str[1]); // todo - maybe figure out a better way to retrieve the index
-                int buttonPatternIndex =
-                    Int32.Parse(str[2]); // todo - maybe figure out a better way to retrieve the index
+                int buttonTrackIndex = Int32.Parse(str[1]); // todo - maybe figure out a better way to retrieve the index
+                int buttonPatternIndex = Int32.Parse(str[2]); // todo - maybe figure out a better way to retrieve the index
                 index++;
                 var pattern = selection.CurrentSection.tracks[buttonTrackIndex].patterns[buttonPatternIndex];
 
@@ -138,7 +126,7 @@ public static class AnysongStepsView
         {
             stepButtonHolder.Query<Button>("StepButton").ForEach(button =>
             {
-                stepButtonHolder.RemoveFromClassList("triggered");
+                button.RemoveFromClassList("triggered");
             });
         }
     }

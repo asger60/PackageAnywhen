@@ -373,8 +373,7 @@ public class AnysongEditorWindow : EditorWindow
                     HandleProgressionLogic();
 
                     AnysongTracksView.UpdateMuteSoleState();
-                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex,
-                        _currentSelection.CurrentSectionIndex);
+                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
                 }
             });
         });
