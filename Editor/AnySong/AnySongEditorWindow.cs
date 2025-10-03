@@ -96,7 +96,7 @@ public class AnysongEditorWindow : EditorWindow
         window.CreateGUI();
     }
 
-    public static void LoadSong(AnysongObject songObject, AnywhenPlayerBase anywhenPlayer)
+    public static void LoadSong(AnysongObject songObject)
     {
         var player = new GameObject("AnywhenComposerPlayer")
         {
@@ -140,6 +140,8 @@ public class AnysongEditorWindow : EditorWindow
     private static void ToggleIsPlaying()
     {
         _isPLaying = !_isPLaying;
+        Debug.Log("ToggleIsPlaying " + _isPLaying);
+
         if (_isPLaying)
         {
             AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
@@ -159,6 +161,12 @@ public class AnysongEditorWindow : EditorWindow
             AnysongStepsView.ResetTriggered();
             AnysongProgressionsView.ResetTriggered();
         }
+    }
+
+    private void OnDestroy()
+    {
+        AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+        AnywhenRuntime.Metronome.OnNextBar -= OnBar;
     }
 
     static void SetTestIntensity(float value)

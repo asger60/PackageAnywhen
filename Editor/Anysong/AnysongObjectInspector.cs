@@ -16,7 +16,7 @@ public class AnysongObjectInspector : UnityEditor.Editor
         if (GUILayout.Button("Edit song"))
         {
             AnysongEditorWindow.ShowModuleWindow(target as AnysongObject);
-            AnysongEditorWindow.LoadSong(target as AnysongObject, null);
+            AnysongEditorWindow.LoadSong(target as AnysongObject);
         }
 
         //GUILayout.FlexibleSpace();

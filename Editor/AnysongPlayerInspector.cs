@@ -92,47 +92,13 @@ public class AnysongPlayerInspector : Editor
             };
         });
         RefreshActiveRootNoteButton();
-        var restoreButton = _root.Q<Button>("ButtonRestoreInstruments");
-
-        var editButton = _root.Q<Button>("ButtonEdit");
-        editButton.clicked += Edit;
-
 
         Refresh();
 
         var playToggle = _root.Q<Toggle>("PlayOnAwakeToggle");
         playToggle.BindProperty(serializedObject.FindProperty("playOnAwake"));
         
-        //var songObject = serializedObject.FindProperty("songObject");
-        //var songObjectField = new PropertyField(songObject);
-        //songObjectField.BindProperty(songObject);
-        //_root.Add(songObjectField);
-
-        //var triggerObject = serializedObject.FindProperty("trigger");
-
-
-        //var noTriggerElement = _root.Q<VisualElement>("NoTriggerElement");
-        //var createTriggerButton = _root.Q<Button>("CreateTriggerButton");
-        //var locateTriggerButton = _root.Q<Button>("LocateTriggerButton");
-        //createTriggerButton.clicked += CreateTriggerButtonOnclicked;
-        //locateTriggerButton.clicked += LocateTriggerButtonOnclicked;
-
-
-        //noTriggerElement.style.display = triggerObject.objectReferenceValue == null
-        //    ? new StyleEnum<DisplayStyle>(StyleKeyword.Auto)
-        //    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
-
-        //var triggerObjectField = new PropertyField(triggerObject);
-        //triggerObjectField.BindProperty(triggerObject);
-        //_root.Add(triggerObjectField);
-
-
-        //var transitionTypeObject = serializedObject.FindProperty("triggerTransitionsType");
-        //var transitionObjectField = new PropertyField(transitionTypeObject);
-        //transitionObjectField.BindProperty(transitionTypeObject);
-        //_root.Add(transitionObjectField);
-
-
+        
         var globalTempoToggle = _root.Q<Toggle>("FollowTempoToggle");
         var globalIntensityToggle = _root.Q<Toggle>("FollowIntensityToggle");
         globalIntensityToggle.SetValueWithoutNotify(_anywhenPlayer.GetUseGlobalIntensity());
@@ -236,14 +202,7 @@ public class AnysongPlayerInspector : Editor
         packArtElement.style.backgroundColor = new StyleColor(_currentPack.editorBackgroundColor);
     }
 
-
-    void Edit()
-    {
-        if (_anywhenPlayer.AnysongObject == null) return;
-        var anysongPlayer = target as AnywhenPlayer;
-        AnysongEditorWindow.LoadSong(anysongPlayer?.AnysongObject, anysongPlayer);
-        AnysongEditorWindow.ShowModuleWindow(anysongPlayer?.AnysongObject);
-    }
+    
 }
 
 #endif
