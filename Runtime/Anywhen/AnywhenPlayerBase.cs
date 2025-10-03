@@ -35,6 +35,7 @@ namespace Anywhen
 
         [SerializeField] protected AudioMixerGroup outputMixerGroup;
 
+        public bool IsPlaying { get; private set; }
 
         bool _resetOnNextBar;
 
@@ -112,8 +113,7 @@ namespace Anywhen
                     {
                         var newVoice = new AnywhenSampleVoice();
                         newVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack);
-                        
-                        
+
 
                         voices.Add(newVoice);
                     }
@@ -281,11 +281,12 @@ namespace Anywhen
 
         public virtual void Play()
         {
-            if (currentSong == null)
+            if (!currentSong)
             {
                 return;
             }
 
+            IsPlaying = true;
 
             if (currentSong)
             {
@@ -312,6 +313,7 @@ namespace Anywhen
 
         public virtual void Stop()
         {
+            IsPlaying = false;
             ReleaseFromMetronome();
         }
 

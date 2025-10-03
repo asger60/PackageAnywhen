@@ -140,7 +140,6 @@ public class AnysongEditorWindow : EditorWindow
     private static void ToggleIsPlaying()
     {
         _isPLaying = !_isPLaying;
-        Debug.Log("ToggleIsPlaying " + _isPLaying);
 
         if (_isPLaying)
         {
