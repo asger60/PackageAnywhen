@@ -31,6 +31,7 @@
     border-left-width: 1px;
     -unity-text-align: upper-left;
     font-size: 10px;
+    background-color: rgb(60, 60, 60);
 }
 
 .progression-edit-button {
@@ -46,7 +47,6 @@
     border-bottom-left-radius: 5px;
     background-image: none;
     -unity-background-scale-mode: scale-and-crop;
-    background-color: rgba(0, 0, 0, 0);
     -unity-background-image-tint-color: rgb(79, 79, 79);
 }
 
@@ -55,7 +55,7 @@
     border-right-color: rgb(0, 0, 0);
     border-top-color: rgb(0, 0, 0);
     border-bottom-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.11);
+    background-color: rgba(255, 255, 255, 0.13);
 }
 
 .triggered {
@@ -90,6 +90,10 @@
     border-bottom-left-radius: 5px;
     color: rgba(27, 27, 27, 0);
     background-color: rgb(70, 70, 70);
+}
+
+.pattern-step-fourth {
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
 .pattern-step-note-mono {

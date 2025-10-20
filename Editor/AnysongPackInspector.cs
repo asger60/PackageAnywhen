@@ -4,7 +4,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 [CustomEditor(typeof(AnysongPackObject))]
-public class AnySongPackInspector : UnityEditor.Editor
+public class AnysongPackInspector : UnityEditor.Editor
 {
     private AnysongPackObject _trackPackObject;
 

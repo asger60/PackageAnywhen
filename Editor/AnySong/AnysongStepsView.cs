@@ -75,11 +75,18 @@ public static class AnysongStepsView
                 text = thisStep.rootNote.ToString(),
             };
 
+            if (stepIndex % 4 == 0)
+                button.AddToClassList("pattern-step-fourth");
+
             if (thisStep.noteOn && !thisStep.IsChord)
+            {
                 button.AddToClassList("pattern-step-note-mono");
+            }
 
             if (thisStep.noteOn && thisStep.IsChord)
+            {
                 button.AddToClassList("pattern-step-note-poly");
+            }
 
             button.AddToClassList("pattern-step-button");
             stepButtonsHolder.Add(button);
@@ -124,10 +131,7 @@ public static class AnysongStepsView
     {
         foreach (var stepButtonHolder in _stepButtonsHolders)
         {
-            stepButtonHolder.Query<Button>("StepButton").ForEach(button =>
-            {
-                button.RemoveFromClassList("triggered");
-            });
+            stepButtonHolder.Query<Button>("StepButton").ForEach(button => { button.RemoveFromClassList("triggered"); });
         }
     }
 
