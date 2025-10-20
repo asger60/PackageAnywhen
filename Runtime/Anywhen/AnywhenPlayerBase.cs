@@ -141,11 +141,13 @@ namespace Anywhen
         {
             for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
             {
+                if (currentSong.Tracks[trackIndex].IsMuted) continue;
+                
                 for (var sectionIndex = 0; sectionIndex < currentSong.Sections.Count; sectionIndex++)
                 {
                     var section = currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
-                    if (sectionTrack.isMuted) continue;
+
 
                     var track = currentSong.Tracks[trackIndex];
                     var pattern = sectionTrack.GetPlayingPattern();
@@ -238,7 +240,7 @@ namespace Anywhen
             IsRunning = true;
             AnywhenRuntime.Metronome.OnTick16 += OnTick16;
             AnywhenRuntime.Metronome.OnNextBar += OnBar;
-            currentSong.Reset();
+            //currentSong.Reset();
         }
 
         protected virtual void OnBar()
@@ -290,7 +292,7 @@ namespace Anywhen
 
             if (currentSong)
             {
-                currentSong.Reset();
+                //currentSong.Reset();
                 _currentSectionIndex = 0;
             }
 
@@ -319,7 +321,7 @@ namespace Anywhen
 
         void NextSection()
         {
-            currentSong.Reset();
+            //currentSong.Reset();
             CurrentBar = 0;
 
             _currentSectionIndex++;
@@ -442,6 +444,7 @@ namespace Anywhen
         {
             if (!anysong) return;
             currentSong = anysong;
+            currentSong.Reset();
         }
 
         public void UpdateTrackInstrument(AnysongTrack track)

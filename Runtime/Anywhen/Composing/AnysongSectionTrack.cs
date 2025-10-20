@@ -21,8 +21,7 @@ namespace Anywhen.Composing
         public List<AnyPattern> patterns;
 
 
-        public bool isMuted;
-        public bool isSolo;
+        
         private int _selectedTrackPatternIndex;
 
 
@@ -151,16 +150,18 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
+            _currentPatternIndex = 0;
             _currentPatternBar = 0;
             if (patterns.Count > 0)
             {
                 _currentPattern = patterns[0];
             }
-            
+
             foreach (var pattern in patterns)
             {
                 pattern.Reset();
             }
+            Debug.Log("reset");
         }
     }
 }

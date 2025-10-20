@@ -104,6 +104,7 @@ public class AnysongEditorWindow : EditorWindow
         };
         var composerPlayer = player.AddComponent<AnywhenComposerPlayer>();
         composerPlayer.Load(songObject);
+        songObject.Reset();
 
         _currentRuntimeSongPlayer = composerPlayer;
         CurrentSong = songObject;
@@ -153,7 +154,7 @@ public class AnysongEditorWindow : EditorWindow
         else
         {
             AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
-            CurrentSong.Reset();
+            //CurrentSong.Reset();
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
             AnywhenRuntime.Metronome.OnNextBar -= OnBar;
             AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);

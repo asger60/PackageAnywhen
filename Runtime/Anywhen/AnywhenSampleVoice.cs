@@ -75,7 +75,7 @@ namespace Anywhen
                 _pitchSettings.fadeInDuration = 0;
                 _pitchLFO.UpdateSettings(_pitchSettings);
             }
-            
+
             SetEnvelope(_currentTrack.trackEnvelope);
 
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
@@ -218,9 +218,15 @@ namespace Anywhen
         public override float[] UpdateDSP(int bufferSize, int channels)
         {
             float[] data = new float[bufferSize];
-            if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
+            
+            //int i = 0;
+            //while (i < data.Length)
             {
-                InitPlay();
+                if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
+                {
+                    InitPlay();
+                }
+                //i++;
             }
 
             if (!_isPlaying) return data;

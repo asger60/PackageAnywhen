@@ -19,14 +19,14 @@ namespace Anywhen.Composing
 
         //public bool monophonic;
         [Range(1, 8)] public int voices = 4;
+        
+        [NonSerialized] public bool IsMuted = false;
+        [NonSerialized] public bool IsSolo = false;
 
         public enum AnyTrackTypes
         {
             None = 0,
             Bass = 10,
-
-            // Pad = 20,
-            // Lead = 30,
             NoteShort = 35,
             NoteLong = 36,
             [InspectorName("Rhythm/Hihat")] Hihat = 40,
@@ -62,6 +62,8 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
+            IsSolo = false;
+            IsMuted = false;
         }
     }
 }

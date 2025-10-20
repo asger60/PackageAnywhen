@@ -115,7 +115,7 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("SoloButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isSolo;
+            var state = AnysongEditorWindow.CurrentSong.Tracks[index].IsSolo;
             //btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
             if (state)
                 btn.AddToClassList("track-mix-button-solo");
@@ -130,7 +130,7 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("MuteButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.GetCurrentSection().tracks[index].isMuted;
+            var state = AnysongEditorWindow.CurrentSong.Tracks[index].IsMuted;
             if (state)
                 btn.AddToClassList("track-mix-button-muted");
             else
@@ -143,32 +143,32 @@ public static class AnysongTracksView
 
     static void MuteTrackAtIndex(string indexString)
     {
-        var track = AnysongEditorWindow.CurrentSong.Sections[0].tracks[Int32.Parse(indexString)];
-        track.isMuted = !track.isMuted;
+        var track = AnysongEditorWindow.CurrentSong.Tracks[Int32.Parse(indexString)];
+        track.IsMuted = !track.IsMuted;
         UpdateMuteButtons();
     }
 
     static void SoloTrackAtIndex(string indexString)
     {
-        var track = AnysongEditorWindow.GetCurrentSection().tracks[Int32.Parse(indexString)];
+        var track = AnysongEditorWindow.CurrentSong.Tracks[Int32.Parse(indexString)];
 
-        bool unSolo = track.isSolo;
+        bool unSolo = track.IsSolo;
 
-        foreach (var sectionTrack in AnysongEditorWindow.GetCurrentSection().tracks)
+        foreach (var sectionTrack in AnysongEditorWindow.CurrentSong.Tracks)
         {
-            sectionTrack.isSolo = false;
+            sectionTrack.IsSolo = false;
             if (sectionTrack == track && !unSolo)
             {
-                sectionTrack.isSolo = true;
+                sectionTrack.IsSolo = true;
             }
 
             if (unSolo)
             {
-                sectionTrack.isMuted = false;
+                sectionTrack.IsMuted = false;
             }
             else
             {
-                sectionTrack.isMuted = sectionTrack != track;
+                sectionTrack.IsMuted = sectionTrack != track;
             }
         }
 
