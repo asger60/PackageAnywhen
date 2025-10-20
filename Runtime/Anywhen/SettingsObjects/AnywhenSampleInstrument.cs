@@ -181,7 +181,7 @@ namespace Anywhen.SettingsObjects
         public void PreviewSound()
         {
             InstrumentDatabase.LoadInstrumentNotes(this);
-            AnywhenRuntime.ClipSampleNoteClipPreviewer.PlayClip(this);
+            AnywhenRuntime.PreviewNoteClip(GetNoteClip(Random.Range(0, 10)));
         }
 
 

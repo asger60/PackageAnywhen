@@ -2,6 +2,7 @@
 using UnityEditor;
 #endif
 using Anywhen.Composing;
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
 namespace Anywhen
@@ -35,14 +36,12 @@ namespace Anywhen
             {
                 if (!_anysongPlayerBrain)
                     Instance.GetAnyComponents();
-                
+
                 return _anysongPlayerBrain;
             }
         }
 
         private static AnysongPlayerBrain _anysongPlayerBrain;
-
-
 
 
         private static InstrumentDatabase _instrumentDatabase;
@@ -97,6 +96,7 @@ namespace Anywhen
         private bool _isPreviewing;
         [SerializeField] private bool logErrors;
         public static bool IsPreviewing => Instance._isPreviewing;
+        private AnywhenSampleNoteClipPreviewer _noteClipPreviewer;
 
 #if UNITY_EDITOR
         static AnywhenRuntime()
@@ -155,8 +155,7 @@ namespace Anywhen
         {
             GetAnyComponents();
         }
-        
-        
+
 
         void GetAnyComponents()
         {
@@ -189,6 +188,39 @@ namespace Anywhen
                     Debug.LogError(message);
                     break;
             }
+        }
+
+        public static void PreviewNoteClip(AnywhenNoteClip anywhenNoteClip)
+        {
+            if (!Instance._noteClipPreviewer)
+                Instance._noteClipPreviewer = Instance.FindOrCreatePreviewer();
+
+            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip);
+        }
+
+        public static void StopNoteClipPreview(AnywhenNoteClip anywhenNoteClip)
+        {
+            if (!Instance._noteClipPreviewer) return;
+            Instance._noteClipPreviewer.StopClip();
+        }
+
+        private AnywhenSampleNoteClipPreviewer FindOrCreatePreviewer()
+        {
+            // Look for an existing previewer
+            var previewers = FindObjectsByType<AnywhenSampleNoteClipPreviewer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            AnywhenSampleNoteClipPreviewer previewer = null;
+            if (previewers.Length > 0)
+                previewer = previewers[0];
+
+            // If none exists, create a new one
+            if (!previewer)
+            {
+                var previewerObject = new GameObject("NoteClipPreviewer");
+                previewer = previewerObject.AddComponent<AnywhenSampleNoteClipPreviewer>();
+                previewerObject.hideFlags = HideFlags.HideAndDontSave;
+            }
+
+            return previewer;
         }
     }
 }

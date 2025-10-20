@@ -18,7 +18,6 @@ public class SynthControlLFO : SynthControlBase
     public void UpdateSettings(SynthSettingsObjectLFO settingsObject)
     {
         settings = settingsObject;
-        Debug.Log("UpdateSettings " + settings.sendAmount);
         _isActive = true;
         _phase = 0u;
         _currentAmp = 1;
