@@ -64,7 +64,6 @@ namespace Anywhen.SettingsObjects
                 yPos += SliderHeight + Spacing;
                 sliderRect.y = yPos;
                 EditorGUI.PropertyField(sliderRect, releaseProp);
-                
             }
 
             EditorGUI.EndProperty();
@@ -98,18 +97,14 @@ namespace Anywhen.SettingsObjects
             Handles.DrawLine(attackPeak, sustainPoint);
 
             // Sustain line (horizontal at sustain level)
-            Vector3 sustainEnd = new Vector3(rect.x + 2 + attackWidth + decayWidth + sustainWidth, rect.y + height - sustainHeight + 2);
+            Vector3 sustainEnd = new Vector3(rect.x + 2 + attackWidth + decayWidth + sustainWidth,
+                rect.y + height - sustainHeight + 2);
             Handles.DrawLine(sustainPoint, sustainEnd);
 
             // Release line (sustain to 0)
-            Vector3 end = new Vector3(rect.x + 2 + attackWidth + decayWidth + sustainWidth + releaseWidth, rect.y + rect.height - 2);
+            Vector3 end = new Vector3(rect.x + 2 + attackWidth + decayWidth + sustainWidth + releaseWidth,
+                rect.y + rect.height - 2);
             Handles.DrawLine(sustainEnd, end);
-
-            // Draw labels
-            //GUI.Label(new Rect(rect.x + 5, rect.y + 5, 50, 20), "A", EditorStyles.miniLabel);
-            //GUI.Label(new Rect(rect.x + attackWidth + 5, rect.y + 5, 50, 20), "D", EditorStyles.miniLabel);
-            //GUI.Label(new Rect(rect.x + attackWidth + decayWidth + 5, rect.y + 5, 50, 20), "S", EditorStyles.miniLabel);
-            //GUI.Label(new Rect(rect.x + attackWidth + decayWidth + sustainWidth + 5, rect.y + 5, 50, 20), "R", EditorStyles.miniLabel);
         }
     }
 }

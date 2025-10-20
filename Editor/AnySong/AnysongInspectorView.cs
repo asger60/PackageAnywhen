@@ -110,7 +110,7 @@ public static class AnysongInspectorView
 
 
         _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
-        
+
 
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
@@ -134,20 +134,14 @@ public static class AnysongInspectorView
 
         _parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
 
-        
+
         _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
-                    null));
+            null));
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
-        
+
         _parent.Add(CreatePropertyFieldWithCallback(
-            selection.CurrentSongTrackProperty.FindPropertyRelative("enablePitchLFO"), didUpdateInstrument));
-        
-        _parent.Add(CreatePropertyFieldWithCallback(
-            selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOFrequency"), didUpdateInstrument));
-        
-        _parent.Add(CreatePropertyFieldWithCallback(
-            selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOAmplitude"), didUpdateInstrument));
+            selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOSettings"), didUpdateInstrument));
 
     }
 
@@ -217,7 +211,7 @@ public static class AnysongInspectorView
 
                 barRowLabel.text = "";
                 patternHeaderRow.Add(barRowLabel);
-                
+
                 triggerRowLabel.text = "Trigger chance";
 
                 var patternsHolder = new VisualElement();

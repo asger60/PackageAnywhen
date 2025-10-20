@@ -55,7 +55,7 @@ namespace Anywhen
         {
             if (AudioSettings.dspTime > playTime)
             {
-                AnywhenRuntime.Log("Trying to schedule a play at a time that has allready been..",
+                AnywhenRuntime.Log("Trying to schedule a play at a time that has already been..",
                     AnywhenRuntime.DebugMessageType.Warning);
                 return;
             }
@@ -66,17 +66,14 @@ namespace Anywhen
                 return;
             }
 
-            if (_currentTrack.enablePitchLFO)
+            if (_currentTrack.pitchLFOSettings.enabled)
             {
                 _pitchLFO ??= new SynthControlLFO();
-                _pitchSettings ??= ScriptableObject.CreateInstance<SynthSettingsObjectLFO>();
-                _pitchSettings.frequency = _currentTrack.pitchLFOFrequency;
-                _pitchSettings.sendAmount = _currentTrack.pitchLFOAmplitude;
-                _pitchSettings.fadeInDuration = 0;
-                _pitchLFO.UpdateSettings(_pitchSettings);
+                SetPitchLFO(_currentTrack.pitchLFOSettings);
             }
 
             SetEnvelope(_currentTrack.trackEnvelope);
+            
 
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
             if (stopTime > 0) StopScheduled(stopTime);
@@ -140,7 +137,7 @@ namespace Anywhen
 
             _adsr.SetGate(true);
 
-            if (_currentTrack.enablePitchLFO) _pitchLFO.NoteOn();
+            if (_currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) _pitchLFO.NoteOn();
             //_adsr.Reset();
         }
 
@@ -154,6 +151,11 @@ namespace Anywhen
             _adsr.Reset();
         }
 
+        void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)
+        {
+            _pitchLFO.UpdateSettings(pitchLFOSettings);
+        }
+
 
         float[] DSP_WriteToBuffer(float[] data)
         {
@@ -164,7 +166,7 @@ namespace Anywhen
 
                 _ampMod *= _adsr.Process();
 
-                if (_currentTrack.enablePitchLFO)
+                if (_currentTrack.pitchLFOSettings.enabled)
                 {
                     _pitchLFO.DoUpdate();
                     _currentPitch = _pitchLFO.Process();
@@ -218,7 +220,7 @@ namespace Anywhen
         public override float[] UpdateDSP(int bufferSize, int channels)
         {
             float[] data = new float[bufferSize];
-            
+
             //int i = 0;
             //while (i < data.Length)
             {

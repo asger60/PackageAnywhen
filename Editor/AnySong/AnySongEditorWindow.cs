@@ -117,11 +117,13 @@ public class AnysongEditorWindow : EditorWindow
 
         // Set the default UXML template if not already set
         if (!window.uxmlAsset)
-            window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
+            window.uxmlAsset =
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
 
 
         if (!window.styleAsset)
-            window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
+            window.styleAsset =
+                AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
 
         window.Show(true);
 
@@ -130,6 +132,11 @@ public class AnysongEditorWindow : EditorWindow
             if (track.trackEnvelope.IsUnset())
             {
                 track.trackEnvelope.Initialize();
+            }
+
+            if (track.pitchLFOSettings.IsUnset())
+            {
+                track.pitchLFOSettings.Initialize();
             }
         }
 
@@ -381,7 +388,8 @@ public class AnysongEditorWindow : EditorWindow
                     HandleProgressionLogic();
 
                     AnysongTracksView.UpdateMuteSoleState();
-                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
+                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex,
+                        _currentSelection.CurrentSectionIndex);
                 }
             });
         });
@@ -432,7 +440,8 @@ public class AnysongEditorWindow : EditorWindow
                 {
                     CreatePattern(Int32.Parse(btn.tooltip));
                     AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
-                    AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
+                    AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex,
+                        _currentSelection.CurrentPatternIndex);
                     HandleProgressionLogic();
                     AnysongStepsView.RefreshPatterns();
                 }
@@ -445,8 +454,10 @@ public class AnysongEditorWindow : EditorWindow
             {
                 if (evt.currentTarget is not Button btn) return;
                 _currentSelection = GetSelectionFromTooltip(btn.tooltip);
-                AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
-                AnysongStepsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex, _currentSelection.CurrentPatternIndex);
+                AnysongProgressionsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex,
+                    _currentSelection.CurrentPatternIndex);
+                AnysongStepsView.SetPatternIndexForTrack(_currentSelection.CurrentTrackIndex,
+                    _currentSelection.CurrentPatternIndex);
                 AnysongStepsView.RefreshPatterns();
 
                 _currentPatternIsBase = _currentSelection.CurrentPatternIndex == 0;
@@ -780,10 +791,7 @@ public class AnysongEditorWindow : EditorWindow
                 break;
             case InspectorModes.Track:
                 AnysongInspectorView.DrawTrack(_currentSelection,
-                    () =>
-                    {
-                        CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack);
-                    });
+                    () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack); });
 
                 break;
             case InspectorModes.Step:
@@ -793,7 +801,10 @@ public class AnysongEditorWindow : EditorWindow
                 break;
             case InspectorModes.Progression:
                 AnysongInspectorView.DrawProgression(_currentSelection);
-                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreatePattern(_currentSelection.CurrentTrackIndex); });
+                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) =>
+                {
+                    CreatePattern(_currentSelection.CurrentTrackIndex);
+                });
                 break;
 
             default:
@@ -823,13 +834,17 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandlePatternUtilsLogic()
     {
-        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
+        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
+        {
+            CopyPattern(_currentSelection.CurrentPattern);
+        });
         _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
     }
 
     void HandleStepUtilsLogic()
     {
-        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyStep(_currentSelection.CurrentStep); });
+        _inspectorPanel.Q<Button>("CopyButton")
+            .RegisterCallback<ClickEvent>((evt) => { CopyStep(_currentSelection.CurrentStep); });
         _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) =>
         {
             PasteStep(_currentSelection.CurrentPattern, _currentSelection.CurrentStep);

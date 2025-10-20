@@ -10,9 +10,8 @@ namespace Anywhen.Composing
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-        public bool enablePitchLFO;
-        [Range(1, 100)] public float pitchLFOFrequency;
-        [Range(0, 100)] public float pitchLFOAmplitude;
+        public AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings;
+
 
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
@@ -44,6 +43,7 @@ namespace Anywhen.Composing
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
             trackEnvelope = new AnywhenSampleInstrument.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
+            pitchLFOSettings = new AnywhenSampleInstrument.PitchLFOSettings(1, 1, false);
         }
 
         public AnysongTrack Clone()
@@ -54,6 +54,7 @@ namespace Anywhen.Composing
                 volume = volume,
                 intensityMappingCurve = intensityMappingCurve,
                 trackEnvelope = trackEnvelope,
+                pitchLFOSettings = pitchLFOSettings,
                 trackType = trackType,
             };
             return clone;
