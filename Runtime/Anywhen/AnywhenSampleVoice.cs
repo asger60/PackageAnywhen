@@ -44,6 +44,7 @@ namespace Anywhen
             _thisInstrument = instrument as AnywhenSampleInstrument;
             IsReady = true;
             _adsr = new ADSR();
+            _pitchLFO = new SynthControlLFO();
             _currentSampleRate = currentSampleRate;
         }
 
@@ -66,14 +67,10 @@ namespace Anywhen
                 return;
             }
 
-            if (_currentTrack.pitchLFOSettings.enabled)
-            {
-                _pitchLFO ??= new SynthControlLFO();
-                SetPitchLFO(_currentTrack.pitchLFOSettings);
-            }
 
+            SetPitchLFO(_currentTrack.pitchLFOSettings);
             SetEnvelope(_currentTrack.trackEnvelope);
-            
+
 
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
             if (stopTime > 0) StopScheduled(stopTime);

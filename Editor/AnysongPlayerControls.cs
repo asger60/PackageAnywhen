@@ -102,7 +102,7 @@ public class AnysongPlayerControls
         for (int i = 0; i < _sectionButtons.Count; i++)
         {
             _sectionButtons[i].style.backgroundColor =
-                new StyleColor((i == _anywhenPlayer.CurrentSectionIndex) ? Color.grey : Color.clear);
+                new StyleColor((i == _anywhenPlayer.CurrentSong.CurrentSectionIndex) ? Color.grey : Color.clear);
         }
     }
 
@@ -148,7 +148,8 @@ public class AnysongPlayerControls
         _isPlaying = true;
 
 
-        AnysongPlayerBrain.SetSectionLock(-1);
+        _currentSong.Play(AnysongObject.SongPlayModes.Playback);
+        //AnysongPlayerBrain.SetSectionLock(-1);
         _anywhenPlayer.EditorSetPreviewSong(_currentSong);
         AnywhenRuntime.Metronome.SetTempo(_anywhenPlayer.GetTempo());
         _playButton.style.backgroundColor = new StyleColor(_accentColor);

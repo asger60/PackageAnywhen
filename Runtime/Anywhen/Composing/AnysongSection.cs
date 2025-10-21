@@ -8,12 +8,12 @@ namespace Anywhen.Composing
     [Serializable]
     public class AnysongSection
     {
-        public int rootNote;
+        //public int rootNote;
 
 
         public AnywhenProgressionPatternObject.ProgressionStep[] patternSteps;
 
-        [Range(0, 1f)] public float volume = 0.85f;
+        //[Range(0, 1f)] public float volume = 0.85f;
 
         public List<AnysongSectionTrack> tracks;
         public int sectionLength = 4;
@@ -22,8 +22,8 @@ namespace Anywhen.Composing
 
         public void Init(List<AnysongTrack> songTracks)
         {
-            volume = 1f;
-            rootNote = 0;
+            //volume = 1f;
+            //rootNote = 0; 
             sectionLength = 4;
             tracks = new List<AnysongSectionTrack>();
 

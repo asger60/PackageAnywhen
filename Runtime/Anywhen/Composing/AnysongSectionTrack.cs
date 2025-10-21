@@ -161,7 +161,7 @@ namespace Anywhen.Composing
             {
                 pattern.Reset();
             }
-            Debug.Log("reset");
+            //Debug.Log("reset");
         }
     }
 }

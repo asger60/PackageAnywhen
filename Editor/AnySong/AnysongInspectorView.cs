@@ -142,7 +142,6 @@ public static class AnysongInspectorView
 
         _parent.Add(CreatePropertyFieldWithCallback(
             selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOSettings"), didUpdateInstrument));
-
     }
 
     public static void DrawProgression(AnysongEditorWindow.AnySelection selection)
@@ -272,11 +271,40 @@ public static class AnysongInspectorView
     {
         _parent.Clear();
         Draw(_parent);
-        var boxTriggering = new Box();
-        boxTriggering.Add(new Label("Triggering"));
-        boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOn"), didUpdate));
-        boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOff"), didUpdate));
-        _parent.Add(boxTriggering);
+        var boxNotes = new Box();
+        boxNotes.Add(new Label("Note stuff"));
+        var notesBox = new Box()
+        {
+            style = { flexDirection = FlexDirection.Row }
+        };
+
+        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
+
+        var strumControl = new VisualElement();
+        strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
+        strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
+        strumControl.style.display =
+            new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0 ? DisplayStyle.Flex : DisplayStyle.None);
+
+        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), () =>
+        {
+            strumControl.style.display =
+                new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0 ? DisplayStyle.Flex : DisplayStyle.None);
+            didUpdate?.Invoke();
+        }));
+
+
+        boxNotes.Add(strumControl);
+
+        boxNotes.Add(notesBox);
+
+
+        _parent.Add(boxNotes);
+        //var boxTriggering = new Box();
+        //boxTriggering.Add(new Label("Triggering"));
+        //boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOn"), didUpdate));
+        //boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOff"), didUpdate));
+        //_parent.Add(boxTriggering);
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
 
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
@@ -293,26 +321,7 @@ public static class AnysongInspectorView
 
         _parent.Add(s);
 
-        var boxNotes = new Box();
-        boxNotes.Add(new Label("Note stuff"));
-        var notesBox = new Box()
-        {
-            style = { flexDirection = FlexDirection.Row }
-        };
 
-        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
-        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), didUpdate));
-        if (step.FindPropertyRelative("chordNotes").arraySize > 1)
-        {
-            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
-            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
-        }
-
-
-        boxNotes.Add(notesBox);
-
-
-        _parent.Add(boxNotes);
         _parent.Add(Spacer());
         _parent.Add(CreateUtilsBox());
     }

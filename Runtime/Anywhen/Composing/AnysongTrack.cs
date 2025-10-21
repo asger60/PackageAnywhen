@@ -43,7 +43,7 @@ namespace Anywhen.Composing
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
             trackEnvelope = new AnywhenSampleInstrument.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
-            pitchLFOSettings = new AnywhenSampleInstrument.PitchLFOSettings(1, 1, false);
+            pitchLFOSettings = new AnywhenSampleInstrument.PitchLFOSettings(2, 0.01f, false);
         }
 
         public AnysongTrack Clone()

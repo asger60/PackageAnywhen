@@ -98,9 +98,9 @@ public static class AnysongSectionsView
         });
     }
 
-    public static bool IsSectionLocked()
+    static bool IsSectionLocked()
     {
-        return AnysongEditorWindow.CurrentSectionLockIndex > -1;
+        return AnysongEditorWindow.CurrentSong.SectionEditLock;
     }
 
     public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)

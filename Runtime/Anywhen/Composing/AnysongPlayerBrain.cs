@@ -10,7 +10,6 @@ namespace Anywhen.Composing
         [Range(0, 1f)] [SerializeField] private float globalIntensity;
 
 
-        public static int SectionLockIndex;
         public static Action<float> OnIntensityChanged;
 
         public enum TransitionTypes
@@ -58,7 +57,6 @@ namespace Anywhen.Composing
 
         private void Start()
         {
-            SetSectionLock(-1);
             AnywhenRuntime.Metronome.OnNextBar += OnNextBar;
         }
 
@@ -164,12 +162,7 @@ namespace Anywhen.Composing
             }
         }
 
-
-        public static void SetSectionLock(int index)
-        {
-            SectionLockIndex = index;
-        }
-
+        
 
         public static void RegisterStop(AnywhenPlayer anywhenPlayer)
         {

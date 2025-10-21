@@ -31,7 +31,7 @@ public class AnysongEditorWindow : EditorWindow
     {
         get
         {
-            if (_currentRuntimeSongPlayer == null)
+            if (!_currentRuntimeSongPlayer)
             {
                 var player = new GameObject("AnywhenComposerPlayer")
                 {
@@ -151,6 +151,8 @@ public class AnysongEditorWindow : EditorWindow
 
         if (_isPLaying)
         {
+            CurrentSong.Play(AnysongObject.SongPlayModes.Edit);
+
             AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
             AnysongSectionsView.RefreshSectionLocked();
             AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
@@ -161,7 +163,6 @@ public class AnysongEditorWindow : EditorWindow
         else
         {
             AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
-            //CurrentSong.Reset();
             AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
             AnywhenRuntime.Metronome.OnNextBar -= OnBar;
             AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
@@ -172,6 +173,9 @@ public class AnysongEditorWindow : EditorWindow
 
     private void OnDestroy()
     {
+        CurrentRuntimeSongPlayer.Stop();
+        DestroyImmediate(CurrentRuntimeSongPlayer.gameObject);
+        _currentRuntimeSongPlayer = null;
         AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
         AnywhenRuntime.Metronome.OnNextBar -= OnBar;
     }
@@ -277,7 +281,7 @@ public class AnysongEditorWindow : EditorWindow
     {
         if (_currentSelection.CurrentSection == null)
             _currentSelection.CurrentSection = CurrentSong.Sections[0];
-        if (_currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
+        if (_currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex)
         {
             for (var i = 0; i < CurrentSong.Tracks.Count; i++)
             {
@@ -291,7 +295,7 @@ public class AnysongEditorWindow : EditorWindow
     static void OnBar()
     {
         if (CurrentSong != CurrentRuntimeSongPlayer.CurrentSong) return;
-        AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
+        AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
 
         var ints = CurrentRuntimeSongPlayer.EditorGetPlayingTrackPatternIndexes();
         for (var i = 0; i < ints.Length; i++)
@@ -388,7 +392,7 @@ public class AnysongEditorWindow : EditorWindow
                     HandleProgressionLogic();
 
                     AnysongTracksView.UpdateMuteSoleState();
-                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSectionIndex,
+                    AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex,
                         _currentSelection.CurrentSectionIndex);
                 }
             });
@@ -579,23 +583,16 @@ public class AnysongEditorWindow : EditorWindow
         HandleSectionsLogic();
     }
 
-    public static int CurrentSectionLockIndex;
 
-    public static AnysongSection GetCurrentSection()
-    {
-        if (CurrentSectionLockIndex > -1)
-            return CurrentSong.Sections[CurrentSectionLockIndex];
-
-        return CurrentSong.Sections[0];
-    }
 
     void RefreshSectionLockIndex()
     {
-        if (!AnysongSectionsView.IsSectionLocked()) return;
+        if (!CurrentSong.SectionEditLock) return;
 
-        CurrentSectionLockIndex = _currentSelection.CurrentSectionIndex;
+        CurrentSong.SetEditSection(_currentSelection.CurrentSectionIndex);
         Debug.Log("set locked section to  " + _currentSelection.CurrentSectionIndex);
-        AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
+
+        //AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
     }
 
     public static AnySelection GetCurrentSelection()
@@ -605,17 +602,7 @@ public class AnysongEditorWindow : EditorWindow
 
     void ToggleSectionLock()
     {
-        if (CurrentSectionLockIndex >= 0)
-        {
-            CurrentSectionLockIndex = -1;
-            AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
-        }
-        else
-        {
-            CurrentSectionLockIndex = _currentSelection.CurrentSectionIndex;
-            AnysongPlayerBrain.SetSectionLock(CurrentSectionLockIndex);
-        }
-
+        CurrentSong.SetEditSectionLock(!CurrentSong.SectionEditLock);
         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
         HandleSectionsLogic();
     }
@@ -736,7 +723,7 @@ public class AnysongEditorWindow : EditorWindow
 
     public static AnyPattern GetCurrentPlayingPatternForTrack(int trackIndex)
     {
-        return CurrentSong.Sections[CurrentRuntimeSongPlayer.CurrentSectionIndex].tracks[trackIndex]
+        return CurrentSong.Sections[CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex].tracks[trackIndex]
             .GetPlayingPattern();
     }
 
@@ -801,10 +788,7 @@ public class AnysongEditorWindow : EditorWindow
                 break;
             case InspectorModes.Progression:
                 AnysongInspectorView.DrawProgression(_currentSelection);
-                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) =>
-                {
-                    CreatePattern(_currentSelection.CurrentTrackIndex);
-                });
+                _inspectorPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreatePattern(_currentSelection.CurrentTrackIndex); });
                 break;
 
             default:
@@ -834,10 +818,7 @@ public class AnysongEditorWindow : EditorWindow
 
     void HandlePatternUtilsLogic()
     {
-        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-        {
-            CopyPattern(_currentSelection.CurrentPattern);
-        });
+        _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
         _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
     }
 

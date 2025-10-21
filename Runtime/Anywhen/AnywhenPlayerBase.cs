@@ -15,13 +15,7 @@ namespace Anywhen
     {
         private bool _isMuted;
         protected bool IsRunning;
-        private int _currentSectionIndex = 0;
-
-        public int CurrentSectionIndex
-        {
-            get => _currentSectionIndex;
-            set => _currentSectionIndex = value;
-        }
+        //private int _currentSectionIndex = 0;
 
 
         private float _playerVolume = 1;
@@ -29,8 +23,6 @@ namespace Anywhen
         protected int CurrentBar;
         [SerializeField] private AnysongObject currentSong;
         public AnysongObject CurrentSong => currentSong;
-
-        [SerializeField] protected bool sectionsAutoAdvance = true;
 
 
         [SerializeField] protected AudioMixerGroup outputMixerGroup;
@@ -133,7 +125,6 @@ namespace Anywhen
         private void OnTick16()
         {
             if (!IsRunning) return;
-            _currentSectionIndex = Mathf.Min(_currentSectionIndex, currentSong.Sections.Count - 1);
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
         }
 
@@ -142,7 +133,7 @@ namespace Anywhen
             for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
             {
                 if (currentSong.Tracks[trackIndex].IsMuted) continue;
-                
+
                 for (var sectionIndex = 0; sectionIndex < currentSong.Sections.Count; sectionIndex++)
                 {
                     var section = currentSong.Sections[sectionIndex];
@@ -168,7 +159,7 @@ namespace Anywhen
                         pattern.Advance();
 
 
-                    if (sectionIndex == _currentSectionIndex && (step.noteOn || step.noteOff))
+                    if (sectionIndex == CurrentSong.CurrentSectionIndex && (step.noteOn || step.noteOff))
                     {
                         float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(1));
                         float thisRnd = Random.Range(0, 1f);
@@ -243,9 +234,12 @@ namespace Anywhen
             //currentSong.Reset();
         }
 
+        private bool _firstBar;
+
         protected virtual void OnBar()
         {
             if (!IsRunning) return;
+
             if (_resetOnNextBar)
             {
                 CurrentBar = 0;
@@ -261,23 +255,24 @@ namespace Anywhen
                 CurrentBar = 0;
             }
 
-            _currentSectionIndex = Mathf.Min(_currentSectionIndex, currentSong.Sections.Count - 1);
 
-            var thisSection = currentSong.Sections[_currentSectionIndex];
-            int progress = (int)Mathf.Repeat(CurrentBar, thisSection.sectionLength);
-
-
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            if (!_firstBar)
             {
-                var track = currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                track.AdvancePlayingPattern();
+                for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+                {
+                    var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                    track.AdvancePlayingPattern();
+                }
+
+                int progress = (int)Mathf.Repeat(CurrentBar, currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
+                if (progress == 0)
+                {
+                    NextSection();
+                }
             }
 
 
-            if (progress == 0)
-            {
-                NextSection();
-            }
+            _firstBar = false;
         }
 
 
@@ -288,13 +283,8 @@ namespace Anywhen
                 return;
             }
 
+            _firstBar = true;
             IsPlaying = true;
-
-            if (currentSong)
-            {
-                //currentSong.Reset();
-                _currentSectionIndex = 0;
-            }
 
             SetupVoices(currentSong.Tracks);
 
@@ -309,7 +299,8 @@ namespace Anywhen
             }
 
 
-            CurrentBar = 0;
+            CurrentBar = -1;
+            ResetSection();
             AttachToMetronome();
         }
 
@@ -319,16 +310,18 @@ namespace Anywhen
             ReleaseFromMetronome();
         }
 
-        void NextSection()
+        protected void NextSection()
         {
-            //currentSong.Reset();
             CurrentBar = 0;
+            CurrentSong.AdvanceSection();
+            ResetSection();
+        }
 
-            _currentSectionIndex++;
-            _currentSectionIndex = (int)Mathf.Repeat(_currentSectionIndex, currentSong.Sections.Count);
+        protected void ResetSection()
+        {
             for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
             {
-                var track = currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
                 track.Reset();
             }
         }
@@ -430,9 +423,9 @@ namespace Anywhen
         public virtual int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
-            for (var i = 0; i < currentSong.Sections[CurrentSectionIndex].tracks.Count; i++)
+            for (var i = 0; i < currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
             {
-                var track = currentSong.Sections[CurrentSectionIndex].tracks[i];
+                var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
 
                 returnList.Add(track.GetPlayingPatternIndex());
             }

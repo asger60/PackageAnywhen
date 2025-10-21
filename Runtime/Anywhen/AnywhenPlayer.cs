@@ -58,19 +58,20 @@ namespace Anywhen
         {
             if (!IsRunning) return;
             CurrentBar++;
-            if (AnysongPlayerBrain.SectionLockIndex > -1)
+            if (CurrentSong.CurrentPlayMode == AnysongObject.SongPlayModes.Edit)
             {
-                CurrentSectionIndex = AnysongPlayerBrain.SectionLockIndex;
+                // todo, have editor set the section index
+                ResetSection();
             }
 
-            CurrentSectionIndex = Mathf.Min(CurrentSectionIndex, CurrentSong.Sections.Count - 1);
+            //CurrentSectionIndex = Mathf.Min(CurrentSectionIndex, CurrentSong.Sections.Count - 1);
 
-            var thisSection = CurrentSong.Sections[CurrentSectionIndex];
+            var thisSection = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
             int progress = (int)Mathf.Repeat(CurrentBar, thisSection.sectionLength);
 
             for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
             {
-                var track = CurrentSong.Sections[CurrentSectionIndex].tracks[trackIndex];
+                var track = CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
                 track.AdvancePlayingPattern();
             }
 
@@ -80,7 +81,7 @@ namespace Anywhen
             }
 
 
-            var section = CurrentSong.Sections[CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
 
@@ -93,28 +94,7 @@ namespace Anywhen
             return intensity;
         }
 
-        void NextSection()
-        {
-            CurrentSong.Reset();
-            CurrentBar = 0;
-            if (!sectionsAutoAdvance)
-                return;
 
-            if (AnysongPlayerBrain.SectionLockIndex > -1)
-            {
-                SetSection(AnysongPlayerBrain.SectionLockIndex);
-            }
-            else
-            {
-                SetSection(CurrentSectionIndex + 1);
-
-                for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
-                {
-                    var track = CurrentSong.Sections[CurrentSectionIndex].tracks[trackIndex];
-                    track.Reset();
-                }
-            }
-        }
 
 
         private void OnDisable()
@@ -142,14 +122,14 @@ namespace Anywhen
             }
 
 
-            if (CurrentSong)
-            {
-                CurrentSong.Reset();
-                CurrentSectionIndex = Random.Range(0, CurrentSong.Sections.Count - 1);
-            }
+            //if (CurrentSong)
+            //{
+            //    CurrentSong.Reset();
+            //    CurrentSectionIndex = Random.Range(0, CurrentSong.Sections.Count - 1);
+            //}
 
             CurrentBar = 0;
-            var section = CurrentSong.Sections[CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
 
             SetupVoices(CurrentSong.Tracks);
             AttachToMetronome();
@@ -213,17 +193,9 @@ namespace Anywhen
                 }
             }
         }
+        
 
-        public void SetSection(int sectionIndex)
-        {
-            CurrentSectionIndex = sectionIndex;
-            CurrentSectionIndex = (int)Mathf.Repeat(CurrentSectionIndex, CurrentSong.Sections.Count);
-        }
 
-        public void SetSectionsAutoAdvance(bool state)
-        {
-            sectionsAutoAdvance = state;
-        }
 
         public void ModifyIntensity(float newIntensity)
         {
@@ -233,7 +205,7 @@ namespace Anywhen
 
         public void EditorSetSection(int sectionIndex)
         {
-            CurrentSectionIndex = sectionIndex;
+            //CurrentSectionIndex = sectionIndex;
         }
 
         public void EditorSetGlobelTempo(bool newValue)
@@ -272,9 +244,9 @@ namespace Anywhen
         public override int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
-            for (var i = 0; i < CurrentSong.Sections[CurrentSectionIndex].tracks.Count; i++)
+            for (var i = 0; i < CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
             {
-                var track = CurrentSong.Sections[CurrentSectionIndex].tracks[i];
+                var track = CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
 
                 returnList.Add(track.GetPlayingPatternIndex());
             }
