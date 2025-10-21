@@ -104,24 +104,49 @@ namespace Anywhen.Composing
                     break;
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
-                    float maxRandom = 100;
+                    float totalWeight = 0;
+                    
+                    // First pass: calculate total weight
                     for (var i = 0; i < patterns.Count; i++)
                     {
                         var anyPattern = patterns[i];
                         float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
-                        float thisRnd = Random.Range(0, maxRandom);
-                        if (thisTriggerChance > thisRnd)
+                        totalWeight += thisTriggerChance;
+                    }
+                    
+                    // If total weight is 0, fallback to first pattern
+                    if (totalWeight <= 0)
+                    {
+                        _currentPatternIndex = 0;
+                        didFindPattern = true;
+                        Debug.LogWarning("totalWeight is 0, falling back to first pattern");
+                        
+                    }
+                    else
+                    {
+                        // Generate random number within total weight range
+                        float randomValue = Random.Range(0f, totalWeight);
+                        float currentWeight = 0;
+                        
+                        // Second pass: find the selected pattern
+                        for (var i = 0; i < patterns.Count; i++)
                         {
-                            _currentPatternIndex = i;
-                            didFindPattern = true;
-                            break;
+                            var anyPattern = patterns[i];
+                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
+                            currentWeight += thisTriggerChance;
+                            
+                            if (randomValue <= currentWeight)
+                            {
+                                _currentPatternIndex = i;
+                                didFindPattern = true;
+                                break;
+                            }
                         }
-
-                        maxRandom -= thisTriggerChance;
                     }
 
                     if (!didFindPattern)
                     {
+                        Debug.LogWarning("Could not find pattern for bar " + _currentPatternBar);
                         _currentPatternIndex = 0;
                     }
 
@@ -150,18 +175,17 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
-            _currentPatternIndex = 0;
+            //_currentPatternIndex = 0;
             _currentPatternBar = 0;
             if (patterns.Count > 0)
             {
-                _currentPattern = patterns[0];
+                _currentPattern = patterns[_currentPatternIndex];
             }
 
             foreach (var pattern in patterns)
             {
                 pattern.Reset();
             }
-            //Debug.Log("reset");
         }
     }
 }

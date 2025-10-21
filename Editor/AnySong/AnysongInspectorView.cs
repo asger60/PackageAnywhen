@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -226,8 +227,7 @@ public static class AnysongInspectorView
                         text = "Pattern " + y,
                         style =
                         {
-                            minWidth = 100,
-                            width = 100
+                            width = new StyleLength(new Length(15, LengthUnit.Percent))
                         }
                     };
 
@@ -236,18 +236,26 @@ public static class AnysongInspectorView
 
                     for (int i = 0; i < pattern.triggerChances.Count; i++)
                     {
-                        var chanceField = new FloatField
+                        var chanceSlider = new Slider
                         {
+                            highValue = 100,
+                            lowValue = 0,
                             value = pattern.triggerChances[i],
-                            style = { minWidth = 30, },
+                            style =
+                            {
+                                width = new StyleLength(new Length(20, LengthUnit.Percent))
+                            }
                         };
-
+                        
+                        int columnIndex = i; // Capture the column index for the callback
+                        chanceSlider.RegisterValueChangedCallback(evt => { AdjustPatternWeights(selection, columnIndex); });
 
                         var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
                             .GetArrayElementAtIndex(y)
                             .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
-                        chanceField.BindProperty(property);
-                        patternRow.Add(chanceField);
+
+                        chanceSlider.BindProperty(property);
+                        patternRow.Add(chanceSlider);
                     }
 
                     patternsHolder.Add(patternRow);
@@ -264,6 +272,41 @@ public static class AnysongInspectorView
         }
 
         return content;
+    }
+
+    static void AdjustPatternWeights(AnysongEditorWindow.AnySelection selection, int columnIndex)
+    {
+        List<float> columnWeights = new();
+        float totalWeight = 0f;
+        
+        // Collect all current weights for this specific column and calculate total
+        for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
+        {
+            var pattern = selection.CurrentSectionTrack.patterns[y];
+            float weight = pattern.triggerChances[columnIndex];
+            columnWeights.Add(weight);
+            totalWeight += weight;
+        }
+
+        // Avoid division by zero
+        if (totalWeight <= 0f)
+        {
+            // If all weights are 0 or negative, distribute evenly
+            float evenWeight = 100f / selection.CurrentSectionTrack.patterns.Count;
+            for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
+            {
+                selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = evenWeight;
+            }
+        }
+        else
+        {
+            // Normalize weights to sum to 100
+            for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
+            {
+                float normalizedWeight = (columnWeights[y] / totalWeight) * 100f;
+                selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = normalizedWeight;
+            }
+        }
     }
 
 
