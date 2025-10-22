@@ -236,6 +236,38 @@ public static class AnysongInspectorView
 
                     for (int i = 0; i < pattern.triggerChances.Count; i++)
                     {
+                        var patternChance = new VisualElement()
+                        {
+                            style =
+                            {
+                                flexDirection = FlexDirection.Column,
+                                width = new StyleLength(new Length(20, LengthUnit.Percent))
+                            }
+                        };
+
+                        var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
+                            .GetArrayElementAtIndex(y)
+                            .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
+
+                        int columnIndex = i; // Capture the column index for the callback
+                        Button patternButton = new Button
+                        {
+                            style =
+                            {
+                                width = new StyleLength(new Length(20, LengthUnit.Percent))
+                            }
+                        };
+
+                        patternButton.BindProperty(property);
+
+                        patternButton.clicked += () =>
+                        {
+                            pattern.triggerChances[columnIndex] =
+                                pattern.triggerChances[columnIndex] > 0 ? 0 : GetCollumnMaxValue(selection, columnIndex);
+                            AdjustPatternWeights(selection, columnIndex);
+                        };
+
+
                         var chanceSlider = new Slider
                         {
                             highValue = 100,
@@ -246,16 +278,16 @@ public static class AnysongInspectorView
                                 width = new StyleLength(new Length(20, LengthUnit.Percent))
                             }
                         };
-                        
-                        int columnIndex = i; // Capture the column index for the callback
+
+
                         chanceSlider.RegisterValueChangedCallback(evt => { AdjustPatternWeights(selection, columnIndex); });
 
-                        var property = selection.CurrentSectionTrackProperty.FindPropertyRelative("patterns")
-                            .GetArrayElementAtIndex(y)
-                            .FindPropertyRelative("triggerChances").GetArrayElementAtIndex(i);
 
                         chanceSlider.BindProperty(property);
-                        patternRow.Add(chanceSlider);
+
+                        patternRow.Add(patternButton);
+                        //patternChance.Add(chanceSlider);
+                        //patternRow.Add(patternChance);
                     }
 
                     patternsHolder.Add(patternRow);
@@ -274,11 +306,29 @@ public static class AnysongInspectorView
         return content;
     }
 
+    static float GetCollumnMaxValue(AnysongEditorWindow.AnySelection selection, int columnIndex)
+    {
+        float totalWeight = 0f;
+        for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
+        {
+            var pattern = selection.CurrentSectionTrack.patterns[y];
+            float weight = pattern.triggerChances[columnIndex];
+            if (weight > totalWeight)
+            {
+                totalWeight = weight;
+            }
+        }
+
+        if (totalWeight == 0f)
+            return 100;
+        return totalWeight;
+    }
+
     static void AdjustPatternWeights(AnysongEditorWindow.AnySelection selection, int columnIndex)
     {
         List<float> columnWeights = new();
         float totalWeight = 0f;
-        
+
         // Collect all current weights for this specific column and calculate total
         for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
         {
@@ -295,7 +345,7 @@ public static class AnysongInspectorView
             float evenWeight = 100f / selection.CurrentSectionTrack.patterns.Count;
             for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
             {
-                selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = evenWeight;
+                selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = 0;
             }
         }
         else
