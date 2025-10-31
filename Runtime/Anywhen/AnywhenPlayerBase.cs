@@ -78,14 +78,15 @@ namespace Anywhen
 
         private List<PlayerVoices> _voicesList = new();
         public List<PlayerVoices> VoicesList => _voicesList;
+        private AudioSource _audioSource;
 
         protected virtual void Start()
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
-            AudioSource source = GetComponent<AudioSource>();
-            source.playOnAwake = true;
-            source.clip = myClip;
-            source.Play();
+            _audioSource = GetComponent<AudioSource>();
+            _audioSource.playOnAwake = true;
+            _audioSource.clip = myClip;
+            _audioSource.Play();
         }
 
         public void SetupVoices(List<AnysongTrack> tracks = null)
@@ -449,6 +450,7 @@ namespace Anywhen
         public void SetOututMixerGroup(AudioMixerGroup group)
         {
             outputMixerGroup = group;
+            _audioSource.outputAudioMixerGroup = group;
         }
 
 #if UNITY_EDITOR
