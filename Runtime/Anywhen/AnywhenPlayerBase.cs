@@ -221,17 +221,23 @@ namespace Anywhen
         protected virtual void ReleaseFromMetronome()
         {
             IsRunning = false;
-            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-            AnywhenRuntime.Metronome.OnNextBar -= OnBar;
+
+            if (AnywhenRuntime.Metronome)
+            {
+                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+                AnywhenRuntime.Metronome.OnNextBar -= OnBar;
+            }
         }
 
         protected virtual void AttachToMetronome()
         {
             if (IsRunning) return;
             IsRunning = true;
-            AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-            AnywhenRuntime.Metronome.OnNextBar += OnBar;
-            //currentSong.Reset();
+            if (AnywhenRuntime.Metronome)
+            {
+                AnywhenRuntime.Metronome.OnTick16 += OnTick16;
+                AnywhenRuntime.Metronome.OnNextBar += OnBar;
+            }
         }
 
         private bool _firstBar;
@@ -440,6 +446,12 @@ namespace Anywhen
             currentSong.Reset();
         }
 
+        public void SetOututMixerGroup(AudioMixerGroup group)
+        {
+            outputMixerGroup = group;
+        }
+
+#if UNITY_EDITOR
         public void UpdateTrackInstrument(AnysongTrack track)
         {
             bool didLoad = false;
@@ -466,5 +478,6 @@ namespace Anywhen
                 }
             }
         }
+#endif
     }
 }
