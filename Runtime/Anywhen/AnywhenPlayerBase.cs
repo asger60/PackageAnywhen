@@ -450,6 +450,7 @@ namespace Anywhen
         public void SetOututMixerGroup(AudioMixerGroup group)
         {
             outputMixerGroup = group;
+            if (!_audioSource) _audioSource = GetComponent<AudioSource>();
             _audioSource.outputAudioMixerGroup = group;
         }
 
