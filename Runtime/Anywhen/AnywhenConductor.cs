@@ -60,13 +60,21 @@ namespace Anywhen
         }
 
 
-        public int GetScaledNote(int noteStep)
+        public int GetScaledNote(int noteStep, int maxNote = -1)
         {
-            if (_currentAnywhenScale == null) return 0;
+            if (!_currentAnywhenScale) return 0;
             if (_currentAnywhenScale.notes == null || _currentAnywhenScale.notes.Length == 0) return 0;
+
+
             int octave = (noteStep / _currentAnywhenScale.notes.Length) * 12;
-            return _currentAnywhenScale.notes[(int)Mathf.Repeat(noteStep, _currentAnywhenScale.notes.Length)] + octave +
-                   _rootNote;
+
+            int returnNote = _currentAnywhenScale.notes[(int)Mathf.Repeat(noteStep, _currentAnywhenScale.notes.Length)] + octave + _rootNote;
+            if (maxNote > 0 && returnNote >= maxNote)
+            {
+                returnNote -= 12;
+            }
+
+            return returnNote;
         }
 
         public int[] GetScaledNotes(int[] notes)

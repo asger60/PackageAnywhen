@@ -61,11 +61,11 @@ namespace Anywhen
                 return;
             }
 
-            if (note > 20)
-            {
-                AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
-                return;
-            }
+            //if (note > 20)
+            //{
+            //    AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
+            //    return;
+            //}
 
 
             SetPitchLFO(_currentTrack.pitchLFOSettings);
@@ -73,6 +73,7 @@ namespace Anywhen
 
 
             PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
+            
             if (stopTime > 0) StopScheduled(stopTime);
         }
 
