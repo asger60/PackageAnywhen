@@ -195,6 +195,19 @@ namespace Anywhen
 
             float startTime = Time.time;
 
+            // Work out when to start release up-front so we can respect it during A/D too
+            // Treat duration >= 0 as an explicit value; negatives mean "use clip length"
+            float releaseStartTime;
+            if (noteDuration >= 0f)
+            {
+                releaseStartTime = startTime + noteDuration;
+            }
+            else
+            {
+                // If no duration specified, start release so it ends at clip end
+                releaseStartTime = startTime + Mathf.Max(0f, clipLength - release);
+            }
+
             // Attack: 0 -> targetVolume
             if (attack > 0f)
             {
@@ -204,6 +217,8 @@ namespace Anywhen
                     t += Time.deltaTime;
                     float k = Mathf.Clamp01(t / attack);
                     _audioSource.volume = Mathf.Lerp(0f, targetVolume, k);
+                    // If duration elapsed during attack, honor release immediately
+                    if (Time.time >= releaseStartTime) break;
                     yield return null;
                 }
             }
@@ -223,6 +238,8 @@ namespace Anywhen
                     t += Time.deltaTime;
                     float k = Mathf.Clamp01(t / decay);
                     _audioSource.volume = Mathf.Lerp(startVol, sustainVolume, k);
+                    // If duration elapsed during decay, honor release immediately
+                    if (Time.time >= releaseStartTime) break;
                     yield return null;
                 }
             }
@@ -232,16 +249,6 @@ namespace Anywhen
             }
 
             // Sustain until release trigger
-            float releaseStartTime;
-            if (noteDuration > 0f)
-            {
-                releaseStartTime = startTime + noteDuration;
-            }
-            else
-            {
-                // If no duration specified, start release so it ends at clip end
-                releaseStartTime = startTime + Mathf.Max(0f, clipLength - release);
-            }
 
             while (_audioSource != null && _audioSource.isPlaying && Time.time < releaseStartTime)
             {
