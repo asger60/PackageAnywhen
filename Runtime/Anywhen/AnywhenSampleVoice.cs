@@ -9,22 +9,17 @@ namespace Anywhen
 {
     public class AnywhenSampleVoice : AnywhenVoiceBase
     {
-        private ADSR _adsr = new();
-
-
+        
         private double _samplePosBuffer1;
         private double _sampleStepFrac;
 
-        private double _currentPitch;
-
-        private float _ampMod;
+        
 
         private AnywhenNoteClip _currentNoteClip;
-        private SynthControlLFO _pitchLFO;
+    
 
-        private float _currentSampleRate;
-        private AnysongTrack _currentTrack;
-        private SynthSettingsObjectLFO _pitchSettings;
+        AnywhenSampleInstrument _thisInstrument;
+        
 
         public override void Init(int currentSampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
@@ -37,7 +32,6 @@ namespace Anywhen
         }
 
 
-        AnywhenSampleInstrument _thisInstrument;
 
         public override void NoteOn(PlaybackSettings playbackSettings)
         {
@@ -58,7 +52,7 @@ namespace Anywhen
         }
 
 
-        void InitPlay(PlaybackSettings playbackSettings)
+        void StartPlay(PlaybackSettings playbackSettings)
         {
             CurrentPlaybackSettings = playbackSettings;
             _currentNoteClip = _thisInstrument.GetNoteClip(playbackSettings.Note);
@@ -81,19 +75,7 @@ namespace Anywhen
         }
 
 
-        void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
-        {
-            _adsr.SetAttackRate(envelopeSettings.attack * _currentSampleRate);
-            _adsr.SetDecayRate(envelopeSettings.decay * _currentSampleRate);
-            _adsr.SetReleaseRate(envelopeSettings.release * _currentSampleRate);
-            _adsr.SetSustainLevel(envelopeSettings.sustain);
-            _adsr.Reset();
-        }
 
-        void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)
-        {
-            _pitchLFO.UpdateSettings(pitchLFOSettings);
-        }
 
 
         float[] DSP_WriteToBuffer(float[] data, int channels)
@@ -101,9 +83,9 @@ namespace Anywhen
             int i = 0;
             while (i < data.Length)
             {
-                _ampMod = 1;
+                float ampMod = 1;
 
-                _ampMod *= _adsr.Process();
+                ampMod *= _adsr.Process();
 
                 if (_currentTrack.pitchLFOSettings.enabled)
                 {
@@ -132,7 +114,7 @@ namespace Anywhen
                     double val = ((1 - f1) * _currentNoteClip.clipSamples[sIndex1]) +
                                  (f1 * _currentNoteClip.clipSamples[sIndex2]);
 
-                    samples[c] = (float)val * _ampMod * _thisInstrument.volume * CurrentPlaybackSettings.Volume;
+                    samples[c] = (float)val * ampMod * _thisInstrument.volume * CurrentPlaybackSettings.Volume;
                 }
 
                 for (int c = 0; c < channels; c++)
@@ -165,7 +147,7 @@ namespace Anywhen
 
             while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].PlayTime)
             {
-                InitPlay(playbackQueue[0]);
+                StartPlay(playbackQueue[0]);
                 playbackQueue.RemoveAt(0);
             }
 

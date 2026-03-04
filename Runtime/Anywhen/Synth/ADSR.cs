@@ -22,7 +22,7 @@
 
 using UnityEngine;
 
-class ADSR
+public class ADSR
 {
     private enum EnvState
     {
