@@ -61,19 +61,18 @@ namespace Anywhen.Synth
         /// Public interface
         public override void NoteOn(PlaybackSettings playbackSettings)
         {
-            PlayScheduled(playbackSettings);
-            if (playbackSettings.StopTime > 0) StopScheduled(playbackSettings.StopTime);
+            playbackQueue.Add(playbackSettings);
+            IsReady = false;
         }
 
         protected void StopScheduled(double absoluteTime)
         {
-            NextPlaybackSettings.StopTime = absoluteTime;
+            //extPlaybackSettings.StopTime = absoluteTime;
         }
 
         private void PlayScheduled(PlaybackSettings nextUp)
         {
-            NextPlaybackSettings = nextUp;
-            _hasScheduledPlay = true;
+            //NextPlaybackSettings = nextUp;
             IsReady = false;
         }
 
@@ -283,13 +282,11 @@ namespace Anywhen.Synth
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
 
-        void StartPlay()
+        void StartPlay(PlaybackSettings playbackSettings)
         {
-            CurrentPlaybackSettings = NextPlaybackSettings;
-            CurrentPlaybackSettings.Pitch = 1;
+            CurrentPlaybackSettings = playbackSettings;
 
-            _isPlaying = true;
-            _hasScheduledPlay = false;
+            isPlaying = true;
             ResetVoices();
 
             foreach (var voice in _voices)
@@ -341,9 +338,10 @@ namespace Anywhen.Synth
             if (!_isInitialized) return new float[bufferSize];
 
 
-            if (_hasScheduledPlay && AudioSettings.dspTime >= NextPlaybackSettings.PlayTime)
+            while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].PlayTime)
             {
-                StartPlay();
+                StartPlay(playbackQueue[0]);
+                playbackQueue.RemoveAt(0);
             }
 
             if (CurrentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > CurrentPlaybackSettings.StopTime)
@@ -352,7 +350,7 @@ namespace Anywhen.Synth
                 StopPlay();
             }
 
-            if (!_isPlaying) return new float[bufferSize];
+            if (!isPlaying) return new float[bufferSize];
 
             float[] buffer = new float[bufferSize];
             if (channels == 2)

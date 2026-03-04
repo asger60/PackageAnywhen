@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Anywhen.Synth
 {
     public class SynthOscillator
     {
+        private static readonly System.Random _random = new System.Random();
         public UInt32 phase => _phase;
         private UInt32 _phase = 0u; // using an integer type automatically ensures limits
         // phase is in [0 ; 2^(32-1)]
@@ -74,7 +74,7 @@ namespace Anywhen.Synth
                     _noiseWhite = new float[16384];
                     for (int i = 0; i < _noiseWhite.Length; ++i)
                     {
-                        _noiseWhite[i] = Random.Range(-1f, 1f);
+                        _noiseWhite[i] = (float)(_random.NextDouble() * 2.0 - 1.0);
                     }
 
                     break;

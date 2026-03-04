@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace Anywhen.SettingsObjects
 {
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
+        private static readonly System.Random _random = new System.Random();
         public enum ClipSelectType
         {
             ScalePitchedNotes,
@@ -127,7 +127,10 @@ namespace Anywhen.SettingsObjects
                     return note >= clips.Count ? null : clips[note];
 
                 case ClipSelectType.RandomVariations:
-                    return clips[Random.Range(0, clips.Count)];
+                    lock (_random)
+                    {
+                        return clips[_random.Next(0, clips.Count)];
+                    }
 
                 case ClipSelectType.UnscaledNotes:
                     return clips[Mathf.Clamp(note, 0, clips.Count)];
@@ -141,7 +144,7 @@ namespace Anywhen.SettingsObjects
         public void PreviewSound()
         {
             InstrumentDatabase.LoadInstrumentNotes(this);
-            AnywhenRuntime.PreviewNoteClip(GetNoteClip(Random.Range(0, 10)));
+            AnywhenRuntime.PreviewNoteClip(GetNoteClip(UnityEngine.Random.Range(0, 10)));
         }
 
 

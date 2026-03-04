@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Anywhen.Composing;
 
 namespace Anywhen
@@ -5,32 +6,30 @@ namespace Anywhen
     public abstract class AnywhenVoiceBase
     {
         public bool IsReady { get; protected set; }
-        public bool HasScheduledPlay => _hasScheduledPlay;
 
-        internal bool _hasScheduledPlay;
-        protected bool _isPlaying;
-        public bool IsPlaying => _isPlaying;
+        protected bool isPlaying;
+        public bool IsPlaying => isPlaying;
+        public bool HasScheduledPlay => playbackQueue.Count > 0;
+        protected readonly List<PlaybackSettings> playbackQueue = new List<PlaybackSettings>();
 
         public struct PlaybackSettings
         {
             public double PlayTime;
             public double StopTime;
             public float Volume;
-            public float Pitch;
+  
             public int Note;
 
-            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note)
+            public PlaybackSettings(double playTime, double stopTime, float volume, int note)
             {
                 PlayTime = playTime;
                 StopTime = stopTime;
                 Volume = volume;
-                Pitch = pitch;
                 Note = note;
             }
         }
 
         protected PlaybackSettings CurrentPlaybackSettings;
-        protected PlaybackSettings NextPlaybackSettings;
 
         public abstract void NoteOn(PlaybackSettings playbackSettings);
         

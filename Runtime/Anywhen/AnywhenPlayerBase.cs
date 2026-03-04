@@ -48,27 +48,25 @@ namespace Anywhen
 
             public AnywhenVoiceBase GetVoice()
             {
-                foreach (var voiceVoice in Voices)
+                foreach (var voice in Voices)
                 {
-                    if (voiceVoice.HasScheduledPlay) continue;
-                    if (voiceVoice.IsReady)
+                    if (voice.HasScheduledPlay) continue;
+                    if (voice.IsReady)
                     {
-                        return voiceVoice;
+                        return voice;
                     }
                 }
 
                 float maxTime = float.MaxValue;
                 AnywhenVoiceBase bestVoice = null;
 
-                foreach (var voiceVoice in Voices)
+                foreach (var voice in Voices)
                 {
-                    if (voiceVoice.HasScheduledPlay) continue;
-
-                    var thisTime = voiceVoice.GetDurationToEnd();
+                    var thisTime = voice.GetDurationToEnd();
                     if (thisTime < maxTime)
                     {
                         maxTime = thisTime;
-                        bestVoice = voiceVoice;
+                        bestVoice = voice;
                     }
                 }
 
@@ -76,7 +74,7 @@ namespace Anywhen
             }
         }
 
-        private List<PlayerTracks> _tracksList = new();
+        private readonly List<PlayerTracks> _tracksList = new();
         public List<PlayerTracks> TracksList => _tracksList;
         private AudioSource _audioSource;
 
@@ -197,7 +195,10 @@ namespace Anywhen
             {
                 var note = noteEvent.notes[i];
                 var voice = GetVoice(track);
-                if (voice == null) continue;
+                if (voice == null)
+                {
+                    continue;
+                }
 
                 var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() +
                                (AnywhenMetronome.Instance.GetLength() * noteEvent.drift) +

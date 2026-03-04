@@ -44,8 +44,6 @@ public static class AnysongInspectorView
         _parent.Add(Spacer());
 
 
-        _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("rootNote"), didUpdate));
-        _parent.Add(Spacer());
 
 
         _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), didUpdate));

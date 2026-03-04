@@ -118,7 +118,6 @@ namespace Anywhen.Composing
                     {
                         _currentPatternIndex = 0;
                         didFindPattern = true;
-                        Debug.LogWarning("totalWeight is 0, falling back to first pattern");
                     }
                     else
                     {

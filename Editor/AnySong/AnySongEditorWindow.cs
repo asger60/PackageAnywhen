@@ -15,14 +15,9 @@ public class AnysongEditorWindow : EditorWindow
 
     private Event _currentEvent;
 
-    public static Color ColorHilight1 = new Color(0.4f, 0.6f, 0.5f, 1);
-    public static Color ColorHilight2 = new Color(0.8f, 0.4f, 0, 1);
-    public static Color ColorHilight3 = new Color(0.2f, 0.4f, 0.5f, 1);
-    public static Color ColorHilight4 = new Color(0.99f, 1f, 0.9f, 1);
 
     public static Color ColorGreyDefault = new Color(0.35f, 0.35f, 0.35f, 1);
     public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
-    public static Color ColorGreyAccent = new Color(0.35f, 0.3f, 0.3f, 1);
 
     private static AnywhenPlayerBase _currentRuntimeSongPlayer;
 

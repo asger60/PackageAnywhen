@@ -162,9 +162,13 @@ class ADSR
     public void SetGate(bool gate)
     {
         if (gate)
+        {
             state = EnvState.env_attack;
+        }
         else if (state != EnvState.env_idle)
+        {
             state = EnvState.env_release;
+        }
     }
     
 }

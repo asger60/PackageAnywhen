@@ -10,23 +10,23 @@ namespace Anywhen.SettingsObjects
     public class AnywhenNoteClip : AnywhenSettingsBase
     {
         //public AudioClip sourceClip;
-        public float[] clipSamples;
+        [HideInInspector] public float[] clipSamples;
         public int frequency;
         public int channels;
 
         //public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;
         //public AnywhenSampleInstrument.LoopSettings loopSettings;
-        
-        
+
+
 #if UNITY_EDITOR
         private void ReadAudioClip(AudioClip audioClip)
         {
             clipSamples = new float[audioClip.samples * audioClip.channels];
 
             audioClip.GetData(clipSamples, 0);
-            
+
             Debug.Log(audioClip.name + " samples: " + clipSamples.Length);
-         
+
             frequency = audioClip.frequency;
             channels = audioClip.channels;
             //   sourceClip = audioClip;
@@ -79,7 +79,7 @@ namespace Anywhen.SettingsObjects
 
             AssetDatabase.CreateAsset(newInstrument, AssetDatabase.GenerateUniqueAssetPath(path));
 
-            
+
             if (EditorUtility.DisplayDialog("Instrument created", "Do you want to delete the original audioclips?", "Yes",
                     "No, but I promise to do it myself"))
             {
