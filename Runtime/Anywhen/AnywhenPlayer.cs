@@ -33,7 +33,7 @@ namespace Anywhen
         {
             base.Start();
             Load(songObject);
-            SetupVoices(songObject.Tracks);
+            SetupTracks(songObject.Tracks);
             if (playOnAwake)
                 Play();
         }
@@ -120,18 +120,11 @@ namespace Anywhen
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
             }
-
-
-            //if (CurrentSong)
-            //{
-            //    CurrentSong.Reset();
-            //    CurrentSectionIndex = Random.Range(0, CurrentSong.Sections.Count - 1);
-            //}
-
+            
             CurrentBar = 0;
             var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
 
-            SetupVoices(CurrentSong.Tracks);
+            SetupTracks(CurrentSong.Tracks);
             AttachToMetronome();
             AnysongPlayerBrain.RegisterPlay(this);
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));

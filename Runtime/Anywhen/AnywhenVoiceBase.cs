@@ -1,9 +1,8 @@
 using Anywhen.Composing;
-using Anywhen.SettingsObjects;
 
 namespace Anywhen
 {
-    public class AnywhenVoiceBase
+    public abstract class AnywhenVoiceBase
     {
         public bool IsReady { get; protected set; }
         public bool HasScheduledPlay => _hasScheduledPlay;
@@ -12,47 +11,33 @@ namespace Anywhen
         protected bool _isPlaying;
         public bool IsPlaying => _isPlaying;
 
-        protected struct PlaybackSettings
+        public struct PlaybackSettings
         {
             public double PlayTime;
             public double StopTime;
             public float Volume;
             public float Pitch;
             public int Note;
-            public AnywhenNoteClip NoteClip;
 
-            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note,
-                AnywhenNoteClip noteClip = null)
+            public PlaybackSettings(double playTime, double stopTime, float volume, float pitch, int note)
             {
                 PlayTime = playTime;
                 StopTime = stopTime;
                 Volume = volume;
                 Pitch = pitch;
                 Note = note;
-                NoteClip = noteClip;
             }
         }
 
-        protected PlaybackSettings _currentPlaybackSettings;
-        protected PlaybackSettings _nextPlaybackSettings;
+        protected PlaybackSettings CurrentPlaybackSettings;
+        protected PlaybackSettings NextPlaybackSettings;
 
-        public virtual void NoteOn(int note, double playTime, double duration, float volume)
-        {
-        }
+        public abstract void NoteOn(PlaybackSettings playbackSettings);
+        
+        public abstract void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings);
 
+        public abstract float GetDurationToEnd();
 
-        public virtual void Init(int sampleRate, AnywhenInstrument instrument, AnysongTrack track)
-        {
-        }
-
-        public virtual float GetDurationToEnd()
-        {
-            return 0;
-        }
-
-        public virtual float[] UpdateDSP(int bufferSize, int channels)
-        {
-            return new float[bufferSize];
-        }
+        public abstract float[] UpdateDSP(int bufferSize, int channels);
     }
 }

@@ -113,8 +113,6 @@ namespace Anywhen.Composing
                 _currentPlaybackSectionIndex = (int)Mathf.Repeat(_currentPlaybackSectionIndex, Sections.Count);
             }
             
-
-            //SetSection(_currentSectionIndex);
         }
     }
 }

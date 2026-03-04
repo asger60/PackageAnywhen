@@ -6,13 +6,11 @@ using Random = UnityEngine.Random;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnyPattern
+    public class AnysongPattern
     {
         public List<float> triggerChances = new List<float>();
-
-
+        
         public List<AnysongPatternStep> steps;
-        public int rootNote = 0;
         [Range(0, 16)] public int patternLength = 16;
         private int _internalIndex;
         public int InternalIndex => _internalIndex;
@@ -30,9 +28,9 @@ namespace Anywhen.Composing
             }
         }
 
-        public AnyPattern Clone()
+        public AnysongPattern Clone()
         {
-            var clone = new AnyPattern
+            var clone = new AnysongPattern
             {
                 steps = new List<AnysongPatternStep>()
             };
@@ -53,7 +51,6 @@ namespace Anywhen.Composing
 
         public void Scrub(int direction)
         {
-            Debug.Log("Scrub " + direction);
             var stepsArray = new AnysongPatternStep[16];
             for (int i = 0; i < 16; i++)
             {

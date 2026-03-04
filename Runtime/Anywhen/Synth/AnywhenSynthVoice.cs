@@ -59,20 +59,20 @@ namespace Anywhen.Synth
         private bool _isCreated;
 
         /// Public interface
-        public override void NoteOn(int note, double playTime, double stopTime, float volume)
+        public override void NoteOn(PlaybackSettings playbackSettings)
         {
-            PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, AnywhenRuntime.Conductor.GetScaledNote(note)));
-            if (stopTime > 0) StopScheduled(stopTime);
+            PlayScheduled(playbackSettings);
+            if (playbackSettings.StopTime > 0) StopScheduled(playbackSettings.StopTime);
         }
 
         protected void StopScheduled(double absoluteTime)
         {
-            _nextPlaybackSettings.StopTime = absoluteTime;
+            NextPlaybackSettings.StopTime = absoluteTime;
         }
 
         private void PlayScheduled(PlaybackSettings nextUp)
         {
-            _nextPlaybackSettings = nextUp;
+            NextPlaybackSettings = nextUp;
             _hasScheduledPlay = true;
             IsReady = false;
         }
@@ -93,8 +93,6 @@ namespace Anywhen.Synth
             {
                 _isInitialized = false;
                 _preset = null;
-
-
                 _voices = null;
                 _voiceFrequencyModifiers = null;
                 _amplitudeModifiers = null;
@@ -238,9 +236,9 @@ namespace Anywhen.Synth
         int _sampleRate;
 
         /// Internal
-        public override void Init(int sampleRate, AnywhenInstrument instrument, AnysongTrack track)
+        public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
-            SetPreset(instrument as AnywhenSynthPreset);
+            SetPreset(instrumentSettings as AnywhenSynthPreset);
             _sampleRate = sampleRate;
 
             if (FreqTab == null)
@@ -257,6 +255,11 @@ namespace Anywhen.Synth
 
             ResetVoices();
             _isInitialized = true;
+        }
+
+        public override float GetDurationToEnd()
+        {
+            return 0;
         }
 
 
@@ -282,8 +285,8 @@ namespace Anywhen.Synth
 
         void StartPlay()
         {
-            _currentPlaybackSettings = _nextPlaybackSettings;
-            _currentPlaybackSettings.Pitch = 1;
+            CurrentPlaybackSettings = NextPlaybackSettings;
+            CurrentPlaybackSettings.Pitch = 1;
 
             _isPlaying = true;
             _hasScheduledPlay = false;
@@ -294,7 +297,7 @@ namespace Anywhen.Synth
                 for (int i = 0; i < voice.Oscillators.Length; i++)
                 {
                     var osc = voice.Oscillators[i];
-                    osc.SetNote(_currentPlaybackSettings.Note, AnywhenRuntime.SampleRate);
+                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64), AnywhenRuntime.SampleRate);
                     osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                 }
             }
@@ -338,14 +341,14 @@ namespace Anywhen.Synth
             if (!_isInitialized) return new float[bufferSize];
 
 
-            if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
+            if (_hasScheduledPlay && AudioSettings.dspTime >= NextPlaybackSettings.PlayTime)
             {
                 StartPlay();
             }
 
-            if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
+            if (CurrentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > CurrentPlaybackSettings.StopTime)
             {
-                _currentPlaybackSettings.StopTime = -1;
+                CurrentPlaybackSettings.StopTime = -1;
                 StopPlay();
             }
 

@@ -8,13 +8,9 @@ namespace Anywhen
 {
     public class AnywhenSampleVoice : AnywhenVoiceBase
     {
-        //private AudioSource _audioSource;
+        public int CurrentNote => CurrentPlaybackSettings.Note;
 
-
-        public int CurrentNote => _currentPlaybackSettings.Note;
-
-
-        public double ScheduledPlayTime => _currentPlaybackSettings.PlayTime;
+        public double ScheduledPlayTime => CurrentPlaybackSettings.PlayTime;
 
 
         private ADSR _adsr = new();
@@ -22,7 +18,7 @@ namespace Anywhen
         private float _bufferFadeValue, _buffer2FadeValue;
 
 
-        private double _samplePosBuffer1 /*, _samplePosBuffer2*/;
+        private double _samplePosBuffer1;
         private double _sampleStepFrac;
 
         private double _currentPitch;
@@ -31,17 +27,17 @@ namespace Anywhen
 
         public double SampleposBuffer1 => _samplePosBuffer1;
 
-        AnywhenNoteClip _currentNoteClip;
+        AnywhenNoteClip _currentNoteClip, _nextNoteClip;
         SynthControlLFO _pitchLFO;
 
         private float _currentSampleRate;
         AnysongTrack _currentTrack;
         private SynthSettingsObjectLFO _pitchSettings;
 
-        public override void Init(int currentSampleRate, AnywhenInstrument instrument, AnysongTrack track)
+        public override void Init(int currentSampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
-            _currentTrack = track;
-            _thisInstrument = instrument as AnywhenSampleInstrument;
+            _currentTrack = trackSettings;
+            _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
             IsReady = true;
             _adsr = new ADSR();
             _pitchLFO = new SynthControlLFO();
@@ -52,37 +48,27 @@ namespace Anywhen
         AnywhenSampleInstrument _thisInstrument;
 
 
-        public override void NoteOn(int note, double playTime, double stopTime, float volume)
+        public override void NoteOn(PlaybackSettings playbackSettings)
         {
-            if (AudioSettings.dspTime > playTime)
+            if (AudioSettings.dspTime > playbackSettings.PlayTime)
             {
-                AnywhenRuntime.Log("Trying to schedule a play at a time that has already been..",
-                    AnywhenRuntime.DebugMessageType.Warning);
                 return;
             }
-
-            //if (note > 20)
-            //{
-            //    AnywhenRuntime.Log("note value too high", AnywhenRuntime.DebugMessageType.Warning);
-            //    return;
-            //}
 
 
             SetPitchLFO(_currentTrack.pitchLFOSettings);
             SetEnvelope(_currentTrack.trackEnvelope);
 
-
-            PlayScheduled(new PlaybackSettings(playTime, stopTime, volume, 1, note, _thisInstrument.GetNoteClip(note)));
-            
-            if (stopTime > 0) StopScheduled(stopTime);
+            //PlayScheduled(playbackSettings, _thisInstrument.GetNoteClip(playbackSettings.Note));
+            NextPlaybackSettings = playbackSettings;
+            _nextNoteClip = _thisInstrument.GetNoteClip(playbackSettings.Note);
+            _hasScheduledPlay = true;
+            IsReady = false;
+            //StopScheduled(playbackSettings.StopTime);
+            //NextPlaybackSettings.StopTime = playbackSettings.StopTime;
         }
 
-
-        public void NoteOff(double stopTime)
-        {
-            StopScheduled(stopTime);
-        }
-
+        
 
         public override float GetDurationToEnd()
         {
@@ -94,30 +80,24 @@ namespace Anywhen
         }
 
 
-        protected void StopScheduled(double absoluteTime)
+        private void StopScheduled(double absoluteTime)
         {
-            _nextPlaybackSettings.StopTime = absoluteTime;
-        }
-
-        public void SetPitch(float pitchValue)
-        {
-            _currentPlaybackSettings.Pitch = pitchValue;
+            
         }
 
 
-        private void PlayScheduled(PlaybackSettings nextUp)
+        private void PlayScheduled(PlaybackSettings nextUp, AnywhenNoteClip noteClip)
         {
-            _nextPlaybackSettings = nextUp;
-            _hasScheduledPlay = true;
-            IsReady = false;
+            
         }
 
 
         void InitPlay()
         {
-            _currentPlaybackSettings = _nextPlaybackSettings;
-
-            _currentNoteClip = _currentPlaybackSettings.NoteClip;
+            CurrentPlaybackSettings = NextPlaybackSettings;
+            _currentNoteClip = _nextNoteClip;
+            
+            
             if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
 
@@ -128,7 +108,7 @@ namespace Anywhen
                 _currentPitch = _thisInstrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
             }
 
-            _currentPlaybackSettings.Pitch = 1;
+            CurrentPlaybackSettings.Pitch = 1;
 
             _isPlaying = true;
             _hasScheduledPlay = false;
@@ -136,7 +116,6 @@ namespace Anywhen
             _adsr.SetGate(true);
 
             if (_currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) _pitchLFO.NoteOn();
-            //_adsr.Reset();
         }
 
 
@@ -177,11 +156,9 @@ namespace Anywhen
                 double e1 = ((1 - f1) * _currentNoteClip.clipSamples[sourceSample1]) +
                             (f1 * _currentNoteClip.clipSamples[sourceSample2]);
 
-                data[i] = ((float)(e1)) * _ampMod * _thisInstrument.volume * _currentPlaybackSettings.Volume;
+                data[i] = ((float)(e1)) * _ampMod * _thisInstrument.volume * CurrentPlaybackSettings.Volume;
 
                 _samplePosBuffer1 += (_sampleStepFrac * _currentPitch) / 2f;
-
-                //_currentPitch = (Mathf.MoveTowards((float)_currentPitch, _pitch, 0.001f));
 
 
                 i++;
@@ -190,28 +167,13 @@ namespace Anywhen
             return data;
         }
 
-        //void DSP_HandleLooping()
-        //{
-        //    if ((int)_samplePosBuffer1 >= _currentLoopSettings.loopStart)
-        //    {
-        //        _samplePosBuffer1 = (_currentLoopSettings.loopStart - _currentLoopSettings.loopLength) *
-        //                            (_sampleStepFrac * _currentPitch);
-        //    }
-        //}
-
 
         private void SetReady()
         {
             IsReady = true;
             _hasScheduledPlay = false;
-            _currentPlaybackSettings.Note = -1000;
             _currentNoteClip = null;
             _isPlaying = false;
-        }
-
-        protected void SetInstrument(AnywhenSampleInstrument instrument)
-        {
-            _thisInstrument = instrument;
         }
 
 
@@ -219,29 +181,21 @@ namespace Anywhen
         {
             float[] data = new float[bufferSize];
 
-            //int i = 0;
-            //while (i < data.Length)
+
+            if (_hasScheduledPlay && AudioSettings.dspTime >= NextPlaybackSettings.PlayTime)
             {
-                if (_hasScheduledPlay && AudioSettings.dspTime >= _nextPlaybackSettings.PlayTime)
-                {
-                    InitPlay();
-                }
-                //i++;
+                InitPlay();
             }
+
 
             if (!_isPlaying) return data;
 
-            if (_currentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > _currentPlaybackSettings.StopTime)
+            if (CurrentPlaybackSettings.StopTime >= 0 && AudioSettings.dspTime > CurrentPlaybackSettings.StopTime)
             {
-                _currentPlaybackSettings.StopTime = -1;
+                CurrentPlaybackSettings.StopTime = -1;
                 _adsr.SetGate(false);
             }
 
-
-            //if (_isLooping)
-            //{
-            //    DSP_HandleLooping();
-            //}
 
             if (_adsr.IsIdle)
             {
@@ -253,7 +207,7 @@ namespace Anywhen
                 return data;
 
 
-            if (_samplePosBuffer1 >= _currentNoteClip.clipSamples.Length /* || _ampMod <= 0*/)
+            if (_samplePosBuffer1 >= _currentNoteClip.clipSamples.Length)
             {
                 _adsr.SetGate(false);
                 SetReady();

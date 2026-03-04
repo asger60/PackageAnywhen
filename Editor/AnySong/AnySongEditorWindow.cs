@@ -39,7 +39,7 @@ public class AnysongEditorWindow : EditorWindow
                 };
                 _currentRuntimeSongPlayer = player.AddComponent<AnywhenComposerPlayer>();
                 _currentRuntimeSongPlayer.Load(CurrentSong);
-                _currentRuntimeSongPlayer.SetupVoices();
+                _currentRuntimeSongPlayer.SetupTracks();
                 _currentRuntimeSongPlayer.LoadInstruments();
             }
 
@@ -50,7 +50,7 @@ public class AnysongEditorWindow : EditorWindow
     private AnysongPatternStep _stepCopy;
 
     private AnysongSection _sectionCopy;
-    AnyPattern _patternCopy;
+    AnysongPattern _patternCopy;
 
 
     public struct AnySelection
@@ -63,7 +63,7 @@ public class AnysongEditorWindow : EditorWindow
         public AnysongSection CurrentSection;
         public AnysongSectionTrack CurrentSectionTrack;
         public AnysongPatternStep CurrentStep;
-        public AnyPattern CurrentPattern;
+        public AnysongPattern CurrentPattern;
         public SerializedProperty CurrentSectionProperty;
         public SerializedProperty CurrentSongTrackProperty;
         public SerializedProperty CurrentSectionTrackProperty;
@@ -108,7 +108,7 @@ public class AnysongEditorWindow : EditorWindow
 
         _currentRuntimeSongPlayer = composerPlayer;
         CurrentSong = songObject;
-        _currentRuntimeSongPlayer.SetupVoices();
+        _currentRuntimeSongPlayer.SetupTracks();
 
         _currentRuntimeSongPlayer.LoadInstruments();
         EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
@@ -474,7 +474,7 @@ public class AnysongEditorWindow : EditorWindow
     {
         Debug.Log("create new pattern");
 
-        var newPattern = new AnyPattern();
+        var newPattern = new AnysongPattern();
         newPattern.Init();
         var thisTrack = _currentSelection.CurrentSection.tracks[trackIndex];
 
@@ -721,13 +721,13 @@ public class AnysongEditorWindow : EditorWindow
     }
 
 
-    public static AnyPattern GetCurrentPlayingPatternForTrack(int trackIndex)
+    public static AnysongPattern GetCurrentPlayingPatternForTrack(int trackIndex)
     {
         return CurrentSong.Sections[CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex].tracks[trackIndex]
             .GetPlayingPattern();
     }
 
-    public static AnyPattern GetPatternFromTooltip(string tooltip)
+    public static AnysongPattern GetPatternFromTooltip(string tooltip)
     {
         var str = tooltip.Split("-");
         int stepIndex = Int32.Parse(str[0]);
@@ -839,7 +839,7 @@ public class AnysongEditorWindow : EditorWindow
         _stepCopy = step.Clone();
     }
 
-    void PasteStep(AnyPattern pattern, AnysongPatternStep step)
+    void PasteStep(AnysongPattern pattern, AnysongPatternStep step)
     {
         Debug.Log("paste step");
         for (var i = 0; i < pattern.steps.Count; i++)
@@ -888,12 +888,12 @@ public class AnysongEditorWindow : EditorWindow
 
     void ClearPattern()
     {
-        var newPattern = new AnyPattern();
+        var newPattern = new AnysongPattern();
         newPattern.Init();
         //CurrentSectionTrack.EditorCurrentPattern = newPattern;
     }
 
-    void CopyPattern(AnyPattern pattern)
+    void CopyPattern(AnysongPattern pattern)
     {
         Debug.Log("Copy pattern");
         AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));

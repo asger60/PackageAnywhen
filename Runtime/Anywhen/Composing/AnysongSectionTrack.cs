@@ -18,17 +18,16 @@ namespace Anywhen.Composing
         public PatternProgressionType patternProgressionType = PatternProgressionType.WeightedRandom;
 
 
-        public List<AnyPattern> patterns;
+        public List<AnysongPattern> patterns;
 
 
-        
         private int _selectedTrackPatternIndex;
 
 
         public void Init(AnysongTrack songSongTrack)
         {
             _selectedTrackPatternIndex = 0;
-            patterns = new List<AnyPattern> { new() };
+            patterns = new List<AnysongPattern> { new() };
             foreach (var pattern in patterns)
             {
                 pattern.Init();
@@ -39,7 +38,7 @@ namespace Anywhen.Composing
         {
             var clone = new AnysongSectionTrack
             {
-                patterns = new List<AnyPattern>()
+                patterns = new List<AnysongPattern>()
             };
             for (var i = 0; i < patterns.Count; i++)
             {
@@ -50,7 +49,7 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        public AnyPattern GetPattern(int index)
+        public AnysongPattern GetPattern(int index)
         {
             if (index >= patterns.Count)
                 return patterns[0];
@@ -58,7 +57,7 @@ namespace Anywhen.Composing
             return patterns[index];
         }
 
-        public AnyPattern GetPlayingPattern()
+        public AnysongPattern GetPlayingPattern()
         {
             return _currentPattern ??= patterns[0];
         }
@@ -80,7 +79,7 @@ namespace Anywhen.Composing
         }
 
 
-        private AnyPattern _currentPattern;
+        private AnysongPattern _currentPattern;
         private int _currentPatternBar;
         private int _currentPatternIndex;
 
@@ -105,7 +104,7 @@ namespace Anywhen.Composing
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
                     float totalWeight = 0;
-                    
+
                     // First pass: calculate total weight
                     for (var i = 0; i < patterns.Count; i++)
                     {
@@ -113,28 +112,27 @@ namespace Anywhen.Composing
                         float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
                         totalWeight += thisTriggerChance;
                     }
-                    
+
                     // If total weight is 0, fallback to first pattern
                     if (totalWeight <= 0)
                     {
                         _currentPatternIndex = 0;
                         didFindPattern = true;
                         Debug.LogWarning("totalWeight is 0, falling back to first pattern");
-                        
                     }
                     else
                     {
                         // Generate random number within total weight range
                         float randomValue = Random.Range(0f, totalWeight);
                         float currentWeight = 0;
-                        
+
                         // Second pass: find the selected pattern
                         for (var i = 0; i < patterns.Count; i++)
                         {
                             var anyPattern = patterns[i];
                             float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
                             currentWeight += thisTriggerChance;
-                            
+
                             if (randomValue <= currentWeight)
                             {
                                 _currentPatternIndex = i;
@@ -179,6 +177,8 @@ namespace Anywhen.Composing
             _currentPatternBar = 0;
             if (patterns.Count > 0)
             {
+                if (_currentPatternIndex >= patterns.Count)
+                    _currentPatternIndex = 0;
                 _currentPattern = patterns[_currentPatternIndex];
             }
 
