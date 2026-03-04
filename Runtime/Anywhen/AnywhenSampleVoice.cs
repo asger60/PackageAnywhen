@@ -9,38 +9,23 @@ namespace Anywhen
 {
     public class AnywhenSampleVoice : AnywhenVoiceBase
     {
-        
         private double _samplePosBuffer1;
         private double _sampleStepFrac;
 
-        
 
         private AnywhenNoteClip _currentNoteClip;
-    
+
 
         AnywhenSampleInstrument _thisInstrument;
-        
 
-        public override void Init(int currentSampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
+
+        public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
-            _currentTrack = trackSettings;
+            currentTrack = trackSettings;
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
-            IsReady = true;
-            _adsr = new ADSR();
-            _pitchLFO = new SynthControlLFO();
-            _currentSampleRate = currentSampleRate;
-        }
-
-
-
-        public override void NoteOn(PlaybackSettings playbackSettings)
-        {
-            if (AudioSettings.dspTime > playbackSettings.PlayTime) return;
-            SetPitchLFO(_currentTrack.pitchLFOSettings);
-            SetEnvelope(_currentTrack.trackEnvelope);
-
-            playbackQueue.Add(playbackSettings);
-            IsReady = false;
+            adsr = new ADSR();
+            pitchLFO = new SynthControlLFO();
+            currentSampleRate = sampleRate;
         }
 
 
@@ -48,7 +33,7 @@ namespace Anywhen
         {
             if (!_currentNoteClip) return 0;
             if (playbackQueue.Count == 0) return 0;
-            return (float)playbackQueue[0].PlayTime;
+            return (float)playbackQueue[^1].StopTime;
         }
 
 
@@ -60,22 +45,19 @@ namespace Anywhen
             if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
 
-            _sampleStepFrac = _currentNoteClip.frequency / _currentSampleRate;
+            _sampleStepFrac = _currentNoteClip.frequency / currentSampleRate;
 
-            _currentPitch = 1;
+            currentPitch = 1;
             if (_thisInstrument.TempoControlPitch)
-                _currentPitch = _thisInstrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
+                currentPitch = _thisInstrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
 
 
             isPlaying = true;
-            _adsr.Reset();
-            _adsr.SetGate(true);
+            adsr.Reset();
+            adsr.SetGate(true);
 
-            if (_currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) _pitchLFO.NoteOn();
+            if (currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) pitchLFO.NoteOn();
         }
-
-
-
 
 
         float[] DSP_WriteToBuffer(float[] data, int channels)
@@ -85,12 +67,12 @@ namespace Anywhen
             {
                 float ampMod = 1;
 
-                ampMod *= _adsr.Process();
+                ampMod *= adsr.Process();
 
-                if (_currentTrack.pitchLFOSettings.enabled)
+                if (currentTrack.pitchLFOSettings.enabled)
                 {
-                    _pitchLFO.DoUpdate();
-                    _currentPitch = _pitchLFO.Process();
+                    pitchLFO.DoUpdate();
+                    currentPitch = pitchLFO.Process();
                 }
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
@@ -126,7 +108,7 @@ namespace Anywhen
                     }
                 }
 
-                _samplePosBuffer1 += (_sampleStepFrac * _currentPitch);
+                _samplePosBuffer1 += (_sampleStepFrac * currentPitch);
             }
 
             return data;
@@ -135,8 +117,7 @@ namespace Anywhen
 
         private void SetReady()
         {
-            _adsr.SetGate(false);
-            IsReady = true;
+            adsr.SetGate(false);
             isPlaying = false;
         }
 
@@ -154,11 +135,11 @@ namespace Anywhen
 
             if (AudioSettings.dspTime >= CurrentPlaybackSettings.StopTime)
             {
-                _adsr.SetGate(false);
+                adsr.SetGate(false);
             }
 
 
-            if (_adsr.IsIdle)
+            if (adsr.IsIdle)
             {
                 SetReady();
                 return data;

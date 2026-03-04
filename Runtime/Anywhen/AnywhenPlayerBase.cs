@@ -48,8 +48,9 @@ namespace Anywhen
 
             public AnywhenVoiceBase GetVoice()
             {
-                foreach (var voice in Voices)
+                for (var i = 0; i < Voices.Length; i++)
                 {
+                    var voice = Voices[i];
                     if (voice.HasScheduledPlay) continue;
                     if (voice.IsReady)
                     {
@@ -57,13 +58,13 @@ namespace Anywhen
                     }
                 }
 
-                float maxTime = float.MaxValue;
+                float maxTime = 0;
                 AnywhenVoiceBase bestVoice = null;
 
                 foreach (var voice in Voices)
                 {
                     var thisTime = voice.GetDurationToEnd();
-                    if (thisTime < maxTime)
+                    if (thisTime > maxTime)
                     {
                         maxTime = thisTime;
                         bestVoice = voice;

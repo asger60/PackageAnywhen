@@ -20,6 +20,7 @@
 //
 //  Converted to C# by Jakob Schmid 2018.
 
+using Anywhen;
 using UnityEngine;
 
 public class ADSR
@@ -119,6 +120,8 @@ public class ADSR
         return (rate <= 0) ? 0 : Mathf.Exp(-Mathf.Log((1.0f + targetRatio) / targetRatio) / rate);
     }
 
+
+
     public float Process()
     {
         switch (state)
@@ -170,5 +173,4 @@ public class ADSR
             state = EnvState.env_release;
         }
     }
-    
 }

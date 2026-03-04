@@ -1,22 +1,23 @@
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using UnityEngine;
 
 namespace Anywhen
 {
     public abstract class AnywhenVoiceBase
     {
-        public bool IsReady { get; protected set; }
-        protected AnysongTrack _currentTrack;
-        protected ADSR _adsr = new();
+        public bool IsReady => playbackQueue.Count == 0 && !isPlaying; 
+        protected AnysongTrack currentTrack;
+        protected ADSR adsr = new();
         protected bool isPlaying;
         public bool IsPlaying => isPlaying;
         public bool HasScheduledPlay => playbackQueue.Count > 0;
         protected readonly List<PlaybackSettings> playbackQueue = new List<PlaybackSettings>();
         protected SynthSettingsObjectLFO _pitchSettings;
-        protected SynthControlLFO _pitchLFO;
-        protected double _currentPitch;
-        protected float _currentSampleRate;
+        protected SynthControlLFO pitchLFO;
+        protected double currentPitch;
+        protected float currentSampleRate;
         
 
         public struct PlaybackSettings
@@ -38,7 +39,13 @@ namespace Anywhen
 
         protected PlaybackSettings CurrentPlaybackSettings;
 
-        public abstract void NoteOn(PlaybackSettings playbackSettings);
+        public void NoteOn(PlaybackSettings playbackSettings)
+        {
+            if (AudioSettings.dspTime > playbackSettings.PlayTime) return;
+            SetPitchLFO(currentTrack.pitchLFOSettings);
+            SetEnvelope(currentTrack.trackEnvelope);
+            playbackQueue.Add(playbackSettings);
+        }
         
         public abstract void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings);
 
@@ -48,16 +55,18 @@ namespace Anywhen
         
         protected void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
-            _adsr.SetAttackRate(envelopeSettings.attack * _currentSampleRate);
-            _adsr.SetDecayRate(envelopeSettings.decay * _currentSampleRate);
-            _adsr.SetReleaseRate(envelopeSettings.release * _currentSampleRate);
-            _adsr.SetSustainLevel(envelopeSettings.sustain);
-            _adsr.Reset();
+            adsr.SetAttackRate(envelopeSettings.attack * AnywhenRuntime.SampleRate);
+            adsr.SetDecayRate(envelopeSettings.decay * AnywhenRuntime.SampleRate);
+            adsr.SetReleaseRate(envelopeSettings.release * AnywhenRuntime.SampleRate);
+            adsr.SetSustainLevel(envelopeSettings.sustain);
+            adsr.Reset();
+            adsr.SetTargetRatioA(0.3f);
+            adsr.SetTargetRatioDR(0.3f);
         }
 
         protected void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)
         {
-            _pitchLFO.UpdateSettings(pitchLFOSettings);
+            pitchLFO.UpdateSettings(pitchLFOSettings);
         }
     }
 }

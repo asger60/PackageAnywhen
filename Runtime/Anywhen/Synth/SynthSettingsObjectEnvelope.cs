@@ -7,6 +7,5 @@
         public float sustain;
         public float release;
         public float sendAmount = 100;
-
     }
 

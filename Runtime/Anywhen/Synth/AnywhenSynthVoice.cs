@@ -60,15 +60,6 @@ namespace Anywhen.Synth
         int _sampleRate;
 
 
-        /// Public interface
-        public override void NoteOn(PlaybackSettings playbackSettings)
-        {
-            playbackQueue.Add(playbackSettings);
-            IsReady = false;
-            SetPitchLFO(_currentTrack.pitchLFOSettings);
-            SetEnvelope(_currentTrack.trackEnvelope);
-        }
-
 
         private void SetPreset(AnywhenSynthPreset preset)
         {
@@ -228,10 +219,10 @@ namespace Anywhen.Synth
         public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
             SetPreset(instrumentSettings as AnywhenSynthPreset);
-            _currentTrack = trackSettings;
+            currentTrack = trackSettings;
             _sampleRate = sampleRate;
-            _adsr = new ADSR();
-            _pitchLFO = new SynthControlLFO();
+            adsr = new ADSR();
+            pitchLFO = new SynthControlLFO();
 
             if (FreqTab == null)
             {
@@ -308,9 +299,9 @@ namespace Anywhen.Synth
                 frequencyModifier.NoteOn();
             }
 
-            _adsr.Reset();
-            _adsr.SetGate(true);
-            if (_currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) _pitchLFO.NoteOn();
+            adsr.Reset();
+            adsr.SetGate(true);
+            if (currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) pitchLFO.NoteOn();
         }
 
         void StopPlay()
@@ -329,7 +320,7 @@ namespace Anywhen.Synth
             {
                 frequencyModifier.NoteOff();
             }
-            _adsr.SetGate(false);
+            adsr.SetGate(false);
         }
 
         public override float[] UpdateDSP(int bufferSize, int channels)
@@ -378,7 +369,7 @@ namespace Anywhen.Synth
 
                     // Calculate modulation values
                     float ampMod = 1;
-                    ampMod *= _adsr.Process();
+                    ampMod *= adsr.Process();
                     //foreach (var ampModifier in _amplitudeModifiers)
                     //{
                     //    ampMod *= ampModifier.Process() * CurrentPlaybackSettings.Volume;
@@ -386,16 +377,16 @@ namespace Anywhen.Synth
                     
                     
 
-                    if (_currentTrack.pitchLFOSettings.enabled)
+                    if (currentTrack.pitchLFOSettings.enabled)
                     {
-                        _pitchLFO.DoUpdate();
-                        _currentPitch = _pitchLFO.Process();
+                        pitchLFO.DoUpdate();
+                        currentPitch = pitchLFO.Process();
                     }
 
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
                     {
-                        voiceFreqMod *= frequencyModifier.Process() + (float)_currentPitch;
+                        voiceFreqMod *= frequencyModifier.Process() + (float)currentPitch;
                     }
 
                     // Generate oscillator output
