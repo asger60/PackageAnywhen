@@ -9,16 +9,78 @@ namespace Anywhen.SettingsObjects
 {
     public class AnywhenNoteClip : AnywhenSettingsBase
     {
+        public enum ClipType
+        {
+            Note,
+            Percussion
+        }
+        
         //public AudioClip sourceClip;
         [HideInInspector] public float[] clipSamples;
         public int frequency;
         public int channels;
 
+        [SerializeField] private ClipType clipType;
+        public ClipType Type
+        {
+            get => clipType;
+            set => clipType = value;
+        }
+
+        [SerializeField] private int noteIndex;
+        public int NoteIndex
+        {
+            get => noteIndex;
+            set => noteIndex = value;
+        }
+        
         //public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;
         //public AnywhenSampleInstrument.LoopSettings loopSettings;
 
 
 #if UNITY_EDITOR
+        [MenuItem("Assets/Anywhen/Set Note Index from Filename")]
+        private static void SetNoteIndexFromFilename()
+        {
+            var guids = AssetDatabase.FindAssets("t:AnywhenNoteClip");
+            int count = 0;
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var noteClip = AssetDatabase.LoadAssetAtPath<AnywhenNoteClip>(path);
+                if (noteClip != null )
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(path);
+                    if (string.IsNullOrEmpty(fileName)) continue;
+
+                    string leadingDigits = "";
+                    int i = 0;
+                    while (i < fileName.Length && char.IsDigit(fileName[i]))
+                    {
+                        leadingDigits += fileName[i];
+                        i++;
+                    }
+
+                    if (!string.IsNullOrEmpty(leadingDigits))
+                    {
+                        noteClip.NoteIndex = int.Parse(leadingDigits);
+                        EditorUtility.SetDirty(noteClip);
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0)
+            {
+                AssetDatabase.SaveAssets();
+                Debug.Log($"Set NoteIndex for {count} AnywhenNoteClip assets.");
+            }
+            else
+            {
+                Debug.Log("No AnywhenNoteClip assets were updated.");
+            }
+        }
+
         private void ReadAudioClip(AudioClip audioClip)
         {
             clipSamples = new float[audioClip.samples * audioClip.channels];

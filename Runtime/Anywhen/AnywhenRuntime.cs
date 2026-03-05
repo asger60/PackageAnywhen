@@ -197,6 +197,14 @@ namespace Anywhen
 
             Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip);
         }
+        
+        public static void PreviewNoteClip(AnywhenSampleInstrument.AnywhenNoteClipPlaybackSettings anywhenNoteClip)
+        {
+            if (!Instance._noteClipPreviewer)
+                Instance._noteClipPreviewer = Instance.FindOrCreatePreviewer();
+
+            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip.noteClip);
+        }
 
         public static void StopNoteClipPreview(AnywhenNoteClip anywhenNoteClip)
         {

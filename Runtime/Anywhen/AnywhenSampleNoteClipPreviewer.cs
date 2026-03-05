@@ -54,6 +54,7 @@ namespace Anywhen
             _currentClip = noteClip;
             PlaySampleDirectly(_currentClip, noteEvent);
         }
+
         public void StopClip()
         {
             StopScheduled(1);
@@ -63,7 +64,7 @@ namespace Anywhen
         {
             if (_instrument == null) return;
 
-            _currentClip = _instrument.GetNoteClip(note.notes[0]);
+            _currentClip = _instrument.GetNoteClip(note.notes[0]).noteClip;
             if (_currentClip == null) return;
 
             PlaySampleDirectly(_currentClip, note);
@@ -93,6 +94,7 @@ namespace Anywhen
                 StopCoroutine(_fadeCoroutine);
                 _fadeCoroutine = null;
             }
+
             if (_envelopeCoroutine != null)
             {
                 StopCoroutine(_envelopeCoroutine);
@@ -121,6 +123,7 @@ namespace Anywhen
                 StopCoroutine(_fadeCoroutine);
                 _fadeCoroutine = null;
             }
+
             // Cancel any ongoing envelope
             if (_envelopeCoroutine != null)
             {

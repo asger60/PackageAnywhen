@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Anywhen.Composing;
+﻿using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
@@ -11,54 +9,69 @@ namespace Anywhen
     {
         private double _samplePosBuffer1;
         private double _sampleStepFrac;
-
-
         private AnywhenNoteClip _currentNoteClip;
-
-
         AnywhenSampleInstrument _thisInstrument;
 
 
         public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
-            currentTrack = trackSettings;
+            CurrentTrack = trackSettings;
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
             adsr = new ADSR();
-            pitchLFO = new SynthControlLFO();
-            currentSampleRate = sampleRate;
+            PitchLFO = new SynthControlLFO();
+            CurrentSampleRate = sampleRate;
         }
 
 
         public override float GetDurationToEnd()
         {
             if (!_currentNoteClip) return 0;
-            if (playbackQueue.Count == 0) return 0;
-            return (float)playbackQueue[^1].StopTime;
+            return base.GetDurationToEnd();
         }
 
 
-        void StartPlay(PlaybackSettings playbackSettings)
+        protected override void StartPlay(PlaybackSettings playbackSettings)
         {
-            CurrentPlaybackSettings = playbackSettings;
-            _currentNoteClip = _thisInstrument.GetNoteClip(playbackSettings.Note);
-
+            base.StartPlay(playbackSettings);
+            var clipSettings = _thisInstrument.GetNoteClip(playbackSettings.Note);
+            _currentNoteClip = clipSettings.noteClip;
             if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
-
-            _sampleStepFrac = _currentNoteClip.frequency / currentSampleRate;
-
-            currentPitch = 1;
+            _sampleStepFrac = _currentNoteClip.frequency / CurrentSampleRate;
+            CurrentPitch = clipSettings.clipPitch;
             if (_thisInstrument.TempoControlPitch)
-                currentPitch = _thisInstrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
-
-
-            isPlaying = true;
-            adsr.Reset();
-            adsr.SetGate(true);
-
-            if (currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) pitchLFO.NoteOn();
+                CurrentPitch = _thisInstrument.GetPitchFromTempo(AnywhenMetronome.Instance.GetTempo());
         }
 
+
+        public override float[] UpdateDSP(int bufferSize, int channels)
+        {
+            float[] data = new float[bufferSize];
+
+            HandleQueue();
+
+
+            if (adsr.IsIdle)
+            {
+                SetReady();
+                return data;
+            }
+
+            if (!_currentNoteClip)
+            {
+                SetReady();
+                return data;
+            }
+
+
+            if (_samplePosBuffer1 >= _currentNoteClip.clipSamples.Length / (float)_currentNoteClip.channels)
+            {
+                SetReady();
+                return data;
+            }
+
+            return DSP_WriteToBuffer(data, channels);
+        }
 
         float[] DSP_WriteToBuffer(float[] data, int channels)
         {
@@ -69,10 +82,10 @@ namespace Anywhen
 
                 ampMod *= adsr.Process();
 
-                if (currentTrack.pitchLFOSettings.enabled)
+                if (CurrentTrack.pitchLFOSettings.enabled)
                 {
-                    pitchLFO.DoUpdate();
-                    currentPitch = pitchLFO.Process();
+                    PitchLFO.DoUpdate();
+                    CurrentPitch = PitchLFO.Process();
                 }
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
@@ -108,57 +121,10 @@ namespace Anywhen
                     }
                 }
 
-                _samplePosBuffer1 += (_sampleStepFrac * currentPitch);
+                _samplePosBuffer1 += (_sampleStepFrac * CurrentPitch);
             }
 
             return data;
-        }
-
-
-        private void SetReady()
-        {
-            adsr.SetGate(false);
-            isPlaying = false;
-        }
-
-
-        public override float[] UpdateDSP(int bufferSize, int channels)
-        {
-            float[] data = new float[bufferSize];
-
-            while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].PlayTime)
-            {
-                StartPlay(playbackQueue[0]);
-                playbackQueue.RemoveAt(0);
-            }
-
-
-            if (AudioSettings.dspTime >= CurrentPlaybackSettings.StopTime)
-            {
-                adsr.SetGate(false);
-            }
-
-
-            if (adsr.IsIdle)
-            {
-                SetReady();
-                return data;
-            }
-
-            if (!_currentNoteClip)
-            {
-                SetReady();
-                return data;
-            }
-
-
-            if (_samplePosBuffer1 >= _currentNoteClip.clipSamples.Length / (float)_currentNoteClip.channels)
-            {
-                SetReady();
-                return data;
-            }
-
-            return DSP_WriteToBuffer(data, channels);
         }
     }
 }

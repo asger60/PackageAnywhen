@@ -36,29 +36,23 @@ namespace Anywhen.Synth
 
         private SynthVoiceGroup[] _voices;
 
-
-        //private SynthOscillator[] _oscillators;
-
-
         private SynthControlBase[] _voiceFrequencyModifiers;
         private SynthControlBase[] _amplitudeModifiers;
         private SynthControlBase[] _filterModifiers;
 
         private SynthFilterBase[] _filters;
 
-        private bool _isInitialized = false;
+        private bool _isInitialized;
 
         // Current MIDI evt
         private int _currentVelocity;
-
-
+        
         public static float[] FreqTab;
 
         private AnywhenSynthPreset _preset;
 
         private bool _isCreated;
         int _sampleRate;
-
 
 
         private void SetPreset(AnywhenSynthPreset preset)
@@ -219,10 +213,10 @@ namespace Anywhen.Synth
         public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
             SetPreset(instrumentSettings as AnywhenSynthPreset);
-            currentTrack = trackSettings;
+            CurrentTrack = trackSettings;
             _sampleRate = sampleRate;
             adsr = new ADSR();
-            pitchLFO = new SynthControlLFO();
+            PitchLFO = new SynthControlLFO();
 
             if (FreqTab == null)
             {
@@ -238,11 +232,6 @@ namespace Anywhen.Synth
 
             ResetVoices();
             _isInitialized = true;
-        }
-
-        public override float GetDurationToEnd()
-        {
-            return 0;
         }
 
 
@@ -266,11 +255,10 @@ namespace Anywhen.Synth
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
 
-        void StartPlay(PlaybackSettings playbackSettings)
+        protected override void StartPlay(PlaybackSettings playbackSettings)
         {
-            CurrentPlaybackSettings = playbackSettings;
+            base.StartPlay(playbackSettings);
 
-            isPlaying = true;
             ResetVoices();
 
             foreach (var voice in _voices)
@@ -298,48 +286,16 @@ namespace Anywhen.Synth
             {
                 frequencyModifier.NoteOn();
             }
-
-            adsr.Reset();
-            adsr.SetGate(true);
-            if (currentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) pitchLFO.NoteOn();
         }
 
-        void StopPlay()
-        {
-            foreach (var ampModifier in _amplitudeModifiers)
-            {
-                ampModifier.NoteOff();
-            }
-
-            foreach (var filterModifier in _filterModifiers)
-            {
-                filterModifier.NoteOff();
-            }
-
-            foreach (var frequencyModifier in _voiceFrequencyModifiers)
-            {
-                frequencyModifier.NoteOff();
-            }
-            adsr.SetGate(false);
-        }
 
         public override float[] UpdateDSP(int bufferSize, int channels)
         {
             if (!_isInitialized) return new float[bufferSize];
 
+            HandleQueue();
 
-            while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].PlayTime)
-            {
-                StartPlay(playbackQueue[0]);
-                playbackQueue.RemoveAt(0);
-            }
-
-            if (AudioSettings.dspTime > CurrentPlaybackSettings.StopTime)
-            {
-                StopPlay();
-            }
-
-            if (!isPlaying) return new float[bufferSize];
+            if (!IsPlaying) return new float[bufferSize];
 
             float[] buffer = new float[bufferSize];
             if (channels == 2)
@@ -374,19 +330,18 @@ namespace Anywhen.Synth
                     //{
                     //    ampMod *= ampModifier.Process() * CurrentPlaybackSettings.Volume;
                     //}
-                    
-                    
 
-                    if (currentTrack.pitchLFOSettings.enabled)
+
+                    if (CurrentTrack.pitchLFOSettings.enabled)
                     {
-                        pitchLFO.DoUpdate();
-                        currentPitch = pitchLFO.Process();
+                        PitchLFO.DoUpdate();
+                        CurrentPitch = PitchLFO.Process();
                     }
 
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
                     {
-                        voiceFreqMod *= frequencyModifier.Process() + (float)currentPitch;
+                        voiceFreqMod *= frequencyModifier.Process() * (float)CurrentPitch;
                     }
 
                     // Generate oscillator output
@@ -411,7 +366,7 @@ namespace Anywhen.Synth
                         oscillatorOutput /= totalActiveOsc;
                     }
 
-                    float sample = oscillatorOutput * ampMod;
+                    float sample = oscillatorOutput * ampMod * CurrentTrack.volume;
 
                     // Apply filters
                     for (var i = 0; i < _filters.Length; i++)
@@ -446,7 +401,7 @@ namespace Anywhen.Synth
                     }
                 }
 
-                return buffer ;
+                return buffer;
             }
 
             return new float[bufferSize];

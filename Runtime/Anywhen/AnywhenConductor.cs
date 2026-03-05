@@ -64,11 +64,18 @@ namespace Anywhen
         {
             if (!_currentAnywhenScale) return 0;
             if (_currentAnywhenScale.notes == null || _currentAnywhenScale.notes.Length == 0) return 0;
+            int numNotes = _currentAnywhenScale.notes.Length;
+            if (numNotes == 0) return 0;
 
+            int octave = Mathf.FloorToInt((float)noteStep / numNotes);
+            int noteIndex = noteStep % numNotes;
+            if (noteIndex < 0)
+            {
+                noteIndex += numNotes;
+            }
 
-            int octave = (noteStep / _currentAnywhenScale.notes.Length) * 12;
+            int returnNote = _currentAnywhenScale.notes[noteIndex] + (octave * 12);
 
-            int returnNote = _currentAnywhenScale.notes[(int)Mathf.Repeat(noteStep, _currentAnywhenScale.notes.Length)] + octave + _rootNote;
             if (maxNote > 0 && returnNote >= maxNote)
             {
                 returnNote -= 12;

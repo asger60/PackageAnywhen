@@ -7,25 +7,23 @@ namespace Anywhen
 {
     public abstract class AnywhenVoiceBase
     {
-        public bool IsReady => playbackQueue.Count == 0 && !isPlaying; 
-        protected AnysongTrack currentTrack;
+        public bool IsReady => _playbackQueue.Count == 0 && !IsPlaying;
+        protected AnysongTrack CurrentTrack;
         protected ADSR adsr = new();
-        protected bool isPlaying;
-        public bool IsPlaying => isPlaying;
-        public bool HasScheduledPlay => playbackQueue.Count > 0;
-        protected readonly List<PlaybackSettings> playbackQueue = new List<PlaybackSettings>();
-        protected SynthSettingsObjectLFO _pitchSettings;
-        protected SynthControlLFO pitchLFO;
-        protected double currentPitch;
-        protected float currentSampleRate;
-        
+        protected bool IsPlaying;
+        public bool HasScheduledPlay => _playbackQueue.Count > 0;
+        private readonly List<PlaybackSettings> _playbackQueue = new List<PlaybackSettings>();
+        protected SynthControlLFO PitchLFO;
+        protected double CurrentPitch;
+        protected float CurrentSampleRate;
+
 
         public struct PlaybackSettings
         {
             public double PlayTime;
             public double StopTime;
             public float Volume;
-  
+
             public int Note;
 
             public PlaybackSettings(double playTime, double stopTime, float volume, int note)
@@ -42,17 +40,52 @@ namespace Anywhen
         public void NoteOn(PlaybackSettings playbackSettings)
         {
             if (AudioSettings.dspTime > playbackSettings.PlayTime) return;
-            SetPitchLFO(currentTrack.pitchLFOSettings);
-            SetEnvelope(currentTrack.trackEnvelope);
-            playbackQueue.Add(playbackSettings);
+
+            IsPlaying = true;
+            _playbackQueue.Add(playbackSettings);
         }
-        
+
         public abstract void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings);
 
-        public abstract float GetDurationToEnd();
+        public virtual float GetDurationToEnd()
+        {
+            if (_playbackQueue.Count == 0) return 0;
+            return (float)_playbackQueue[^1].StopTime;
+        }
+
+        protected virtual void StartPlay(PlaybackSettings playbackSettings)
+        {
+            CurrentPlaybackSettings = playbackSettings;
+            CurrentPitch = 1;
+            SetPitchLFO(CurrentTrack.pitchLFOSettings);
+            SetEnvelope(CurrentTrack.trackEnvelope);
+            adsr.Reset();
+            adsr.SetGate(true);
+            if (CurrentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) PitchLFO.NoteOn();
+        }
+
+        protected void HandleQueue()
+        {
+            while (_playbackQueue.Count > 0 && AudioSettings.dspTime >= _playbackQueue[0].PlayTime)
+            {
+                StartPlay(_playbackQueue[0]);
+                _playbackQueue.RemoveAt(0);
+            }
+
+            if (AudioSettings.dspTime >= CurrentPlaybackSettings.StopTime)
+            {
+                adsr.SetGate(false);
+            }
+        }
 
         public abstract float[] UpdateDSP(int bufferSize, int channels);
-        
+
+        protected void SetReady()
+        {
+            adsr.SetGate(false);
+            IsPlaying = false;
+        }
+
         protected void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
             adsr.SetAttackRate(envelopeSettings.attack * AnywhenRuntime.SampleRate);
@@ -66,7 +99,7 @@ namespace Anywhen
 
         protected void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)
         {
-            pitchLFO.UpdateSettings(pitchLFOSettings);
+            PitchLFO.UpdateSettings(pitchLFOSettings);
         }
     }
 }
