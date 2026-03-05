@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Anysong;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -371,6 +372,7 @@ public static class AnysongInspectorView
 
         boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
 
+        
         var strumControl = new VisualElement();
         strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
         strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
@@ -391,11 +393,7 @@ public static class AnysongInspectorView
 
 
         _parent.Add(boxNotes);
-        //var boxTriggering = new Box();
-        //boxTriggering.Add(new Label("Triggering"));
-        //boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOn"), didUpdate));
-        //boxTriggering.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("noteOff"), didUpdate));
-        //_parent.Add(boxTriggering);
+
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
 
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
@@ -447,8 +445,6 @@ public static class AnysongInspectorView
         var propertyField = new PropertyField(property);
         propertyField.BindProperty(property);
         propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
-
-
         return propertyField;
     }
 }

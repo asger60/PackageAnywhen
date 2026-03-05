@@ -1,166 +1,201 @@
 using System;
 using System.Collections.Generic;
-using Anywhen;
 using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
-public static class AnysongStepsView
+namespace Anysong
 {
-    private static List<VisualElement> _stepButtonsHolders = new List<VisualElement>();
-
-    public static void Draw(VisualElement parent)
+    public static class AnysongStepsView
     {
-        _stepButtonsHolders.Clear();
-        parent.Clear();
-        var spacer = new VisualElement
+        private static List<VisualElement> _stepButtonsHolders = new();
+        private static VisualElement _parent;
+
+        public static void Draw(VisualElement parent)
         {
-            style =
+            Debug.Log("Drawing steps");
+            _parent = parent;
+            _stepButtonsHolders.Clear();
+            parent.Clear();
+
+            if (AnysongEditorWindow.CurrentSelection.CurrentSection == null) return;
+            if (AnysongEditorWindow.CurrentSelection.CurrentSectionTrack == null)
             {
-                height = 1
+                for (var i = 0; i < AnysongEditorWindow.CurrentSelection.CurrentSection.tracks.Count; i++)
+                {
+                    var trackElement = new VisualElement
+                    {
+                        style =
+                        {
+                            height = 45,
+                        }
+                    };
+
+                    var track = AnysongEditorWindow.CurrentSelection.CurrentSection.tracks[i];
+                    trackElement.Add(DrawPatternSteps(track, i, track.GetSelectedPatternIndex(), true));
+                    parent.Add(trackElement);
+                }
             }
-        };
-
-        if (AnysongEditorWindow.CurrentSelection.CurrentSection == null) return;
-
-        for (var i = 0; i < AnysongEditorWindow.CurrentSelection.CurrentSection.tracks.Count; i++)
-        {
-            var trackElement = new VisualElement
+            else
             {
+                var trackElement = new VisualElement();
+                var track = AnysongEditorWindow.CurrentSelection.CurrentSectionTrack;
+                trackElement.Add(DrawPatternSteps(track, AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, track.GetSelectedPatternIndex(),
+                    false));
+                parent.Add(trackElement);
+            }
+        }
+
+
+        public static void RefreshStep()
+        {
+            int rowIndex = AnysongEditorWindow.CurrentSelection.CurrentRowIndex;
+            int currentButtonIndex = AnysongEditorWindow.CurrentSelection.CurrentStepIndex;
+            var button = _parent.Query<VisualElement>("StepButtonsRow").ToList()[rowIndex].Query<Button>("StepButton").ToList()[currentButtonIndex];
+
+
+            var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
+            button.text = AnysongEditorWindow.TrackEdit ? "" : thisStep.rootNote.ToString();
+            button.RemoveFromClassList("pattern-step-note-mono");
+            button.RemoveFromClassList("pattern-step-note-poly");
+            if (thisStep.noteOn && !thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                button.AddToClassList("pattern-step-note-mono");
+
+            if (thisStep.noteOn && thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                button.AddToClassList("pattern-step-note-poly");
+            
+        }
+
+        public static void RefreshPatterns()
+        {
+            Debug.Log("Refreshing pattern steps " + _stepButtonsHolders.Count);
+
+            for (var i = 0; i < _stepButtonsHolders.Count; i++)
+            {
+                var stepButtonHolder = _stepButtonsHolders[i];
+                int index = 0;
+                var rowIndex = i;
+                Debug.Log(rowIndex);
+                stepButtonHolder.Q("StepButtonsRow").Query<Button>("StepButton").ForEach(button =>
+                {
+                    var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
+                    button.text = AnysongEditorWindow.TrackEdit ? "" : thisStep.rootNote.ToString();
+
+                    button.RemoveFromClassList("pattern-step-note-mono");
+                    button.RemoveFromClassList("pattern-step-note-poly");
+                    if (thisStep.noteOn && !thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                        button.AddToClassList("pattern-step-note-mono");
+
+                    if (thisStep.noteOn && thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                        button.AddToClassList("pattern-step-note-poly");
+
+
+                    button.SetEnabled(index <= AnysongEditorWindow.CurrentSelection.CurrentPattern.patternLength);
+                });
+            }
+        }
+
+
+        private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex, bool compact)
+        {
+            patternIndex = Mathf.Min(patternIndex, currentSectionTrack.patterns.Count - 1);
+            var stepButtonsHolder = new VisualElement
+            {
+                name = "StepButtonsHolder",
                 style =
                 {
-                    height = 45,
+                    alignItems = Align.Center,
                 }
             };
-
-            var track = AnysongEditorWindow.CurrentSelection.CurrentSection.tracks[i];
-            trackElement.Add(DrawPatternSteps(parent, track, i, track.GetSelectedPatternIndex()));
-            parent.Add(trackElement);
-        }
-    }
-
-
-    public static void RefreshPatterns()
-    {
-        RefreshPatternSteps();
-    }
-
-
-    private static VisualElement DrawPatternSteps(VisualElement parent, AnysongSectionTrack currentSectionTrack, int trackIndex, int patternIndex)
-    {
-        patternIndex = Mathf.Min(patternIndex, currentSectionTrack.patterns.Count - 1);
-        var stepButtonsHolder = new VisualElement
-        {
-            name = "StepButtonsHolder",
-            style =
+            int rowCount = 1;
+            if (!compact) rowCount = 8;
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
-                alignItems = Align.Center,
-                flexDirection = FlexDirection.Row
-            }
-        };
-        _stepButtonsHolders.Add(stepButtonsHolder);
+                VisualElement row = new VisualElement()
+                {
+                    name = "StepButtonsRow",
+                    style =
+                    {
+                        width = new StyleLength(new Length(100, LengthUnit.Percent)),
+                        alignItems = Align.Center,
+                        flexDirection = FlexDirection.Row,
+                        height = 45,
+                    }
+                };
+                for (int stepIndex = 0; stepIndex < 16; stepIndex++)
+                {
+                    if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
+                    var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
+                    var button = new Button
+                    {
+                        name = "StepButton",
+                        tooltip = stepIndex + "-" + trackIndex + "-" + patternIndex + "-" + rowIndex,
+                        text = compact ? thisStep.rootNote.ToString() : "",
+                    };
 
+                    if (stepIndex % 4 == 0)
+                        button.AddToClassList("pattern-step-fourth");
 
-        for (int stepIndex = 0; stepIndex < 16; stepIndex++)
-        {
-            if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
-            var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
+                    if (thisStep.noteOn && !thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                    {
+                        button.AddToClassList("pattern-step-note-mono");
+                    }
 
-            var button = new Button
-            {
-                name = "StepButton",
-                tooltip = stepIndex + "-" + trackIndex + "-" + patternIndex,
+                    if (thisStep.noteOn && thisStep.IsChord && thisStep.rootNote == rowIndex + 36)
+                    {
+                        button.AddToClassList("pattern-step-note-poly");
+                    }
 
-                text = thisStep.rootNote.ToString(),
-            };
+                    button.AddToClassList("pattern-step-button");
+                    row.Add(button);
+                }
 
-            if (stepIndex % 4 == 0)
-                button.AddToClassList("pattern-step-fourth");
-
-            if (thisStep.noteOn && !thisStep.IsChord)
-            {
-                button.AddToClassList("pattern-step-note-mono");
+                stepButtonsHolder.Add(row);
+                _stepButtonsHolders.Add(stepButtonsHolder);
             }
 
-            if (thisStep.noteOn && thisStep.IsChord)
-            {
-                button.AddToClassList("pattern-step-note-poly");
-            }
 
-            button.AddToClassList("pattern-step-button");
-            stepButtonsHolder.Add(button);
+            return stepButtonsHolder;
         }
 
-        return stepButtonsHolder;
-    }
 
-
-    private static void RefreshPatternSteps()
-    {
-        var selection = AnysongEditorWindow.GetCurrentSelection();
-
-        foreach (var stepButtonHolder in _stepButtonsHolders)
+        public static void ResetTriggered()
         {
-            int index = 0;
-            stepButtonHolder.Query<Button>("StepButton").ForEach(button =>
+            foreach (var stepButtonHolder in _stepButtonsHolders)
             {
-                var thisStep = AnysongEditorWindow.GetPatternStepFromTooltip(button.tooltip);
-                button.text = thisStep.rootNote.ToString();
+                stepButtonHolder.Query<Button>("StepButton").ForEach(button => { button.RemoveFromClassList("triggered"); });
+            }
+        }
 
-                button.RemoveFromClassList("pattern-step-note-mono");
-                button.RemoveFromClassList("pattern-step-note-poly");
-                if (thisStep.noteOn && !thisStep.IsChord)
-                    button.AddToClassList("pattern-step-note-mono");
+        public static void HilightStepIndex(int trackIndex, bool state)
+        {
+            if (AnysongEditorWindow.TrackEdit) return;
 
-                if (thisStep.noteOn && thisStep.IsChord)
-                    button.AddToClassList("pattern-step-note-poly");
+            var pattern = AnysongEditorWindow.GetCurrentPlayingPatternForTrack(trackIndex);
 
+            _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
+            {
                 var str = button.tooltip.Split("-");
-                int buttonTrackIndex = Int32.Parse(str[1]); // todo - maybe figure out a better way to retrieve the index
-                int buttonPatternIndex = Int32.Parse(str[2]); // todo - maybe figure out a better way to retrieve the index
-                index++;
-                var pattern = selection.CurrentSection.tracks[buttonTrackIndex].patterns[buttonPatternIndex];
+                int buttonStep = Int32.Parse(str[0]); // todo - maybe figure out a better way to retrieve the index
 
-                button.SetEnabled(index <= pattern.patternLength);
+                if (state && buttonStep == pattern.InternalIndex)
+                    button.AddToClassList("triggered");
+                else
+                    button.RemoveFromClassList("triggered");
             });
         }
-    }
 
-    public static void ResetTriggered()
-    {
-        foreach (var stepButtonHolder in _stepButtonsHolders)
+        public static void SetPatternIndexForTrack(int trackIndex, int patternIndex)
         {
-            stepButtonHolder.Query<Button>("StepButton").ForEach(button => { button.RemoveFromClassList("triggered"); });
+            Debug.LogWarning("SetPatternIndexForTrack not implemented yet");
+            //AnysongEditorWindow.GetCurrentSelection().CurrentSection.tracks[trackIndex].SetSelectedPattern(patternIndex);
+//
+            //int i = 0;
+            //_stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
+            //{
+            //    button.tooltip = i + "-" + trackIndex + "-" + patternIndex;
+            //    i++;
+            //});
         }
-    }
-
-    public static void HilightStepIndex(int trackIndex, bool state)
-    {
-        var pattern = AnysongEditorWindow.GetCurrentPlayingPatternForTrack(trackIndex);
-
-        _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
-        {
-            var str = button.tooltip.Split("-");
-            int buttonStep = Int32.Parse(str[0]); // todo - maybe figure out a better way to retrieve the index
-
-            if (state && buttonStep == pattern.InternalIndex)
-                button.AddToClassList("triggered");
-            else
-                button.RemoveFromClassList("triggered");
-        });
-    }
-
-    public static void SetPatternIndexForTrack(int trackIndex, int patternIndex)
-    {
-        AnysongEditorWindow.GetCurrentSelection().CurrentSection.tracks[trackIndex].SetSelectedPattern(patternIndex);
-
-
-        int i = 0;
-        _stepButtonsHolders[trackIndex].Query<Button>("StepButton").ForEach(button =>
-        {
-            button.tooltip = i + "-" + trackIndex + "-" + patternIndex;
-            i++;
-        });
     }
 }
