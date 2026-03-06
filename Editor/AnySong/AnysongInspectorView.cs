@@ -142,32 +142,32 @@ public static class AnysongInspectorView
             selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOSettings"), didUpdateInstrument));
     }
 
-    public static void DrawProgression(AnysongEditorWindow.AnySelection selection)
+    public static void DrawProgression()
     {
         _parent.Clear();
         Draw(_parent);
         _parent.Add(Spacer());
         var progressionTypeHolder = new VisualElement();
         var progressionType =
-            (AnysongSectionTrack.PatternProgressionType)selection.CurrentSectionTrackProperty
+            (AnysongSectionTrack.PatternProgressionType)AnysongEditorWindow.CurrentSelection.CurrentSectionTrackProperty
                 .FindPropertyRelative("patternProgressionType")
                 .enumValueIndex;
 
         Debug.Log(progressionType);
 
         _parent.Add(CreatePropertyFieldWithCallback(
-            selection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType"),
+            AnysongEditorWindow.CurrentSelection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType"),
             () =>
             {
                 Debug.Log("updated progression type");
                 progressionTypeHolder.Clear();
-                progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)selection
+                progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)AnysongEditorWindow.CurrentSelection
                     .CurrentSectionTrackProperty
                     .FindPropertyRelative("patternProgressionType")
-                    .enumValueIndex, selection));
+                    .enumValueIndex, AnysongEditorWindow.CurrentSelection));
             }));
 
-        progressionTypeHolder.Add(DrawProgressionType(progressionType, selection));
+        progressionTypeHolder.Add(DrawProgressionType(progressionType, AnysongEditorWindow.CurrentSelection));
         _parent.Add(progressionTypeHolder);
         _parent.Add(Spacer());
         _parent.Add(AnysongEditorWindow.CreateAddRemoveButtons(true, false));
