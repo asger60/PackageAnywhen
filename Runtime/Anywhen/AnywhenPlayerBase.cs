@@ -159,7 +159,7 @@ namespace Anywhen
                         pattern.Advance();
 
 
-                    if (sectionIndex == CurrentSong.CurrentSectionIndex && (step.noteOn || step.noteOff))
+                    if (sectionIndex == CurrentSong.CurrentSectionIndex && step.NoteOn)
                     {
                         float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(1));
                         float thisRnd = Random.Range(0, 1f);

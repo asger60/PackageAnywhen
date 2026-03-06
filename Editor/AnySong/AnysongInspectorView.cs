@@ -45,8 +45,6 @@ public static class AnysongInspectorView
         _parent.Add(Spacer());
 
 
-
-
         _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), didUpdate));
         _parent.Add(Spacer());
 
@@ -370,9 +368,9 @@ public static class AnysongInspectorView
             style = { flexDirection = FlexDirection.Row }
         };
 
-        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), didUpdate));
+        boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), AnysongPatternView.Refresh));
 
-        
+
         var strumControl = new VisualElement();
         strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
         strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
@@ -395,11 +393,11 @@ public static class AnysongInspectorView
         _parent.Add(boxNotes);
 
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
-
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
         var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);
+
         _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("stepRepeats"),
             () =>
             {

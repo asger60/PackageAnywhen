@@ -9,14 +9,30 @@ using Random = UnityEngine.Random;
 public class AnysongPatternStep
 {
     public bool noteOn;
-    public bool noteOff;
+
+    public bool NoteOn
+    {
+        get
+        {
+            if (noteOn)
+            {
+                chordNotes.Add(rootNote);
+                noteOn = false;
+                return true;
+            }
+
+
+            return chordNotes.Count > 0;
+        }
+    }
+
     [Range(0.01f, 1f)] public float duration;
     [Range(-0.5f, 0.5f)] public float offset;
     [Range(0, 1f)] public float velocity;
 
 
     [Range(0, 1f)] public float mixWeight;
-    public bool IsChord => chordNotes.Count > 0;
+    public bool IsChord => chordNotes.Count > 1;
 
 
     public List<int> chordNotes = new List<int>();
@@ -71,8 +87,7 @@ public class AnysongPatternStep
     NoteEvent GetEvent(int patternRoot)
     {
         NoteEvent.EventTypes type = NoteEvent.EventTypes.NoteOn;
-        if (noteOff)
-            type = NoteEvent.EventTypes.NoteOff;
+
 
         var e = new NoteEvent(
             GetNotes(patternRoot),

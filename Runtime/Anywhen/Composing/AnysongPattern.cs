@@ -100,7 +100,7 @@ namespace Anywhen.Composing
             List<int> notes = new List<int>();
             foreach (var patternStep in steps)
             {
-                if (patternStep.noteOn)
+                if (patternStep.NoteOn)
                 {
                     notes.Add(patternStep.rootNote);
                 }
@@ -108,7 +108,7 @@ namespace Anywhen.Composing
 
             foreach (var patternStep in steps)
             {
-                if (patternStep.noteOn)
+                if (patternStep.NoteOn)
                 {
                     int thisIndex = Random.Range(0, notes.Count );
                     patternStep.rootNote = notes[thisIndex];
@@ -122,19 +122,19 @@ namespace Anywhen.Composing
             List<int> notes = new List<int>();
             foreach (var patternStep in steps)
             {
-                if (patternStep.noteOn)
+                if (patternStep.NoteOn)
                 {
                     notes.Add(patternStep.rootNote);
-                    patternStep.noteOn = false;
+                    //patternStep.noteOn = false;
                 }
             }
 
             while (notes.Count > 0)
             {
                 var thisStep = steps[Random.Range(0, 16)];
-                if (!thisStep.noteOn)
+                if (!thisStep.NoteOn)
                 {
-                    thisStep.noteOn = true;
+                    //thisStep.noteOn = true;
                     thisStep.rootNote = notes[0];
                     notes.RemoveAt(0);
                 }
