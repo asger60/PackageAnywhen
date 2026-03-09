@@ -9,6 +9,11 @@ namespace Anysong
     {
         private static List<VisualElement> _patternButtonsHolders = new List<VisualElement>();
 
+        public static void Clear()
+        {
+            _patternButtonsHolders.Clear();
+        }
+
         public static void Draw(VisualElement parent, AnysongObject currentSong)
         {
             parent.Clear();
@@ -117,6 +122,7 @@ namespace Anysong
                     AnysongEditorWindow.CurrentSelection.SetPatternIndex(newPatternIndex);
                     AnysongPatternView.Refresh();
                     AnysongInspectorView.DrawPattern(AnysongEditorWindow.CurrentSelection.CurrentPatternProperty, false, AnysongPatternView.Refresh);
+                    AnysongEditorWindow.HandleInspectorLogic();
                     Refresh();
                 };
                 patternsButtonHolder.Add(button);

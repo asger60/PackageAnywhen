@@ -32,6 +32,8 @@
     -unity-text-align: upper-left;
     font-size: 10px;
     background-color: rgb(60, 60, 60);
+    color: rgba(255, 255, 255, 0.4);
+
 }
 
 .progression-edit-button {
@@ -48,9 +50,11 @@
     background-image: none;
     -unity-background-scale-mode: scale-and-crop;
     -unity-background-image-tint-color: rgb(79, 79, 79);
+    
 }
 
 .editing {
+    color: rgba(255, 255, 255, 1);
     border-left-color: rgb(0, 0, 0);
     border-right-color: rgb(0, 0, 0);
     border-top-color: rgb(0, 0, 0);

@@ -9,6 +9,12 @@ public static class AnysongTransportView
     private static VisualElement _parent;
     private static Button _playButton;
 
+    public static void Clear()
+    {
+        _parent = null;
+        _playButton = null;
+    }
+
     public static void Draw(VisualElement parent, AnysongObject currentSong)
     {
         _parent = parent;

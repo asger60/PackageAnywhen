@@ -9,6 +9,11 @@ public static class AnysongSectionsView
 {
     private static VisualElement _parent;
 
+    public static void Clear()
+    {
+        _parent = null;
+    }
+
     public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
     {
         _parent = parent;
