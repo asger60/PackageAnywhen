@@ -19,12 +19,14 @@ namespace Anysong
         static int _currentPatternNoteIndex;
         static bool _polyfonic;
         public static bool IsPolyfonic => _polyfonic;
+        static AnysongPatternStep _currentSelectedPatternStep;
 
         public enum EditModes
         {
             NotePitch,
             NoteVelocity,
-            NoteLength
+            NoteLength,
+            NoteChance
         }
 
         static EditModes _currentEditMode;
@@ -43,6 +45,7 @@ namespace Anysong
 
         public static void Draw(VisualElement parent)
         {
+            _currentSelectedPatternStep = null;
             _parent = parent;
             _patternControlsElement = _parent.parent.Q<VisualElement>("PatternControls");
             _patternControlsElement.Clear();
@@ -66,7 +69,7 @@ namespace Anysong
             if (AnysongEditorWindow.CurrentSelection.CurrentSection == null) return;
             if (AnysongEditorWindow.CurrentSelection.CurrentSectionTrack == null)
             {
-                for (var i = 0; i < AnysongEditorWindow.CurrentSelection.CurrentSection.tracks.Count; i++)
+                foreach (var t in AnysongEditorWindow.CurrentSelection.CurrentSection.tracks)
                 {
                     var trackElement = new VisualElement
                     {
@@ -76,7 +79,7 @@ namespace Anysong
                         }
                     };
 
-                    var track = AnysongEditorWindow.CurrentSelection.CurrentSection.tracks[i];
+                    var track = t;
                     trackElement.Add(DrawPatternSteps(track, true));
                     _parent.Add(trackElement);
                 }
@@ -89,12 +92,19 @@ namespace Anysong
                 _parent.Add(trackElement);
             }
 
-            _parent.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
-            _parent.RegisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
+            _currentPatternNoteIndex = 0;
+
+            AddCallbacks();
+        }
+
+        static void AddCallbacks()
+        {
             _parent.focusable = true;
             _parent.pickingMode = PickingMode.Position;
             _parent.Focus();
-            _currentPatternNoteIndex = 0;
+            _parent.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
+            _parent.RegisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
+
             _parent.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEvent);
         }
 
@@ -141,42 +151,66 @@ namespace Anysong
 
         private static void OnKeyDown(KeyDownEvent evt)
         {
-            if (_currentHoverStepButton == null) return;
-
             if (evt.keyCode == KeyCode.X)
             {
-                if (_currentHoverStepButton.PatternStep != null)
+                if (_currentSelectedPatternStep != null)
                 {
-                    DeleteStep(_currentHoverStepButton.PatternStep);
+                    DeleteStep(_currentSelectedPatternStep);
                 }
             }
 
 
             if (evt.keyCode == KeyCode.C)
             {
-                if (_currentHoverStepButton.PatternStep != null)
+                if (_currentSelectedPatternStep != null)
                 {
-                    CopyStep(_currentHoverStepButton.PatternStep);
+                    _stepCopy = _currentSelectedPatternStep.Clone();
+                    //CopyStep(_currentSelectedPatternStep);
                 }
             }
 
             if (evt.keyCode == KeyCode.V && _stepCopy != null)
             {
-                PasteStep(_currentHoverStepButton.PatternStepIndex);
+                PasteStep(_stepCopy, _currentHoverStepButton.PatternStepIndex);
             }
 
             if (evt.keyCode == KeyCode.UpArrow)
             {
-                if (_currentHoverStepButton.PatternStep != null) _currentHoverStepButton.PatternStep.rootNote++;
+                if (_currentSelectedPatternStep != null) _currentSelectedPatternStep.rootNote++;
                 Refresh();
             }
 
             if (evt.keyCode == KeyCode.DownArrow)
             {
-                if (_currentHoverStepButton.PatternStep != null) _currentHoverStepButton.PatternStep.rootNote--;
+                if (_currentSelectedPatternStep != null) _currentSelectedPatternStep.rootNote--;
                 Refresh();
             }
+
+            if (evt.keyCode == KeyCode.RightArrow || evt.keyCode == KeyCode.LeftArrow)
+            {
+                if (_currentSelectedPatternStep != null)
+                {
+                    if (_movePatternStep == null) _movePatternStep = _currentSelectedPatternStep.Clone();
+                    _currentSelectedPatternStep.Init();
+                    if (_preMovePatternStepCopy != null)
+                    {
+                        PasteStep(_preMovePatternStepCopy, _currentStepIndex);
+                    }
+
+                    if (evt.keyCode == KeyCode.RightArrow) _currentStepIndex++;
+                    else _currentStepIndex--;
+
+                    _currentStepIndex = (int)Mathf.Repeat(_currentStepIndex, 16);
+
+                    MoveStep(_movePatternStep, _currentStepIndex);
+
+                    _movePatternStep = null;
+                }
+            }
         }
+
+        static AnysongPatternStep _movePatternStep;
+
 
         private static void DeleteStep(AnysongPatternStep patternStep)
         {
@@ -185,16 +219,22 @@ namespace Anysong
             Refresh();
         }
 
-        static void CopyStep(AnysongPatternStep step)
+        static AnysongPatternStep _preMovePatternStepCopy;
+
+        static void MoveStep(AnysongPatternStep copy, int stepIndex)
         {
-            _stepCopy = step.Clone();
+            _preMovePatternStepCopy = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
+            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy;
+            _currentSelectedPatternStep = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
+            Refresh();
         }
 
-        static void PasteStep(int stepIndex)
+
+        static void PasteStep(AnysongPatternStep copy, int stepIndex)
         {
-            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = _stepCopy;
+            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy;
+            _currentSelectedPatternStep = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
             Refresh();
-            _stepCopy = _stepCopy.Clone();
         }
 
         private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, bool compact)
@@ -298,9 +338,29 @@ namespace Anysong
             _stepViewCullumns.Clear();
             _allStepButtons.Clear();
             _stepViewToStep.Clear();
+            if (_parent != null)
+            {
+                _parent.UnregisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
+                _parent.UnregisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
+            }
+
             _parent.Clear();
             var track = AnysongEditorWindow.CurrentSelection.CurrentSectionTrack;
             _parent.Add(DrawPatternSteps(track, false));
+            AddCallbacks();
+        }
+
+
+        public static void SelectStep(AnysongPatternStep patternStep)
+        {
+            _currentSelectedPatternStep = patternStep;
+        }
+
+        private static int _currentStepIndex;
+
+        public static void SetStepIndex(int stepIndex)
+        {
+            _currentStepIndex = stepIndex;
         }
     }
 }

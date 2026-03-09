@@ -27,19 +27,17 @@ namespace Anywhen.Synth
         private float[] _saw8Bit;
         private float[] _noiseWhite;
 
-        public SynthSettingsObjectOscillator settings;
+        private SynthSettingsObjectOscillator _settings;
         private bool _isActive;
         public bool IsActive => _isActive;
 
-        private void Start()
-        {
-            Init();
-        }
+        int _sampleRate;
 
         public void Init()
         {
+            _sampleRate = AnywhenRuntime.SampleRate;
             _isActive = true;
-            switch (settings.oscillatorType)
+            switch (_settings.oscillatorType)
             {
                 case SynthSettingsObjectOscillator.OscillatorType.Simple:
                     _sine = new float[2048];
@@ -97,36 +95,36 @@ namespace Anywhen.Synth
         public float Process()
         {
             if (!_isActive) return 0;
-            switch (settings.oscillatorType)
+            switch (_settings.oscillatorType)
             {
                 case SynthSettingsObjectOscillator.OscillatorType.Simple:
-                    switch (settings.simpleOscillatorType)
+                    switch (_settings.simpleOscillatorType)
                     {
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Sine:
-                            return Sin() * settings.amplitude;
+                            return Sin() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Saw:
-                            return sawPolyBLEP() * settings.amplitude;
+                            return sawPolyBLEP() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Square:
-                            return squarePolyBLEP(0.5f) * settings.amplitude;
+                            return squarePolyBLEP(0.5f) * _settings.amplitude;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
                 case SynthSettingsObjectOscillator.OscillatorType.WaveTable:
-                    switch (settings.waveTableOscillatorType)
+                    switch (_settings.waveTableOscillatorType)
                     {
                         case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Saw8Bit:
-                            return WaveTable() * settings.amplitude;
+                            return WaveTable() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Sine8Bit:
-                            return WaveTable() * settings.amplitude;
+                            return WaveTable() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Square8Bit:
-                            return WaveTable() * settings.amplitude;
+                            return WaveTable() * _settings.amplitude;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
                 case SynthSettingsObjectOscillator.OscillatorType.Noise:
-                    return Noise() * settings.amplitude;
+                    return Noise() * _settings.amplitude;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -135,14 +133,14 @@ namespace Anywhen.Synth
         public void SetNote(int note, int sampleRate)
         {
             _isActive = true;
-            _currentNote = note + settings.tuning;
+            _currentNote = note + _settings.tuning;
             set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
         }
 
-        public void SetPitchMod(float amount, int sampleRate)
+        public void SetPitchMod(float amount)
         {
             _pitchModAmount = Remap(amount, -1, 1, 0.5f, 2);
-            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], _sampleRate);
         }
 
         public void SetFineTuning(float amount, int sampleRate)
@@ -313,7 +311,7 @@ namespace Anywhen.Synth
         private float WaveTable()
         {
             float ph01 = _phase / PHASE_MAX;
-            switch (settings.waveTableOscillatorType)
+            switch (_settings.waveTableOscillatorType)
             {
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Sine8Bit:
                     return _sine8Bit[(int)(ph01 * (_sine8Bit.Length - 1))];
@@ -340,7 +338,7 @@ namespace Anywhen.Synth
 
         public void UpdateSettings(SynthSettingsObjectOscillator newSettings)
         {
-            this.settings = newSettings;
+            this._settings = newSettings;
         }
 
         public void SetInactive()

@@ -37,7 +37,7 @@ namespace Anywhen.Synth
         private SynthVoiceGroup[] _voices;
 
         private SynthControlBase[] _voiceFrequencyModifiers;
-        private SynthControlBase[] _amplitudeModifiers;
+        //private SynthControlBase[] _amplitudeModifiers;
         private SynthControlBase[] _filterModifiers;
 
         private SynthFilterBase[] _filters;
@@ -46,13 +46,12 @@ namespace Anywhen.Synth
 
         // Current MIDI evt
         private int _currentVelocity;
-        
+
         public static float[] FreqTab;
 
         private AnywhenSynthPreset _preset;
 
         private bool _isCreated;
-        int _sampleRate;
 
 
         private void SetPreset(AnywhenSynthPreset preset)
@@ -72,7 +71,7 @@ namespace Anywhen.Synth
                 _preset = null;
                 _voices = null;
                 _voiceFrequencyModifiers = null;
-                _amplitudeModifiers = null;
+                //_amplitudeModifiers = null;
                 _filterModifiers = null;
                 _filters = null;
             }
@@ -112,7 +111,7 @@ namespace Anywhen.Synth
                         _filters[i] = newFilter;
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.BandPass:
-                        var newHpFilter = new SynthFilterBandPass(_sampleRate);
+                        var newHpFilter = new SynthFilterBandPass();
                         newHpFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newHpFilter;
                         break;
@@ -208,26 +207,20 @@ namespace Anywhen.Synth
         }
 
 
-        public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
+        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
         {
             SetPreset(instrumentSettings as AnywhenSynthPreset);
-            CurrentTrack = trackSettings;
-            _sampleRate = sampleRate;
-            AmplitudeEnvelope = new ADSR();
-            PitchLFO = new SynthControlLFO();
 
             if (FreqTab == null)
             {
                 FreqTab = new float[128];
                 for (int i = 0; i < 128; i++)
                 {
-                    // 128 midi notes
                     FreqTab[i] = Midi2Freq(i);
                 }
             }
 
             RebuildSynth();
-
             ResetVoices();
             _isInitialized = true;
         }
@@ -261,11 +254,10 @@ namespace Anywhen.Synth
 
             foreach (var voice in _voices)
             {
-                for (int i = 0; i < voice.Oscillators.Length; i++)
+                for (var i = 0; i < voice.Oscillators.Length; i++)
                 {
                     var osc = voice.Oscillators[i];
-                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64),
-                        AnywhenRuntime.SampleRate);
+                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64), AnywhenRuntime.SampleRate);
                     osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                 }
             }
@@ -289,13 +281,17 @@ namespace Anywhen.Synth
 
         public override float[] UpdateDSP(int bufferSize, int channels)
         {
-            if (!_isInitialized) return new float[bufferSize];
+            float[] buffer = new float[bufferSize];
+            if (!_isInitialized) return buffer;
 
             HandleQueue();
 
-            if (!IsPlaying) return new float[bufferSize];
+            if (!IsPlaying)
+            {
+                return buffer;
+            }
 
-            float[] buffer = new float[bufferSize];
+
             if (channels == 2)
             {
                 int sampleFrames = bufferSize / 2;
@@ -310,11 +306,6 @@ namespace Anywhen.Synth
                     {
                         frequencyModifier.DoUpdate();
                     }
-
-                    //foreach (var amplitudeModifier in _amplitudeModifiers)
-                    //{
-                    //    amplitudeModifier.DoUpdate();
-                    //}
 
                     foreach (var filterModifier in _filterModifiers)
                     {
@@ -352,7 +343,7 @@ namespace Anywhen.Synth
                         {
                             if (!synthOscillator.IsActive) continue;
 
-                            synthOscillator.SetPitchMod(voiceFreqMod, _sampleRate);
+                            synthOscillator.SetPitchMod(voiceFreqMod);
                             oscillatorOutput += synthOscillator.Process();
                             totalActiveOsc++;
                         }
@@ -398,11 +389,14 @@ namespace Anywhen.Synth
                         audioFilterBase.HandleModifiers(currentMod);
                     }
                 }
-
-                return buffer;
             }
 
-            return new float[bufferSize];
+            if (AmplitudeEnvelope.IsIdle && !HasScheduledPlay)
+            {
+                SetReady();
+            }
+
+            return buffer;
         }
     }
 }

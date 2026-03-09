@@ -101,20 +101,19 @@ namespace Anywhen
 
                 for (int i = 0; i < songTrack.voices; i++)
                 {
-                    if (songTrack.instrument is AnywhenSampleInstrument)
+                    AnywhenVoiceBase newTrack = null;
+                    if (songTrack.instrument is AnywhenSynthPreset)
                     {
-                        var newTrack = new AnywhenSampleVoice();
-                        newTrack.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack);
-
-
-                        newTracks.Add(newTrack);
+                        newTrack = new AnywhenSynthVoice(songTrack.instrument, songTrack);
+                    }
+                    else if (songTrack.instrument is AnywhenSampleInstrument)
+                    {
+                        newTrack = new AnywhenSampleVoice(songTrack.instrument, songTrack);
                     }
 
-                    if (songTrack.instrument is AnywhenSynthPreset preset)
+                    if (newTrack != null)
                     {
-                        var newSynthVoice = new AnywhenSynthVoice();
-                        newSynthVoice.Init(AudioSettings.outputSampleRate, songTrack.instrument, songTrack);
-                        newTracks.Add(newSynthVoice);
+                        newTracks.Add(newTrack);
                     }
                 }
 
@@ -181,7 +180,6 @@ namespace Anywhen
         protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnysongPatternStep step)
         {
             var songTrack = currentSong.Tracks[trackIndex];
-
             var noteEvents = step.GetNoteEvents(0);
             foreach (var noteEvent in noteEvents)
             {
@@ -201,16 +199,13 @@ namespace Anywhen
                     continue;
                 }
 
-                var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() +
-                               (AnywhenMetronome.Instance.GetLength() * noteEvent.drift) +
-                               noteEvent.chordStrum[i];
-
+                var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() + noteEvent.drift + noteEvent.chordStrum[i];
                 var volume = noteEvent.velocity * track.volume * playerVolume;
                 var playbackSettings = new AnywhenVoiceBase.PlaybackSettings
                 {
                     Note = note,
                     PlayTime = playTime,
-                    StopTime = playTime + noteEvent.duration,
+                    StopTime = playTime + noteEvent.duration + noteEvent.drift,
                     Volume = volume
                 };
                 voice.NoteOn(playbackSettings);

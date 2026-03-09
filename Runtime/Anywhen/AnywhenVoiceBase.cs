@@ -16,14 +16,13 @@ namespace Anywhen
         protected SynthControlLFO PitchLFO;
         protected double CurrentPitch;
         protected float CurrentSampleRate;
-
+        
 
         public struct PlaybackSettings
         {
             public double PlayTime;
             public double StopTime;
             public float Volume;
-
             public int Note;
 
             public PlaybackSettings(double playTime, double stopTime, float volume, int note)
@@ -37,15 +36,24 @@ namespace Anywhen
 
         protected PlaybackSettings CurrentPlaybackSettings;
 
+        
+        
         public void NoteOn(PlaybackSettings playbackSettings)
         {
             if (AudioSettings.dspTime > playbackSettings.PlayTime) return;
-
             IsPlaying = true;
             _playbackQueue.Add(playbackSettings);
         }
 
-        public abstract void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings);
+        protected AnywhenVoiceBase(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
+        {
+            CurrentSampleRate = AudioSettings.outputSampleRate;
+            CurrentTrack = trackSettings;
+            AmplitudeEnvelope = new ADSR();
+            PitchLFO = new SynthControlLFO();
+        }
+
+
 
         public virtual float GetDurationToEnd()
         {
@@ -55,6 +63,7 @@ namespace Anywhen
 
         protected virtual void StartPlay(PlaybackSettings playbackSettings)
         {
+            IsPlaying = true;
             CurrentPlaybackSettings = playbackSettings;
             CurrentPitch = 1;
             SetPitchLFO(CurrentTrack.pitchLFOSettings);

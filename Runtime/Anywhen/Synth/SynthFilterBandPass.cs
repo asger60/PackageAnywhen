@@ -5,7 +5,7 @@ namespace Anywhen.Synth
 {
     public class SynthFilterBandPass : SynthFilterBase
     {
-        public SynthFilterBandPass(float sampleRate)
+        public SynthFilterBandPass()
         {
             //_sampleRate = sampleRate;
             _q = 5;

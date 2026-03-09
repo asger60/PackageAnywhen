@@ -13,13 +13,9 @@ namespace Anywhen
         AnywhenSampleInstrument _thisInstrument;
 
 
-        public override void Init(int sampleRate, AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
+        public AnywhenSampleVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
         {
-            CurrentTrack = trackSettings;
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
-            AmplitudeEnvelope = new ADSR();
-            PitchLFO = new SynthControlLFO();
-            CurrentSampleRate = sampleRate;
         }
 
 
@@ -51,7 +47,7 @@ namespace Anywhen
             HandleQueue();
 
 
-            if (AmplitudeEnvelope.IsIdle)
+            if (AmplitudeEnvelope.IsIdle && !HasScheduledPlay)
             {
                 SetReady();
                 return data;

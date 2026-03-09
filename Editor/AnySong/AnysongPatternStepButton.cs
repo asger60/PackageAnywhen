@@ -19,20 +19,16 @@ namespace Anysong
         public AnysongPatternStepButton(VisualElement parentElement, AnysongPatternStep patternStep, int stepIndex, int noteIndex, bool polyfonic,
             int gridMin, int gridMax)
         {
-            _button = new Button
-            {
-                name = "StepButton"
-            };
+            _button = new Button { name = "StepButton" };
             _polyfonic = polyfonic;
             _patternStep = patternStep;
             _noteIndex = noteIndex;
             _stepIndex = stepIndex;
             _gridMin = gridMin;
             _gridMax = gridMax;
-            if (stepIndex % 4 == 0)
-                _button.AddToClassList("pattern-step-fourth");
-            if (noteIndex % 7 == 0)
-                _button.AddToClassList("pattern-step-fourth");
+
+            if (stepIndex % 4 == 0) _button.AddToClassList("pattern-step-fourth");
+            if (noteIndex % 7 == 0) _button.AddToClassList("pattern-step-fourth");
 
 
             _button.AddToClassList("pattern-step-button");
@@ -67,7 +63,8 @@ namespace Anysong
         private void OnPointerDownEvent(PointerDownEvent evt)
         {
             AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex);
-
+            AnysongPatternView.SelectStep(_patternStep);
+            AnysongPatternView.SetStepIndex(_stepIndex);
             if (evt.button != 0)
             {
                 return;
@@ -116,10 +113,12 @@ namespace Anysong
                     break;
                 case AnysongPatternView.EditModes.NoteVelocity:
                     _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-
                     break;
                 case AnysongPatternView.EditModes.NoteLength:
                     _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    break;
+                case AnysongPatternView.EditModes.NoteChance:
+                    _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -145,14 +144,21 @@ namespace Anysong
 
                     break;
                 case AnysongPatternView.EditModes.NoteVelocity:
-                    if (_patternStep.NoteOn && _patternStep.velocity > Mathf.InverseLerp(_gridMin, _gridMax , _noteIndex))
+                    if (_patternStep.NoteOn && _patternStep.velocity > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
                     {
                         _button.AddToClassList("pattern-step-note-mono");
                     }
 
                     break;
                 case AnysongPatternView.EditModes.NoteLength:
-                    if (_patternStep.NoteOn && _patternStep.duration > Mathf.InverseLerp(_gridMin, _gridMax , _noteIndex))
+                    if (_patternStep.NoteOn && _patternStep.duration > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    {
+                        _button.AddToClassList("pattern-step-note-mono");
+                    }
+
+                    break;
+                case AnysongPatternView.EditModes.NoteChance:
+                    if (_patternStep.NoteOn && _patternStep.chance > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
                     {
                         _button.AddToClassList("pattern-step-note-mono");
                     }

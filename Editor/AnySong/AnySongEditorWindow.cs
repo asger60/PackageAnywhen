@@ -576,7 +576,6 @@ namespace Anysong
 
         public void SetInspectorMode(InspectorModes inspectorMode)
         {
-            Debug.Log("SetInspectorMode: " + inspectorMode);
             switch (inspectorMode)
             {
                 case InspectorModes.Sections:

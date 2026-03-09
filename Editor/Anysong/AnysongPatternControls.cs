@@ -11,6 +11,7 @@ namespace Anysong
         static Button _pitchButton;
         static Button _velocityButton;
         static Button _durationButton;
+        private static Button _chanceButton;
 
 
         public static VisualElement Draw()
@@ -22,26 +23,16 @@ namespace Anysong
                     flexDirection = FlexDirection.Row
                 }
             };
-            _patternNoteOfsetUp = new Button
-            {
-                text = "↑"
-            };
-            _patternNoteOfsetDown = new Button
-            {
-                text = "↓"
-            };
-            _monoButton = new Button
-            {
-                text = "Mono"
-            };
-            _polyButton = new Button
-            {
-                text = "Poly"
-            };
+
+            _patternNoteOfsetUp = new Button { text = "↑" };
+            _patternNoteOfsetDown = new Button { text = "↓" };
+            _monoButton = new Button { text = "Mono" };
+            _polyButton = new Button { text = "Poly" };
 
             _pitchButton = new Button() { text = "Pitch" };
             _velocityButton = new Button() { text = "Velocity" };
             _durationButton = new Button() { text = "Length" };
+            _chanceButton = new Button() { text = "Chance" };
 
             _pitchButton.clicked += OnEditPitch;
             _velocityButton.clicked += OnEditVelocity;
@@ -50,6 +41,7 @@ namespace Anysong
             _patternNoteOfsetDown.clicked += OnOffsetDown;
             _monoButton.clicked += OnMono;
             _polyButton.clicked += OnPoly;
+            _chanceButton.clicked += OnChance;
 
 
             _patternNoteOfsetUp.AddToClassList("progression-select-button");
@@ -59,6 +51,7 @@ namespace Anysong
             _pitchButton.AddToClassList("progression-select-button");
             _velocityButton.AddToClassList("progression-select-button");
             _durationButton.AddToClassList("progression-select-button");
+            _chanceButton.AddToClassList("progression-select-button");
 
             RefreshMonoPolyButtons();
             RefreshEditButtons();
@@ -66,6 +59,7 @@ namespace Anysong
             controls.Add(_pitchButton);
             controls.Add(_velocityButton);
             controls.Add(_durationButton);
+            controls.Add(_chanceButton);
             controls.Add(MakeSpacer());
 
 
@@ -79,6 +73,12 @@ namespace Anysong
             controls.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEvent);
 
             return controls;
+        }
+
+        private static void OnChance()
+        {
+            AnysongPatternView.SetEditMode(AnysongPatternView.EditModes.NoteChance);
+            RefreshEditButtons();
         }
 
         static VisualElement MakeSpacer()
@@ -124,12 +124,16 @@ namespace Anysong
             _pitchButton.RemoveFromClassList("editing");
             _velocityButton.RemoveFromClassList("editing");
             _durationButton.RemoveFromClassList("editing");
+            _chanceButton.RemoveFromClassList("editing");
+            
             if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteLength)
                 _durationButton.AddToClassList("editing");
             else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NotePitch)
                 _pitchButton.AddToClassList("editing");
             else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteVelocity)
                 _velocityButton.AddToClassList("editing");
+            else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteChance)
+                _chanceButton.AddToClassList("editing");
         }
 
         static void RefreshMonoPolyButtons()
