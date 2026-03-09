@@ -140,5 +140,13 @@ namespace Anywhen.Composing
                 }
             }
         }
+        
+        public void Clear()
+        {
+            foreach (var step in steps)
+            {
+                step.Init();
+            }
+        }
     }
 }

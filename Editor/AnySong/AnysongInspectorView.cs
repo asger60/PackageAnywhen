@@ -42,7 +42,7 @@ namespace Anysong
             _parent.Add(CreateUtilsBox());
         }
 
-        public static void DrawPattern(SerializedProperty pattern, bool isBase, Action didUpdate)
+        public static void DrawPattern(SerializedProperty pattern, Action didUpdate)
         {
             _parent.Clear();
             Draw(_parent);
@@ -99,7 +99,19 @@ namespace Anysong
                     backgroundColor = new StyleColor(new Color(0.7f, 0.2f, 0.0f, 1))
                 }
             };
+            
+            var clearButton = new Button
+            {
+                name = "ClearButton",
+                text = "Clear pattern",
+                style =
+                {
+                    backgroundColor = new StyleColor(new Color(0.7f, 0.2f, 0.0f, 1))
+                }
+            };
+            utilsBox.Add(clearButton);
             utilsBox.Add(deleteButton);
+            
             _parent.Add(Spacer());
             _parent.Add(utilsBox);
         }

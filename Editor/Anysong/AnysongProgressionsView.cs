@@ -121,7 +121,7 @@ namespace Anysong
                     AnysongEditorWindow.CurrentSelection.SetTrackIndex(trackIndex);
                     AnysongEditorWindow.CurrentSelection.SetPatternIndex(newPatternIndex);
                     AnysongPatternView.Refresh();
-                    AnysongInspectorView.DrawPattern(AnysongEditorWindow.CurrentSelection.CurrentPatternProperty, false, AnysongPatternView.Refresh);
+                    AnysongInspectorView.DrawPattern(AnysongEditorWindow.CurrentSelection.CurrentPatternProperty, AnysongPatternView.Refresh);
                     AnysongEditorWindow.HandleInspectorLogic();
                     Refresh();
                 };

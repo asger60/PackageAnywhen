@@ -40,7 +40,7 @@ namespace Anysong
         }
 
         private AnysongSection _sectionCopy;
-        AnysongPattern _patternCopy;
+        static AnysongPattern _patternCopy;
 
 
         public class AnySelection
@@ -102,11 +102,13 @@ namespace Anysong
 
             void Refresh()
             {
+                _song.Update();
                 CurrentSongTrack = _anysongObject.Tracks[_currentTrackIndex];
                 CurrentSection = _anysongObject.Sections[_currentSectionIndex];
                 CurrentSectionTrack = CurrentSection.tracks[_currentTrackIndex];
-                _currentPatternIndex = Mathf.Min(_currentPatternIndex, CurrentSectionTrack.patterns.Count - 1);
+                _currentPatternIndex = Mathf.Clamp(_currentPatternIndex, 0, CurrentSectionTrack.patterns.Count - 1);
                 CurrentPattern = CurrentSectionTrack.patterns[_currentPatternIndex];
+                _currentStepIndex = Mathf.Clamp(_currentStepIndex, 0, CurrentPattern.steps.Count - 1);
                 CurrentStep = CurrentPattern.steps[_currentStepIndex];
 
 
@@ -460,10 +462,10 @@ namespace Anysong
         }
 
 
-        static void DeletePattern(int trackIndex)
+        static void DeletePattern()
         {
             Debug.Log("remove pattern");
-            var thisTrack = _currentSelection.CurrentSection.tracks[trackIndex];
+            var thisTrack = _currentSelection.CurrentSectionTrack;
             thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             thisTrack.SetSelectedPattern(thisTrack.patterns.Count - 1);
@@ -584,22 +586,15 @@ namespace Anysong
                     _inspectorPanel.Q<Button>("PasteButton").RegisterCallback((ClickEvent ev) => { PasteSection(); });
                     break;
                 case InspectorModes.Pattern:
-                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, _currentPatternIsBase,
-                        AnysongPatternView.Refresh);
-                    _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) =>
-                    {
-                        Debug.Log("delete pattern");
-                        DeletePattern(_currentSelection.CurrentTrackIndex);
-                    });
-                    _inspectorPanel.Q<Button>("ScrubForward")
-                        .RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
+                    AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, AnysongPatternView.Refresh);
+                    _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) => { DeletePattern(); });
+                    _inspectorPanel.Q<Button>("ScrubForward").RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
                     _inspectorPanel.Q<Button>("ScrubBack").RegisterCallback((ClickEvent ev) => { ScrubPattern(1); });
 
                     _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
                     _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
 
 
-                    HandlePatternUtilsLogic();
                     break;
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack(_currentSelection,
@@ -608,8 +603,6 @@ namespace Anysong
                     break;
                 case InspectorModes.Step:
                     AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, null);
-                    HandleStepUtilsLogic();
-
                     break;
                 case InspectorModes.Progression:
                     AnysongInspectorView.DrawProgression();
@@ -624,17 +617,17 @@ namespace Anysong
 
         public static void HandleInspectorLogic()
         {
-            _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) =>
-            {
-                Debug.Log("delete pattern");
-                DeletePattern(_currentSelection.CurrentTrackIndex);
-            });
-            _inspectorPanel.Q<Button>("ScrubForward")
-                .RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
+            _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) => { DeletePattern(); });
+
+            _inspectorPanel.Q<Button>("ClearButton").RegisterCallback((ClickEvent ev) => { ClearPattern(); });
+
+            _inspectorPanel.Q<Button>("ScrubForward").RegisterCallback((ClickEvent ev) => { ScrubPattern(-1); });
             _inspectorPanel.Q<Button>("ScrubBack").RegisterCallback((ClickEvent ev) => { ScrubPattern(1); });
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
+            _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 
 
@@ -657,23 +650,6 @@ namespace Anysong
         }
 
 
-        void HandlePatternUtilsLogic()
-        {
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
-            _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
-        }
-
-        void HandleStepUtilsLogic()
-        {
-            //_inspectorPanel.Q<Button>("CopyButton")
-            //    .RegisterCallback<ClickEvent>((evt) => { CopyStep(_currentSelection.CurrentStep); });
-            //_inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) =>
-            //{
-            //    PasteStep(_currentSelection.CurrentPattern, _currentSelection.CurrentStep);
-            //});
-        }
-
-
         public static AnysongEditorWindow Create(Object asset)
         {
             var window = CreateWindow<AnysongEditorWindow>($"{asset.name} | {asset.GetType().Name}");
@@ -681,20 +657,21 @@ namespace Anysong
         }
 
 
-        void ClearPattern()
+        static void ClearPattern()
         {
-            var newPattern = new AnysongPattern();
-            newPattern.Init();
-            //CurrentSectionTrack.EditorCurrentPattern = newPattern;
+            Debug.Log("ClearPattern");
+            CurrentSelection.CurrentPattern.Clear();
+            AnysongPatternView.Draw(_sequencesPanel);
+            AnysongPatternView.Refresh();
         }
 
-        void CopyPattern(AnysongPattern pattern)
+        static void CopyPattern(AnysongPattern pattern)
         {
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             _patternCopy = pattern.Clone();
         }
 
-        void PastePattern()
+        static void PastePattern()
         {
             if (_patternCopy == null) return;
             for (var i = 0; i < _currentSelection.CurrentSectionTrack.patterns.Count; i++)
@@ -707,6 +684,7 @@ namespace Anysong
             }
 
             _patternCopy = _patternCopy.Clone();
+            AnysongPatternView.Refresh();
         }
 
         public static VisualElement CreateAddRemoveButtons(bool addButton = true, bool removeButton = true)
