@@ -27,7 +27,7 @@ public class AnysongPatternStep
     }
 
     [Range(0.01f, 1f)] public float duration;
-    [Range(-0.5f, 0.5f)] public float offset;
+    [Range(-1f, 1f)] public float offset;
     [Range(0, 1f)] public float velocity;
 
 

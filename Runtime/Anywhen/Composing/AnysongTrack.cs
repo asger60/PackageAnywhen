@@ -11,14 +11,15 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
         public AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings;
-
+        [Range(0, 10)] [SerializeField] float trackPitch = 1;
+        public float TrackPitch => trackPitch;
 
         public AnimationCurve intensityMappingCurve =
             new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
 
         //public bool monophonic;
         [Range(1, 8)] public int voices = 4;
-        
+
         [NonSerialized] public bool IsMuted = false;
         [NonSerialized] public bool IsSolo = false;
 

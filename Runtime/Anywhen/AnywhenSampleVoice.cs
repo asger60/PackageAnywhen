@@ -10,10 +10,10 @@ namespace Anywhen
         private double _samplePosBuffer1;
         private double _sampleStepFrac;
         private AnywhenNoteClip _currentNoteClip;
-        AnywhenSampleInstrument _thisInstrument;
+        private readonly AnywhenSampleInstrument _thisInstrument;
 
-
-        public AnywhenSampleVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
+        public AnywhenSampleVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings,
+            trackSettings)
         {
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
         }
@@ -117,7 +117,7 @@ namespace Anywhen
                     }
                 }
 
-                _samplePosBuffer1 += (_sampleStepFrac * CurrentPitch);
+                _samplePosBuffer1 += (_sampleStepFrac * CurrentPitch * CurrentTrack.TrackPitch);
             }
 
             return data;

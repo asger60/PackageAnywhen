@@ -36,21 +36,20 @@ namespace Anywhen
         {
             public AnywhenInstrument instrument;
             public AnysongTrack track;
-
             public AnywhenVoiceBase[] Voices;
-
-            public PlayerTracks(AnywhenInstrument instrument, AnysongTrack type, AnywhenVoiceBase[] voices)
+            public float trackPitch = 1;
+            public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices)
             {
                 this.instrument = instrument;
-                track = type;
+                this.track = track;
                 Voices = voices;
+                trackPitch = track.TrackPitch;
             }
 
             public AnywhenVoiceBase GetVoice()
             {
-                for (var i = 0; i < Voices.Length; i++)
+                foreach (var voice in Voices)
                 {
-                    var voice = Voices[i];
                     if (voice.HasScheduledPlay) continue;
                     if (voice.IsReady)
                     {

@@ -35,6 +35,7 @@ namespace Anywhen.Synth
 
         public void Init()
         {
+            _pitch = 1;
             _sampleRate = AnywhenRuntime.SampleRate;
             _isActive = true;
             switch (_settings.oscillatorType)
@@ -154,11 +155,17 @@ namespace Anywhen.Synth
             return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
         }
 
+        private float _pitch;
 
-        private void set_freq(float freq__hz, int sample_rate)
+        public void SetPitchRaw(float pitch)
         {
-            float freq__ppsmp = ((freq__hz * _pitchModAmount) + _fineTune) / sample_rate; // periods per sample
-            _freqPhPSmp = (uint)(freq__ppsmp * PHASE_MAX);
+            _pitch = pitch;
+        }
+
+        private void set_freq(float freqHz, int sampleRate)
+        {
+            float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample
+            _freqPhPSmp = (uint)(freqPpsmp * PHASE_MAX);
         }
 
         /// Basic oscillators
@@ -180,7 +187,6 @@ namespace Anywhen.Synth
         float SineTaylor()
         {
             float ph01 = _phase / PHASE_MAX;
-
             return (float)SinT(ph01 * 6.28318530717959f, 20) * _amp;
         }
 

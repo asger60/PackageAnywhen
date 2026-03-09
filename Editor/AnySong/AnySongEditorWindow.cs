@@ -65,8 +65,8 @@ namespace Anysong
             public SerializedProperty CurrentStepProperty;
             public SerializedProperty CurrentPatternProperty;
 
-            private AnysongObject _anysongObject;
-            private SerializedObject _song;
+            private readonly AnysongObject _anysongObject;
+            private readonly SerializedObject _song;
 
             public AnySelection(AnysongObject currentSong)
             {

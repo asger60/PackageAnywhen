@@ -37,6 +37,7 @@ namespace Anywhen.Synth
         private SynthVoiceGroup[] _voices;
 
         private SynthControlBase[] _voiceFrequencyModifiers;
+
         //private SynthControlBase[] _amplitudeModifiers;
         private SynthControlBase[] _filterModifiers;
 
@@ -206,9 +207,12 @@ namespace Anywhen.Synth
             }
         }
 
+        AnysongTrack _currentTrack;
 
-        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
+        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings,
+            trackSettings)
         {
+            _currentTrack = trackSettings;
             SetPreset(instrumentSettings as AnywhenSynthPreset);
 
             if (FreqTab == null)
@@ -257,7 +261,8 @@ namespace Anywhen.Synth
                 for (var i = 0; i < voice.Oscillators.Length; i++)
                 {
                     var osc = voice.Oscillators[i];
-                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64), AnywhenRuntime.SampleRate);
+                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64),
+                        AnywhenRuntime.SampleRate);
                     osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                 }
             }
@@ -330,8 +335,9 @@ namespace Anywhen.Synth
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
                     {
-                        voiceFreqMod *= frequencyModifier.Process() * (float)CurrentPitch;
+                        voiceFreqMod *= frequencyModifier.Process();
                     }
+                    voiceFreqMod *= (float)CurrentPitch;
 
                     // Generate oscillator output
                     float oscillatorOutput = 0;
@@ -344,6 +350,7 @@ namespace Anywhen.Synth
                             if (!synthOscillator.IsActive) continue;
 
                             synthOscillator.SetPitchMod(voiceFreqMod);
+                            synthOscillator.SetPitchRaw(CurrentTrack.TrackPitch);
                             oscillatorOutput += synthOscillator.Process();
                             totalActiveOsc++;
                         }

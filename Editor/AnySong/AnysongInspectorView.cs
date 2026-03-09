@@ -153,6 +153,8 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
                 null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackPitch"),
+                null));
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
 
