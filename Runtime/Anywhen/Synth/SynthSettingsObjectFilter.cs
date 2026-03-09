@@ -8,7 +8,8 @@ using UnityEngine;
         {
             LowPass,
             BandPass,
-            Formant
+            Formant,
+            Ladder
         }
 
         public FilterTypes filterType;
@@ -22,6 +23,16 @@ using UnityEngine;
         }
 
         public LowPassSettings lowPassSettings;
+
+        [Serializable]
+        public struct LadderSettings
+        {
+            [Range(1, 4)] public int oversampling;
+            [Range(10, 24000)] public float cutoffFrequency;
+            [Range(0, 1)] public float resonance;
+        }
+
+        public LadderSettings ladderSettings;
 
         [Serializable]
         public struct BandPassSettings
@@ -45,6 +56,10 @@ using UnityEngine;
             lowPassSettings.oversampling = 2;
             lowPassSettings.cutoffFrequency = 24000;
             lowPassSettings.resonance = 0.25f;
+
+            ladderSettings.oversampling = 2;
+            ladderSettings.cutoffFrequency = 24000;
+            ladderSettings.resonance = 0.25f;
 
             bandPassSettings.bandWidth = 10;
             bandPassSettings.frequency = 1000;

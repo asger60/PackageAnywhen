@@ -9,7 +9,7 @@ namespace Anywhen
     {
         public bool IsReady => _playbackQueue.Count == 0 && !IsPlaying;
         protected AnysongTrack CurrentTrack;
-        protected ADSR adsr = new();
+        protected ADSR AmplitudeEnvelope = new();
         protected bool IsPlaying;
         public bool HasScheduledPlay => _playbackQueue.Count > 0;
         private readonly List<PlaybackSettings> _playbackQueue = new List<PlaybackSettings>();
@@ -59,8 +59,8 @@ namespace Anywhen
             CurrentPitch = 1;
             SetPitchLFO(CurrentTrack.pitchLFOSettings);
             SetEnvelope(CurrentTrack.trackEnvelope);
-            adsr.Reset();
-            adsr.SetGate(true);
+            AmplitudeEnvelope.Reset();
+            AmplitudeEnvelope.SetGate(true);
             if (CurrentTrack.pitchLFOSettings is { enabled: true, retrigger: true }) PitchLFO.NoteOn();
         }
 
@@ -74,7 +74,7 @@ namespace Anywhen
 
             if (AudioSettings.dspTime >= CurrentPlaybackSettings.StopTime)
             {
-                adsr.SetGate(false);
+                AmplitudeEnvelope.SetGate(false);
             }
         }
 
@@ -82,19 +82,19 @@ namespace Anywhen
 
         protected void SetReady()
         {
-            adsr.SetGate(false);
+            AmplitudeEnvelope.SetGate(false);
             IsPlaying = false;
         }
 
         protected void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
         {
-            adsr.SetAttackRate(envelopeSettings.attack * AnywhenRuntime.SampleRate);
-            adsr.SetDecayRate(envelopeSettings.decay * AnywhenRuntime.SampleRate);
-            adsr.SetReleaseRate(envelopeSettings.release * AnywhenRuntime.SampleRate);
-            adsr.SetSustainLevel(envelopeSettings.sustain);
-            adsr.Reset();
-            adsr.SetTargetRatioA(0.3f);
-            adsr.SetTargetRatioDR(0.3f);
+            AmplitudeEnvelope.SetAttackRate(envelopeSettings.attack * AnywhenRuntime.SampleRate);
+            AmplitudeEnvelope.SetDecayRate(envelopeSettings.decay * AnywhenRuntime.SampleRate);
+            AmplitudeEnvelope.SetReleaseRate(envelopeSettings.release * AnywhenRuntime.SampleRate);
+            AmplitudeEnvelope.SetSustainLevel(envelopeSettings.sustain);
+            AmplitudeEnvelope.Reset();
+            AmplitudeEnvelope.SetTargetRatioA(0.3f);
+            AmplitudeEnvelope.SetTargetRatioDR(0.3f);
         }
 
         protected void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)

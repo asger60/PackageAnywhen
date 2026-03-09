@@ -31,7 +31,7 @@ namespace Anywhen.Synth
         {
             Init(AnywhenRuntime.SampleRate);
             _q = 5;
-            settings = newSettings;
+            Settings = newSettings;
         }
 
 
@@ -46,7 +46,7 @@ namespace Anywhen.Synth
 
         public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
         {
-            settings = settingsObjectFilter;
+            Settings = settingsObjectFilter;
             SetFrequency(settingsObjectFilter.bandPassSettings.frequency);
             _q = settingsObjectFilter.bandPassSettings.bandWidth;
         }

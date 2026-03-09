@@ -128,18 +128,18 @@ public class SynthSettingsInspector : UnityEditor.Editor
 
         if (_showAmpMods)
         {
-            foreach (var ampMod in _settingsObject.amplitudeModifiers)
-            {
-                switch (ampMod)
-                {
-                    case SynthSettingsObjectLFO lfoMod:
-                        SynthLfoInspector.Draw(this, lfoMod, "amplitudeModifiers");
-                        break;
-                    case SynthSettingsObjectEnvelope envMod:
-                        SynthEnvelopeInspector.Draw(this, envMod, "amplitudeModifiers");
-                        break;
-                }
-            }
+            //foreach (var ampMod in _settingsObject.amplitudeModifiers)
+            //{
+            //    switch (ampMod)
+            //    {
+            //        case SynthSettingsObjectLFO lfoMod:
+            //            SynthLfoInspector.Draw(this, lfoMod, "amplitudeModifiers");
+            //            break;
+            //        case SynthSettingsObjectEnvelope envMod:
+            //            SynthEnvelopeInspector.Draw(this, envMod, "amplitudeModifiers");
+            //            break;
+            //    }
+            //}
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("add envelope modifier"))

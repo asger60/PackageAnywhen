@@ -1,10 +1,8 @@
-using UnityEngine;
-
 namespace Anywhen.Synth.Filter
 {
     public abstract class SynthFilterBase
     {
-        public SynthSettingsObjectFilter settings;
+        protected SynthSettingsObjectFilter Settings;
         public abstract void SetExpression(float data);
 
         public abstract void SetSettings(SynthSettingsObjectFilter newSettings);
@@ -13,8 +11,7 @@ namespace Anywhen.Synth.Filter
 
         public abstract void HandleModifiers(float mod1);
         
-
-        public virtual void process_mono_stride(float[] samples, int sample_count, int offset, int stride)
+        public virtual void process_mono_stride(float[] samples, int sampleCount, int offset, int stride)
         {
         }
 

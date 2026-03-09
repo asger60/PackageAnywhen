@@ -17,7 +17,7 @@ namespace Anywhen
         {
             CurrentTrack = trackSettings;
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
-            adsr = new ADSR();
+            AmplitudeEnvelope = new ADSR();
             PitchLFO = new SynthControlLFO();
             CurrentSampleRate = sampleRate;
         }
@@ -51,7 +51,7 @@ namespace Anywhen
             HandleQueue();
 
 
-            if (adsr.IsIdle)
+            if (AmplitudeEnvelope.IsIdle)
             {
                 SetReady();
                 return data;
@@ -80,7 +80,7 @@ namespace Anywhen
             {
                 float ampMod = 1;
 
-                ampMod *= adsr.Process();
+                ampMod *= AmplitudeEnvelope.Process();
 
                 if (CurrentTrack.pitchLFOSettings.enabled)
                 {

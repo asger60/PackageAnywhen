@@ -121,7 +121,7 @@ namespace Anywhen.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            settings = newSettings;
+            Settings = newSettings;
             Init(AnywhenRuntime.SampleRate);
         }
 

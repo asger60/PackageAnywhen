@@ -83,7 +83,7 @@ namespace Anywhen.Synth
         {
             _voices = new SynthVoiceGroup[_preset.oscillatorSettings.Length];
             _voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
-            _amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
+            //_amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
             _filterModifiers = new SynthControlBase[_preset.filterModifiers.Length];
             _filters = new SynthFilterBase[_preset.filterSettings.Length];
 
@@ -107,26 +107,24 @@ namespace Anywhen.Synth
                 switch (_preset.filterSettings[i].filterType)
                 {
                     case SynthSettingsObjectFilter.FilterTypes.LowPass:
-
                         var newFilter = new SynthFilterLowPass();
                         newFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFilter;
-
-
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.BandPass:
-
                         var newHpFilter = new SynthFilterBandPass(_sampleRate);
                         newHpFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newHpFilter;
-
                         break;
                     case SynthSettingsObjectFilter.FilterTypes.Formant:
-
-                        var newFormantFilter = new SynthFilterBandPass(_sampleRate);
+                        var newFormantFilter = new SynthFilterFormant();
                         newFormantFilter.SetSettings(_preset.filterSettings[i]);
                         _filters[i] = newFormantFilter;
-
+                        break;
+                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                        var newLadderFilter = new SynthFilterLadder();
+                        newLadderFilter.SetSettings(_preset.filterSettings[i]);
+                        _filters[i] = newLadderFilter;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -156,27 +154,27 @@ namespace Anywhen.Synth
                 }
             }
 
-            for (int i = 0; i < _preset.amplitudeModifiers.Length; i++)
-            {
-                var ampModSetting = _preset.amplitudeModifiers[i];
-                switch (ampModSetting)
-                {
-                    case SynthSettingsObjectLFO lfo:
-                    {
-                        var newController = new SynthControlLFO();
-                        newController.UpdateSettings(lfo);
-                        _amplitudeModifiers[i] = newController;
-                        break;
-                    }
-                    case SynthSettingsObjectEnvelope envelope:
-                    {
-                        var newController = new SynthControlEnvelope();
-                        newController.UpdateSettings(envelope);
-                        _amplitudeModifiers[i] = newController;
-                        break;
-                    }
-                }
-            }
+            //for (int i = 0; i < _preset.amplitudeModifiers.Length; i++)
+            //{
+            //    var ampModSetting = _preset.amplitudeModifiers[i];
+            //    switch (ampModSetting)
+            //    {
+            //        case SynthSettingsObjectLFO lfo:
+            //        {
+            //            var newController = new SynthControlLFO();
+            //            newController.UpdateSettings(lfo);
+            //            _amplitudeModifiers[i] = newController;
+            //            break;
+            //        }
+            //        case SynthSettingsObjectEnvelope envelope:
+            //        {
+            //            var newController = new SynthControlEnvelope();
+            //            newController.UpdateSettings(envelope);
+            //            _amplitudeModifiers[i] = newController;
+            //            break;
+            //        }
+            //    }
+            //}
 
             for (int i = 0; i < _preset.filterModifiers.Length; i++)
             {
@@ -215,7 +213,7 @@ namespace Anywhen.Synth
             SetPreset(instrumentSettings as AnywhenSynthPreset);
             CurrentTrack = trackSettings;
             _sampleRate = sampleRate;
-            adsr = new ADSR();
+            AmplitudeEnvelope = new ADSR();
             PitchLFO = new SynthControlLFO();
 
             if (FreqTab == null)
@@ -272,10 +270,10 @@ namespace Anywhen.Synth
                 }
             }
 
-            foreach (var ampModifier in _amplitudeModifiers)
-            {
-                ampModifier.NoteOn();
-            }
+            //foreach (var ampModifier in _amplitudeModifiers)
+            //{
+            //    ampModifier.NoteOn();
+            //}
 
             foreach (var filterModifier in _filterModifiers)
             {
@@ -313,10 +311,10 @@ namespace Anywhen.Synth
                         frequencyModifier.DoUpdate();
                     }
 
-                    foreach (var amplitudeModifier in _amplitudeModifiers)
-                    {
-                        amplitudeModifier.DoUpdate();
-                    }
+                    //foreach (var amplitudeModifier in _amplitudeModifiers)
+                    //{
+                    //    amplitudeModifier.DoUpdate();
+                    //}
 
                     foreach (var filterModifier in _filterModifiers)
                     {
@@ -325,7 +323,7 @@ namespace Anywhen.Synth
 
                     // Calculate modulation values
                     float ampMod = 1;
-                    ampMod *= adsr.Process();
+                    ampMod *= AmplitudeEnvelope.Process() * CurrentPlaybackSettings.Volume;
                     //foreach (var ampModifier in _amplitudeModifiers)
                     //{
                     //    ampMod *= ampModifier.Process() * CurrentPlaybackSettings.Volume;

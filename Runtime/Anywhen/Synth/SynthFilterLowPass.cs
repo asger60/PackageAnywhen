@@ -121,10 +121,10 @@ namespace Anywhen.Synth
 
         public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
         {
-            settings = settingsObjectFilter;
-            _reso = settings.lowPassSettings.resonance;
-            SetCutOff(settings.lowPassSettings.cutoffFrequency);
-            SetOversampling(settings.lowPassSettings.oversampling);
+            Settings = settingsObjectFilter;
+            _reso = Settings.lowPassSettings.resonance;
+            SetCutOff(Settings.lowPassSettings.cutoffFrequency);
+            SetOversampling(Settings.lowPassSettings.oversampling);
         }
 
 
@@ -137,7 +137,7 @@ namespace Anywhen.Synth
         {
             _v = V_t * 0.5f; // 1/2V_t
             _cutoffMod = 1;
-            settings = newSettings;
+            Settings = newSettings;
         }
 
 

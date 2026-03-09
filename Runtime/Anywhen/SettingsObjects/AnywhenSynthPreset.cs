@@ -18,7 +18,7 @@ using UnityEngine;
         public SynthSettingsObjectOscillator[] oscillatorSettings;
         public SynthSettingsObjectFilter[] filterSettings;
         public SynthSettingsObjectBase[] pitchModifiers;
-        public SynthSettingsObjectBase[] amplitudeModifiers;
+        //public SynthSettingsObjectBase[] amplitudeModifiers;
         public SynthSettingsObjectBase[] filterModifiers;
 
 
@@ -43,7 +43,7 @@ using UnityEngine;
             {
                 var control = controls[i];
                 if (filterModifiers.Contains(control) ||
-                    amplitudeModifiers.Contains(control) || pitchModifiers.Contains(control))
+                    /*amplitudeModifiers.Contains(control) || */pitchModifiers.Contains(control))
                     continue;
 
                 if (filterSettings.Contains(control) || oscillatorSettings.Contains(control))
@@ -55,7 +55,7 @@ using UnityEngine;
             oscillatorSettings = oscillatorSettings.Where(x => x != null).ToArray();
             filterSettings = filterSettings.Where(x => x != null).ToArray();
             pitchModifiers = pitchModifiers.Where(x => x != null).ToArray();
-            amplitudeModifiers = amplitudeModifiers.Where(x => x != null).ToArray();
+            //amplitudeModifiers = amplitudeModifiers.Where(x => x != null).ToArray();
             filterModifiers = filterModifiers.Where(x => x != null).ToArray();
         }
 

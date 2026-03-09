@@ -52,6 +52,14 @@ public class SynthFilterInspector : UnityEditor.Editor
                 settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
                     settings.formantSettings.vowel, 1, 6);
                 break;
+            case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                settings.ladderSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
+                    settings.ladderSettings.oversampling, 1, 4);
+                settings.ladderSettings.cutoffFrequency =
+                    EditorGUILayout.Slider("CutOff", settings.ladderSettings.cutoffFrequency, 1, 24000);
+                settings.ladderSettings.resonance =
+                    EditorGUILayout.Slider("Resonance", settings.ladderSettings.resonance, 0, 1);
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
