@@ -1,21 +1,21 @@
-using Anywhen;
-using Anywhen.SettingsObjects;
-
-public class AnywhenComposerPlayer : AnywhenPlayerBase
+namespace Anywhen
 {
-
-    public override void Play()
+    public class AnywhenComposerPlayer : AnywhenPlayerBase
     {
-        base.Play();
-        var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
-        AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
-    }
 
-    protected override void OnBar()
-    {
-        if (!IsRunning) return;
-        base.OnBar();
-        var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
-        AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
+        public override void Play()
+        {
+            base.Play();
+            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
+        }
+
+        protected override void OnBar()
+        {
+            if (!IsRunning) return;
+            base.OnBar();
+            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
+        }
     }
 }

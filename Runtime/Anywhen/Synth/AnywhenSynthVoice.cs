@@ -26,6 +26,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
+    [Serializable]
     public class AnywhenSynthVoice : AnywhenVoiceBase
     {
         [Serializable]
@@ -288,7 +289,6 @@ namespace Anywhen.Synth
         {
             float[] buffer = new float[bufferSize];
             if (!_isInitialized) return buffer;
-
             HandleQueue();
 
             if (!IsPlaying)

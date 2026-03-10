@@ -1,10 +1,12 @@
-﻿using Anywhen.Composing;
+﻿using System;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
 
 namespace Anywhen
 {
+    [Serializable]
     public class AnywhenSampleVoice : AnywhenVoiceBase
     {
         private double _samplePosBuffer1;

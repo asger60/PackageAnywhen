@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 namespace Anywhen
 {
+    [Serializable]
     public abstract class AnywhenVoiceBase
     {
         public bool IsReady => _playbackQueue.Count == 0 && !IsPlaying;
@@ -12,12 +14,13 @@ namespace Anywhen
         protected ADSR AmplitudeEnvelope = new();
         protected bool IsPlaying;
         public bool HasScheduledPlay => _playbackQueue.Count > 0;
-        private readonly List<PlaybackSettings> _playbackQueue = new List<PlaybackSettings>();
+        private List<PlaybackSettings> _playbackQueue = new List<PlaybackSettings>();
         protected SynthControlLFO PitchLFO;
         protected double CurrentPitch;
         protected float CurrentSampleRate;
-        
 
+
+        [Serializable]
         public struct PlaybackSettings
         {
             public double PlayTime;
@@ -36,15 +39,6 @@ namespace Anywhen
 
         protected PlaybackSettings CurrentPlaybackSettings;
 
-        
-        
-        public void NoteOn(PlaybackSettings playbackSettings)
-        {
-            if (AudioSettings.dspTime > playbackSettings.PlayTime) return;
-            IsPlaying = true;
-            _playbackQueue.Add(playbackSettings);
-        }
-
         protected AnywhenVoiceBase(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
         {
             CurrentSampleRate = AudioSettings.outputSampleRate;
@@ -53,6 +47,18 @@ namespace Anywhen
             PitchLFO = new SynthControlLFO();
         }
 
+
+        public void NoteOn(PlaybackSettings playbackSettings)
+        {
+            if (AudioSettings.dspTime > playbackSettings.PlayTime)
+            {
+                Debug.LogWarning($"NoteOn {playbackSettings.Note} is scheduled to play in the past");
+                return;
+            }
+
+            IsPlaying = true;
+            _playbackQueue.Add(playbackSettings);
+        }
 
 
         public virtual float GetDurationToEnd()
@@ -75,7 +81,6 @@ namespace Anywhen
 
         protected void HandleQueue()
         {
-            Debug.Log("handle queue");
             while (_playbackQueue.Count > 0 && AudioSettings.dspTime >= _playbackQueue[0].PlayTime)
             {
                 StartPlay(_playbackQueue[0]);

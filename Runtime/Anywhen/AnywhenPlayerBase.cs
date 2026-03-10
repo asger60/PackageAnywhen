@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
-    //[ExecuteInEditMode]
+    [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenPlayerBase : MonoBehaviour
     {
@@ -84,6 +84,10 @@ namespace Anywhen
             _audioSource.playOnAwake = true;
             _audioSource.clip = myClip;
             _audioSource.Play();
+            _tracksList.Clear();
+            IsRunning = false;
+            IsPlaying = false;
+            Stop();
         }
 
         public void SetupTracks(List<AnysongTrack> tracks = null)
@@ -195,6 +199,7 @@ namespace Anywhen
                 var voice = GetVoice(track);
                 if (voice == null)
                 {
+                    print("no voice for track: " + track);
                     continue;
                 }
 
@@ -224,6 +229,9 @@ namespace Anywhen
                 Debug.Log("Destroyed in play mode");
                 _tracksList.Clear();
                 _currentSong = null;
+                IsPlaying = false;
+                IsRunning = false;
+                Stop();
             }
             
             ReleaseFromMetronome();
@@ -316,7 +324,6 @@ namespace Anywhen
                 }
             }
 
-
             CurrentBar = -1;
             ResetSection();
             AttachToMetronome();
@@ -348,8 +355,8 @@ namespace Anywhen
         {
             foreach (var voice in _tracksList)
             {
-                if (IsDrums(track.trackType) && voice.instrument != track.instrument) continue;
-                if (track == voice.track)
+                //if (IsDrums(track.trackType) && voice.instrument != track.instrument) continue;
+                //if (track == voice.track)
                     return voice.GetVoice();
             }
 

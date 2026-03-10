@@ -163,8 +163,8 @@ namespace Anysong
             _currentRuntimeSongPlayer = composerPlayer;
             CurrentSong = songObject;
             _currentRuntimeSongPlayer.SetupTracks();
-
             _currentRuntimeSongPlayer.LoadInstruments();
+
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
@@ -333,7 +333,8 @@ namespace Anysong
                 AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
             });
 
-            _transportPanel.Q<Slider>("TestIntensitySlider").RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
+            _transportPanel.Q<Slider>("TestIntensitySlider")
+                .RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
         }
 
         private static void OnTick16()
@@ -354,7 +355,8 @@ namespace Anysong
         static void OnBar()
         {
             if (CurrentSong != CurrentRuntimeSongPlayer.CurrentSong) return;
-            AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex, _currentSelection.CurrentSectionIndex);
+            AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex,
+                _currentSelection.CurrentSectionIndex);
 
             var ints = CurrentRuntimeSongPlayer.EditorGetPlayingTrackPatternIndexes();
             for (var i = 0; i < ints.Length; i++)
@@ -623,7 +625,10 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
+            {
+                CopyPattern(_currentSelection.CurrentPattern);
+            });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 
