@@ -173,7 +173,6 @@ namespace Anysong
                     .FindPropertyRelative("patternProgressionType")
                     .enumValueIndex;
 
-            Debug.Log(progressionType);
 
             _parent.Add(CreatePropertyFieldWithCallback(
                 AnysongEditorWindow.CurrentSelection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType"),
