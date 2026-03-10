@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace Anywhen
 {
+    [ExecuteInEditMode]
     public class AnywhenComposerPlayer : AnywhenPlayerBase
     {
-
         public override void Play()
         {
             base.Play();

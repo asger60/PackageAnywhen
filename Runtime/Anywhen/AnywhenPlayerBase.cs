@@ -9,7 +9,6 @@ using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
-    [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenPlayerBase : MonoBehaviour
     {
@@ -356,7 +355,7 @@ namespace Anywhen
             foreach (var voice in _tracksList)
             {
                 //if (IsDrums(track.trackType) && voice.instrument != track.instrument) continue;
-                //if (track == voice.track)
+                if (track == voice.track)
                     return voice.GetVoice();
             }
 

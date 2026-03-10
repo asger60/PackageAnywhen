@@ -209,7 +209,6 @@ namespace Anysong
             if (_isPLaying)
             {
                 CurrentSong.Play(AnysongObject.SongPlayModes.Edit);
-
                 AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
                 AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
