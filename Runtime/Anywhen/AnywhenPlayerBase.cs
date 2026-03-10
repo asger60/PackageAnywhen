@@ -75,7 +75,7 @@ namespace Anywhen
             }
         }
 
-        private readonly List<PlayerTracks> _tracksList = new();
+        private List<PlayerTracks> _tracksList = new();
         public List<PlayerTracks> TracksList => _tracksList;
         private AudioSource _audioSource;
 
