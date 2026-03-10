@@ -1,3 +1,5 @@
+using Anywhen.SettingsObjects;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Anysong
@@ -24,10 +26,24 @@ namespace Anysong
                 }
             };
 
-            _patternNoteOfsetUp = new Button { text = "↑" };
-            _patternNoteOfsetDown = new Button { text = "↓" };
-            _monoButton = new Button { text = "Mono" };
-            _polyButton = new Button { text = "Poly" };
+            bool isPercussion = AnysongEditorWindow.CurrentSelection.CurrentSongTrack.instrument is AnywhenSampleInstrument sampleInstrument &&
+                                sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
+
+            if (!isPercussion)
+            {
+                _patternNoteOfsetUp = new Button { text = "↑" };
+                _patternNoteOfsetDown = new Button { text = "↓" };
+                _monoButton = new Button { text = "Mono" };
+                _polyButton = new Button { text = "Poly" };
+                _patternNoteOfsetUp.clicked += OnOffsetUp;
+                _patternNoteOfsetDown.clicked += OnOffsetDown;
+                _monoButton.clicked += OnMono;
+                _polyButton.clicked += OnPoly;
+                _patternNoteOfsetUp.AddToClassList("progression-select-button");
+                _patternNoteOfsetDown.AddToClassList("progression-select-button");
+                _polyButton.AddToClassList("progression-select-button");
+                _monoButton.AddToClassList("progression-select-button");
+            }
 
             _pitchButton = new Button() { text = "Pitch" };
             _velocityButton = new Button() { text = "Velocity" };
@@ -37,17 +53,9 @@ namespace Anysong
             _pitchButton.clicked += OnEditPitch;
             _velocityButton.clicked += OnEditVelocity;
             _durationButton.clicked += OnEditLength;
-            _patternNoteOfsetUp.clicked += OnOffsetUp;
-            _patternNoteOfsetDown.clicked += OnOffsetDown;
-            _monoButton.clicked += OnMono;
-            _polyButton.clicked += OnPoly;
             _chanceButton.clicked += OnChance;
 
 
-            _patternNoteOfsetUp.AddToClassList("progression-select-button");
-            _patternNoteOfsetDown.AddToClassList("progression-select-button");
-            _polyButton.AddToClassList("progression-select-button");
-            _monoButton.AddToClassList("progression-select-button");
             _pitchButton.AddToClassList("progression-select-button");
             _velocityButton.AddToClassList("progression-select-button");
             _durationButton.AddToClassList("progression-select-button");
@@ -60,17 +68,24 @@ namespace Anysong
             controls.Add(_velocityButton);
             controls.Add(_durationButton);
             controls.Add(_chanceButton);
-            controls.Add(MakeSpacer());
 
 
-            controls.Add(_monoButton);
-            controls.Add(_polyButton);
-            controls.Add(MakeSpacer());
+            if (!isPercussion)
+            {
+                controls.Add(MakeSpacer());
+                controls.Add(_monoButton);
+                controls.Add(_polyButton);
+                controls.Add(MakeSpacer());
+                controls.Add(_patternNoteOfsetUp);
+                controls.Add(_patternNoteOfsetDown);
+                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrack.voices == 1)
+                    OnMono();
+                else
+                    OnPoly();
+            }
 
-
-            controls.Add(_patternNoteOfsetUp);
-            controls.Add(_patternNoteOfsetDown);
             controls.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEvent);
+
 
             return controls;
         }
@@ -109,13 +124,13 @@ namespace Anysong
 
         private static void OnMono()
         {
-            AnysongPatternView.SetMonoOrPoly(false);
+            AnysongPatternView.SetPolyfonic(false);
             RefreshMonoPolyButtons();
         }
 
         private static void OnPoly()
         {
-            AnysongPatternView.SetMonoOrPoly(true);
+            AnysongPatternView.SetPolyfonic(true);
             RefreshMonoPolyButtons();
         }
 
@@ -125,7 +140,7 @@ namespace Anysong
             _velocityButton.RemoveFromClassList("editing");
             _durationButton.RemoveFromClassList("editing");
             _chanceButton.RemoveFromClassList("editing");
-            
+
             if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteLength)
                 _durationButton.AddToClassList("editing");
             else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NotePitch)

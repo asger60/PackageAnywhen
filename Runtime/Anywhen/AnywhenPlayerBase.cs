@@ -24,7 +24,7 @@ namespace Anywhen
         [SerializeField] private AnysongObject currentSong;
         public AnysongObject CurrentSong => currentSong;
 
-
+        float _currentIntensity = 1;
         [SerializeField] protected AudioMixerGroup outputMixerGroup;
 
         public bool IsPlaying { get; private set; }
@@ -38,6 +38,7 @@ namespace Anywhen
             public AnysongTrack track;
             public AnywhenVoiceBase[] Voices;
             public float trackPitch = 1;
+
             public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices)
             {
                 this.instrument = instrument;
@@ -159,8 +160,9 @@ namespace Anywhen
 
                     if (sectionIndex == CurrentSong.CurrentSectionIndex && step.NoteOn)
                     {
-                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(1));
+                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(_currentIntensity));
                         float thisRnd = Random.Range(0, 1f);
+                        
                         if (thisRnd < step.chance && step.mixWeight < thisIntensity && !_isMuted)
                         {
                             TriggerNotePlayback(tickRate, trackIndex, step);
@@ -426,6 +428,7 @@ namespace Anywhen
 
         public virtual void SetIntensity(float value)
         {
+            _currentIntensity = value;
         }
 
         public virtual int[] EditorGetPlayingTrackPatternIndexes()

@@ -20,6 +20,9 @@ namespace Anysong
         static bool _polyfonic;
         public static bool IsPolyfonic => _polyfonic;
         static AnysongPatternStep _currentSelectedPatternStep;
+        private static int _currentStepIndex;
+        static bool _isPercussionTrack;
+        static bool _isMonoVoice;
 
         public enum EditModes
         {
@@ -31,6 +34,8 @@ namespace Anysong
 
         static EditModes _currentEditMode;
         public static EditModes CurrentEditMode => _currentEditMode;
+        static AnysongPatternStep _movePatternStep;
+        static AnysongPatternStep _preMovePatternStepCopy;
 
         public static void Clear()
         {
@@ -93,6 +98,13 @@ namespace Anysong
             }
 
             _currentPatternNoteIndex = 0;
+            _isPercussionTrack = AnysongEditorWindow.CurrentSelection.CurrentSongTrack.instrument is AnywhenSampleInstrument sampleInstrument
+                                 && sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
+            if (_isPercussionTrack)
+                SetPolyfonic(true);
+            _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrack.voices == 1;
+
+
 
             AddCallbacks();
         }
@@ -121,7 +133,7 @@ namespace Anysong
             Refresh();
         }
 
-        public static void SetMonoOrPoly(bool polyfonic)
+        public static void SetPolyfonic(bool polyfonic)
         {
             _polyfonic = polyfonic;
             Refresh();
@@ -209,8 +221,6 @@ namespace Anysong
             }
         }
 
-        static AnysongPatternStep _movePatternStep;
-
 
         private static void DeleteStep(AnysongPatternStep patternStep)
         {
@@ -219,7 +229,6 @@ namespace Anysong
             Refresh();
         }
 
-        static AnysongPatternStep _preMovePatternStepCopy;
 
         static void MoveStep(AnysongPatternStep copy, int stepIndex)
         {
@@ -274,6 +283,33 @@ namespace Anysong
                         height = 45,
                     }
                 };
+                string text = "";
+                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrack.instrument is AnywhenSampleInstrument
+                    {
+                        clipSelectType: AnywhenSampleInstrument.ClipSelectType.Percussion
+                    })
+                {
+                    text = AnywhenSampleInstrument.MidiDrumMappings[rowIndex].Name;
+                }
+                else
+                {
+                    if ((rowIndex + noteStartIndex) % 7 == 0) text = "C" + (rowIndex + noteStartIndex) / 7;
+                }
+
+                Label rowLabel = new Label
+                {
+                    text = text,
+                    style =
+                    {
+                        alignContent = Align.Center,
+                        alignSelf = Align.FlexEnd,
+                        height = 15,
+                        width = 9,
+                        fontSize = 9,
+                        rotate = new StyleRotate(new Rotate(-90))
+                    }
+                };
+                rowElement.Add(rowLabel);
                 for (int stepIndex = 0; stepIndex < 16; stepIndex++)
                 {
                     if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
@@ -356,7 +392,6 @@ namespace Anysong
             _currentSelectedPatternStep = patternStep;
         }
 
-        private static int _currentStepIndex;
 
         public static void SetStepIndex(int stepIndex)
         {

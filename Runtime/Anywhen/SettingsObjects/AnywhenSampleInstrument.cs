@@ -18,16 +18,16 @@ namespace Anywhen.SettingsObjects
         {
             new MidiDrumMapping { Name = "Kick1", MidiNote = 36 },
             new MidiDrumMapping { Name = "Kick2", MidiNote = 35 },
-            new MidiDrumMapping { Name = "Rimshot", MidiNote = 37 },
-            new MidiDrumMapping { Name = "Snare", MidiNote = 38 },
-            new MidiDrumMapping { Name = "HandClap", MidiNote = 39 },
+            new MidiDrumMapping { Name = "Click", MidiNote = 37 },
+            new MidiDrumMapping { Name = "Snare1", MidiNote = 38 },
+            new MidiDrumMapping { Name = "Clap", MidiNote = 39 },
             new MidiDrumMapping { Name = "Snare2", MidiNote = 40 },
             new MidiDrumMapping { Name = "Tom1", MidiNote = 41 },
-            new MidiDrumMapping { Name = "Hihat", MidiNote = 42 },
+            new MidiDrumMapping { Name = "HH1", MidiNote = 42 },
             new MidiDrumMapping { Name = "Tom2", MidiNote = 43 },
-            new MidiDrumMapping { Name = "Hihat2", MidiNote = 44 },
+            new MidiDrumMapping { Name = "HH2", MidiNote = 44 },
             new MidiDrumMapping { Name = "Tom3", MidiNote = 45 },
-            new MidiDrumMapping { Name = "OpenHihat", MidiNote = 46 },
+            new MidiDrumMapping { Name = "OpenHH", MidiNote = 46 },
             new MidiDrumMapping { Name = "Crash", MidiNote = 49 },
         };
 
@@ -141,18 +141,25 @@ namespace Anywhen.SettingsObjects
             switch (clipSelectType)
             {
                 case ClipSelectType.ScalePitchedNotes:
+                    
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
                     int bestDistance = int.MaxValue;
                     int unsignedDistance = 0;
-                    AnywhenNoteClip bestClip = null;
                     foreach (var noteClip in clips)
                     {
                         var thisDist = Mathf.Abs(noteClip.NoteIndex - note);
                         if (thisDist <= bestDistance)
                         {
                             bestDistance = thisDist;
-                            bestClip = noteClip;
                             unsignedDistance = note - noteClip.NoteIndex;
+                        }
+                    }
+                    List<AnywhenNoteClip> clipsList = new List<AnywhenNoteClip>();
+                    foreach (var noteClip in clips)
+                    {
+                        if (noteClip.NoteIndex == bestDistance)
+                        {
+                            clipsList.Add(noteClip);
                         }
                     }
 
@@ -164,7 +171,7 @@ namespace Anywhen.SettingsObjects
 
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(bestClip, pitch, volume);
+                        return new AnywhenNoteClipPlaybackSettings(clipsList[_random.Next(0, clipsList.Count)], pitch, volume);
                     }
 
 
@@ -175,6 +182,7 @@ namespace Anywhen.SettingsObjects
                     }
 
                 case ClipSelectType.UnscaledNotes:
+                    Debug.LogWarning("Unscaled notes are not supported anymore.");
                     lock (_random)
                     {
                         return new AnywhenNoteClipPlaybackSettings(clips[Mathf.Clamp(note, 0, clips.Count)], 1, volume);
@@ -190,8 +198,8 @@ namespace Anywhen.SettingsObjects
                         }
                     }
 
-                    if (percussionClips.Count == 0)
-                        return new AnywhenNoteClipPlaybackSettings();
+                    if (percussionClips.Count == 0) return new AnywhenNoteClipPlaybackSettings();
+                    
                     lock (_random)
                     {
                         return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1, volume);

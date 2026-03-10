@@ -253,10 +253,8 @@ namespace Anysong
 
         static void SetTestIntensity(float value)
         {
-            if (_isPLaying)
-            {
-                CurrentRuntimeSongPlayer.SetIntensity(value);
-            }
+            if (!CurrentRuntimeSongPlayer) return;
+            CurrentRuntimeSongPlayer.SetIntensity(value);
         }
 
 
