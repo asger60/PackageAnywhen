@@ -75,6 +75,7 @@ namespace Anywhen
 
         protected void HandleQueue()
         {
+            Debug.Log("handle queue");
             while (_playbackQueue.Count > 0 && AudioSettings.dspTime >= _playbackQueue[0].PlayTime)
             {
                 StartPlay(_playbackQueue[0]);

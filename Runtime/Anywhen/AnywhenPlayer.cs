@@ -29,16 +29,16 @@ namespace Anywhen
         [SerializeField] private bool playOnAwake;
 
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
+
             Load(songObject);
             SetupTracks(songObject.Tracks);
             if (playOnAwake)
                 Play();
         }
 
-        
 
 #if UNITY_EDITOR
         public void LoadInstruments()
@@ -95,8 +95,6 @@ namespace Anywhen
         }
 
 
-
-
         private void OnDisable()
         {
             ReleaseFromMetronome();
@@ -120,7 +118,7 @@ namespace Anywhen
             {
                 AnywhenMetronome.Instance.SetTempo(currentPlayerTempo);
             }
-            
+
             CurrentBar = 0;
             var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
 
@@ -168,7 +166,7 @@ namespace Anywhen
             }
             else
             {
-                _triggerStepIndex = stepIndex;
+                triggerStepIndex = stepIndex;
             }
         }
 
@@ -186,8 +184,6 @@ namespace Anywhen
                 }
             }
         }
-        
-
 
 
         public void ModifyIntensity(float newIntensity)

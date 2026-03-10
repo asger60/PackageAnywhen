@@ -9,20 +9,18 @@ using Random = UnityEngine.Random;
 
 namespace Anywhen
 {
-    [ExecuteInEditMode]
+    //[ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
     public class AnywhenPlayerBase : MonoBehaviour
     {
         private bool _isMuted;
         protected bool IsRunning;
-        //private int _currentSectionIndex = 0;
-
 
         private float _playerVolume = 1;
-        protected int _triggerStepIndex = -1;
+        protected int triggerStepIndex = -1;
         protected int CurrentBar;
-        [SerializeField] private AnysongObject currentSong;
-        public AnysongObject CurrentSong => currentSong;
+        private AnysongObject _currentSong;
+        public AnysongObject CurrentSong => _currentSong;
 
         float _currentIntensity = 1;
         [SerializeField] protected AudioMixerGroup outputMixerGroup;
@@ -37,7 +35,7 @@ namespace Anywhen
             public AnywhenInstrument instrument;
             public AnysongTrack track;
             public AnywhenVoiceBase[] Voices;
-            public float trackPitch = 1;
+            public float trackPitch;
 
             public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices)
             {
@@ -79,7 +77,7 @@ namespace Anywhen
         public List<PlayerTracks> TracksList => _tracksList;
         private AudioSource _audioSource;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             AudioClip myClip = AudioClip.Create("MySound", 2, 1, 44100, false);
             _audioSource = GetComponent<AudioSource>();
@@ -91,7 +89,7 @@ namespace Anywhen
         public void SetupTracks(List<AnysongTrack> tracks = null)
         {
             _tracksList.Clear();
-            tracks ??= currentSong.Tracks;
+            tracks ??= _currentSong.Tracks;
 
             foreach (var songTrack in tracks)
             {
@@ -129,17 +127,17 @@ namespace Anywhen
 
         private void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
         {
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                if (currentSong.Tracks[trackIndex].IsMuted) continue;
+                if (_currentSong.Tracks[trackIndex].IsMuted) continue;
 
-                for (var sectionIndex = 0; sectionIndex < currentSong.Sections.Count; sectionIndex++)
+                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
                 {
-                    var section = currentSong.Sections[sectionIndex];
+                    var section = _currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
 
 
-                    var track = currentSong.Tracks[trackIndex];
+                    var track = _currentSong.Tracks[trackIndex];
                     var pattern = sectionTrack.GetPlayingPattern();
 
 
@@ -149,9 +147,9 @@ namespace Anywhen
                     {
                         step = pattern.GetStep(stepIndex);
                     }
-                    else if (_triggerStepIndex >= 0)
+                    else if (triggerStepIndex >= 0)
                     {
-                        step = pattern.GetStep(_triggerStepIndex);
+                        step = pattern.GetStep(triggerStepIndex);
                     }
 
                     if (tickRate != AnywhenMetronome.TickRate.None)
@@ -162,7 +160,7 @@ namespace Anywhen
                     {
                         float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(_currentIntensity));
                         float thisRnd = Random.Range(0, 1f);
-                        
+
                         if (thisRnd < step.chance && step.mixWeight < thisIntensity && !_isMuted)
                         {
                             TriggerNotePlayback(tickRate, trackIndex, step);
@@ -172,15 +170,15 @@ namespace Anywhen
             }
 
 
-            if (_triggerStepIndex >= 0)
+            if (triggerStepIndex >= 0)
             {
-                _triggerStepIndex = -1;
+                triggerStepIndex = -1;
             }
         }
 
         protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnysongPatternStep step)
         {
-            var songTrack = currentSong.Tracks[trackIndex];
+            var songTrack = _currentSong.Tracks[trackIndex];
             var noteEvents = step.GetNoteEvents(0);
             foreach (var noteEvent in noteEvents)
             {
@@ -221,6 +219,13 @@ namespace Anywhen
 
         private void OnDestroy()
         {
+            if (Application.isPlaying)
+            {
+                Debug.Log("Destroyed in play mode");
+                _tracksList.Clear();
+                _currentSong = null;
+            }
+            
             ReleaseFromMetronome();
         }
 
@@ -270,13 +275,14 @@ namespace Anywhen
 
             if (!_firstBar)
             {
-                for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
                 {
-                    var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                    var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
                     track.AdvancePlayingPattern();
                 }
 
-                int progress = (int)Mathf.Repeat(CurrentBar, currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
+                int progress = (int)Mathf.Repeat(CurrentBar,
+                    _currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
                 if (progress == 0)
                 {
                     NextSection();
@@ -290,19 +296,20 @@ namespace Anywhen
 
         public virtual void Play()
         {
-            if (!currentSong)
+            if (!_currentSong)
             {
+                AnywhenRuntime.Log("No song loaded.");
                 return;
             }
 
             _firstBar = true;
             IsPlaying = true;
 
-            SetupTracks(currentSong.Tracks);
+            //SetupTracks(_currentSong.Tracks);
 
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                foreach (var section in currentSong.Sections)
+                foreach (var section in _currentSong.Sections)
                 {
                     var sectionTrack = section.tracks[0];
                     sectionTrack.Reset();
@@ -330,9 +337,9 @@ namespace Anywhen
 
         protected void ResetSection()
         {
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
                 track.Reset();
             }
         }
@@ -370,11 +377,11 @@ namespace Anywhen
         {
             _resetOnNextBar = true;
 
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                for (var sectionIndex = 0; sectionIndex < currentSong.Sections.Count; sectionIndex++)
+                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
                 {
-                    var section = currentSong.Sections[sectionIndex];
+                    var section = _currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
                     sectionTrack.ResetOnNextBar();
                     section.Reset();
@@ -384,12 +391,12 @@ namespace Anywhen
 
         public void Reset()
         {
-            if (!currentSong) return;
-            for (int trackIndex = 0; trackIndex < currentSong.Tracks.Count; trackIndex++)
+            if (!_currentSong) return;
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                for (var sectionIndex = 0; sectionIndex < currentSong.Sections.Count; sectionIndex++)
+                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
                 {
-                    var section = currentSong.Sections[sectionIndex];
+                    var section = _currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
                     sectionTrack.Reset();
                     section.Reset();
@@ -434,9 +441,9 @@ namespace Anywhen
         public virtual int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
-            for (var i = 0; i < currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
+            for (var i = 0; i < _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
             {
-                var track = currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
+                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
 
                 returnList.Add(track.GetPlayingPatternIndex());
             }
@@ -444,14 +451,27 @@ namespace Anywhen
             return returnList.ToArray();
         }
 
-        public virtual void Load(AnysongObject anysong)
+        public virtual void Load(AnysongObject anysong, bool loadTracks = true, bool loadMidi = true)
         {
-            if (!anysong) return;
-            currentSong = anysong;
-            currentSong.Reset();
+            if (!anysong)
+            {
+                AnywhenRuntime.Log("Can't load, song is null");
+                return;
+            }
+
+            if (loadTracks)
+            {
+                SetupTracks(anysong.Tracks);
+            }
+
+            if (loadMidi)
+            {
+                _currentSong = anysong;
+                _currentSong.Reset();
+            }
         }
 
-        public void SetOututMixerGroup(AudioMixerGroup group)
+        public void SetOutputMixerGroup(AudioMixerGroup group)
         {
             outputMixerGroup = group;
             if (!_audioSource) _audioSource = GetComponent<AudioSource>();
@@ -472,12 +492,12 @@ namespace Anywhen
             }
 
             if (didLoad)
-                SetupTracks(currentSong.Tracks);
+                SetupTracks(_currentSong.Tracks);
         }
 
         public void LoadInstruments()
         {
-            foreach (var track in currentSong.Tracks)
+            foreach (var track in _currentSong.Tracks)
             {
                 if (track.instrument is AnywhenSampleInstrument instrument)
                 {
