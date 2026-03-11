@@ -89,36 +89,49 @@ namespace Anywhen
             Stop();
         }
 
-        public void SetupTracks(List<AnysongTrack> tracks = null)
+        public void SetupTracks(List<AnysongTrack> tracks = null, bool loadTrackSounds = true, bool loadTrackSettings = true)
         {
+            if (!loadTrackSounds && !loadTrackSettings) return;
+            List<PlayerTracks> tracksCopy = new List<PlayerTracks>(_tracksList);
+            tracksCopy.AddRange(_tracksList);
+
             _tracksList.Clear();
             tracks ??= _currentSong.Tracks;
 
-            foreach (var songTrack in tracks)
+            for (var index = 0; index < tracks.Count; index++)
             {
-                if (!songTrack.instrument) continue;
+                var anySongTrack = tracks[index];
+                if (!anySongTrack.instrument) continue;
 
-                List<AnywhenVoiceBase> newTracks = new();
+                List<AnywhenVoiceBase> voicesList = new();
 
-                for (int i = 0; i < songTrack.voices; i++)
+                for (int i = 0; i < anySongTrack.voices; i++)
                 {
                     AnywhenVoiceBase newTrack = null;
-                    if (songTrack.instrument is AnywhenSynthPreset)
+                    if (anySongTrack.instrument is AnywhenSynthPreset)
                     {
-                        newTrack = new AnywhenSynthVoice(songTrack.instrument, songTrack);
+                        newTrack = new AnywhenSynthVoice(anySongTrack.instrument, anySongTrack);
                     }
-                    else if (songTrack.instrument is AnywhenSampleInstrument)
+                    else if (anySongTrack.instrument is AnywhenSampleInstrument)
                     {
-                        newTrack = new AnywhenSampleVoice(songTrack.instrument, songTrack);
+                        newTrack = new AnywhenSampleVoice(anySongTrack.instrument, anySongTrack);
                     }
 
                     if (newTrack != null)
                     {
-                        newTracks.Add(newTrack);
+                        voicesList.Add(newTrack);
                     }
                 }
 
-                _tracksList.Add(new PlayerTracks(songTrack.instrument, songTrack, newTracks.ToArray()));
+                var instrument = anySongTrack.instrument;
+                var track = anySongTrack;
+
+                if (!loadTrackSounds)
+                    instrument = tracksCopy[index].instrument;
+                if (!loadTrackSettings)
+                    track = tracksCopy[index].track;
+
+                _tracksList.Add(new PlayerTracks(instrument, track, voicesList.ToArray()));
             }
         }
 
@@ -232,7 +245,7 @@ namespace Anywhen
                 IsRunning = false;
                 Stop();
             }
-            
+
             ReleaseFromMetronome();
         }
 
@@ -457,7 +470,7 @@ namespace Anywhen
             return returnList.ToArray();
         }
 
-        public virtual void Load(AnysongObject anysong, bool loadTracks = true, bool loadMidi = true)
+        public virtual void Load(AnysongObject anysong, bool loadTrackSounds = true, bool loadTrackSettings = true, bool loadMidi = true)
         {
             if (!anysong)
             {
@@ -465,10 +478,9 @@ namespace Anywhen
                 return;
             }
 
-            if (loadTracks)
-            {
-                SetupTracks(anysong.Tracks);
-            }
+
+            SetupTracks(anysong.Tracks, loadTrackSounds, loadTrackSettings);
+
 
             if (loadMidi)
             {
