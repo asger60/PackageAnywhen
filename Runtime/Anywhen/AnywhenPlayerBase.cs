@@ -229,7 +229,6 @@ namespace Anywhen
         {
             if (Application.isPlaying)
             {
-                Debug.Log("Destroyed in play mode");
                 _tracksList.Clear();
                 _currentSong = null;
                 IsPlaying = false;

@@ -154,13 +154,13 @@ namespace Anysong
         static void RefreshMonoPolyButtons()
         {
             if (AnysongPatternView.IsPolyfonic)
-                _polyButton.AddToClassList("editing");
+                _polyButton?.AddToClassList("editing");
             else
-                _polyButton.RemoveFromClassList("editing");
+                _polyButton?.RemoveFromClassList("editing");
             if (!AnysongPatternView.IsPolyfonic)
-                _monoButton.AddToClassList("editing");
+                _monoButton?.AddToClassList("editing");
             else
-                _monoButton.RemoveFromClassList("editing");
+                _monoButton?.RemoveFromClassList("editing");
         }
 
         private static void OnDetachFromPanelEvent(DetachFromPanelEvent evt)
