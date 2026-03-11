@@ -89,14 +89,9 @@ namespace Anywhen
             Stop();
         }
 
-        public void SetupTracks(List<AnysongTrack> tracks = null, bool loadTrackSounds = true, bool loadTrackSettings = true)
+        public void SetupTracks(List<AnysongTrack> tracks)
         {
-            if (!loadTrackSounds && !loadTrackSettings) return;
-            List<PlayerTracks> tracksCopy = new List<PlayerTracks>(_tracksList);
-            tracksCopy.AddRange(_tracksList);
-
             _tracksList.Clear();
-            tracks ??= _currentSong.Tracks;
 
             for (var index = 0; index < tracks.Count; index++)
             {
@@ -126,10 +121,6 @@ namespace Anywhen
                 var instrument = anySongTrack.instrument;
                 var track = anySongTrack;
 
-                if (!loadTrackSounds)
-                    instrument = tracksCopy[index].instrument;
-                if (!loadTrackSettings)
-                    track = tracksCopy[index].track;
 
                 _tracksList.Add(new PlayerTracks(instrument, track, voicesList.ToArray()));
             }
@@ -470,7 +461,7 @@ namespace Anywhen
             return returnList.ToArray();
         }
 
-        public virtual void Load(AnysongObject anysong, bool loadTrackSounds = true, bool loadTrackSettings = true, bool loadMidi = true)
+        public virtual void Load(AnysongObject anysong)
         {
             if (!anysong)
             {
@@ -478,14 +469,28 @@ namespace Anywhen
                 return;
             }
 
+            SetupTracks(anysong.Tracks);
 
-            SetupTracks(anysong.Tracks, loadTrackSounds, loadTrackSettings);
 
+            _currentSong = anysong;
+            _currentSong.Reset();
+        }
 
-            if (loadMidi)
+        public virtual void SetTrackMidi(AnysongObject newTrackMidi)
+        {
+            _currentSong = newTrackMidi;
+            _currentSong.Reset();
+        }
+
+        public virtual void SetTrackSettings(AnysongObject newTrackSettings)
+        {
+            for (var i = 0; i < _tracksList.Count; i++)
             {
-                _currentSong = anysong;
-                _currentSong.Reset();
+                var track = _tracksList[i];
+                track.track.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
+                track.track.pitchLFOSettings = newTrackSettings.Tracks[i].pitchLFOSettings;
+                track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
+                track.track.volume = newTrackSettings.Tracks[i].volume;
             }
         }
 

@@ -31,7 +31,7 @@ namespace Anysong
                     };
                     _currentRuntimeSongPlayer = player.AddComponent<AnywhenComposerPlayer>();
                     _currentRuntimeSongPlayer.Load(CurrentSong);
-                    _currentRuntimeSongPlayer.SetupTracks();
+                    _currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
                     _currentRuntimeSongPlayer.LoadInstruments();
                 }
 
@@ -162,7 +162,7 @@ namespace Anysong
 
             _currentRuntimeSongPlayer = composerPlayer;
             CurrentSong = songObject;
-            _currentRuntimeSongPlayer.SetupTracks();
+            _currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
             _currentRuntimeSongPlayer.LoadInstruments();
 
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
