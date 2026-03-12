@@ -117,7 +117,8 @@ public class ADSR
 
     private float CalcCoef(float rate, float targetRatio)
     {
-        return (rate <= 0) ? 0 : Mathf.Exp(-Mathf.Log((1.0f + targetRatio) / targetRatio) / rate);
+        if (rate <= 0 || targetRatio <= 0) return 0;
+        return Mathf.Exp(-Mathf.Log((1.0f + targetRatio) / targetRatio) / rate);
     }
 
 

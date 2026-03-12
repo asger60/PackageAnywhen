@@ -143,6 +143,8 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
+            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+
             for (int j = 0; j < _oversampling; ++j)
             {
                 y_a += _s * (FastTanh(sample - 4 * _reso * y_d * _v) - w_a);
@@ -152,6 +154,14 @@ namespace Anywhen.Synth
                 y_c += _s * (w_b - y_c);
                 w_c = FastTanh(y_c * _v);
                 y_d += _s * (w_c - FastTanh(y_d * _v));
+
+                // Guard against state explosion
+                if (float.IsNaN(y_d) || float.IsInfinity(y_d))
+                {
+                    y_a = y_b = y_c = y_d = 0;
+                    w_a = w_b = w_c = 0;
+                    break;
+                }
             }
 
             return Clamp(y_d, -1f, 1f); // Ensure float clamping
@@ -178,7 +188,10 @@ namespace Anywhen.Synth
 
         private void SetCutOff(float value)
         {
-            _s = value / 1.0f / AnywhenRuntime.SampleRate / /*_oversampling * */ 6.28318530717959f * _cutoffMod;
+            float sampleRate = AnywhenRuntime.SampleRate;
+            if (sampleRate <= 0) sampleRate = 44100;
+            _s = (value * _cutoffMod) / 1.0f / sampleRate / /*_oversampling * */ 6.28318530717959f;
+            _s = Clamp(_s, 0, 0.99f); // Keep it within stable range
         }
 
         private void SetOversampling(int iterationCount)

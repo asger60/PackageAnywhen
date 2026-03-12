@@ -60,8 +60,13 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
-            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / AnywhenRuntime.SampleRate);
-            _vD = 1f / _q;
+            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+
+            float sampleRate = AnywhenRuntime.SampleRate;
+            if (sampleRate <= 0) sampleRate = 44100;
+
+            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / sampleRate);
+            _vD = 1f / Mathf.Max(_q, 0.01f);
             _vF = (1.85f - 0.75f * _vD * f) * f;
             
 
@@ -69,10 +74,12 @@ namespace Anywhen.Synth
             _vZ3 = this._vZ2 * _vF + this._vZ3;
             _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
             
-            //sample = _vZ2;
-            //this._vZ1 = vZ1;
-            //this._vZ2 = vZ2;
-            //this._vZ3 = vZ3;
+            // Guard against state explosion
+            if (float.IsNaN(_vZ2) || float.IsInfinity(_vZ2))
+            {
+                _vZ1 = _vZ2 = _vZ3 = 0;
+                return 0;
+            }
 
             return _vZ2;
         }

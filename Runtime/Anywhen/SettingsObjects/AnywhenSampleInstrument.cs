@@ -172,6 +172,7 @@ namespace Anywhen.SettingsObjects
 
                     lock (_random)
                     {
+                        if (clipsList.Count == 0) return new AnywhenNoteClipPlaybackSettings();
                         return new AnywhenNoteClipPlaybackSettings(clipsList[_random.Next(0, clipsList.Count)], pitch, volume);
                     }
 

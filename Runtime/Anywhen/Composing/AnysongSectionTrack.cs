@@ -59,6 +59,12 @@ namespace Anywhen.Composing
 
         public AnysongPattern GetPlayingPattern()
         {
+            if (patterns.Count == 0)
+            {
+                var newPattern = new AnysongPattern();
+                newPattern.Init();
+                patterns.Add(newPattern);
+            }
             return _currentPattern ??= patterns[0];
         }
 

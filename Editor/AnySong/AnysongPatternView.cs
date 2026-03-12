@@ -105,7 +105,6 @@ namespace Anysong
             _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrack.voices == 1;
 
 
-
             AddCallbacks();
         }
 
@@ -249,6 +248,7 @@ namespace Anysong
         private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, bool compact)
         {
             int patternIndex = AnysongEditorWindow.CurrentSelection.CurrentPatternIndex;
+           
             if (patternIndex > currentSectionTrack.patterns.Count - 1) patternIndex = 0;
             var stepButtonsHolder = new VisualElement
             {
@@ -310,25 +310,30 @@ namespace Anysong
                     }
                 };
                 rowElement.Add(rowLabel);
-                for (int stepIndex = 0; stepIndex < 16; stepIndex++)
+                if (currentSectionTrack.patterns.Count > 0)
                 {
-                    if (currentSectionTrack.patterns[patternIndex] == null || currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
-                    var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
 
-                    var stepButton = new AnysongPatternStepButton(rowElement, thisStep, stepIndex, noteStartIndex + rowIndex, _polyfonic,
-                        noteStartIndex, noteStartIndex + rowCount);
-                    _stepViewToStep.Add(stepButton, thisStep);
 
-                    if (!_stepViewCullumns.TryGetValue(stepIndex, out var stepViews))
+                    for (int stepIndex = 0; stepIndex < 16; stepIndex++)
                     {
-                        stepViews = new List<AnysongPatternStepButton>();
-                        _stepViewCullumns[stepIndex] = stepViews;
+                        if (currentSectionTrack.patterns[patternIndex] == null ||
+                            currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
+                        var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
+
+                        var stepButton = new AnysongPatternStepButton(rowElement, thisStep, stepIndex, noteStartIndex + rowIndex, _polyfonic,
+                            noteStartIndex, noteStartIndex + rowCount);
+                        _stepViewToStep.Add(stepButton, thisStep);
+
+                        if (!_stepViewCullumns.TryGetValue(stepIndex, out var stepViews))
+                        {
+                            stepViews = new List<AnysongPatternStepButton>();
+                            _stepViewCullumns[stepIndex] = stepViews;
+                        }
+
+                        stepViews.Add(stepButton);
+                        _allStepButtons.Add(stepButton);
                     }
-
-                    stepViews.Add(stepButton);
-                    _allStepButtons.Add(stepButton);
                 }
-
 
                 stepButtonsHolder.Add(rowElement);
                 _stepButtonsHolders.Add(stepButtonsHolder);

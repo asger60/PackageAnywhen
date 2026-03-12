@@ -339,6 +339,9 @@ namespace Anywhen.Synth
                     }
                     voiceFreqMod *= (float)CurrentPitch;
 
+                    // Guard against NaN/Inf in modulation
+                    if (float.IsNaN(voiceFreqMod) || float.IsInfinity(voiceFreqMod)) voiceFreqMod = 1;
+
                     // Generate oscillator output
                     float oscillatorOutput = 0;
                     int totalActiveOsc = 0;
@@ -362,6 +365,8 @@ namespace Anywhen.Synth
                         oscillatorOutput /= totalActiveOsc;
                     }
 
+                    if (float.IsNaN(oscillatorOutput) || float.IsInfinity(oscillatorOutput)) oscillatorOutput = 0;
+
                     float sample = oscillatorOutput * ampMod * CurrentTrack.volume;
 
                     // Apply filters
@@ -371,6 +376,8 @@ namespace Anywhen.Synth
                         audioFilterBase.SetParameters(_preset.filterSettings[i]);
                         sample = audioFilterBase.Process(sample);
                     }
+
+                    if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
                     buffer[bufferIndex++] = sample;
                     buffer[bufferIndex++] = sample;

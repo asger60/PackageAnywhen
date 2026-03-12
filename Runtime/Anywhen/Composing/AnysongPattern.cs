@@ -92,6 +92,10 @@ namespace Anywhen.Composing
         
         public AnysongPatternStep GetCurrentStep()
         {
+            if (steps.Count == 0)
+            {
+                Init();
+            }
             return steps[_internalIndex];
         }
 

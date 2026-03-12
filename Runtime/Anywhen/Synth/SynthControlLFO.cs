@@ -1,4 +1,5 @@
 using System;
+using Anywhen;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using UnityEngine;
@@ -77,7 +78,14 @@ public class SynthControlLFO : SynthControlBase
 
     private void SetFreq(float freqHz, int sampleRate = 48000)
     {
-        float freqPpsmp = freqHz / sampleRate; // periods per sample
+        float rate = AnywhenRuntime.SampleRate;
+        if (rate <= 0) rate = sampleRate;
+        if (rate <= 0) rate = 48000;
+        
+        float freqPpsmp = freqHz / rate; // periods per sample
+        
+        if (float.IsNaN(freqPpsmp) || float.IsInfinity(freqPpsmp)) freqPpsmp = 0;
+        
         _freqPhPSmp = (uint)(freqPpsmp * PhaseMax);
     }
 

@@ -164,7 +164,12 @@ namespace Anywhen.Synth
 
         private void set_freq(float freqHz, int sampleRate)
         {
+            if (sampleRate <= 0) sampleRate = 44100;
             float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample
+            
+            // Guard against NaN/Inf and unreasonable frequencies
+            if (float.IsNaN(freqPpsmp) || float.IsInfinity(freqPpsmp)) freqPpsmp = 0;
+            
             _freqPhPSmp = (uint)(freqPpsmp * PHASE_MAX);
         }
 

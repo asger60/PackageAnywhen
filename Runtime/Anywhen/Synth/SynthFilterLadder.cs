@@ -44,6 +44,8 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
+            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+
             // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.
             // Diode ladder characteristics: stages load each other, feedback is non-linear.
             
@@ -90,6 +92,14 @@ namespace Anywhen.Synth
                 s4 = y4 + v4;
 
                 sample = y4;
+
+                // Guard against state explosion
+                if (float.IsNaN(sample) || float.IsInfinity(sample))
+                {
+                    s1 = s2 = s3 = s4 = 0;
+                    sample = 0;
+                    break;
+                }
             }
 
             return Clamp(sample, -1f, 1f);
@@ -112,9 +122,15 @@ namespace Anywhen.Synth
         private void SetCutOff(float frequency)
         {
             // Proper frequency mapping for TPT filters
-            float omega = 2.0f * 3.14159265f * frequency / (AnywhenRuntime.SampleRate * _oversampling) * _cutoffMod;
+            float sampleRate = AnywhenRuntime.SampleRate;
+            if (sampleRate <= 0) sampleRate = 44100;
+            float omega = 2.0f * 3.14159265f * frequency / (sampleRate * _oversampling) * _cutoffMod;
+            
+            // Guard against Tan(PI/2) and instability at high frequencies
+            omega = Clamp(omega, 0, 3.1f);
+            
             _g = (float)System.Math.Tan(omega * 0.5f);
-            _g = Clamp(_g, 0, 1); // Stay within stable range
+            _g = Clamp(_g, 0, 100); // Allow some high-frequency response but avoid Infinity
             _h = _g / (1.0f + _g);
         }
 

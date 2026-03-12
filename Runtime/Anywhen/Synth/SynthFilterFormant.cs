@@ -181,25 +181,17 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
-            //float mix1 = sample;
-            //float mix2 = sample;
-            //float mix3 = sample;
-            //samples.CopyTo(mix1, 0);
-            //samples.CopyTo(mix2, 0);
-            //samples.CopyTo(mix3, 0);
-
+            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             float mix1 = _synthFilterBandPass1.Process(sample);
             float mix2 = _synthFilterBandPass2.Process(sample);
             float mix3 = _synthFilterBandPass3.Process(sample);
 
-            //int idx = offset;
-            //for (int i = 0; i < sampleCount; ++i)
-
             sample = ((mix1 * _currentVowel.GetBand(0).gain) +
                       (mix2 * _currentVowel.GetBand(1).gain) +
                       (mix3 * _currentVowel.GetBand(2).gain)) / 3f;
-            //  idx += stride;
+
+            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             return sample;
         }
