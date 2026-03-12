@@ -55,6 +55,24 @@ namespace Anywhen.Synth
 
         private bool _isCreated;
 
+        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
+        {
+            SetPreset(instrumentSettings as AnywhenSynthPreset);
+
+            if (FreqTab == null)
+            {
+                FreqTab = new float[128];
+                for (int i = 0; i < 128; i++)
+                {
+                    FreqTab[i] = Midi2Freq(i);
+                }
+            }
+
+            RebuildSynth();
+            ResetVoices();
+            _isInitialized = true;
+        }
+
 
         private void SetPreset(AnywhenSynthPreset preset)
         {
@@ -208,28 +226,6 @@ namespace Anywhen.Synth
             }
         }
 
-        AnysongTrack _currentTrack;
-
-        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings,
-            trackSettings)
-        {
-            _currentTrack = trackSettings;
-            SetPreset(instrumentSettings as AnywhenSynthPreset);
-
-            if (FreqTab == null)
-            {
-                FreqTab = new float[128];
-                for (int i = 0; i < 128; i++)
-                {
-                    FreqTab[i] = Midi2Freq(i);
-                }
-            }
-
-            RebuildSynth();
-            ResetVoices();
-            _isInitialized = true;
-        }
-
 
         private void ResetVoices()
         {
@@ -262,7 +258,7 @@ namespace Anywhen.Synth
                 for (var i = 0; i < voice.Oscillators.Length; i++)
                 {
                     var osc = voice.Oscillators[i];
-                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.Note, 64),
+                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.note, 64),
                         AnywhenRuntime.SampleRate);
                     osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
                 }
@@ -319,7 +315,7 @@ namespace Anywhen.Synth
 
                     // Calculate modulation values
                     float ampMod = 1;
-                    ampMod *= AmplitudeEnvelope.Process() * CurrentPlaybackSettings.Volume;
+                    ampMod *= AmplitudeEnvelope.Process() * CurrentPlaybackSettings.volume;
                     //foreach (var ampModifier in _amplitudeModifiers)
                     //{
                     //    ampMod *= ampModifier.Process() * CurrentPlaybackSettings.Volume;
@@ -332,12 +328,23 @@ namespace Anywhen.Synth
                         CurrentPitch = PitchLFO.Process();
                     }
 
+                    if (CurrentPlaybackSettings.glideDown)
+                    {
+                        CurrentPitch *= 0.99999f;
+                    }
+
+                    if (CurrentPlaybackSettings.glideUp)
+                    {
+                        CurrentPitch *= 1.00001f;
+                    }
+
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
                     {
                         voiceFreqMod *= frequencyModifier.Process();
                     }
-                    voiceFreqMod *= (float)CurrentPitch;
+
+                    //voiceFreqMod *= (float)CurrentPitch;
 
                     // Guard against NaN/Inf in modulation
                     if (float.IsNaN(voiceFreqMod) || float.IsInfinity(voiceFreqMod)) voiceFreqMod = 1;
@@ -353,7 +360,7 @@ namespace Anywhen.Synth
                             if (!synthOscillator.IsActive) continue;
 
                             synthOscillator.SetPitchMod(voiceFreqMod);
-                            synthOscillator.SetPitchRaw(CurrentTrack.TrackPitch);
+                            synthOscillator.SetPitchRaw((float)CurrentPitch * CurrentTrack.TrackPitch);
                             oscillatorOutput += synthOscillator.Process();
                             totalActiveOsc++;
                         }

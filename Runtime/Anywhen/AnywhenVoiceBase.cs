@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
@@ -11,10 +12,10 @@ namespace Anywhen
     {
         public bool IsReady => _playbackQueue.Count == 0 && !IsPlaying;
         protected AnysongTrack CurrentTrack;
-        protected ADSR AmplitudeEnvelope = new();
+        protected ADSR AmplitudeEnvelope;
         protected bool IsPlaying;
         public bool HasScheduledPlay => _playbackQueue.Count > 0;
-        private List<PlaybackSettings> _playbackQueue = new List<PlaybackSettings>();
+        private List<PlaybackSettings> _playbackQueue = new ();
         protected SynthControlLFO PitchLFO;
         protected double CurrentPitch;
         protected float CurrentSampleRate;
@@ -23,18 +24,12 @@ namespace Anywhen
         [Serializable]
         public struct PlaybackSettings
         {
-            public double PlayTime;
-            public double StopTime;
-            public float Volume;
-            public int Note;
-
-            public PlaybackSettings(double playTime, double stopTime, float volume, int note)
-            {
-                PlayTime = playTime;
-                StopTime = stopTime;
-                Volume = volume;
-                Note = note;
-            }
+            [FormerlySerializedAs("PlayTime")] public double playTime;
+            [FormerlySerializedAs("StopTime")] public double stopTime;
+            [FormerlySerializedAs("Volume")] public float volume;
+            [FormerlySerializedAs("Note")] public int note;
+            public bool glideUp;
+            public bool glideDown;
         }
 
         protected PlaybackSettings CurrentPlaybackSettings;
@@ -50,9 +45,9 @@ namespace Anywhen
 
         public void NoteOn(PlaybackSettings playbackSettings)
         {
-            if (AudioSettings.dspTime > playbackSettings.PlayTime)
+            if (AudioSettings.dspTime > playbackSettings.playTime)
             {
-                Debug.LogWarning($"NoteOn {playbackSettings.Note} is scheduled to play in the past");
+                Debug.LogWarning($"NoteOn {playbackSettings.note} is scheduled to play in the past");
                 return;
             }
 
@@ -64,7 +59,7 @@ namespace Anywhen
         public virtual float GetDurationToEnd()
         {
             if (_playbackQueue.Count == 0) return 0;
-            return (float)_playbackQueue[^1].StopTime;
+            return (float)_playbackQueue[^1].stopTime;
         }
 
         protected virtual void StartPlay(PlaybackSettings playbackSettings)
@@ -81,13 +76,13 @@ namespace Anywhen
 
         protected void HandleQueue()
         {
-            while (_playbackQueue.Count > 0 && AudioSettings.dspTime >= _playbackQueue[0].PlayTime)
+            while (_playbackQueue.Count > 0 && AudioSettings.dspTime >= _playbackQueue[0].playTime)
             {
                 StartPlay(_playbackQueue[0]);
                 _playbackQueue.RemoveAt(0);
             }
 
-            if (AudioSettings.dspTime >= CurrentPlaybackSettings.StopTime)
+            if (AudioSettings.dspTime >= CurrentPlaybackSettings.stopTime)
             {
                 AmplitudeEnvelope.SetGate(false);
             }

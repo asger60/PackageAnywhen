@@ -47,7 +47,8 @@ namespace Anywhen.Composing
 
         [Range(0, 1f)] public float chance = 1;
         [Range(0, 1f)] public float expression = 0;
-
+        [SerializeField] private bool glideUp;
+        [SerializeField] private bool glideDown;
 
         public int rootNote;
 
@@ -124,7 +125,9 @@ namespace Anywhen.Composing
                 chordStrum: strum,
                 duration: duration,
                 expression1: expression,
-                expression2: 1
+                expression2: 1,
+                glideUp: glideUp,
+                glideDown: glideDown
             );
 
 
@@ -138,49 +141,66 @@ namespace Anywhen.Composing
         private float _lastExpression = float.MinValue;
         private RepeatRates _lastRepeatRate = (RepeatRates)(-1);
 
+
         public NoteEvent[] GetNoteEvents(int patternRoot)
         {
-            var maxLength = AnywhenMetronome.Instance.GetLength();
-            bool paramsChanged = _lastPatternRoot != patternRoot ||
-                                 !Mathf.Approximately(_lastDuration, duration) ||
-                                 !Mathf.Approximately(_lastOffset, offset) ||
-                                 !Mathf.Approximately(_lastVelocity, velocity) ||
-                                 !Mathf.Approximately(_lastExpression, expression) ||
-                                 _lastRepeatRate != repeatRate ||
-                                 Math.Abs(_lastMetronomeLength - maxLength) > 0.1f;
+            NoteEvent[] events = new NoteEvent[stepRepeats + 1];
+            events[0] = GetEvent(patternRoot);
+            if (stepRepeats == 0) return events;
+            double subDivisionDuration = AnywhenMetronome.Instance.GetLength() / ((int)repeatRate + 2);
 
-            if (_eventsCache == null || _eventsCache.Length != stepRepeats + 1 || paramsChanged)
+            for (int i = 1; i <= stepRepeats; i++)
             {
-                if (_eventsCache == null || _eventsCache.Length != stepRepeats + 1)
-                {
-                    _eventsCache = new NoteEvent[stepRepeats + 1];
-                }
-
-                _eventsCache[0] = GetEvent(patternRoot);
-                if (stepRepeats > 0)
-                {
-                    double subDivisionDuration = maxLength / ((int)repeatRate + 2);
-
-                    for (int i = 1; i <= stepRepeats; i++)
-                    {
-                        _eventsCache[i] = GetEvent(patternRoot);
-                        _eventsCache[i].drift += subDivisionDuration * i;
-                    }
-                }
-
-                _lastDuration = duration;
-                _lastOffset = offset;
-                _lastVelocity = velocity;
-                _lastExpression = expression;
-                _lastRepeatRate = repeatRate;
-                // patternRoot and metronomeLength are updated in CreateStrum/GetNotes or we update them here if they're not.
-                // Actually they are updated there, but let's be explicit if we use them here.
-                _lastPatternRoot = patternRoot;
-                _lastMetronomeLength = maxLength;
+                events[i] = GetEvent(patternRoot);
+                events[i].drift += subDivisionDuration * i;
             }
 
-            return _eventsCache;
+            return events;
         }
+        //public NoteEvent[] GetNoteEvents(int patternRoot)
+        //{
+        //    
+//
+        //    var maxLength = AnywhenMetronome.Instance.GetLength();
+        //    bool paramsChanged = _lastPatternRoot != patternRoot ||
+        //                         !Mathf.Approximately(_lastDuration, duration) ||
+        //                         !Mathf.Approximately(_lastOffset, offset) ||
+        //                         !Mathf.Approximately(_lastVelocity, velocity) ||
+        //                         !Mathf.Approximately(_lastExpression, expression) ||
+        //                         _lastRepeatRate != repeatRate ||
+        //                         Math.Abs(_lastMetronomeLength - maxLength) > 0.1f;
+//
+        //    if (_eventsCache == null || _eventsCache.Length != stepRepeats + 1 || paramsChanged)
+        //    {
+        //        if (_eventsCache == null || _eventsCache.Length != stepRepeats + 1)
+        //        {
+        //            _eventsCache = new NoteEvent[stepRepeats + 1];
+        //        }
+//
+        //        _eventsCache[0] = GetEvent(patternRoot);
+        //        if (stepRepeats > 0)
+        //        {
+        //            double subDivisionDuration = maxLength / ((int)repeatRate + 2);
+//
+        //            for (int i = 1; i <= stepRepeats; i++)
+        //            {
+        //                _eventsCache[i] = GetEvent(patternRoot);
+        //                _eventsCache[i].drift += subDivisionDuration * i;
+        //            }
+        //        }
+//
+        //        _lastDuration = duration;
+        //        _lastOffset = offset;
+        //        _lastVelocity = velocity;
+        //        _lastExpression = expression;
+        //        _lastRepeatRate = repeatRate;
+//
+        //        _lastPatternRoot = patternRoot;
+        //        _lastMetronomeLength = maxLength;
+        //    }
+//
+        //    return _eventsCache;
+        //}
 
         private double[] _strumCache;
         private double _lastMetronomeLength = double.MinValue;

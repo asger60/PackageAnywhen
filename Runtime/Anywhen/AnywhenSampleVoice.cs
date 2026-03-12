@@ -31,7 +31,7 @@ namespace Anywhen
         protected override void StartPlay(PlaybackSettings playbackSettings)
         {
             base.StartPlay(playbackSettings);
-            var clipSettings = _thisInstrument.GetNoteClip(playbackSettings.Note);
+            var clipSettings = _thisInstrument.GetNoteClip(playbackSettings.note);
             _currentNoteClip = clipSettings.noteClip;
             if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
@@ -107,7 +107,7 @@ namespace Anywhen
                     double val = ((1 - f1) * _currentNoteClip.clipSamples[sIndex1]) +
                                  (f1 * _currentNoteClip.clipSamples[sIndex2]);
 
-                    samples[c] = (float)val * ampMod * _thisInstrument.volume * CurrentPlaybackSettings.Volume;
+                    samples[c] = (float)val * ampMod * _thisInstrument.volume * CurrentPlaybackSettings.volume;
                 }
 
                 for (int c = 0; c < channels; c++)

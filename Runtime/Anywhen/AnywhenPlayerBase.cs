@@ -187,6 +187,7 @@ namespace Anywhen
         {
             var songTrack = _currentSong.Tracks[trackIndex];
             var noteEvents = step.GetNoteEvents(0);
+
             foreach (var noteEvent in noteEvents)
             {
                 HandleNoteEvent(noteEvent, songTrack, _playerVolume);
@@ -210,10 +211,12 @@ namespace Anywhen
                 var volume = noteEvent.velocity * track.volume * playerVolume;
                 var playbackSettings = new AnywhenVoiceBase.PlaybackSettings
                 {
-                    Note = note,
-                    PlayTime = playTime,
-                    StopTime = playTime + noteEvent.duration + noteEvent.drift,
-                    Volume = volume
+                    note = note,
+                    playTime = playTime,
+                    stopTime = playTime + noteEvent.duration + noteEvent.drift,
+                    volume = volume,
+                    glideDown = noteEvent.glideDown,
+                    glideUp = noteEvent.glideUp
                 };
                 voice.NoteOn(playbackSettings);
             }
