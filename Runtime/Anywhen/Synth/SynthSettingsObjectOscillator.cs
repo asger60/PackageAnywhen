@@ -39,8 +39,11 @@
         public WaveTableOscillatorTypes waveTableOscillatorType;
         public OscillatorType oscillatorType;
 
+        public float glideTime = 8000f;
+        public bool glide;
         public void Init()
         {
             amplitude = 1;
+            glideTime = 8000f;
         }
     }

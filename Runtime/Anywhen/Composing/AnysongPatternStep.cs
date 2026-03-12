@@ -47,8 +47,6 @@ namespace Anywhen.Composing
 
         [Range(0, 1f)] public float chance = 1;
         [Range(0, 1f)] public float expression = 0;
-        [SerializeField] private bool glideUp;
-        [SerializeField] private bool glideDown;
 
         public int rootNote;
 
@@ -125,9 +123,7 @@ namespace Anywhen.Composing
                 chordStrum: strum,
                 duration: duration,
                 expression1: expression,
-                expression2: 1,
-                glideUp: glideUp,
-                glideDown: glideDown
+                expression2: 1
             );
 
 

@@ -28,8 +28,7 @@ namespace Anywhen
             [FormerlySerializedAs("StopTime")] public double stopTime;
             [FormerlySerializedAs("Volume")] public float volume;
             [FormerlySerializedAs("Note")] public int note;
-            public bool glideUp;
-            public bool glideDown;
+
         }
 
         protected PlaybackSettings CurrentPlaybackSettings;
@@ -90,7 +89,7 @@ namespace Anywhen
 
         public abstract float[] UpdateDSP(int bufferSize, int channels);
 
-        protected void SetReady()
+        protected virtual void SetReady()
         {
             AmplitudeEnvelope.SetGate(false);
             IsPlaying = false;

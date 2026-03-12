@@ -23,8 +23,7 @@ namespace Anywhen
         public float velocity;
         public float duration;
         public AnywhenSampleInstrument.EnvelopeSettings envelope;
-        public bool glideUp;
-        public bool glideDown;
+
 
 
         public NoteEvent(EventTypes state)
@@ -38,8 +37,7 @@ namespace Anywhen
             velocity = 1;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note)
@@ -53,8 +51,7 @@ namespace Anywhen
             velocity = 1;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note, float duration)
@@ -68,8 +65,7 @@ namespace Anywhen
             velocity = 1;
             this.duration = duration;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note, float duration, AnywhenSampleInstrument.EnvelopeSettings envelope)
@@ -83,8 +79,7 @@ namespace Anywhen
             velocity = 1;
             this.duration = duration;
             this.envelope = envelope;
-            glideUp = false;
-            glideDown = false;
+
         }
 
 
@@ -99,8 +94,7 @@ namespace Anywhen
             velocity = 1;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note, EventTypes state)
@@ -114,8 +108,7 @@ namespace Anywhen
             velocity = 1;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note, float noteDuration, EventTypes state)
@@ -130,8 +123,7 @@ namespace Anywhen
             velocity = 1;
             duration = noteDuration;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+  
         }
 
         public NoteEvent(int note, EventTypes state, float volume)
@@ -146,8 +138,7 @@ namespace Anywhen
             velocity = volume;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
         public NoteEvent(int note, EventTypes state, float volume, double drift)
@@ -162,13 +153,12 @@ namespace Anywhen
             velocity = volume;
             duration = -1;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            glideUp = false;
-            glideDown = false;
+
         }
 
 
         public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum, float duration,
-            float expression1, float expression2, bool glideUp, bool glideDown)
+            float expression1, float expression2)
         {
             this.state = state;
             this.drift = drift;
@@ -180,12 +170,11 @@ namespace Anywhen
             this.velocity = velocity;
             this.duration = duration;
             envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
-            this.glideUp = glideUp;
-            this.glideDown = glideDown;
+
         }
 
         public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum,
-            float expression1, float expression2, bool glideUp, bool glideDown, AnywhenSampleInstrument.EnvelopeSettings envelope)
+            float expression1, float expression2, AnywhenSampleInstrument.EnvelopeSettings envelope)
         {
             this.state = state;
             this.drift = drift;
@@ -197,8 +186,7 @@ namespace Anywhen
             this.velocity = velocity;
             duration = -1;
             this.envelope = envelope;
-            this.glideUp = glideUp;
-            this.glideDown = glideDown;
+
         }
     }
 }

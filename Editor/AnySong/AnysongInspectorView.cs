@@ -416,8 +416,6 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
             
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("glideDown"), didUpdate));
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("glideUp"), didUpdate));
             
             
             var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);

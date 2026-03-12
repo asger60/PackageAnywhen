@@ -5,14 +5,15 @@ namespace Anywhen.Synth
 {
     public class SynthOscillator
     {
-        private static readonly System.Random _random = new System.Random();
-        public UInt32 phase => _phase;
+        private static readonly System.Random Random = new();
+        public UInt32 Phase => _phase;
         private UInt32 _phase = 0u; // using an integer type automatically ensures limits
         // phase is in [0 ; 2^(32-1)]
 
-        const float PHASE_MAX = 4294967296;
+        const float PhaseMax = 4294967296;
         private float _amp = 1.0f;
-        private UInt32 _freqPhPSmp = 0u;
+        private UInt32 _freqPhPSmpCurrent = 0u;
+        private UInt32 _freqPhPSmpTarget = 0u;
         private float _pitchModAmount;
         private float _fineTune;
 
@@ -73,7 +74,7 @@ namespace Anywhen.Synth
                     _noiseWhite = new float[16384];
                     for (int i = 0; i < _noiseWhite.Length; ++i)
                     {
-                        _noiseWhite[i] = (float)(_random.NextDouble() * 2.0 - 1.0);
+                        _noiseWhite[i] = (float)(Random.NextDouble() * 2.0 - 1.0);
                     }
 
                     break;
@@ -84,12 +85,18 @@ namespace Anywhen.Synth
 
         public void ResetPhase()
         {
+            _freqPhPSmpTarget = 0;
+            _freqPhPSmpCurrent = 0;
             _phase = 0u;
         }
 
         public void DoUpdate()
         {
-            _phase += _freqPhPSmp;
+            if (_settings.glide)
+                _freqPhPSmpCurrent = (uint)Mathf.MoveTowards(_freqPhPSmpCurrent, _freqPhPSmpTarget, _settings.glideTime);
+            else
+                _freqPhPSmpCurrent = _freqPhPSmpTarget;
+            _phase += _freqPhPSmpCurrent;
         }
 
 
@@ -104,7 +111,7 @@ namespace Anywhen.Synth
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Sine:
                             return Sin() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Saw:
-                            return sawPolyBLEP() * _settings.amplitude;
+                            return SawPolyBLEP() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Square:
                             return squarePolyBLEP(0.5f) * _settings.amplitude;
                         default:
@@ -131,23 +138,23 @@ namespace Anywhen.Synth
             }
         }
 
-        public void SetNote(int note, int sampleRate)
+        public void SetNote(int note)
         {
             _isActive = true;
             _currentNote = note + _settings.tuning;
-            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f]);
         }
 
         public void SetPitchMod(float amount)
         {
             _pitchModAmount = Remap(amount, -1, 1, 0.5f, 2);
-            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], _sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f]);
         }
 
-        public void SetFineTuning(float amount, int sampleRate)
+        public void SetFineTuning(float amount)
         {
             _fineTune = amount;
-            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f], sampleRate);
+            set_freq(AnywhenSynthVoice.FreqTab[_currentNote & 0x7f]);
         }
 
         float Remap(float value, float from1, float to1, float from2, float to2)
@@ -162,15 +169,18 @@ namespace Anywhen.Synth
             _pitch = pitch;
         }
 
-        private void set_freq(float freqHz, int sampleRate)
+        private void set_freq(float freqHz)
         {
-            if (sampleRate <= 0) sampleRate = 44100;
-            float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample
-            
+            float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / _sampleRate; // periods per sample
+
             // Guard against NaN/Inf and unreasonable frequencies
             if (float.IsNaN(freqPpsmp) || float.IsInfinity(freqPpsmp)) freqPpsmp = 0;
-            
-            _freqPhPSmp = (uint)(freqPpsmp * PHASE_MAX);
+
+            _freqPhPSmpTarget = (uint)(freqPpsmp * PhaseMax);
+            if (_freqPhPSmpCurrent == 0)
+            {
+                _freqPhPSmpCurrent = _freqPhPSmpTarget;
+            }
         }
 
         /// Basic oscillators
@@ -178,26 +188,26 @@ namespace Anywhen.Synth
         // Library sine
         private float Sin()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             //return (float)SinT(ph01 * 6.28318530717959f, 10) * _amp;
             return Mathf.Sin(ph01 * 6.28318530717959f) * _amp;
         }
 
         float SineTable()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             return _sine[(int)(ph01 * _sine.Length)];
         }
 
         float SineTaylor()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             return (float)SinT(ph01 * 6.28318530717959f, 20) * _amp;
         }
 
         float SineChebyshev()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             return (float)SinC(ph01 * 6.28318530717959f, 20) * _amp;
         }
 
@@ -236,10 +246,11 @@ namespace Anywhen.Synth
         {
             if (n == 0)
                 return 1.0;
-            else if (n == 1)
+            if (n == 1)
                 return x;
-            else
-                return 2.0 * x * ChebyshevPolynomial(n - 1, x) - ChebyshevPolynomial(n - 2, x);
+
+
+            return 2.0 * x * ChebyshevPolynomial(n - 1, x) - ChebyshevPolynomial(n - 2, x);
         }
 
         // Differentiated Polynomial Waveform (DPW)
@@ -262,19 +273,19 @@ namespace Anywhen.Synth
         // Polynomial Band-Limited Step Function (PolyBLEP)
         // Based on Valimaki 2007: 'Antialiasing Oscillators in Subtractive Synthesis'
         // and https://steemit.com/ableton/@metafunction/all-about-digital-oscillators-part-2-blits-and-bleps
-        public float sawPolyBLEP()
+        public float SawPolyBLEP()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             float result = 2.0f * ph01 - 1.0f; // phasor in [-1;+1] : saw
 
-            result -= polyBLEP(ph01);
+            result -= PolyBlep(ph01);
             return result;
         }
 
         // FIXME: DC offset when pulseWidth != 0.5, should be fixable by a simple offset
         public float squarePolyBLEP(float pulseWidth)
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
 
             float value;
             if (ph01 < pulseWidth)
@@ -286,16 +297,18 @@ namespace Anywhen.Synth
                 value = -_amp;
             }
 
-            value += polyBLEP(ph01); // Layer output of Poly BLEP on top (flip)
-            value -= polyBLEP((ph01 + 1.0f - pulseWidth) % 1.0f); // Layer output of Poly BLEP on top (flop)
+            value += PolyBlep(ph01); // Layer output of Poly BLEP on top (flip)
+            value -= PolyBlep((ph01 + 1.0f - pulseWidth) % 1.0f); // Layer output of Poly BLEP on top (flop)
 
             return value;
         }
 
-        private float polyBLEP(float t)
+
+        private float PolyBlep(float t)
         {
             // phase step in [0;1]
-            float dt = _freqPhPSmp / PHASE_MAX;
+
+            float dt = _freqPhPSmpCurrent / PhaseMax;
 
             // t-t^2/2 +1/2
             // 0 < t <= 1
@@ -321,7 +334,7 @@ namespace Anywhen.Synth
 
         private float WaveTable()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             switch (_settings.waveTableOscillatorType)
             {
                 case SynthSettingsObjectOscillator.WaveTableOscillatorTypes.Sine8Bit:
@@ -343,9 +356,10 @@ namespace Anywhen.Synth
 
         float Noise()
         {
-            float ph01 = _phase / PHASE_MAX;
+            float ph01 = _phase / PhaseMax;
             return _noiseWhite[(int)(ph01 * (_noiseWhite.Length - 1))];
         }
+
 
         public void UpdateSettings(SynthSettingsObjectOscillator newSettings)
         {
@@ -354,6 +368,7 @@ namespace Anywhen.Synth
 
         public void SetInactive()
         {
+            _freqPhPSmpCurrent = 0;
             _isActive = false;
         }
     }

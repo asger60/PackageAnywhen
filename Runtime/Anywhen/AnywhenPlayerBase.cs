@@ -214,9 +214,8 @@ namespace Anywhen
                     note = note,
                     playTime = playTime,
                     stopTime = playTime + noteEvent.duration + noteEvent.drift,
-                    volume = volume,
-                    glideDown = noteEvent.glideDown,
-                    glideUp = noteEvent.glideUp
+                    volume = volume
+
                 };
                 voice.NoteOn(playbackSettings);
             }

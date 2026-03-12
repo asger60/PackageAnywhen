@@ -247,20 +247,20 @@ namespace Anywhen.Synth
             return 440 * Mathf.Pow(2, (note - 69) / 12f);
         }
 
+
         protected override void StartPlay(PlaybackSettings playbackSettings)
         {
             base.StartPlay(playbackSettings);
 
-            ResetVoices();
+            //ResetVoices();
 
             foreach (var voice in _voices)
             {
                 for (var i = 0; i < voice.Oscillators.Length; i++)
                 {
                     var osc = voice.Oscillators[i];
-                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.note, 64),
-                        AnywhenRuntime.SampleRate);
-                    osc.SetFineTuning(i * _preset.voiceSpread, AnywhenRuntime.SampleRate);
+                    osc.SetNote(AnywhenRuntime.Conductor.GetScaledNote(CurrentPlaybackSettings.note, 64));
+                    osc.SetFineTuning(i * _preset.voiceSpread);
                 }
             }
 
@@ -289,6 +289,7 @@ namespace Anywhen.Synth
 
             if (!IsPlaying)
             {
+                ResetVoices();
                 return buffer;
             }
 
@@ -328,15 +329,7 @@ namespace Anywhen.Synth
                         CurrentPitch = PitchLFO.Process();
                     }
 
-                    if (CurrentPlaybackSettings.glideDown)
-                    {
-                        CurrentPitch *= 0.99999f;
-                    }
 
-                    if (CurrentPlaybackSettings.glideUp)
-                    {
-                        CurrentPitch *= 1.00001f;
-                    }
 
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
@@ -415,6 +408,7 @@ namespace Anywhen.Synth
             if (AmplitudeEnvelope.IsIdle && !HasScheduledPlay)
             {
                 SetReady();
+                ResetVoices();
             }
 
             return buffer;
