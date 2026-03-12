@@ -191,6 +191,10 @@ namespace Anywhen.Synth
             float sampleRate = AnywhenRuntime.SampleRate;
             if (sampleRate <= 0) sampleRate = 44100;
             _s = (value * _cutoffMod) / 1.0f / sampleRate / /*_oversampling * */ 6.28318530717959f;
+            
+            // Guard against NaN/Inf
+            if (float.IsNaN(_s) || float.IsInfinity(_s)) _s = 0;
+
             _s = Clamp(_s, 0, 0.99f); // Keep it within stable range
         }
 

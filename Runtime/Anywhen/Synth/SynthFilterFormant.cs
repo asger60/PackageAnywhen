@@ -128,6 +128,7 @@ namespace Anywhen.Synth
 
         private void Init(int sampleRate)
         {
+            if (sampleRate <= 0) sampleRate = 44100;
             _sampleRate = sampleRate;
 
             _synthFilterBandPass1 = new SynthFilterBandPass();

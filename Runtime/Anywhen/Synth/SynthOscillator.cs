@@ -171,7 +171,10 @@ namespace Anywhen.Synth
 
         private void set_freq(float freqHz)
         {
-            float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / _sampleRate; // periods per sample
+            float sampleRate = _sampleRate > 0 ? _sampleRate : AnywhenRuntime.SampleRate;
+            if (sampleRate <= 0) sampleRate = 44100;
+
+            float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample
 
             // Guard against NaN/Inf and unreasonable frequencies
             if (float.IsNaN(freqPpsmp) || float.IsInfinity(freqPpsmp)) freqPpsmp = 0;
@@ -364,6 +367,9 @@ namespace Anywhen.Synth
         public void UpdateSettings(SynthSettingsObjectOscillator newSettings)
         {
             this._settings = newSettings;
+            _pitchModAmount = 1;
+            _fineTune = 0;
+            _pitch = 1;
         }
 
         public void SetInactive()

@@ -141,8 +141,8 @@ namespace Anywhen.SettingsObjects
             switch (clipSelectType)
             {
                 case ClipSelectType.ScalePitchedNotes:
-
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
+
                     int bestDistance = int.MaxValue;
                     int unsignedDistance = 0;
                     foreach (var noteClip in clips)
@@ -158,7 +158,7 @@ namespace Anywhen.SettingsObjects
                     List<AnywhenNoteClip> clipsList = new List<AnywhenNoteClip>();
                     foreach (var noteClip in clips)
                     {
-                        if (noteClip.NoteIndex == note + bestDistance)
+                        if (noteClip.NoteIndex == note - unsignedDistance)
                         {
                             clipsList.Add(noteClip);
                         }
@@ -204,7 +204,8 @@ namespace Anywhen.SettingsObjects
 
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1, volume);
+                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1,
+                            volume);
                     }
 
                 default:

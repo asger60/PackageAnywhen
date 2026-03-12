@@ -20,7 +20,6 @@
 
 using System;
 using Anywhen.Composing;
-using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
 
@@ -57,8 +56,17 @@ namespace Anywhen.Synth
 
         public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
         {
+            InitializeFreqTab();
+
             SetPreset(instrumentSettings as AnywhenSynthPreset);
 
+            RebuildSynth();
+            ResetVoices();
+            _isInitialized = true;
+        }
+
+        private static void InitializeFreqTab()
+        {
             if (FreqTab == null)
             {
                 FreqTab = new float[128];
@@ -67,10 +75,6 @@ namespace Anywhen.Synth
                     FreqTab[i] = Midi2Freq(i);
                 }
             }
-
-            RebuildSynth();
-            ResetVoices();
-            _isInitialized = true;
         }
 
 
@@ -250,9 +254,10 @@ namespace Anywhen.Synth
 
         protected override void StartPlay(PlaybackSettings playbackSettings)
         {
+            InitializeFreqTab();
             base.StartPlay(playbackSettings);
 
-            //ResetVoices();
+            ResetVoices();
 
             foreach (var voice in _voices)
             {
@@ -334,7 +339,9 @@ namespace Anywhen.Synth
                     float voiceFreqMod = 1;
                     foreach (var frequencyModifier in _voiceFrequencyModifiers)
                     {
-                        voiceFreqMod *= frequencyModifier.Process();
+                        float mod = frequencyModifier.Process();
+                        if (!float.IsNaN(mod) && !float.IsInfinity(mod))
+                            voiceFreqMod *= mod;
                     }
 
                     //voiceFreqMod *= (float)CurrentPitch;

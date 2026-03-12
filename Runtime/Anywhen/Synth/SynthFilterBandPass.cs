@@ -65,7 +65,12 @@ namespace Anywhen.Synth
             float sampleRate = AnywhenRuntime.SampleRate;
             if (sampleRate <= 0) sampleRate = 44100;
 
-            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * _filterFrequency / sampleRate);
+            float filterFreq = _filterFrequency * _frequencyMod;
+            var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * filterFreq / sampleRate);
+            
+            // Guard against NaN/Inf in coefficients
+            if (float.IsNaN(f) || float.IsInfinity(f)) f = 0.1f;
+
             _vD = 1f / Mathf.Max(_q, 0.01f);
             _vF = (1.85f - 0.75f * _vD * f) * f;
             

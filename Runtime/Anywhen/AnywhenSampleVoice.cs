@@ -79,11 +79,11 @@ namespace Anywhen
                 float ampMod = 1;
 
                 ampMod *= AmplitudeEnvelope.Process();
-
+                Double pitch = CurrentPitch;
                 if (CurrentTrack.pitchLFOSettings.enabled)
                 {
                     PitchLFO.DoUpdate();
-                    CurrentPitch = PitchLFO.Process();
+                    pitch *= (PitchLFO.Process());
                 }
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
@@ -119,7 +119,7 @@ namespace Anywhen
                     }
                 }
 
-                _samplePosBuffer1 += (_sampleStepFrac * CurrentPitch * CurrentTrack.TrackPitch);
+                _samplePosBuffer1 += (_sampleStepFrac * pitch * CurrentTrack.TrackPitch);
             }
 
             return data;

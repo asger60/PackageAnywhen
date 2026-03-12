@@ -126,6 +126,9 @@ namespace Anywhen.Synth
             if (sampleRate <= 0) sampleRate = 44100;
             float omega = 2.0f * 3.14159265f * frequency / (sampleRate * _oversampling) * _cutoffMod;
             
+            // Guard against NaN/Inf
+            if (float.IsNaN(omega) || float.IsInfinity(omega)) omega = 0.1f;
+
             // Guard against Tan(PI/2) and instability at high frequencies
             omega = Clamp(omega, 0, 3.1f);
             
