@@ -46,7 +46,6 @@ namespace Anywhen
         {
             if (AudioSettings.dspTime > playbackSettings.playTime)
             {
-                Debug.LogWarning($"NoteOn {playbackSettings.note} is scheduled to play in the past");
                 return;
             }
 
