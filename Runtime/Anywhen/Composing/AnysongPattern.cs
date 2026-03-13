@@ -9,7 +9,7 @@ namespace Anywhen.Composing
     public class AnysongPattern
     {
         public List<float> triggerChances = new List<float>();
-        
+
         public List<AnysongPatternStep> steps;
         [Range(0, 16)] public int patternLength = 16;
         private int _internalIndex;
@@ -84,18 +84,19 @@ namespace Anywhen.Composing
             return steps[stepIndex];
         }
 
-        
+
         public void SetStepIndex(int stepIndex)
         {
             _internalIndex = stepIndex;
         }
-        
+
         public AnysongPatternStep GetCurrentStep()
         {
             if (steps.Count == 0)
             {
                 Init();
             }
+
             return steps[_internalIndex];
         }
 
@@ -114,7 +115,7 @@ namespace Anywhen.Composing
             {
                 if (patternStep.NoteOn)
                 {
-                    int thisIndex = Random.Range(0, notes.Count );
+                    int thisIndex = Random.Range(0, notes.Count);
                     patternStep.rootNote = notes[thisIndex];
                     notes.RemoveAt(thisIndex);
                 }
@@ -144,13 +145,18 @@ namespace Anywhen.Composing
                 }
             }
         }
-        
+
         public void Clear()
         {
             foreach (var step in steps)
             {
                 step.Init();
             }
+        }
+
+        public void SyncToClock()
+        {
+            _internalIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.Sub16, patternLength);
         }
     }
 }

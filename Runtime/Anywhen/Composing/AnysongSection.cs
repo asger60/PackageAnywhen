@@ -103,5 +103,13 @@ namespace Anywhen.Composing
                 track.Reset();
             }
         }
+
+        public void SyncToClock()
+        {
+            foreach (var sectionTrack in tracks)
+            {
+                sectionTrack.SyncToClock();
+            }
+        }
     }
 }

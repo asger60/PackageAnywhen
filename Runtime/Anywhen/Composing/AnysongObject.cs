@@ -114,5 +114,13 @@ namespace Anywhen.Composing
             }
             
         }
+
+        public void SyncToClock()
+        {
+            foreach (var section in Sections)
+            {
+                section.SyncToClock();
+            }
+        }
     }
 }

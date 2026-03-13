@@ -94,7 +94,7 @@ namespace Anywhen
         }
 
 
-        public override void Play()
+        public override void Play(bool syncToGlobalTime = false)
         {
             if (!CurrentSong)
             {

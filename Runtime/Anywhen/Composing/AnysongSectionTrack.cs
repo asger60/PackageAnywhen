@@ -21,9 +21,13 @@ namespace Anywhen.Composing
         public List<AnysongPattern> patterns;
 
 
-        private int _selectedTrackPatternIndex;
+        private int _selectedTrackPatternIndex; // this should probably storred in a different place
 
-
+        private AnysongPattern _currentPattern;
+        private int _currentPatternBar;
+        int _currentPatternIndex;
+        
+        
         public void Init(AnysongTrack songSongTrack)
         {
             _selectedTrackPatternIndex = 0;
@@ -86,13 +90,10 @@ namespace Anywhen.Composing
         }
 
 
-        private AnysongPattern _currentPattern;
-        private int _currentPatternBar;
-        int _currentPatternIndex;
+
 
         public void AdvancePlayingPattern()
         {
-            Debug.Log("Advancing pattern bar");
             _currentPatternBar++;
             _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
             _currentPattern = GetPattern(_currentPatternIndex);
@@ -177,6 +178,13 @@ namespace Anywhen.Composing
             {
                 pattern.Reset();
             }
+        }
+
+        public void SyncToClock()
+        {
+            _currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
+            _currentPattern = GetPattern(_currentPatternIndex);
+            _currentPattern.SyncToClock();
         }
     }
 }

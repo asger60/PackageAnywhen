@@ -292,21 +292,26 @@ namespace Anywhen
             {
                 NextSection();
             }
-
-
         }
 
 
-        public virtual void Play()
+        public virtual void Play(bool syncToGlobalTime = false)
         {
             if (!_currentSong)
             {
                 AnywhenRuntime.Log("No song loaded.");
                 return;
             }
+
             IsPlaying = true;
             _currentSong.Reset();
             CurrentBar = 0;
+
+            if (syncToGlobalTime)
+            {
+                _currentSong.SyncToClock();
+            }
+
             AttachToMetronome();
         }
 
