@@ -115,7 +115,6 @@ namespace Anysong
             _parent.Focus();
             _parent.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
             _parent.RegisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
-
             _parent.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEvent);
         }
 
@@ -223,8 +222,7 @@ namespace Anysong
 
         private static void DeleteStep(AnysongPatternStep patternStep)
         {
-            patternStep.rootNote = 0;
-            patternStep.chordNotes.Clear();
+            patternStep.Init();
             Refresh();
         }
 
@@ -240,7 +238,7 @@ namespace Anysong
 
         static void PasteStep(AnysongPatternStep copy, int stepIndex)
         {
-            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy;
+            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy.Clone();
             _currentSelectedPatternStep = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
             Refresh();
         }

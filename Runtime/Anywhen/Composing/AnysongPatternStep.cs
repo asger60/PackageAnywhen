@@ -100,7 +100,12 @@ namespace Anywhen.Composing
 
         public void Init()
         {
-            duration = 1;
+            strumRandom = 0;
+            strumAmount = 0f;
+            stepRepeats = 0;
+            offset = 0;
+            chance = 1;
+            duration = 0.25f;
             expression = 1;
             velocity = 1;
             chordNotes = new List<int> { };
@@ -129,7 +134,6 @@ namespace Anywhen.Composing
 
             return e;
         }
-
 
 
         public NoteEvent[] GetNoteEvents(int patternRoot)
