@@ -65,6 +65,7 @@ namespace Anywhen.Composing
                 newPattern.Init();
                 patterns.Add(newPattern);
             }
+
             return _currentPattern ??= patterns[0];
         }
 
@@ -87,25 +88,24 @@ namespace Anywhen.Composing
 
         private AnysongPattern _currentPattern;
         private int _currentPatternBar;
-        private int _currentPatternIndex;
+        int _currentPatternIndex;
 
         public void AdvancePlayingPattern()
         {
-            if (_resetOnNextBar)
-            {
-                _currentPatternBar = 0;
-                _currentPatternIndex = 0;
-                _resetOnNextBar = false;
-            }
-            else
-            {
-                _currentPatternBar++;
-            }
+            Debug.Log("Advancing pattern bar");
+            _currentPatternBar++;
+            _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
+            _currentPattern = GetPattern(_currentPatternIndex);
+            _currentPattern.SetStepIndex(0);
+        }
 
+        int GetProgressionPatternIndex(int patternBar)
+        {
+            int patternIndex = (int)Mathf.Repeat(patternBar, patterns.Count);
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
-                    _currentPatternIndex = (int)Mathf.Repeat(_currentPatternBar, patterns.Count);
+                    
                     break;
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
@@ -115,14 +115,14 @@ namespace Anywhen.Composing
                     for (var i = 0; i < patterns.Count; i++)
                     {
                         var anyPattern = patterns[i];
-                        float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
+                        float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
                         totalWeight += thisTriggerChance;
                     }
 
                     // If total weight is 0, fallback to first pattern
                     if (totalWeight <= 0)
                     {
-                        _currentPatternIndex = 0;
+                        patternIndex = 0;
                         didFindPattern = true;
                     }
                     else
@@ -135,12 +135,12 @@ namespace Anywhen.Composing
                         for (var i = 0; i < patterns.Count; i++)
                         {
                             var anyPattern = patterns[i];
-                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(_currentPatternBar, 4)];
+                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
                             currentWeight += thisTriggerChance;
 
                             if (randomValue <= currentWeight)
                             {
-                                _currentPatternIndex = i;
+                                patternIndex = i;
                                 didFindPattern = true;
                                 break;
                             }
@@ -149,42 +149,28 @@ namespace Anywhen.Composing
 
                     if (!didFindPattern)
                     {
-                        Debug.LogWarning("Could not find pattern for bar " + _currentPatternBar);
-                        _currentPatternIndex = 0;
+                        patternIndex = 0;
                     }
 
                     break;
                 case PatternProgressionType.Random:
-                    _currentPatternIndex = Random.Range(0, patterns.Count);
+                    patternIndex = Random.Range(0, patterns.Count);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            _currentPattern = patterns[_currentPatternIndex];
-            _currentPattern.SetStepIndex(0);
+            return patternIndex;
         }
-
-        public void SetCurrentPatternIndex(int index)
-        {
-            _currentPatternIndex = Mathf.Clamp(index, 0, patterns.Count);
-            _currentPattern = patterns[_currentPatternIndex];
-            _currentPattern.SetStepIndex(0);
-        }
-
-        private bool _resetOnNextBar;
-        public void ResetOnNextBar() => _resetOnNextBar = true;
 
 
         public void Reset()
         {
-            //_currentPatternIndex = 0;
             _currentPatternBar = 0;
             if (patterns.Count > 0)
             {
-                if (_currentPatternIndex >= patterns.Count)
-                    _currentPatternIndex = 0;
-                _currentPattern = patterns[_currentPatternIndex];
+                _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
+                _currentPattern = GetPattern(_currentPatternIndex);
             }
 
             foreach (var pattern in patterns)

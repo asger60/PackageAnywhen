@@ -130,12 +130,6 @@ namespace Anywhen.Composing
             return e;
         }
 
-        private NoteEvent[] _eventsCache;
-        private float _lastDuration = float.MinValue;
-        private float _lastOffset = float.MinValue;
-        private float _lastVelocity = float.MinValue;
-        private float _lastExpression = float.MinValue;
-        private RepeatRates _lastRepeatRate = (RepeatRates)(-1);
 
 
         public NoteEvent[] GetNoteEvents(int patternRoot)
@@ -243,7 +237,6 @@ namespace Anywhen.Composing
 
             clone._notesCache = null;
             clone._strumCache = null;
-            clone._eventsCache = null;
             clone._lastChordNotes = null;
 
             return clone;

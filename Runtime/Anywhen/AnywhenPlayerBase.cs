@@ -142,8 +142,6 @@ namespace Anywhen
                 {
                     var section = _currentSong.Sections[sectionIndex];
                     var sectionTrack = section.tracks[trackIndex];
-
-
                     var track = _currentSong.Tracks[trackIndex];
                     var pattern = sectionTrack.GetPlayingPattern();
 
@@ -215,7 +213,6 @@ namespace Anywhen
                     playTime = playTime,
                     stopTime = playTime + noteEvent.duration + noteEvent.drift,
                     volume = volume
-
                 };
                 voice.NoteOn(playbackSettings);
             }
@@ -263,7 +260,6 @@ namespace Anywhen
             }
         }
 
-        private bool _firstBar;
 
         protected virtual void OnBar()
         {
@@ -285,24 +281,19 @@ namespace Anywhen
             }
 
 
-            if (!_firstBar)
+            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-                {
-                    var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
-                    track.AdvancePlayingPattern();
-                }
+                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                track.AdvancePlayingPattern();
+            }
 
-                int progress = (int)Mathf.Repeat(CurrentBar,
-                    _currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
-                if (progress == 0)
-                {
-                    NextSection();
-                }
+            int progress = (int)Mathf.Repeat(CurrentBar, _currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
+            if (progress == 0)
+            {
+                NextSection();
             }
 
 
-            _firstBar = false;
         }
 
 
@@ -313,23 +304,9 @@ namespace Anywhen
                 AnywhenRuntime.Log("No song loaded.");
                 return;
             }
-
-            _firstBar = true;
             IsPlaying = true;
-
-            //SetupTracks(_currentSong.Tracks);
-
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                foreach (var section in _currentSong.Sections)
-                {
-                    var sectionTrack = section.tracks[0];
-                    sectionTrack.Reset();
-                }
-            }
-
-            CurrentBar = -1;
-            ResetSection();
+            _currentSong.Reset();
+            CurrentBar = 0;
             AttachToMetronome();
         }
 
@@ -383,22 +360,6 @@ namespace Anywhen
             _playerVolume = value;
         }
 
-
-        public void ResetOnNextBar()
-        {
-            _resetOnNextBar = true;
-
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
-                {
-                    var section = _currentSong.Sections[sectionIndex];
-                    var sectionTrack = section.tracks[trackIndex];
-                    sectionTrack.ResetOnNextBar();
-                    section.Reset();
-                }
-            }
-        }
 
         public void Reset()
         {
@@ -519,7 +480,7 @@ namespace Anywhen
                 SetupTracks(_currentSong.Tracks);
         }
 
-        public void LoadInstruments()
+        public virtual void LoadInstruments()
         {
             foreach (var track in _currentSong.Tracks)
             {
