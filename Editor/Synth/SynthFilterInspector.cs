@@ -1,70 +1,390 @@
 using System;
+using Anywhen.Synth;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-
-public class SynthFilterInspector : UnityEditor.Editor
+namespace PackageAnywhen.Editor.Synth
 {
-    public static void Draw(SynthSettingsInspector parent, SynthSettingsObjectFilter settings)
+    public class SynthFilterInspector : UnityEditor.Editor
     {
-        EditorGUILayout.BeginVertical("box");
-
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("X", GUILayout.Width(20)))
+        private class FilterPreviewElement : VisualElement
         {
-            parent.DeleteElement<SynthSettingsObjectFilter>(settings, "filterSettings");
-            parent.RebuildSynth();
+            private SynthSettingsObjectFilter _settings;
+            private const int Resolution = 100;
+            private readonly float[] _response = new float[Resolution];
+
+            public FilterPreviewElement(SynthSettingsObjectFilter settings)
+            {
+                _settings = settings;
+                style.height = 100;
+                style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+                style.marginTop = 5;
+                style.marginBottom = 5;
+                style.borderBottomWidth = 1;
+                style.borderTopWidth = 1;
+                style.borderLeftWidth = 1;
+                style.borderRightWidth = 1;
+                style.borderBottomColor = Color.gray;
+                style.borderTopColor = Color.gray;
+                style.borderLeftColor = Color.gray;
+                style.borderRightColor = Color.gray;
+
+                generateVisualContent += OnGenerateVisualContent;
+            }
+
+            public void Refresh()
+            {
+                UpdateResponse();
+                MarkDirtyRepaint();
+            }
+
+            private void UpdateResponse()
+            {
+                // Simplified linear approximations for preview
+                switch (_settings.filterType)
+                {
+                    case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    {
+                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass 
+                            ? _settings.lowPassSettings.cutoffFrequency 
+                            : _settings.ladderSettings.cutoffFrequency;
+                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass 
+                            ? _settings.lowPassSettings.resonance 
+                            : _settings.ladderSettings.resonance;
+
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            float freq = LogScale(i / (float)Resolution, 20, 20000);
+                            float x = freq / cutoff;
+                            // 4-pole lowpass approx: 1 / (1 + x^4)
+                            float mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(x, 8.0f));
+                            // Simple resonance peak approx
+                            if (resonance > 0)
+                            {
+                                float peak = resonance * 3.0f * Mathf.Exp(-Mathf.Pow(x - 1.0f, 2.0f) * 10.0f);
+                                mag += peak;
+                            }
+                            // Avoid clipping the peak by scaling down the whole signal if it exceeds 1
+                            _response[i] = mag / (1.0f + resonance * 2.0f);
+                        }
+                        break;
+                    }
+                    case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    {
+                        float center = _settings.bandPassSettings.frequency;
+                        float width = _settings.bandPassSettings.bandWidth;
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            float freq = LogScale(i / (float)Resolution, 20, 20000);
+                            float x = freq / center;
+                            // Bandpass approx
+                            float q = 100.0f / Mathf.Max(width, 1.0f);
+                            float mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(q * (x - 1.0f / x), 2.0f));
+                            _response[i] = Mathf.Clamp01(mag);
+                        }
+                        break;
+                    }
+                    case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    {
+                        // Formant filters have multiple peaks. For preview we'll just show a generic "vowel" shape or just 3 peaks.
+                        // Ideally we'd pull these from SynthFilterFormant but it's internal.
+                        // Let's just draw some peaks based on vowel index.
+                        int vowel = _settings.formantSettings.vowel;
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            float freq = LogScale(i / (float)Resolution, 20, 20000);
+                            float mag = 0;
+                            // Fake some formant peaks
+                            float[] peaks = GetVowelPeaks(vowel);
+                            foreach (var p in peaks)
+                            {
+                                mag += 0.5f * Mathf.Exp(-Mathf.Pow((freq - p) / (p * 0.2f), 2.0f));
+                            }
+                            _response[i] = Mathf.Clamp01(mag);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            private float[] GetVowelPeaks(int vowel)
+            {
+                // Rough estimates of F1, F2, F3 for a few vowels
+                switch (vowel)
+                {
+                    case 1: return new float[] { 270, 2290, 3010 }; // i
+                    case 2: return new float[] { 390, 1990, 2550 }; // e
+                    case 3: return new float[] { 730, 1090, 2440 }; // a
+                    case 4: return new float[] { 570, 840, 2410 };  // o
+                    case 5: return new float[] { 300, 870, 2240 };  // u
+                    default: return new float[] { 500, 1500, 2500 };
+                }
+            }
+
+            private float LogScale(float t, float min, float max)
+            {
+                return min * Mathf.Pow(max / min, t);
+            }
+
+            private void OnGenerateVisualContent(MeshGenerationContext mgc)
+            {
+                var painter = mgc.painter2D;
+                var rect = contentRect;
+                if (rect.width <= 0 || rect.height <= 0) return;
+
+                painter.BeginPath();
+                painter.lineWidth = 2;
+                painter.strokeColor = Color.cyan;
+
+                for (int i = 0; i < Resolution; i++)
+                {
+                    float x = (i / (float)(Resolution - 1)) * rect.width;
+                    float y = rect.height - (_response[i] * rect.height * 0.8f) - rect.height * 0.1f;
+                    if (i == 0) painter.MoveTo(new Vector2(x, y));
+                    else painter.LineTo(new Vector2(x, y));
+                }
+                painter.Stroke();
+
+                // Draw cutoff line if applicable
+                float cutoff = -1;
+                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass) cutoff = _settings.lowPassSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.Ladder) cutoff = _settings.ladderSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPass) cutoff = _settings.bandPassSettings.frequency;
+
+                if (cutoff > 0)
+                {
+                    float t = Mathf.Log(cutoff / 20f) / Mathf.Log(20000f / 20f);
+                    float lx = Mathf.Clamp01(t) * rect.width;
+                    painter.BeginPath();
+                    painter.lineWidth = 1;
+                    painter.strokeColor = new Color(1, 1, 1, 0.3f);
+                    painter.MoveTo(new Vector2(lx, 0));
+                    painter.LineTo(new Vector2(lx, rect.height));
+                    painter.Stroke();
+                }
+            }
         }
 
-        GUILayout.EndHorizontal();
-
-        //AnimationCurve curve = new AnimationCurve();
-        //EditorGUILayout.CurveField(curve, Color.red, new Rect(0, -1, 1, 2), GUILayout.Height(60));
-
-        var newFilterType =
-            (SynthSettingsObjectFilter.FilterTypes)EditorGUILayout.EnumPopup("Filter type:", settings.filterType);
-
-        if (newFilterType != settings.filterType)
+        public static VisualElement Draw(SynthSettingsObjectFilter settings)
         {
-            settings.filterType = newFilterType;
-            parent.RebuildSynth();
+            VisualElement element = new VisualElement();
+            var so = new SerializedObject(settings);
+
+            var label = new Label("Filter type: " + settings.filterType)
+            {
+                style =
+                {
+                    unityFontStyleAndWeight = FontStyle.Bold
+                }
+            };
+            element.Add(label);
+
+            var preview = new FilterPreviewElement(settings);
+            element.Add(preview);
+            preview.Refresh();
+
+            switch (settings.filterType)
+            {
+                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 12000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false, preview));
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 12000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 100, false, preview));
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    element.Add(CreateBoundSlider(so.FindProperty("formantSettings.vowel"), "Vowel", 1, 6, true, preview));
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 12000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false, preview));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return element;
         }
 
-        switch (settings.filterType)
+        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end, bool isInt, FilterPreviewElement preview)
         {
-            case SynthSettingsObjectFilter.FilterTypes.LowPass:
-
-                settings.lowPassSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
-                    settings.lowPassSettings.oversampling, 1, 4);
-                settings.lowPassSettings.cutoffFrequency =
-                    EditorGUILayout.Slider("CutOff", settings.lowPassSettings.cutoffFrequency, 1, 24000);
-                settings.lowPassSettings.resonance =
-                    EditorGUILayout.Slider("Resonance", settings.lowPassSettings.resonance, 0, 1);
-
-                break;
-            case SynthSettingsObjectFilter.FilterTypes.BandPass:
-                settings.bandPassSettings.frequency = EditorGUILayout.Slider("Frequency",
-                    settings.bandPassSettings.frequency, 1, 24000);
-                settings.bandPassSettings.bandWidth = EditorGUILayout.Slider("Bandwidth",
-                    settings.bandPassSettings.bandWidth, 1, 100);
-                break;
-            case SynthSettingsObjectFilter.FilterTypes.Formant:
-                settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
-                    settings.formantSettings.vowel, 1, 6);
-                break;
-            case SynthSettingsObjectFilter.FilterTypes.Ladder:
-                settings.ladderSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
-                    settings.ladderSettings.oversampling, 1, 4);
-                settings.ladderSettings.cutoffFrequency =
-                    EditorGUILayout.Slider("CutOff", settings.ladderSettings.cutoffFrequency, 1, 24000);
-                settings.ladderSettings.resonance =
-                    EditorGUILayout.Slider("Resonance", settings.ladderSettings.resonance, 0, 1);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            VisualElement slider;
+            if (isInt)
+            {
+                var s = new SliderInt(label, (int)start, (int)end);
+                s.labelElement.style.minWidth = 80;
+                s.BindProperty(property);
+                s.RegisterValueChangedCallback(_ => preview.Refresh());
+                slider = s;
+            }
+            else
+            {
+                var s = new Slider(label, start, end);
+                s.labelElement.style.minWidth = 80;
+                s.BindProperty(property);
+                s.RegisterValueChangedCallback(_ => preview.Refresh());
+                slider = s;
+            }
+            return slider;
         }
 
-        GUILayout.EndVertical();
-        GUILayout.Space(10);
+        public static void Draw(SynthSettingsInspector parent, SynthSettingsObjectFilter settings)
+        {
+            EditorGUILayout.BeginVertical("box");
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("X", GUILayout.Width(20)))
+            {
+                parent.DeleteElement<SynthSettingsObjectFilter>(settings, "filterSettings");
+                parent.RebuildSynth();
+            }
+
+            GUILayout.EndHorizontal();
+
+
+            var newFilterType =
+                (SynthSettingsObjectFilter.FilterTypes)EditorGUILayout.EnumPopup("Filter type:", settings.filterType);
+
+            if (newFilterType != settings.filterType)
+            {
+                settings.filterType = newFilterType;
+                parent.RebuildSynth();
+            }
+
+            // Preview
+            var rect = GUILayoutUtility.GetRect(10, 100);
+            DrawFilterPreview(rect, settings);
+
+            switch (settings.filterType)
+            {
+                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+
+                    settings.lowPassSettings.oversampling =
+                        EditorGUILayout.IntSlider("Oversampling", settings.lowPassSettings.oversampling, 1, 4);
+                    settings.lowPassSettings.cutoffFrequency =
+                        EditorGUILayout.Slider("CutOff", settings.lowPassSettings.cutoffFrequency, 1, 24000);
+                    settings.lowPassSettings.resonance =
+                        EditorGUILayout.Slider("Resonance", settings.lowPassSettings.resonance, 0, 1);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    settings.bandPassSettings.frequency = EditorGUILayout.Slider("Frequency",
+                        settings.bandPassSettings.frequency, 1, 24000);
+                    settings.bandPassSettings.bandWidth = EditorGUILayout.Slider("Bandwidth",
+                        settings.bandPassSettings.bandWidth, 1, 100);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
+                        settings.formantSettings.vowel, 1, 6);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    settings.ladderSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
+                        settings.ladderSettings.oversampling, 1, 4);
+                    settings.ladderSettings.cutoffFrequency =
+                        EditorGUILayout.Slider("CutOff", settings.ladderSettings.cutoffFrequency, 1, 24000);
+                    settings.ladderSettings.resonance =
+                        EditorGUILayout.Slider("Resonance", settings.ladderSettings.resonance, 0, 1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            GUILayout.EndVertical();
+            GUILayout.Space(10);
+        }
+
+        private static void DrawFilterPreview(Rect rect, SynthSettingsObjectFilter settings)
+        {
+            EditorGUI.DrawRect(rect, new Color(0.1f, 0.1f, 0.1f, 1f));
+            Handles.color = Color.cyan;
+            const int resolution = 100;
+            Vector3[] points = new Vector3[resolution];
+
+            float cutoff = -1;
+            float resonance = 0;
+            float bandWidth = 0;
+
+            switch (settings.filterType)
+            {
+                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                    cutoff = settings.lowPassSettings.cutoffFrequency;
+                    resonance = settings.lowPassSettings.resonance;
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    cutoff = settings.ladderSettings.cutoffFrequency;
+                    resonance = settings.ladderSettings.resonance;
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    cutoff = settings.bandPassSettings.frequency;
+                    bandWidth = settings.bandPassSettings.bandWidth;
+                    break;
+            }
+
+            for (int i = 0; i < resolution; i++)
+            {
+                float t = i / (float)(resolution - 1);
+                float freq = 20 * Mathf.Pow(20000 / 20f, t);
+                float mag = 0;
+
+                switch (settings.filterType)
+                {
+                    case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    {
+                        float x = freq / cutoff;
+                        mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(x, 8.0f));
+                        if (resonance > 0)
+                            mag += resonance * 3.0f * Mathf.Exp(-Mathf.Pow(x - 1.0f, 2.0f) * 10.0f);
+                        mag /= (1.0f + resonance * 2.0f);
+                        break;
+                    }
+                    case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    {
+                        float x = freq / cutoff;
+                        float q = 100.0f / Mathf.Max(bandWidth, 1.0f);
+                        mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(q * (x - 1.0f / x), 2.0f));
+                        break;
+                    }
+                    case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    {
+                        float[] peaks = GetVowelPeaksStatic(settings.formantSettings.vowel);
+                        foreach (var p in peaks)
+                            mag += 0.5f * Mathf.Exp(-Mathf.Pow((freq - p) / (p * 0.2f), 2.0f));
+                        break;
+                    }
+                }
+
+                mag = Mathf.Clamp01(mag);
+                points[i] = new Vector3(rect.x + t * rect.width, rect.y + rect.height - (mag * rect.height * 0.8f) - rect.height * 0.1f, 0);
+            }
+
+            Handles.DrawAAPolyLine(2, points);
+
+            if (cutoff > 0)
+            {
+                float tCutoff = Mathf.Log(cutoff / 20f) / Mathf.Log(20000f / 20f);
+                float lx = rect.x + Mathf.Clamp01(tCutoff) * rect.width;
+                Handles.color = new Color(1, 1, 1, 0.3f);
+                Handles.DrawLine(new Vector3(lx, rect.y, 0), new Vector3(lx, rect.y + rect.height, 0));
+            }
+        }
+
+        private static float[] GetVowelPeaksStatic(int vowel)
+        {
+            switch (vowel)
+            {
+                case 1: return new float[] { 270, 2290, 3010 };
+                case 2: return new float[] { 390, 1990, 2550 };
+                case 3: return new float[] { 730, 1090, 2440 };
+                case 4: return new float[] { 570, 840, 2410 };
+                case 5: return new float[] { 300, 870, 2240 };
+                default: return new float[] { 500, 1500, 2500 };
+            }
+        }
     }
 }

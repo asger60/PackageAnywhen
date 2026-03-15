@@ -57,9 +57,7 @@ namespace Anywhen.Synth
         public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings, trackSettings)
         {
             InitializeFreqTab();
-
             SetPreset(instrumentSettings as AnywhenSynthPreset);
-
             RebuildSynth();
             ResetVoices();
             _isInitialized = true;

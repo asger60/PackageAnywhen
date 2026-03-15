@@ -123,6 +123,7 @@ namespace Anywhen.Synth
         {
             Settings = newSettings;
             Init(AnywhenRuntime.SampleRate);
+            SetParameters(newSettings);
         }
 
 
@@ -136,9 +137,9 @@ namespace Anywhen.Synth
             _synthFilterBandPass3 = new SynthFilterBandPass();
             _currentVowel = _vowels[3];
 
-            _synthFilterBandPass1.Init(sampleRate);
-            _synthFilterBandPass2.Init(sampleRate);
-            _synthFilterBandPass3.Init(sampleRate);
+            _synthFilterBandPass1.Init();
+            _synthFilterBandPass2.Init();
+            _synthFilterBandPass3.Init();
 
 
             _synthFilterBandPass1.SetFrequency(_currentVowel.GetBand(0).frequency);
@@ -182,6 +183,8 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
+            SetParameters(Settings);
+            
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             float mix1 = _synthFilterBandPass1.Process(sample);

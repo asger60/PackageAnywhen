@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
+using Anywhen.Synth.Filter;
 using UnityEngine;
 using UnityEngine.Audio;
 using Random = UnityEngine.Random;
@@ -35,13 +36,16 @@ namespace Anywhen
             public AnysongTrack track;
             public AnywhenVoiceBase[] Voices;
             public float trackPitch;
+            public List<SynthFilterBase> trackFilters;
 
-            public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices)
+            public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices,
+                List<SynthFilterBase> filters)
             {
                 this.instrument = instrument;
                 this.track = track;
                 Voices = voices;
                 trackPitch = track.TrackPitch;
+                trackFilters = filters;
             }
 
             public AnywhenVoiceBase GetVoice()
@@ -75,6 +79,7 @@ namespace Anywhen
         private List<PlayerTracks> _tracksList = new();
         public List<PlayerTracks> TracksList => _tracksList;
         private AudioSource _audioSource;
+        private float[] _trackBuffer;
 
         protected virtual void Awake()
         {
@@ -97,6 +102,35 @@ namespace Anywhen
             {
                 var anySongTrack = tracks[index];
                 if (!anySongTrack.instrument) continue;
+                List<SynthFilterBase> filters = new();
+                foreach (var trackFilter in anySongTrack.TrackFilters)
+                {
+                    switch (trackFilter.filterType)
+                    {
+                        case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                            var newFilter = new SynthFilterLowPass();
+                            newFilter.SetSettings(trackFilter);
+                            filters.Add(newFilter);
+                            break;
+                        case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                            var newHpFilter = new SynthFilterBandPass();
+                            newHpFilter.SetSettings(trackFilter);
+                            filters.Add(newHpFilter);
+                            break;
+                        case SynthSettingsObjectFilter.FilterTypes.Formant:
+                            var newFormantFilter = new SynthFilterFormant();
+                            newFormantFilter.SetSettings(trackFilter);
+                            filters.Add(newFormantFilter);
+                            break;
+                        case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                            var newLadderFilter = new SynthFilterLadder();
+                            newLadderFilter.SetSettings(trackFilter);
+                            filters.Add(newLadderFilter);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
 
                 List<AnywhenVoiceBase> voicesList = new();
 
@@ -122,7 +156,7 @@ namespace Anywhen
                 var track = anySongTrack;
 
 
-                _tracksList.Add(new PlayerTracks(instrument, track, voicesList.ToArray()));
+                _tracksList.Add(new PlayerTracks(instrument, track, voicesList.ToArray(), filters));
             }
         }
 
@@ -399,13 +433,43 @@ namespace Anywhen
             // Mix in each voice group
             foreach (var track in _tracksList)
             {
+                // We reuse a buffer to avoid garbage collection
+                if (_trackBuffer == null || _trackBuffer.Length != data.Length)
+                {
+                    _trackBuffer = new float[data.Length];
+                }
+                else
+                {
+                    Array.Clear(_trackBuffer, 0, _trackBuffer.Length);
+                }
+
                 foreach (var anywhenVoice in track.Voices)
                 {
                     var voiceDSP = anywhenVoice.UpdateDSP(data.Length, channels);
                     for (int i = 0; i < data.Length; i++)
                     {
-                        data[i] += voiceDSP[i];
+                        _trackBuffer[i] += voiceDSP[i];
                     }
+                }
+
+                if (track.trackFilters.Count > 0)
+                {
+                    foreach (var filter in track.trackFilters)
+                    {
+                        if (filter == null) continue;
+                        
+
+                        
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            _trackBuffer[i] = filter.Process(_trackBuffer[i]);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    data[i] += _trackBuffer[i];
                 }
             }
         }

@@ -162,7 +162,7 @@ namespace Anysong
 
             _currentRuntimeSongPlayer = composerPlayer;
             CurrentSong = songObject;
-            _currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
+            //_currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
             _currentRuntimeSongPlayer.LoadInstruments();
 
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
@@ -208,6 +208,8 @@ namespace Anysong
 
             if (_isPLaying)
             {
+                _currentRuntimeSongPlayer.Load(CurrentSong);
+
                 CurrentSong.Play(AnysongObject.SongPlayModes.Edit);
                 AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();

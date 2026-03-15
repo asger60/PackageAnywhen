@@ -138,11 +138,13 @@ namespace Anywhen.Synth
             _v = V_t * 0.5f; // 1/2V_t
             _cutoffMod = 1;
             Settings = newSettings;
+            SetParameters(newSettings);
         }
 
 
         public override float Process(float sample)
         {
+            SetParameters(Settings);
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             for (int j = 0; j < _oversampling; ++j)

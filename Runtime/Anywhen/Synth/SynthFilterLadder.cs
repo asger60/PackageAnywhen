@@ -9,11 +9,11 @@ namespace Anywhen.Synth
     {
         private float _cutoffMod = 1;
 
-        private float _reso;
+        private float _resolution;
         private int _oversampling = 1;
 
         // State variables for the diode ladder stages
-        private float s1, s2, s3, s4;
+        private float _s1, _s2, _s3, _s4;
         private float _g;
         private float _h;
 
@@ -24,7 +24,7 @@ namespace Anywhen.Synth
         public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
         {
             Settings = settingsObjectFilter;
-            _reso = settingsObjectFilter.ladderSettings.resonance;
+            _resolution = settingsObjectFilter.ladderSettings.resonance;
             SetCutOff(settingsObjectFilter.ladderSettings.cutoffFrequency);
             SetOversampling(settingsObjectFilter.ladderSettings.oversampling);
         }
@@ -44,12 +44,13 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
+            SetParameters(Settings);
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.
             // Diode ladder characteristics: stages load each other, feedback is non-linear.
             
-            float k = _reso * 17.0f; // Resonance range tuning
+            float k = _resolution * 17.0f; // Resonance range tuning
             k = Clamp(k, 0, 16.5f); // Keep it within stable self-oscillation limit
 
             for (int j = 0; j < _oversampling; ++j)
@@ -65,38 +66,38 @@ namespace Anywhen.Synth
                 // Simplified estimate of the filter's "instantaneous response" (S)
                 // for the delay-free loop resolution: x = (input - k*S) / (1 + k*gamma)
                 // gamma is the feedback gain through the stages.
-                float S = (G3 * G * s1 + G3 * s2 + G2 * s3 + G * s4) / (1.0f + G); 
+                float S = (G3 * G * _s1 + G3 * _s2 + G2 * _s3 + G * _s4) / (1.0f + G); 
                 float gamma = G3 * G / (1.0f + G);
 
                 float input = sample;
                 float x = (input - k * S) / (1.0f + k * gamma);
 
                 // Stage 1
-                float v1 = (FastTanh(x) - s1) * _h;
-                float y1 = v1 + s1;
-                s1 = y1 + v1;
+                float v1 = (FastTanh(x) - _s1) * _h;
+                float y1 = v1 + _s1;
+                _s1 = y1 + v1;
 
                 // Stage 2
-                float v2 = (y1 - s2) * _h;
-                float y2 = v2 + s2;
-                s2 = y2 + v2;
+                float v2 = (y1 - _s2) * _h;
+                float y2 = v2 + _s2;
+                _s2 = y2 + v2;
 
                 // Stage 3
-                float v3 = (y2 - s3) * _h;
-                float y3 = v3 + s3;
-                s3 = y3 + v3;
+                float v3 = (y2 - _s3) * _h;
+                float y3 = v3 + _s3;
+                _s3 = y3 + v3;
 
                 // Stage 4
-                float v4 = (y3 - s4) * _h;
-                float y4 = v4 + s4;
-                s4 = y4 + v4;
+                float v4 = (y3 - _s4) * _h;
+                float y4 = v4 + _s4;
+                _s4 = y4 + v4;
 
                 sample = y4;
 
                 // Guard against state explosion
                 if (float.IsNaN(sample) || float.IsInfinity(sample))
                 {
-                    s1 = s2 = s3 = s4 = 0;
+                    _s1 = _s2 = _s3 = _s4 = 0;
                     sample = 0;
                     break;
                 }

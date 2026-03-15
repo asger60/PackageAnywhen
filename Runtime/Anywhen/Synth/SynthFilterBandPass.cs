@@ -29,13 +29,14 @@ namespace Anywhen.Synth
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
-            Init(AnywhenRuntime.SampleRate);
+            Init();
             _q = 5;
             Settings = newSettings;
+            SetParameters(newSettings);
         }
 
 
-        public void Init(int sampleRate)
+        public void Init()
         {
             _frequencyMod = 1;
         }
@@ -56,10 +57,11 @@ namespace Anywhen.Synth
             _frequencyMod = mod1;
         }
 
-        
 
         public override float Process(float sample)
         {
+            SetParameters(Settings);
+            
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             float sampleRate = AnywhenRuntime.SampleRate;
@@ -67,18 +69,18 @@ namespace Anywhen.Synth
 
             float filterFreq = _filterFrequency * _frequencyMod;
             var f = 2f / 1.85f * Mathf.Sin(Mathf.PI * filterFreq / sampleRate);
-            
+
             // Guard against NaN/Inf in coefficients
             if (float.IsNaN(f) || float.IsInfinity(f)) f = 0.1f;
 
             _vD = 1f / Mathf.Max(_q, 0.01f);
             _vF = (1.85f - 0.75f * _vD * f) * f;
-            
+
 
             _vZ1 = 0.5f * sample;
             _vZ3 = this._vZ2 * _vF + this._vZ3;
             _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
-            
+
             // Guard against state explosion
             if (float.IsNaN(_vZ2) || float.IsInfinity(_vZ2))
             {

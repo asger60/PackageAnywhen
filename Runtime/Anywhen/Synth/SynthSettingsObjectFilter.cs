@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-
+namespace Anywhen.Synth
+{
     public class SynthSettingsObjectFilter : SynthSettingsObjectBase
     {
         public enum FilterTypes
@@ -67,3 +68,4 @@ using UnityEngine;
             formantSettings.vowel = 1;
         }
     }
+}

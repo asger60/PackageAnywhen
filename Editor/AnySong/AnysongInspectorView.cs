@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
+using Anywhen.Synth;
+using PackageAnywhen.Editor.Synth;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -99,7 +101,7 @@ namespace Anysong
                     backgroundColor = new StyleColor(new Color(0.7f, 0.2f, 0.0f, 1))
                 }
             };
-            
+
             var clearButton = new Button
             {
                 name = "ClearButton",
@@ -111,11 +113,10 @@ namespace Anysong
             };
             utilsBox.Add(clearButton);
             utilsBox.Add(deleteButton);
-            
+
             _parent.Add(Spacer());
             _parent.Add(utilsBox);
         }
-
 
 
         public static void DrawTrack(AnysongEditorWindow.AnySelection selection, Action didUpdateInstrument)
@@ -160,6 +161,108 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOSettings"), didUpdateInstrument));
+
+
+            int filterIndex = 0;
+            foreach (var filter in selection.CurrentSongTrack.TrackFilters)
+            {
+                VisualElement filterElement = new VisualElement();
+                Button deleteFilter = new Button
+                {
+                    style =
+                    {
+                        alignSelf = Align.FlexEnd,
+                        width = 20
+                    },
+                    
+                    text = "x"
+                };
+
+                var currentFilter = filter;
+                deleteFilter.clicked += () => { RemoveFilter(selection, currentFilter); };
+
+                filterElement.Add(deleteFilter);
+                filterElement.Add(SynthFilterInspector.Draw(filter));
+                _parent.Add(filterElement);
+                filterIndex++;
+            }
+
+            var addFilterButton = new Button
+            {
+                text = "Add Filter",
+                name = "AddFilterButton"
+            };
+            addFilterButton.clicked += () =>
+            {
+                var menu = new GenericMenu();
+                foreach (SynthSettingsObjectFilter.FilterTypes filterType in Enum.GetValues(
+                             typeof(SynthSettingsObjectFilter.FilterTypes)))
+                {
+                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(selection, filterType); });
+                }
+
+                menu.ShowAsContext();
+            };
+            _parent.Add(addFilterButton);
+        }
+
+        private static void AddFilter(AnysongEditorWindow.AnySelection selection,
+            SynthSettingsObjectFilter.FilterTypes filterType)
+        {
+            var filter = ScriptableObject.CreateInstance<SynthSettingsObjectFilter>();
+            filter.filterType = filterType;
+            filter.Init();
+            filter.name = "Filter_" + filterType;
+
+            AssetDatabase.AddObjectToAsset(filter, AnysongEditorWindow.CurrentSong);
+
+            var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
+            trackFiltersProperty.InsertArrayElementAtIndex(trackFiltersProperty.arraySize);
+            var newElement = trackFiltersProperty.GetArrayElementAtIndex(trackFiltersProperty.arraySize - 1);
+            newElement.objectReferenceValue = filter;
+
+            trackFiltersProperty.serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
+            AssetDatabase.SaveAssets();
+
+            // Refresh the inspector
+            DrawTrack(selection, null);
+        }
+
+        private static void RemoveFilter(AnysongEditorWindow.AnySelection selection,
+            SynthSettingsObjectFilter filter)
+        {
+            var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
+            for (int i = 0; i < trackFiltersProperty.arraySize; i++)
+            {
+                var element = trackFiltersProperty.GetArrayElementAtIndex(i);
+                if (element.objectReferenceValue == filter)
+                {
+                    trackFiltersProperty.DeleteArrayElementAtIndex(i);
+                    // According to Unity documentation, DeleteArrayElementAtIndex(i) on a property pointing to an object reference 
+                    // only nulls the reference if the reference is not null. To actually remove the slot, you need to call it again.
+                    // But in Modern Unity versions, it might just remove it. 
+                    // Let's check the size and call again if it just nulled it.
+                    if (i < trackFiltersProperty.arraySize && trackFiltersProperty.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                    {
+                        trackFiltersProperty.DeleteArrayElementAtIndex(i);
+                    }
+                    break;
+                }
+            }
+
+            trackFiltersProperty.serializedObject.ApplyModifiedProperties();
+
+            if (filter != null)
+            {
+                Undo.DestroyObjectImmediate(filter);
+            }
+
+            EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
+            AssetDatabase.SaveAssets();
+
+            // Refresh the inspector
+            DrawTrack(selection, null);
         }
 
         public static void DrawProgression()
@@ -180,7 +283,8 @@ namespace Anysong
                 {
                     Debug.Log("updated progression type");
                     progressionTypeHolder.Clear();
-                    progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)AnysongEditorWindow.CurrentSelection
+                    progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)AnysongEditorWindow
+                        .CurrentSelection
                         .CurrentSectionTrackProperty
                         .FindPropertyRelative("patternProgressionType")
                         .enumValueIndex, AnysongEditorWindow.CurrentSelection));
@@ -394,12 +498,16 @@ namespace Anysong
             strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
             strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
             strumControl.style.display =
-                new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0 ? DisplayStyle.Flex : DisplayStyle.None);
+                new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
+                    ? DisplayStyle.Flex
+                    : DisplayStyle.None);
 
             boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), () =>
             {
                 strumControl.style.display =
-                    new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0 ? DisplayStyle.Flex : DisplayStyle.None);
+                    new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
+                        ? DisplayStyle.Flex
+                        : DisplayStyle.None);
                 didUpdate?.Invoke();
             }));
 
@@ -415,9 +523,8 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
-            
-            
-            
+
+
             var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);
 
             _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("stepRepeats"),

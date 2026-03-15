@@ -1,5 +1,7 @@
 using System;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
+using Anywhen.Synth.Filter;
 using UnityEngine;
 
 namespace Anywhen.Composing
@@ -39,6 +41,8 @@ namespace Anywhen.Composing
 
         public AnyTrackTypes trackType;
 
+        [SerializeField] private SynthSettingsObjectFilter[] trackFilters;
+public SynthSettingsObjectFilter[] TrackFilters => trackFilters;
         public void Init()
         {
             volume = 1;
