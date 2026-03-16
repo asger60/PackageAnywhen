@@ -15,7 +15,7 @@
             </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
-            <engine:ScrollView style="width: 100%;">
+            <engine:ScrollView horizontal-scroller-visibility="Hidden" style="width: 100%;">
                 <engine:VisualElement style="flex-grow: 1; flex-direction: row; height: 100%;">
                     <engine:VisualElement name="Tracks" style="flex-grow: 1; max-width: 240px; min-width: 240px;">
                         <engine:Label text="Tracks" class="section-header"/>
@@ -36,10 +36,12 @@
                     </engine:VisualElement>
                 </engine:VisualElement>
             </engine:ScrollView>
-            <engine:VisualElement name="Inspector" style="flex-grow: 1; max-width: 500px; min-width: 400px; margin-left: 10px;">
-                <engine:Label text="Inspector" class="section-header"/>
-                <engine:VisualElement name="InspectorContainer" style="flex-grow: 1;"/>
-            </engine:VisualElement>
+            <engine:ScrollView name="ScrollView" horizontal-scroller-visibility="Hidden" style="flex-grow: 1; min-width: 420px; max-width: 420px;">
+                <engine:VisualElement name="Inspector" style="flex-grow: 1; max-width: 400px; min-width: 400px; margin-left: 10px;">
+                    <engine:Label text="Inspector" class="section-header"/>
+                    <engine:VisualElement name="InspectorContainer" style="flex-grow: 1;"/>
+                </engine:VisualElement>
+            </engine:ScrollView>
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

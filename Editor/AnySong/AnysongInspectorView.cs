@@ -171,12 +171,23 @@ namespace Anysong
             int filterIndex = 0;
             foreach (var filter in selection.CurrentSongTrack.TrackFilters)
             {
-                VisualElement filterElement = new VisualElement();
+                VisualElement filterElement = new VisualElement
+                {
+                    style =
+                    {
+                        marginTop = 10,
+                        paddingTop = 10,
+                        borderTopWidth = 1,
+                        borderTopColor = Color.gray
+                    }
+                };
                 Button deleteFilter = new Button
                 {
                     style =
                     {
-                        alignSelf = Align.FlexEnd,
+                        position = Position.Absolute,
+                        right = 0,
+                        top = 5,
                         width = 20
                     },
 
@@ -186,8 +197,8 @@ namespace Anysong
                 var currentFilter = filter;
                 deleteFilter.clicked += () => { RemoveFilter(selection, currentFilter); };
 
-                filterElement.Add(deleteFilter);
                 filterElement.Add(SynthFilterInspector.Draw(filter));
+                filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
                 filterIndex++;
             }

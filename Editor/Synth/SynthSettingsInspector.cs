@@ -6,14 +6,11 @@ using UnityEngine;
 
 
 [CustomEditor(typeof(AnywhenSynthPreset))]
-public class SynthSettingsInspector : UnityEditor.Editor
+public class SynthSettingsInspector : Editor
 {
     private AnywhenSynthPreset _settingsObject;
     public AnywhenSynthPreset SettingsObject => _settingsObject;
-    private bool _showFilterMods => EditorPrefs.GetBool("Filter Modifiers");
-    private bool _showAmpMods => EditorPrefs.GetBool("Amplitude Modifiers");
-    private bool _showPitchMods => EditorPrefs.GetBool("Pitch Modifiers");
-    private bool _showFilters => EditorPrefs.GetBool("Filters");
+
     private bool _showOscilators => EditorPrefs.GetBool("Oscillators");
     private bool _showDevStuff => EditorPrefs.GetBool("Show Dev Stuff");
     private GUIStyle _sectionHeaderStyle;

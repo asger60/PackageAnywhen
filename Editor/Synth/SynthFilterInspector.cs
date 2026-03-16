@@ -105,6 +105,57 @@ namespace Synth
 
                         break;
                     }
+                    case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                    {
+                        float bitDepth = _settings.bitcrushSettings.bitDepth;
+                        int downsampling = _settings.bitcrushSettings.downsampling;
+                        
+                        // Bitcrush can be visualized as a "degraded" flat response
+                        // Downsampling reduces the effective sample rate, which we can show as a brickwall at Nyquist
+                        float maxFreq = 20000.0f / downsampling;
+                        
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            float freq = LogScale(i / (float)Resolution, 20, 20000);
+                            float mag = freq < maxFreq ? 0.8f : 0.0f;
+                            
+                            // Bit depth adds "steps" or noise to the visualization
+                            if (bitDepth < 16 && freq < maxFreq)
+                            {
+                                float steps = Mathf.Pow(2, bitDepth);
+                                // We'll fake a "steppy" look by modulating the magnitude based on frequency index
+                                // and the bit depth
+                                float noise = (Mathf.Repeat(i * 0.5f, 1.0f) - 0.5f) * (1.0f / steps) * 10.0f;
+                                mag += noise;
+                            }
+                            
+                            _response[i] = Mathf.Clamp01(mag);
+                        }
+
+                        break;
+                    }
+                    case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                    {
+                        float drive = _settings.saturatorSettings.drive;
+                        float wet = _settings.saturatorSettings.wet;
+
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            // Saturator is mostly flat in frequency, but we can show it as a boosted/compressed line
+                            // A higher drive will show a "compressed" (pushed up) flat response
+                            float mag = 0.5f + (drive / 10.0f) * 0.4f;
+                            
+                            // Simple soft clipping preview effect
+                            mag = mag / (1.0f + mag * 0.2f);
+                            
+                            // Mix wet/dry visually (dry is around 0.5)
+                            mag = Mathf.Lerp(0.5f, mag, wet);
+                            
+                            _response[i] = Mathf.Clamp01(mag);
+                        }
+
+                        break;
+                    }
                 }
             }
 
@@ -155,6 +206,8 @@ namespace Synth
                     cutoff = _settings.ladderSettings.cutoffFrequency;
                 else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPassFilter)
                     cutoff = _settings.bandPassSettings.frequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BitcrushFilter)
+                    cutoff = 20000.0f / _settings.bitcrushSettings.downsampling;
 
                 if (cutoff > 0)
                 {
