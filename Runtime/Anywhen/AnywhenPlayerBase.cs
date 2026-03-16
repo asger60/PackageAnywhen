@@ -57,7 +57,6 @@ namespace Anywhen
 
             public AnywhenVoiceBase GetVoice()
             {
-   
                 foreach (var voice in Voices)
                 {
                     if (voice.HasScheduledPlay) continue;
@@ -151,6 +150,8 @@ namespace Anywhen
                         SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
                         SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
                         SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
+                        SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
+                        SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
                         _ => throw new ArgumentOutOfRangeException()
                     };
 
@@ -184,6 +185,7 @@ namespace Anywhen
                 }
 
                 newPlayerTrack.track = anySongTrack;
+                anySongTrack.volumeMods ??= Array.Empty<SynthFilterBase.ModRouting>();
                 foreach (var volumeMod in anySongTrack.volumeMods)
                 {
                     volumeMod.Set(newPlayerTrack);
@@ -305,7 +307,7 @@ namespace Anywhen
                 {
                     note = note,
                     playTime = playTime,
-                    stopTime = playTime + noteEvent.duration + noteEvent.drift,
+                    stopTime = playTime + noteEvent.duration + noteEvent.drift + track.trackEnvelope.release,
                     volume = volume
                 };
 
@@ -495,7 +497,6 @@ namespace Anywhen
             // Mix in each voice group
             foreach (var track in _tracksList)
             {
-                
                 // We reuse a buffer to avoid garbage collection
                 if (_trackBuffer == null || _trackBuffer.Length != data.Length)
                 {

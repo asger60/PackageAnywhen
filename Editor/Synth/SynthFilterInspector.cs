@@ -41,11 +41,11 @@ namespace Synth
                     case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
                     case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     {
-                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter 
-                            ? _settings.lowPassSettings.cutoffFrequency 
+                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter
+                            ? _settings.lowPassSettings.cutoffFrequency
                             : _settings.ladderSettings.cutoffFrequency;
-                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter 
-                            ? _settings.lowPassSettings.resonance 
+                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter
+                            ? _settings.lowPassSettings.resonance
                             : _settings.ladderSettings.resonance;
 
                         for (int i = 0; i < Resolution; i++)
@@ -60,9 +60,11 @@ namespace Synth
                                 float peak = resonance * 3.0f * Mathf.Exp(-Mathf.Pow(x - 1.0f, 2.0f) * 10.0f);
                                 mag += peak;
                             }
+
                             // Avoid clipping the peak by scaling down the whole signal if it exceeds 1
                             _response[i] = mag / (1.0f + resonance * 2.0f);
                         }
+
                         break;
                     }
                     case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
@@ -78,6 +80,7 @@ namespace Synth
                             float mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(q * (x - 1.0f / x), 2.0f));
                             _response[i] = Mathf.Clamp01(mag);
                         }
+
                         break;
                     }
                     case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
@@ -96,8 +99,10 @@ namespace Synth
                             {
                                 mag += 0.5f * Mathf.Exp(-Mathf.Pow((freq - p) / (p * 0.2f), 2.0f));
                             }
+
                             _response[i] = Mathf.Clamp01(mag);
                         }
+
                         break;
                     }
                 }
@@ -111,8 +116,8 @@ namespace Synth
                     case 1: return new float[] { 270, 2290, 3010 }; // i
                     case 2: return new float[] { 390, 1990, 2550 }; // e
                     case 3: return new float[] { 730, 1090, 2440 }; // a
-                    case 4: return new float[] { 570, 840, 2410 };  // o
-                    case 5: return new float[] { 300, 870, 2240 };  // u
+                    case 4: return new float[] { 570, 840, 2410 }; // o
+                    case 5: return new float[] { 300, 870, 2240 }; // u
                     default: return new float[] { 500, 1500, 2500 };
                 }
             }
@@ -139,13 +144,17 @@ namespace Synth
                     if (i == 0) painter.MoveTo(new Vector2(x, y));
                     else painter.LineTo(new Vector2(x, y));
                 }
+
                 painter.Stroke();
 
                 // Draw cutoff line if applicable
                 float cutoff = -1;
-                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter) cutoff = _settings.lowPassSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LadderFilter) cutoff = _settings.ladderSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPassFilter) cutoff = _settings.bandPassSettings.frequency;
+                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter)
+                    cutoff = _settings.lowPassSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LadderFilter)
+                    cutoff = _settings.ladderSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPassFilter)
+                    cutoff = _settings.bandPassSettings.frequency;
 
                 if (cutoff > 0)
                 {
@@ -166,7 +175,7 @@ namespace Synth
             VisualElement element = new VisualElement();
             var so = new SerializedObject(settings);
 
-            var label = new Label("Filter type: " + settings.filterType)
+            var label = new Label(settings.filterType.ToString())
             {
                 style =
                 {
@@ -182,18 +191,23 @@ namespace Synth
             switch (settings.filterType)
             {
                 case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 24000, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true,
+                        preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
+                        preview));
+                    element.Add(
+                        CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false, preview));
                     break;
                 case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 24000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 24000, false,
+                        preview));
 
-                    var bwSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 10000, false, preview, _ =>
-                    {
-                        settings.SyncBandPassFromBandwidth();
-                        so.Update();
-                    });
+                    var bwSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 10000, false,
+                        preview, _ =>
+                        {
+                            settings.SyncBandPassFromBandwidth();
+                            so.Update();
+                        });
                     var qSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.q"), "Q", 0.01f, 100, false, preview, _ =>
                     {
                         settings.SyncBandPassFromQ();
@@ -207,18 +221,34 @@ namespace Synth
                     element.Add(CreateBoundSlider(so.FindProperty("formantSettings.vowel"), "Vowel", 1, 6, true, preview));
                     break;
                 case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 24000, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true,
+                        preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
+                        preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false,
+                        preview));
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                    element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.bitDepth"), "Bit Depth", 1, 24, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.downsampling"), "Downsampling", 1, 100, true, preview));
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                    element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.drive"), "Drive", 0, 10, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.wet"), "Wet", 0, 1, false, preview));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+            var prop = so.FindProperty("modRouting");
+            var propertyField = new PropertyField(prop, "Mods");
+            propertyField.BindProperty(prop);
+            element.Add(propertyField);
             return element;
         }
 
-        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end, bool isInt, FilterPreviewElement preview, Action<ChangeEvent<float>> onFloatChanged = null)
+        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end,
+            bool isInt, FilterPreviewElement preview, Action<ChangeEvent<float>> onFloatChanged = null)
         {
             VisualElement slider;
             if (isInt)
@@ -243,6 +273,7 @@ namespace Synth
                 });
                 slider = s;
             }
+
             return slider;
         }
 
@@ -308,6 +339,7 @@ namespace Synth
                     {
                         settings.SyncBandPassFromQ();
                     }
+
                     break;
                 case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
                     settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
@@ -393,7 +425,8 @@ namespace Synth
                 }
 
                 mag = Mathf.Clamp01(mag);
-                points[i] = new Vector3(rect.x + t * rect.width, rect.y + rect.height - (mag * rect.height * 0.8f) - rect.height * 0.1f, 0);
+                points[i] = new Vector3(rect.x + t * rect.width,
+                    rect.y + rect.height - (mag * rect.height * 0.8f) - rect.height * 0.1f, 0);
             }
 
             Handles.DrawAAPolyLine(1, points);

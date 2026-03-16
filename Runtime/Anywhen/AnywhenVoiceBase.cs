@@ -19,7 +19,6 @@ namespace Anywhen
 
         private List<PlaybackSettings> _playbackQueue = new();
 
-        //protected SynthControlLFO PitchLFO;
         protected double CurrentPitch;
         protected float CurrentSampleRate;
 
@@ -39,8 +38,6 @@ namespace Anywhen
         {
             CurrentSampleRate = AudioSettings.outputSampleRate;
             CurrentTrack = trackSettings;
-            //AmplitudeEnvelope = new ADSR();
-            //PitchLFO = new SynthControlLFO();
         }
 
 
@@ -67,11 +64,6 @@ namespace Anywhen
             IsPlaying = true;
             CurrentPlaybackSettings = playbackSettings;
             CurrentPitch = 1;
-            //SetPitchLFO(CurrentTrack.trackLFO);
-            //SetEnvelope(CurrentTrack.trackEnvelope);
-            //AmplitudeEnvelope.Reset();
-            //AmplitudeEnvelope.SetGate(true);
-            //if (CurrentTrack.trackLFO is { enabled: true, retrigger: true }) PitchLFO.NoteOn();
         }
 
         protected void HandleQueue()
@@ -82,34 +74,17 @@ namespace Anywhen
                 _playbackQueue.RemoveAt(0);
             }
 
-            //if (AudioSettings.dspTime >= CurrentPlaybackSettings.stopTime)
-            //{
-            //    AmplitudeEnvelope.SetGate(false);
-            //}
+            if (AudioSettings.dspTime >= CurrentPlaybackSettings.stopTime)
+            {
+                SetReady();
+            }
         }
 
         public abstract float[] UpdateDSP(int bufferSize, int channels);
 
         protected virtual void SetReady()
         {
-            //AmplitudeEnvelope.SetGate(false);
             IsPlaying = false;
-        }
-
-        protected void SetEnvelope(AnywhenSampleInstrument.EnvelopeSettings envelopeSettings)
-        {
-            //AmplitudeEnvelope.SetAttackRate(envelopeSettings.attack * AnywhenRuntime.SampleRate);
-            //AmplitudeEnvelope.SetDecayRate(envelopeSettings.decay * AnywhenRuntime.SampleRate);
-            //AmplitudeEnvelope.SetReleaseRate(envelopeSettings.release * AnywhenRuntime.SampleRate);
-            //AmplitudeEnvelope.SetSustainLevel(envelopeSettings.sustain);
-            //AmplitudeEnvelope.Reset();
-            //AmplitudeEnvelope.SetTargetRatioA(0.3f);
-            //AmplitudeEnvelope.SetTargetRatioDR(0.3f);
-        }
-
-        protected void SetPitchLFO(AnywhenSampleInstrument.PitchLFOSettings pitchLFOSettings)
-        {
-            //PitchLFO.UpdateSettings(pitchLFOSettings);
         }
     }
 }

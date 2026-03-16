@@ -13,7 +13,9 @@ namespace Anywhen.Synth
             LowPassFilter,
             BandPassFilter,
             FormantFilter,
-            LadderFilter
+            LadderFilter,
+            BitcrushFilter,
+            SaturatorFilter
         }
 
         public FilterTypes filterType;
@@ -55,6 +57,24 @@ namespace Anywhen.Synth
         }
 
         public FormantSettings formantSettings;
+        
+        [Serializable]
+        public struct BitcrushSettings
+        {
+            [Range(1, 24)] public float bitDepth;
+            [Range(1, 100)] public int downsampling;
+        }
+
+        public BitcrushSettings bitcrushSettings;
+        
+        [Serializable]
+        public struct SaturatorSettings
+        {
+            [Range(0, 10)] public float drive;
+            [Range(0, 1)] public float wet;
+        }
+
+        public SaturatorSettings saturatorSettings;
 
         public void Init()
         {
@@ -71,6 +91,12 @@ namespace Anywhen.Synth
             bandPassSettings.q = 10;
 
             formantSettings.vowel = 1;
+
+            bitcrushSettings.bitDepth = 16f;
+            bitcrushSettings.downsampling = 1;
+
+            saturatorSettings.drive = 1f;
+            saturatorSettings.wet = 1f;
         }
 
         public void SyncBandPassFromQ()

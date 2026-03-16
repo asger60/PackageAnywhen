@@ -5,78 +5,65 @@ using UnityEditor;
 using UnityEngine;
 
 
-    [CreateAssetMenu(fileName = "New synth preset", menuName = "UnitySynth/SynthPreset")]
-    public class AnywhenSynthPreset : AnywhenInstrument
+[CreateAssetMenu(fileName = "New synth preset", menuName = "UnitySynth/SynthPreset")]
+public class AnywhenSynthPreset : AnywhenInstrument
+{
+    public bool isInit;
+    public int voices = 3;
+    public float voiceSpread;
+
+
+    public SynthSettingsObjectOscillator[] oscillatorSettings;
+    
+    private AnywhenSynthVoice _runtimeSynthVoice;
+
+    public void BindToRuntime(AnywhenSynthVoice synthVoice)
     {
-        public bool isInit;
+        _runtimeSynthVoice = synthVoice;
+    }
 
-        public bool unison;
-        public int voices = 3;
-        public float voiceSpread;
-
-
-        public SynthSettingsObjectOscillator[] oscillatorSettings;
-        public SynthSettingsObjectFilter[] filterSettings;
-        public SynthSettingsObjectBase[] pitchModifiers;
-        //public SynthSettingsObjectBase[] amplitudeModifiers;
-        public SynthSettingsObjectBase[] filterModifiers;
-
-
-        private AnywhenSynthVoice _runtimeSynthVoice;
-
-        public void BindToRuntime(AnywhenSynthVoice synthVoice)
-        {
-            _runtimeSynthVoice = synthVoice;
-        }
-
-        public void RebuildSynth()
-        {
-            if (_runtimeSynthVoice != null)
-                _runtimeSynthVoice.RebuildSynth();
-        }
+    public void RebuildSynth()
+    {
+        if (_runtimeSynthVoice != null)
+            _runtimeSynthVoice.RebuildSynth();
+    }
 #if UNITY_EDITOR
-        [ContextMenu("Clean up preset object")]
-        public void CleanUpPreset()
+    [ContextMenu("Clean up preset object")]
+    public void CleanUpPreset()
+    {
+        var controls = GetSubObjectsOfType<SynthSettingsObjectBase>(this);
+        for (var i = controls.Count - 1; i >= 0; i--)
         {
-            var controls = GetSubObjectsOfType<SynthSettingsObjectBase>(this);
-            for (var i = controls.Count - 1; i >= 0; i--)
-            {
-                var control = controls[i];
-                if (filterModifiers.Contains(control) ||
-                    /*amplitudeModifiers.Contains(control) || */pitchModifiers.Contains(control))
-                    continue;
+            var control = controls[i];
+  
 
-                if (filterSettings.Contains(control) || oscillatorSettings.Contains(control))
-                    continue;
+            if (oscillatorSettings.Contains(control))
+                continue;
 
-                DestroyImmediate(control, true);
-            }
-
-            oscillatorSettings = oscillatorSettings.Where(x => x != null).ToArray();
-            filterSettings = filterSettings.Where(x => x != null).ToArray();
-            pitchModifiers = pitchModifiers.Where(x => x != null).ToArray();
-            //amplitudeModifiers = amplitudeModifiers.Where(x => x != null).ToArray();
-            filterModifiers = filterModifiers.Where(x => x != null).ToArray();
+            DestroyImmediate(control, true);
         }
 
-        private static List<T> GetSubObjectsOfType<T>(Object asset) where T : Object
-        {
-            Object[] objs = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(asset));
-            List<T> ofType = new List<T>();
-            foreach (Object o in objs)
-            {
-                if (o is T)
-                {
-                    ofType.Add(o as T);
-                }
-            }
+        oscillatorSettings = oscillatorSettings.Where(x => x).ToArray();
+    }
 
-            return ofType;
+    private static List<T> GetSubObjectsOfType<T>(Object asset) where T : Object
+    {
+        Object[] objs = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(asset));
+        List<T> ofType = new List<T>();
+        foreach (Object o in objs)
+        {
+            if (o is T)
+            {
+                ofType.Add(o as T);
+            }
         }
+
+        return ofType;
+    }
 #endif
 
-        private void Reset()
-        {
-            isInit = false;
-        }
+    private void Reset()
+    {
+        isInit = false;
     }
+}
