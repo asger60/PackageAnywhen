@@ -5,31 +5,24 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace PackageAnywhen.Editor.Synth
+namespace Synth
 {
-    public class SynthFilterInspector : UnityEditor.Editor
+    public class SynthFilterInspector : Editor
     {
         private class FilterPreviewElement : VisualElement
         {
             private SynthSettingsObjectFilter _settings;
-            private const int Resolution = 100;
+            private const int Resolution = 50;
             private readonly float[] _response = new float[Resolution];
 
             public FilterPreviewElement(SynthSettingsObjectFilter settings)
             {
                 _settings = settings;
                 style.height = 100;
-                style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+                style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.1f);
                 style.marginTop = 5;
                 style.marginBottom = 5;
-                style.borderBottomWidth = 1;
-                style.borderTopWidth = 1;
-                style.borderLeftWidth = 1;
-                style.borderRightWidth = 1;
-                style.borderBottomColor = Color.gray;
-                style.borderTopColor = Color.gray;
-                style.borderLeftColor = Color.gray;
-                style.borderRightColor = Color.gray;
+
 
                 generateVisualContent += OnGenerateVisualContent;
             }
@@ -45,13 +38,13 @@ namespace PackageAnywhen.Editor.Synth
                 // Simplified linear approximations for preview
                 switch (_settings.filterType)
                 {
-                    case SynthSettingsObjectFilter.FilterTypes.LowPass:
-                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+                    case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     {
-                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass 
+                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter 
                             ? _settings.lowPassSettings.cutoffFrequency 
                             : _settings.ladderSettings.cutoffFrequency;
-                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass 
+                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter 
                             ? _settings.lowPassSettings.resonance 
                             : _settings.ladderSettings.resonance;
 
@@ -72,7 +65,7 @@ namespace PackageAnywhen.Editor.Synth
                         }
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
                     {
                         float center = _settings.bandPassSettings.frequency;
                         float width = _settings.bandPassSettings.bandWidth;
@@ -87,7 +80,7 @@ namespace PackageAnywhen.Editor.Synth
                         }
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
                     {
                         // Formant filters have multiple peaks. For preview we'll just show a generic "vowel" shape or just 3 peaks.
                         // Ideally we'd pull these from SynthFilterFormant but it's internal.
@@ -136,8 +129,8 @@ namespace PackageAnywhen.Editor.Synth
                 if (rect.width <= 0 || rect.height <= 0) return;
 
                 painter.BeginPath();
-                painter.lineWidth = 2;
-                painter.strokeColor = Color.cyan;
+                painter.lineWidth = 1;
+                painter.strokeColor = Color.white;
 
                 for (int i = 0; i < Resolution; i++)
                 {
@@ -150,9 +143,9 @@ namespace PackageAnywhen.Editor.Synth
 
                 // Draw cutoff line if applicable
                 float cutoff = -1;
-                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPass) cutoff = _settings.lowPassSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.Ladder) cutoff = _settings.ladderSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPass) cutoff = _settings.bandPassSettings.frequency;
+                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter) cutoff = _settings.lowPassSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LadderFilter) cutoff = _settings.ladderSettings.cutoffFrequency;
+                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPassFilter) cutoff = _settings.bandPassSettings.frequency;
 
                 if (cutoff > 0)
                 {
@@ -188,21 +181,34 @@ namespace PackageAnywhen.Editor.Synth
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 12000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 24000, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPass:
-                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 12000, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 100, false, preview));
+                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 24000, false, preview));
+
+                    var bwSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 10000, false, preview, _ =>
+                    {
+                        settings.SyncBandPassFromBandwidth();
+                        so.Update();
+                    });
+                    var qSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.q"), "Q", 0.01f, 100, false, preview, _ =>
+                    {
+                        settings.SyncBandPassFromQ();
+                        so.Update();
+                    });
+
+                    element.Add(bwSlider);
+                    element.Add(qSlider);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.Formant:
+                case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("formantSettings.vowel"), "Vowel", 1, 6, true, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 12000, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 24000, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false, preview));
                     break;
                 default:
@@ -212,7 +218,7 @@ namespace PackageAnywhen.Editor.Synth
             return element;
         }
 
-        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end, bool isInt, FilterPreviewElement preview)
+        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end, bool isInt, FilterPreviewElement preview, Action<ChangeEvent<float>> onFloatChanged = null)
         {
             VisualElement slider;
             if (isInt)
@@ -220,6 +226,7 @@ namespace PackageAnywhen.Editor.Synth
                 var s = new SliderInt(label, (int)start, (int)end);
                 s.labelElement.style.minWidth = 80;
                 s.BindProperty(property);
+                s.showInputField = true;
                 s.RegisterValueChangedCallback(_ => preview.Refresh());
                 slider = s;
             }
@@ -228,7 +235,12 @@ namespace PackageAnywhen.Editor.Synth
                 var s = new Slider(label, start, end);
                 s.labelElement.style.minWidth = 80;
                 s.BindProperty(property);
-                s.RegisterValueChangedCallback(_ => preview.Refresh());
+                s.showInputField = true;
+                s.RegisterValueChangedCallback(evt =>
+                {
+                    onFloatChanged?.Invoke(evt);
+                    preview.Refresh();
+                });
                 slider = s;
             }
             return slider;
@@ -263,7 +275,7 @@ namespace PackageAnywhen.Editor.Synth
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
 
                     settings.lowPassSettings.oversampling =
                         EditorGUILayout.IntSlider("Oversampling", settings.lowPassSettings.oversampling, 1, 4);
@@ -272,17 +284,36 @@ namespace PackageAnywhen.Editor.Synth
                     settings.lowPassSettings.resonance =
                         EditorGUILayout.Slider("Resonance", settings.lowPassSettings.resonance, 0, 1);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                    float oldFreq = settings.bandPassSettings.frequency;
                     settings.bandPassSettings.frequency = EditorGUILayout.Slider("Frequency",
                         settings.bandPassSettings.frequency, 1, 24000);
+                    if (oldFreq != settings.bandPassSettings.frequency)
+                    {
+                        settings.SyncBandPassFromQ();
+                    }
+
+                    float oldBW = settings.bandPassSettings.bandWidth;
                     settings.bandPassSettings.bandWidth = EditorGUILayout.Slider("Bandwidth",
-                        settings.bandPassSettings.bandWidth, 1, 100);
+                        settings.bandPassSettings.bandWidth, 1, 10000);
+                    if (oldBW != settings.bandPassSettings.bandWidth)
+                    {
+                        settings.SyncBandPassFromBandwidth();
+                    }
+
+                    float oldQ = settings.bandPassSettings.q;
+                    settings.bandPassSettings.q = EditorGUILayout.Slider("Q",
+                        settings.bandPassSettings.q, 0.01f, 100);
+                    if (oldQ != settings.bandPassSettings.q)
+                    {
+                        settings.SyncBandPassFromQ();
+                    }
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.Formant:
+                case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
                     settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
                         settings.formantSettings.vowel, 1, 6);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     settings.ladderSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
                         settings.ladderSettings.oversampling, 1, 4);
                     settings.ladderSettings.cutoffFrequency =
@@ -301,27 +332,29 @@ namespace PackageAnywhen.Editor.Synth
         private static void DrawFilterPreview(Rect rect, SynthSettingsObjectFilter settings)
         {
             EditorGUI.DrawRect(rect, new Color(0.1f, 0.1f, 0.1f, 1f));
-            Handles.color = Color.cyan;
-            const int resolution = 100;
+            Handles.color = Color.grey;
+            const int resolution = 50;
             Vector3[] points = new Vector3[resolution];
 
             float cutoff = -1;
             float resonance = 0;
             float bandWidth = 0;
+            float q = 0;
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPass:
+                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
                     cutoff = settings.lowPassSettings.cutoffFrequency;
                     resonance = settings.lowPassSettings.resonance;
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     cutoff = settings.ladderSettings.cutoffFrequency;
                     resonance = settings.ladderSettings.resonance;
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
                     cutoff = settings.bandPassSettings.frequency;
                     bandWidth = settings.bandPassSettings.bandWidth;
+                    q = settings.bandPassSettings.q;
                     break;
             }
 
@@ -333,8 +366,8 @@ namespace PackageAnywhen.Editor.Synth
 
                 switch (settings.filterType)
                 {
-                    case SynthSettingsObjectFilter.FilterTypes.LowPass:
-                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
+                    case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+                    case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
                     {
                         float x = freq / cutoff;
                         mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(x, 8.0f));
@@ -343,14 +376,14 @@ namespace PackageAnywhen.Editor.Synth
                         mag /= (1.0f + resonance * 2.0f);
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.BandPass:
+                    case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
                     {
                         float x = freq / cutoff;
-                        float q = 100.0f / Mathf.Max(bandWidth, 1.0f);
+                        // q = 100.0f / Mathf.Max(bandWidth, 1.0f);
                         mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(q * (x - 1.0f / x), 2.0f));
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.Formant:
+                    case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
                     {
                         float[] peaks = GetVowelPeaksStatic(settings.formantSettings.vowel);
                         foreach (var p in peaks)
@@ -363,7 +396,7 @@ namespace PackageAnywhen.Editor.Synth
                 points[i] = new Vector3(rect.x + t * rect.width, rect.y + rect.height - (mag * rect.height * 0.8f) - rect.height * 0.1f, 0);
             }
 
-            Handles.DrawAAPolyLine(2, points);
+            Handles.DrawAAPolyLine(1, points);
 
             if (cutoff > 0)
             {

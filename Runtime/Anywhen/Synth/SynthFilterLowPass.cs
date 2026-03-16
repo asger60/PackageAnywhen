@@ -88,6 +88,7 @@
 //  He also suggests a half sample delay as phase compensation, which
 //  is not implemented yet.
 
+using System;
 using Anywhen.Synth.Filter;
 
 namespace Anywhen.Synth
@@ -96,9 +97,9 @@ namespace Anywhen.Synth
     {
         /// Static config
         //const float C = 1.0f; // ????
-
         const float V_t = 1.22070313f; // From Diakopoulos
-        private float _cutoffMod = 1;
+
+        private float _frequencyMod = 1;
 
         /// Config
         float _reso;
@@ -114,7 +115,6 @@ namespace Anywhen.Synth
         float _s, _v;
 
 
-
         public override void SetExpression(float data)
         {
         }
@@ -125,18 +125,25 @@ namespace Anywhen.Synth
             _reso = Settings.lowPassSettings.resonance;
             SetCutOff(Settings.lowPassSettings.cutoffFrequency);
             SetOversampling(Settings.lowPassSettings.oversampling);
+            _frequencyMod = 1;
+            foreach (var mod in ModRoutings)
+            {
+                _frequencyMod = mod.Process(_frequencyMod);
+            }
         }
 
 
         public override void HandleModifiers(float mod1)
         {
-            _cutoffMod = mod1;
+
+
+            _frequencyMod *= mod1;
         }
 
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             _v = V_t * 0.5f; // 1/2V_t
-            _cutoffMod = 1;
+            _frequencyMod = 1;
             Settings = newSettings;
             SetParameters(newSettings);
         }
@@ -145,6 +152,7 @@ namespace Anywhen.Synth
         public override float Process(float sample)
         {
             SetParameters(Settings);
+
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             for (int j = 0; j < _oversampling; ++j)
@@ -192,12 +200,12 @@ namespace Anywhen.Synth
         {
             float sampleRate = AnywhenRuntime.SampleRate;
             if (sampleRate <= 0) sampleRate = 44100;
-            _s = (value * _cutoffMod) / 1.0f / sampleRate / /*_oversampling * */ 6.28318530717959f;
-            
+            _s = (value * _frequencyMod) / 1.0f / sampleRate / _oversampling * 6.28318530717959f;
+
             // Guard against NaN/Inf
             if (float.IsNaN(_s) || float.IsInfinity(_s)) _s = 0;
 
-            _s = Clamp(_s, 0, 0.99f); // Keep it within stable range
+            _s = Clamp(_s, 0, 0.999f); // Keep it within stable range
         }
 
         private void SetOversampling(int iterationCount)

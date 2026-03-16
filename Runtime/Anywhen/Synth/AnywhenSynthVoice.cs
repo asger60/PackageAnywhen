@@ -103,10 +103,10 @@ namespace Anywhen.Synth
         public void RebuildSynth()
         {
             _voices = new SynthVoiceGroup[_preset.oscillatorSettings.Length];
-            _voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
+            //_voiceFrequencyModifiers = new SynthControlBase[_preset.pitchModifiers.Length];
             //_amplitudeModifiers = new SynthControlBase[_preset.amplitudeModifiers.Length];
-            _filterModifiers = new SynthControlBase[_preset.filterModifiers.Length];
-            _filters = new SynthFilterBase[_preset.filterSettings.Length];
+            //_filterModifiers = new SynthControlBase[_preset.filterModifiers.Length];
+            //_filters = new SynthFilterBase[_preset.filterSettings.Length];
 
             for (int i = 0; i < _preset.oscillatorSettings.Length; i++)
             {
@@ -123,57 +123,57 @@ namespace Anywhen.Synth
                 }
             }
 
-            for (int i = 0; i < _preset.filterSettings.Length; i++)
-            {
-                switch (_preset.filterSettings[i].filterType)
-                {
-                    case SynthSettingsObjectFilter.FilterTypes.LowPass:
-                        var newFilter = new SynthFilterLowPass();
-                        newFilter.SetSettings(_preset.filterSettings[i]);
-                        _filters[i] = newFilter;
-                        break;
-                    case SynthSettingsObjectFilter.FilterTypes.BandPass:
-                        var newHpFilter = new SynthFilterBandPass();
-                        newHpFilter.SetSettings(_preset.filterSettings[i]);
-                        _filters[i] = newHpFilter;
-                        break;
-                    case SynthSettingsObjectFilter.FilterTypes.Formant:
-                        var newFormantFilter = new SynthFilterFormant();
-                        newFormantFilter.SetSettings(_preset.filterSettings[i]);
-                        _filters[i] = newFormantFilter;
-                        break;
-                    case SynthSettingsObjectFilter.FilterTypes.Ladder:
-                        var newLadderFilter = new SynthFilterLadder();
-                        newLadderFilter.SetSettings(_preset.filterSettings[i]);
-                        _filters[i] = newLadderFilter;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
+            //for (int i = 0; i < _preset.filterSettings.Length; i++)
+            //{
+            //    switch (_preset.filterSettings[i].filterType)
+            //    {
+            //        case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+            //            var newFilter = new SynthFilterLowPass();
+            //            newFilter.SetSettings(_preset.filterSettings[i]);
+            //            _filters[i] = newFilter;
+            //            break;
+            //        case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+            //            var newHpFilter = new SynthFilterBandPass();
+            //            newHpFilter.SetSettings(_preset.filterSettings[i]);
+            //            _filters[i] = newHpFilter;
+            //            break;
+            //        case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
+            //            var newFormantFilter = new SynthFilterFormant();
+            //            newFormantFilter.SetSettings(_preset.filterSettings[i]);
+            //            _filters[i] = newFormantFilter;
+            //            break;
+            //        case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+            //            var newLadderFilter = new SynthFilterLadder();
+            //            newLadderFilter.SetSettings(_preset.filterSettings[i]);
+            //            _filters[i] = newLadderFilter;
+            //            break;
+            //        default:
+            //            throw new ArgumentOutOfRangeException();
+            //    }
+            //}
 
 
-            for (int i = 0; i < _preset.pitchModifiers.Length; i++)
-            {
-                var freqMod = _preset.pitchModifiers[i];
-                switch (freqMod)
-                {
-                    case SynthSettingsObjectLFO lfo:
-                    {
-                        var newController = new SynthControlLFO();
-                        newController.UpdateSettings(lfo);
-                        _voiceFrequencyModifiers[i] = newController;
-                        break;
-                    }
-                    case SynthSettingsObjectEnvelope envelope:
-                    {
-                        var newController = new SynthControlEnvelope();
-                        newController.UpdateSettings(envelope);
-                        _voiceFrequencyModifiers[i] = newController;
-                        break;
-                    }
-                }
-            }
+            //for (int i = 0; i < _preset.pitchModifiers.Length; i++)
+            //{
+            //    var freqMod = _preset.pitchModifiers[i];
+            //    switch (freqMod)
+            //    {
+            //        case SynthSettingsObjectLFO lfo:
+            //        {
+            //            var newController = new SynthControlLFO();
+            //            newController.UpdateSettings(lfo);
+            //            _voiceFrequencyModifiers[i] = newController;
+            //            break;
+            //        }
+            //        case SynthSettingsObjectEnvelope envelope:
+            //        {
+            //            var newController = new SynthControlEnvelope();
+            //            newController.UpdateSettings(envelope);
+            //            _voiceFrequencyModifiers[i] = newController;
+            //            break;
+            //        }
+            //    }
+            //}
 
             //for (int i = 0; i < _preset.amplitudeModifiers.Length; i++)
             //{
@@ -197,27 +197,27 @@ namespace Anywhen.Synth
             //    }
             //}
 
-            for (int i = 0; i < _preset.filterModifiers.Length; i++)
-            {
-                var filterModifier = _preset.filterModifiers[i];
-                switch (filterModifier)
-                {
-                    case SynthSettingsObjectLFO lfo:
-                    {
-                        var newController = new SynthControlLFO();
-                        newController.UpdateSettings(lfo);
-                        _filterModifiers[i] = newController;
-                        break;
-                    }
-                    case SynthSettingsObjectEnvelope envelope:
-                    {
-                        var newController = new SynthControlEnvelope();
-                        newController.UpdateSettings(envelope);
-                        _filterModifiers[i] = newController;
-                        break;
-                    }
-                }
-            }
+            //for (int i = 0; i < _preset.filterModifiers.Length; i++)
+            //{
+            //    var filterModifier = _preset.filterModifiers[i];
+            //    switch (filterModifier)
+            //    {
+            //        case SynthSettingsObjectLFO lfo:
+            //        {
+            //            var newController = new SynthControlLFO();
+            //            newController.UpdateSettings(lfo);
+            //            _filterModifiers[i] = newController;
+            //            break;
+            //        }
+            //        case SynthSettingsObjectEnvelope envelope:
+            //        {
+            //            var newController = new SynthControlEnvelope();
+            //            newController.UpdateSettings(envelope);
+            //            _filterModifiers[i] = newController;
+            //            break;
+            //        }
+            //    }
+            //}
 
             foreach (var voice in _voices)
             {
@@ -272,15 +272,15 @@ namespace Anywhen.Synth
             //    ampModifier.NoteOn();
             //}
 
-            foreach (var filterModifier in _filterModifiers)
-            {
-                filterModifier.NoteOn();
-            }
+            //foreach (var filterModifier in _filterModifiers)
+            //{
+            //    filterModifier.NoteOn();
+            //}
 
-            foreach (var frequencyModifier in _voiceFrequencyModifiers)
-            {
-                frequencyModifier.NoteOn();
-            }
+            //foreach (var frequencyModifier in _voiceFrequencyModifiers)
+            //{
+            //    frequencyModifier.NoteOn();
+            //}
         }
 
 
@@ -307,45 +307,53 @@ namespace Anywhen.Synth
                 for (int smp = 0; smp < sampleFrames; ++smp)
                 {
                     // Update modulators
-                    foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                    {
-                        frequencyModifier.DoUpdate();
-                    }
+                    //foreach (var frequencyModifier in _voiceFrequencyModifiers)
+                    //{
+                    //    frequencyModifier.DoUpdate();
+                    //}
 
-                    foreach (var filterModifier in _filterModifiers)
-                    {
-                        filterModifier.DoUpdate();
-                    }
+                    //foreach (var filterModifier in _filterModifiers)
+                    //{
+                    //    filterModifier.DoUpdate();
+                    //}
 
                     // Calculate modulation values
-                    float ampMod = 1;
-                    ampMod *= AmplitudeEnvelope.Process() * CurrentPlaybackSettings.volume;
+                    //float ampMod = 1;
+                    //ampMod *= AmplitudeEnvelope.Process() * CurrentPlaybackSettings.volume;
                     //foreach (var ampModifier in _amplitudeModifiers)
                     //{
                     //    ampMod *= ampModifier.Process() * CurrentPlaybackSettings.Volume;
                     //}
 
 
-                    if (CurrentTrack.pitchLFOSettings.enabled)
+                    //if (CurrentTrack.pitchLFOSettings.enabled)
+                    //{
+                    //    PitchLFO.DoUpdate();
+                    //    CurrentPitch = PitchLFO.Process();
+                    //}
+                    //Double pitch = CurrentPitch;
+                    //foreach (var pitchMod in CurrentTrack.pitchMods)
+                    //{
+                    //    pitch = pitchMod.Process((float)pitch);
+                    //}
+
+                    //float voiceFreqMod = 1;
+                    float pitch = (float)CurrentPitch;
+                    foreach (var pitchMod in CurrentTrack.pitchMods)
                     {
-                        PitchLFO.DoUpdate();
-                        CurrentPitch = PitchLFO.Process();
+                        pitch = pitchMod.Process(pitch);
                     }
-
-
-
-                    float voiceFreqMod = 1;
-                    foreach (var frequencyModifier in _voiceFrequencyModifiers)
-                    {
-                        float mod = frequencyModifier.Process();
-                        if (!float.IsNaN(mod) && !float.IsInfinity(mod))
-                            voiceFreqMod *= mod;
-                    }
+                    //foreach (var frequencyModifier in _voiceFrequencyModifiers)
+                    //{
+                    //    float mod = frequencyModifier.Process();
+                    //    if (!float.IsNaN(mod) && !float.IsInfinity(mod))
+                    //        voiceFreqMod *= mod;
+                    //}
 
                     //voiceFreqMod *= (float)CurrentPitch;
 
                     // Guard against NaN/Inf in modulation
-                    if (float.IsNaN(voiceFreqMod) || float.IsInfinity(voiceFreqMod)) voiceFreqMod = 1;
+                    if (float.IsNaN(pitch) || float.IsInfinity(pitch)) pitch = 1;
 
                     // Generate oscillator output
                     float oscillatorOutput = 0;
@@ -357,7 +365,7 @@ namespace Anywhen.Synth
                         {
                             if (!synthOscillator.IsActive) continue;
 
-                            synthOscillator.SetPitchMod(voiceFreqMod);
+                            synthOscillator.SetPitchMod(pitch);
                             synthOscillator.SetPitchRaw((float)CurrentPitch * CurrentTrack.TrackPitch);
                             oscillatorOutput += synthOscillator.Process();
                             totalActiveOsc++;
@@ -372,15 +380,15 @@ namespace Anywhen.Synth
 
                     if (float.IsNaN(oscillatorOutput) || float.IsInfinity(oscillatorOutput)) oscillatorOutput = 0;
 
-                    float sample = oscillatorOutput * ampMod * CurrentTrack.volume;
+                    float sample = oscillatorOutput;
 
                     // Apply filters
-                    for (var i = 0; i < _filters.Length; i++)
-                    {
-                        var audioFilterBase = _filters[i];
-                        audioFilterBase.SetParameters(_preset.filterSettings[i]);
-                        sample = audioFilterBase.Process(sample);
-                    }
+                    //for (var i = 0; i < _filters.Length; i++)
+                    //{
+                    //    var audioFilterBase = _filters[i];
+                    //    audioFilterBase.SetParameters(_preset.filterSettings[i]);
+                    //    sample = audioFilterBase.Process(sample);
+                    //}
 
                     if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
@@ -397,24 +405,24 @@ namespace Anywhen.Synth
                     }
 
                     // Handle filter modulation
-                    foreach (var audioFilterBase in _filters)
-                    {
-                        float currentMod = 1;
-                        foreach (var filterModifier in _filterModifiers)
-                        {
-                            currentMod *= filterModifier.Process();
-                        }
-
-                        audioFilterBase.HandleModifiers(currentMod);
-                    }
+                    //foreach (var audioFilterBase in _filters)
+                    //{
+                    //    float currentMod = 1;
+                    //    foreach (var filterModifier in _filterModifiers)
+                    //    {
+                    //        currentMod *= filterModifier.Process();
+                    //    }
+//
+                    //    audioFilterBase.HandleModifiers(currentMod);
+                    //}
                 }
             }
 
-            if (AmplitudeEnvelope.IsIdle && !HasScheduledPlay)
-            {
-                SetReady();
-                ResetVoices();
-            }
+            //if (/*AmplitudeEnvelope.IsIdle && */!HasScheduledPlay)
+            //{
+            //    SetReady();
+            //    ResetVoices();
+            //}
 
             return buffer;
         }

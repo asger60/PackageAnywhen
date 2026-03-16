@@ -1,6 +1,6 @@
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
-using PackageAnywhen.Editor.Synth;
+using Synth;
 using UnityEditor;
 using UnityEngine;
 

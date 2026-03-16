@@ -1,16 +1,19 @@
 using System;
+using Anywhen.Synth.Filter;
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
     public class SynthSettingsObjectFilter : SynthSettingsObjectBase
     {
+        public SynthFilterBase.ModRouting[] modRouting;
+
         public enum FilterTypes
         {
-            LowPass,
-            BandPass,
-            Formant,
-            Ladder
+            LowPassFilter,
+            BandPassFilter,
+            FormantFilter,
+            LadderFilter
         }
 
         public FilterTypes filterType;
@@ -39,7 +42,8 @@ namespace Anywhen.Synth
         public struct BandPassSettings
         {
             [Range(10, 24000)] public float frequency;
-            [Range(10, 100)] public float bandWidth;
+            [Range(1, 10000)] public float bandWidth;
+            [Range(0.01f, 100)] public float q;
         }
 
         public BandPassSettings bandPassSettings;
@@ -62,10 +66,25 @@ namespace Anywhen.Synth
             ladderSettings.cutoffFrequency = 24000;
             ladderSettings.resonance = 0.25f;
 
-            bandPassSettings.bandWidth = 10;
+            bandPassSettings.bandWidth = 100;
             bandPassSettings.frequency = 1000;
+            bandPassSettings.q = 10;
 
             formantSettings.vowel = 1;
+        }
+
+        public void SyncBandPassFromQ()
+        {
+            bandPassSettings.frequency = Mathf.Clamp(bandPassSettings.frequency, 10f, 24000f);
+            bandPassSettings.q = Mathf.Max(bandPassSettings.q, 0.01f);
+            bandPassSettings.bandWidth = bandPassSettings.frequency / bandPassSettings.q;
+        }
+
+        public void SyncBandPassFromBandwidth()
+        {
+            bandPassSettings.frequency = Mathf.Clamp(bandPassSettings.frequency, 10f, 24000f);
+            bandPassSettings.bandWidth = Mathf.Max(bandPassSettings.bandWidth, 1f);
+            bandPassSettings.q = bandPassSettings.frequency / bandPassSettings.bandWidth;
         }
     }
 }

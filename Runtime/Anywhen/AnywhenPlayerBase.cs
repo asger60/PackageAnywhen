@@ -6,6 +6,7 @@ using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen
@@ -37,6 +38,8 @@ namespace Anywhen
             public AnywhenVoiceBase[] Voices;
             public float trackPitch;
             public List<SynthFilterBase> trackFilters;
+            public SynthControlEnvelope trackEnvelope;
+            public SynthControlLFO trackLFO;
 
             public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices,
                 List<SynthFilterBase> filters)
@@ -46,10 +49,15 @@ namespace Anywhen
                 Voices = voices;
                 trackPitch = track.TrackPitch;
                 trackFilters = filters;
+                trackLFO = new SynthControlLFO();
+                trackLFO.UpdateSettings(track.trackLFO);
+                trackEnvelope = new SynthControlEnvelope();
+                trackEnvelope.UpdateSettings(track.trackEnvelope);
             }
 
             public AnywhenVoiceBase GetVoice()
             {
+   
                 foreach (var voice in Voices)
                 {
                     if (voice.HasScheduledPlay) continue;
@@ -73,6 +81,32 @@ namespace Anywhen
                 }
 
                 return bestVoice ?? Voices[0];
+            }
+
+
+            public List<AnywhenVoiceBase.PlaybackSettings> playbackQueue = new();
+            private AnywhenVoiceBase.PlaybackSettings _currentPlaybackSettings;
+
+            public void HandleQueue()
+            {
+                while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].playTime)
+                {
+                    trackLFO.UpdateSettings(track.trackLFO);
+                    trackEnvelope.UpdateSettings(track.trackEnvelope);
+
+                    _currentPlaybackSettings = playbackQueue[0];
+                    playbackQueue.RemoveAt(0);
+                    trackEnvelope.Reset();
+                    trackEnvelope.NoteOn();
+                    trackLFO.NoteOn();
+                }
+
+                if (_currentPlaybackSettings.note != -1 && AudioSettings.dspTime >= _currentPlaybackSettings.stopTime)
+                {
+                    _currentPlaybackSettings.note = -1;
+                    trackEnvelope.NoteOff();
+                    trackLFO.NoteOff();
+                }
             }
         }
 
@@ -102,33 +136,30 @@ namespace Anywhen
             {
                 var anySongTrack = tracks[index];
                 if (!anySongTrack.instrument) continue;
+                var newPlayerTrack = new PlayerTracks(anySongTrack.instrument, anySongTrack, null, null);
+
                 List<SynthFilterBase> filters = new();
+
+
                 foreach (var trackFilter in anySongTrack.TrackFilters)
                 {
-                    switch (trackFilter.filterType)
+                    if (!trackFilter) continue;
+                    trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
+                    SynthFilterBase newFilter = trackFilter.filterType switch
                     {
-                        case SynthSettingsObjectFilter.FilterTypes.LowPass:
-                            var newFilter = new SynthFilterLowPass();
-                            newFilter.SetSettings(trackFilter);
-                            filters.Add(newFilter);
-                            break;
-                        case SynthSettingsObjectFilter.FilterTypes.BandPass:
-                            var newHpFilter = new SynthFilterBandPass();
-                            newHpFilter.SetSettings(trackFilter);
-                            filters.Add(newHpFilter);
-                            break;
-                        case SynthSettingsObjectFilter.FilterTypes.Formant:
-                            var newFormantFilter = new SynthFilterFormant();
-                            newFormantFilter.SetSettings(trackFilter);
-                            filters.Add(newFormantFilter);
-                            break;
-                        case SynthSettingsObjectFilter.FilterTypes.Ladder:
-                            var newLadderFilter = new SynthFilterLadder();
-                            newLadderFilter.SetSettings(trackFilter);
-                            filters.Add(newLadderFilter);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
+                        SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
+                        SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
+                        SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
+                    newFilter.SetSettings(trackFilter);
+                    filters.Add(newFilter);
+                    foreach (var modRouting in trackFilter.modRouting)
+                    {
+                        modRouting.Set(newPlayerTrack);
+                        newFilter.AddModRouting(modRouting);
                     }
                 }
 
@@ -152,11 +183,20 @@ namespace Anywhen
                     }
                 }
 
-                var instrument = anySongTrack.instrument;
-                var track = anySongTrack;
+                newPlayerTrack.track = anySongTrack;
+                foreach (var volumeMod in anySongTrack.volumeMods)
+                {
+                    volumeMod.Set(newPlayerTrack);
+                }
 
+                foreach (var pitchMod in anySongTrack.pitchMods)
+                {
+                    pitchMod.Set(newPlayerTrack);
+                }
 
-                _tracksList.Add(new PlayerTracks(instrument, track, voicesList.ToArray(), filters));
+                newPlayerTrack.Voices = voicesList.ToArray();
+                newPlayerTrack.trackFilters = filters;
+                _tracksList.Add(newPlayerTrack);
             }
         }
 
@@ -217,6 +257,26 @@ namespace Anywhen
 
         protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnysongPatternStep step)
         {
+            if (step.GetNoteEvents(0).Length > 0)
+            {
+                var nextStepEvent = step.GetNoteEvents(1)[0];
+                var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() + nextStepEvent.drift;
+                if (AudioSettings.dspTime > playTime)
+                {
+                    return;
+                }
+
+                var playbackSettings = new AnywhenVoiceBase.PlaybackSettings
+                {
+                    note = 0,
+                    playTime = playTime,
+                    stopTime = playTime + nextStepEvent.duration + nextStepEvent.drift,
+                    volume = nextStepEvent.velocity
+                };
+
+                TracksList[trackIndex].playbackQueue.Add(playbackSettings);
+            }
+
             var songTrack = _currentSong.Tracks[trackIndex];
             var noteEvents = step.GetNoteEvents(0);
 
@@ -248,6 +308,7 @@ namespace Anywhen
                     stopTime = playTime + noteEvent.duration + noteEvent.drift,
                     volume = volume
                 };
+
                 voice.NoteOn(playbackSettings);
             }
         }
@@ -420,6 +481,7 @@ namespace Anywhen
             _isMuted = state;
         }
 
+
         void OnAudioFilterRead(float[] data, int channels)
         {
             if (!IsRunning) return;
@@ -433,6 +495,7 @@ namespace Anywhen
             // Mix in each voice group
             foreach (var track in _tracksList)
             {
+                
                 // We reuse a buffer to avoid garbage collection
                 if (_trackBuffer == null || _trackBuffer.Length != data.Length)
                 {
@@ -457,9 +520,8 @@ namespace Anywhen
                     foreach (var filter in track.trackFilters)
                     {
                         if (filter == null) continue;
-                        
 
-                        
+
                         for (int i = 0; i < data.Length; i++)
                         {
                             _trackBuffer[i] = filter.Process(_trackBuffer[i]);
@@ -469,7 +531,18 @@ namespace Anywhen
 
                 for (int i = 0; i < data.Length; i++)
                 {
-                    data[i] += _trackBuffer[i];
+                    track.HandleQueue();
+                    track.trackEnvelope.DoUpdate();
+                    track.trackLFO.DoUpdate();
+
+                    float amp = track.track.volume;
+                    foreach (var volumeMod in track.track.volumeMods)
+                    {
+                        amp = volumeMod.Process(amp);
+                    }
+
+
+                    data[i] += _trackBuffer[i] * amp;
                 }
             }
         }
@@ -485,7 +558,6 @@ namespace Anywhen
             for (var i = 0; i < _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
             {
                 var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
-
                 returnList.Add(track.GetPlayingPatternIndex());
             }
 
@@ -519,7 +591,7 @@ namespace Anywhen
             {
                 var track = _tracksList[i];
                 track.track.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
-                track.track.pitchLFOSettings = newTrackSettings.Tracks[i].pitchLFOSettings;
+                track.track.trackLFO = newTrackSettings.Tracks[i].trackLFO;
                 track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
                 track.track.volume = newTrackSettings.Tracks[i].volume;
             }

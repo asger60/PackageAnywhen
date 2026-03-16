@@ -140,7 +140,7 @@ namespace Anywhen
         public bool GetUseGlobalTempo() => followGlobalTempo;
 
 
-        public void SetIntensity(float newIntensity)
+        public override void SetIntensity(float newIntensity)
         {
             intensity = newIntensity;
         }

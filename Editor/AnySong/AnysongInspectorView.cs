@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.Synth;
-using PackageAnywhen.Editor.Synth;
+using Synth;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -154,13 +154,18 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"),
                 null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volumeMods"), null));
+
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackPitch"),
                 null));
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("pitchMods"), null));
+
             _parent.Add(CreatePropertyFieldWithCallback(
                 selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
 
             _parent.Add(CreatePropertyFieldWithCallback(
-                selection.CurrentSongTrackProperty.FindPropertyRelative("pitchLFOSettings"), didUpdateInstrument));
+                selection.CurrentSongTrackProperty.FindPropertyRelative("trackLFO"), didUpdateInstrument));
 
 
             int filterIndex = 0;
@@ -174,7 +179,7 @@ namespace Anysong
                         alignSelf = Align.FlexEnd,
                         width = 20
                     },
-                    
+
                     text = "x"
                 };
 
@@ -189,7 +194,7 @@ namespace Anysong
 
             var addFilterButton = new Button
             {
-                text = "Add Filter",
+                text = "Add effect",
                 name = "AddFilterButton"
             };
             addFilterButton.clicked += () =>
@@ -247,6 +252,7 @@ namespace Anysong
                     {
                         trackFiltersProperty.DeleteArrayElementAtIndex(i);
                     }
+
                     break;
                 }
             }

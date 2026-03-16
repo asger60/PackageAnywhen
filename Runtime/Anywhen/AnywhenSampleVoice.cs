@@ -49,11 +49,11 @@ namespace Anywhen
             HandleQueue();
 
 
-            if (AmplitudeEnvelope.IsIdle && !HasScheduledPlay)
-            {
-                SetReady();
-                return data;
-            }
+            //if (/*AmplitudeEnvelope.IsIdle && */!HasScheduledPlay)
+            //{
+            //    SetReady();
+            //    return data;
+            //}
 
             if (!_currentNoteClip)
             {
@@ -76,15 +76,18 @@ namespace Anywhen
             int i = 0;
             while (i < data.Length)
             {
-                float ampMod = 1;
 
-                ampMod *= AmplitudeEnvelope.Process();
+                //ampMod *= AmplitudeEnvelope.Process();
                 Double pitch = CurrentPitch;
-                if (CurrentTrack.pitchLFOSettings.enabled)
+                foreach (var pitchMod in CurrentTrack.pitchMods)
                 {
-                    PitchLFO.DoUpdate();
-                    pitch *= (PitchLFO.Process());
+                    pitch = pitchMod.Process((float)pitch);
                 }
+                //if (CurrentTrack.pitchLFOSettings.enabled)
+                //{
+                //    PitchLFO.DoUpdate();
+                //    pitch *= (PitchLFO.Process());
+                //}
 
                 int sampleIndex1 = (int)_samplePosBuffer1;
                 double f1 = _samplePosBuffer1 - sampleIndex1;
@@ -107,7 +110,7 @@ namespace Anywhen
                     double val = ((1 - f1) * _currentNoteClip.clipSamples[sIndex1]) +
                                  (f1 * _currentNoteClip.clipSamples[sIndex2]);
 
-                    samples[c] = (float)val * ampMod * _thisInstrument.volume * CurrentPlaybackSettings.volume;
+                    samples[c] = (float)val * _thisInstrument.volume * CurrentPlaybackSettings.volume;
                 }
 
                 for (int c = 0; c < channels; c++)

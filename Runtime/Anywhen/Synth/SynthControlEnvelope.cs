@@ -1,3 +1,4 @@
+using Anywhen.SettingsObjects;
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -29,16 +30,15 @@ namespace Anywhen.Synth
         private float _releaseBase;
 
 
-        public SynthSettingsObjectEnvelope settings;
+        public AnywhenSampleInstrument.EnvelopeSettings Settings;
 
         public override void NoteOn()
         {
-            if (settings == null) return;
             //Reset();
-            SetAttackRate(settings.attack * AnywhenRuntime.SampleRate);
-            SetDecayRate(settings.decay * AnywhenRuntime.SampleRate);
-            SetSustainLevel(settings.sustain);
-            SetReleaseRate(settings.release * AnywhenRuntime.SampleRate);
+            SetAttackRate(Settings.attack * AnywhenRuntime.SampleRate);
+            SetDecayRate(Settings.decay * AnywhenRuntime.SampleRate);
+            SetSustainLevel(Settings.sustain);
+            SetReleaseRate(Settings.release * AnywhenRuntime.SampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_attack;
@@ -46,7 +46,7 @@ namespace Anywhen.Synth
 
         public override void NoteOff()
         {
-            SetReleaseRate(settings.release * AnywhenRuntime.SampleRate);
+            SetReleaseRate(Settings.release * AnywhenRuntime.SampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_release;
@@ -149,12 +149,17 @@ namespace Anywhen.Synth
                     break;
             }
 
-            return Mathf.Clamp01(_output * (settings.sendAmount / 100f));
+            return Mathf.Clamp01(_output);
+        }
+
+        public void UpdateSettings(AnywhenSampleInstrument.EnvelopeSettings newSettings)
+        {
+            Settings = newSettings;
         }
 
         public void UpdateSettings(SynthSettingsObjectEnvelope newSettings)
         {
-            settings = newSettings;
+            Settings = new AnywhenSampleInstrument.EnvelopeSettings(newSettings.attack, newSettings.decay, newSettings.sustain, newSettings.release);
         }
     }
 }

@@ -5,16 +5,12 @@ namespace Anywhen.Synth
 {
     public class SynthFilterBandPass : SynthFilterBase
     {
-        public SynthFilterBandPass()
-        {
-            //_sampleRate = sampleRate;
-            _q = 5;
-        }
+        //_sampleRate = sampleRate;
 
         // // DSP variables
         private float _vF, _vD, _vZ1, _vZ2, _vZ3;
         private float _filterFrequency;
-        private float _q; // 1-10
+        private float _q = 5; // 1-10
         private float _frequencyMod = 1;
 
         public void SetFrequency(float freq)
@@ -30,7 +26,6 @@ namespace Anywhen.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             Init();
-            _q = 5;
             Settings = newSettings;
             SetParameters(newSettings);
         }
@@ -49,7 +44,12 @@ namespace Anywhen.Synth
         {
             Settings = settingsObjectFilter;
             SetFrequency(settingsObjectFilter.bandPassSettings.frequency);
-            _q = settingsObjectFilter.bandPassSettings.bandWidth;
+            _q = settingsObjectFilter.bandPassSettings.q;
+            _frequencyMod = 1;
+            foreach (var mod in ModRoutings)
+            {
+                _frequencyMod = mod.Process(_frequencyMod);
+            }
         }
 
         public override void HandleModifiers(float mod1)
@@ -73,13 +73,13 @@ namespace Anywhen.Synth
             // Guard against NaN/Inf in coefficients
             if (float.IsNaN(f) || float.IsInfinity(f)) f = 0.1f;
 
-            _vD = 1f / Mathf.Max(_q, 0.01f);
+            _vD = 1f / Mathf.Max(_q * 0.5f, 0.01f);
             _vF = (1.85f - 0.75f * _vD * f) * f;
-
+            _vF = Mathf.Clamp(_vF, 0, 1.99f);
 
             _vZ1 = 0.5f * sample;
-            _vZ3 = this._vZ2 * _vF + this._vZ3;
-            _vZ2 = (_vZ1 + this._vZ1 - _vZ3 - this._vZ2 * _vD) * _vF + this._vZ2;
+            _vZ3 = _vZ2 * _vF + _vZ3;
+            _vZ2 = (_vZ1 + _vZ1 - _vZ3 - _vZ2 * _vD) * _vF + _vZ2;
 
             // Guard against state explosion
             if (float.IsNaN(_vZ2) || float.IsInfinity(_vZ2))

@@ -366,7 +366,7 @@ namespace Anywhen.Synth
 
         public void UpdateSettings(SynthSettingsObjectOscillator newSettings)
         {
-            this._settings = newSettings;
+            _settings = newSettings;
             _pitchModAmount = 1;
             _fineTune = 0;
             _pitch = 1;

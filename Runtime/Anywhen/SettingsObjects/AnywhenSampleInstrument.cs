@@ -88,7 +88,6 @@ namespace Anywhen.SettingsObjects
                 this.decay = decay;
                 this.sustain = sustain;
                 this.release = release;
-                //this.enabled = true;
             }
 
             public bool IsUnset()
@@ -100,7 +99,7 @@ namespace Anywhen.SettingsObjects
             {
                 attack = 0.01f;
                 decay = 0.1f;
-                sustain = 1f;
+                sustain = 0.5f;
                 release = 0.1f;
             }
         }

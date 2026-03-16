@@ -191,9 +191,9 @@ namespace Anysong
                     track.trackEnvelope.Initialize();
                 }
 
-                if (track.pitchLFOSettings.IsUnset())
+                if (track.trackLFO.IsUnset())
                 {
-                    track.pitchLFOSettings.Initialize();
+                    track.trackLFO.Initialize();
                 }
             }
 
