@@ -152,6 +152,7 @@ namespace Anywhen
                         SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
                         SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
                         SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
+                        SynthSettingsObjectFilter.FilterTypes.DelayFilter => new SynthFilterDelay(),
                         _ => throw new ArgumentOutOfRangeException()
                     };
 

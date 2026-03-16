@@ -15,7 +15,8 @@ namespace Anywhen.Synth
             FormantFilter,
             LadderFilter,
             BitcrushFilter,
-            SaturatorFilter
+            SaturatorFilter,
+            DelayFilter
         }
 
         public FilterTypes filterType;
@@ -75,6 +76,16 @@ namespace Anywhen.Synth
         }
 
         public SaturatorSettings saturatorSettings;
+        
+        [Serializable]
+        public struct DelaySettings
+        {
+            [Range(0, 1)] public float delayTime;
+            [Range(0, 1)] public float feedback;
+            [Range(0, 1)] public float wet;
+        }
+
+        public DelaySettings delaySettings;
 
         public void Init()
         {
@@ -97,6 +108,10 @@ namespace Anywhen.Synth
 
             saturatorSettings.drive = 1f;
             saturatorSettings.wet = 1f;
+
+            delaySettings.delayTime = 0.5f;
+            delaySettings.feedback = 0.5f;
+            delaySettings.wet = 0.5f;
         }
 
         public void SyncBandPassFromQ()

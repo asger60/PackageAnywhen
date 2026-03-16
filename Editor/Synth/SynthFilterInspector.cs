@@ -236,6 +236,11 @@ namespace Synth
                     element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.drive"), "Drive", 0, 10, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.wet"), "Wet", 0, 1, false, preview));
                     break;
+                case SynthSettingsObjectFilter.FilterTypes.DelayFilter:
+                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.delayTime"), "Time", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.feedback"), "Feedback", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.wet"), "Wet", 0, 1, false, preview));
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -352,6 +357,26 @@ namespace Synth
                         EditorGUILayout.Slider("CutOff", settings.ladderSettings.cutoffFrequency, 1, 24000);
                     settings.ladderSettings.resonance =
                         EditorGUILayout.Slider("Resonance", settings.ladderSettings.resonance, 0, 1);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                    settings.bitcrushSettings.bitDepth =
+                        EditorGUILayout.Slider("Bit Depth", settings.bitcrushSettings.bitDepth, 1, 24);
+                    settings.bitcrushSettings.downsampling =
+                        EditorGUILayout.IntSlider("Downsampling", settings.bitcrushSettings.downsampling, 1, 100);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                    settings.saturatorSettings.drive =
+                        EditorGUILayout.Slider("Drive", settings.saturatorSettings.drive, 0, 10);
+                    settings.saturatorSettings.wet =
+                        EditorGUILayout.Slider("Wet", settings.saturatorSettings.wet, 0, 1);
+                    break;
+                case SynthSettingsObjectFilter.FilterTypes.DelayFilter:
+                    settings.delaySettings.delayTime =
+                        EditorGUILayout.Slider("Time", settings.delaySettings.delayTime, 0, 1);
+                    settings.delaySettings.feedback =
+                        EditorGUILayout.Slider("Feedback", settings.delaySettings.feedback, 0, 1);
+                    settings.delaySettings.wet =
+                        EditorGUILayout.Slider("Wet", settings.delaySettings.wet, 0, 1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
