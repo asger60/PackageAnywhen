@@ -121,6 +121,10 @@ namespace Anysong
                 case AnysongPatternView.EditModes.NoteChance:
                     _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
                     break;
+                case AnysongPatternView.EditModes.NoteWeights:
+                    _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -164,6 +168,13 @@ namespace Anysong
                         _button.AddToClassList("pattern-step-note-mono");
                     }
 
+                    break;
+                case AnysongPatternView.EditModes.NoteWeights:
+                    if (_patternStep.NoteOn && _patternStep.mixWeight > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    {
+                        _button.AddToClassList("pattern-step-note-mono");
+                    }
+                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

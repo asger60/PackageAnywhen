@@ -20,7 +20,11 @@ namespace Anywhen.Composing
         public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
-        public float TrackPitch => trackPitch;
+        public float TrackPitch
+        {
+            get => trackPitch;
+            set => trackPitch = value;
+        }
         public SynthFilterBase.ModRouting[] pitchMods;
 
         public AnimationCurve intensityMappingCurve = new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });

@@ -14,6 +14,7 @@ namespace Anysong
         static Button _velocityButton;
         static Button _durationButton;
         private static Button _chanceButton;
+        static Button _weightButton;
 
 
         public static VisualElement Draw()
@@ -49,17 +50,20 @@ namespace Anysong
             _velocityButton = new Button() { text = "Velocity" };
             _durationButton = new Button() { text = "Length" };
             _chanceButton = new Button() { text = "Chance" };
+            _weightButton = new Button() { text = "Weight" };
 
             _pitchButton.clicked += OnEditPitch;
             _velocityButton.clicked += OnEditVelocity;
             _durationButton.clicked += OnEditLength;
             _chanceButton.clicked += OnChance;
+            _weightButton.clicked += OnWeights;
 
 
             _pitchButton.AddToClassList("progression-select-button");
             _velocityButton.AddToClassList("progression-select-button");
             _durationButton.AddToClassList("progression-select-button");
             _chanceButton.AddToClassList("progression-select-button");
+            _weightButton.AddToClassList("progression-select-button");
 
             RefreshMonoPolyButtons();
             RefreshEditButtons();
@@ -68,6 +72,7 @@ namespace Anysong
             controls.Add(_velocityButton);
             controls.Add(_durationButton);
             controls.Add(_chanceButton);
+            controls.Add(_weightButton);
 
 
             if (!isPercussion)
@@ -88,6 +93,12 @@ namespace Anysong
 
 
             return controls;
+        }
+
+        private static void OnWeights()
+        {
+            AnysongPatternView.SetEditMode(AnysongPatternView.EditModes.NoteWeights);
+            RefreshEditButtons();
         }
 
         private static void OnChance()
@@ -140,6 +151,7 @@ namespace Anysong
             _velocityButton.RemoveFromClassList("editing");
             _durationButton.RemoveFromClassList("editing");
             _chanceButton.RemoveFromClassList("editing");
+            _weightButton.RemoveFromClassList("editing");
 
             if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteLength)
                 _durationButton.AddToClassList("editing");
@@ -149,6 +161,8 @@ namespace Anysong
                 _velocityButton.AddToClassList("editing");
             else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteChance)
                 _chanceButton.AddToClassList("editing");
+            else if (AnysongPatternView.CurrentEditMode == AnysongPatternView.EditModes.NoteWeights)
+                _weightButton.AddToClassList("editing");
         }
 
         static void RefreshMonoPolyButtons()
@@ -172,6 +186,8 @@ namespace Anysong
             if (_pitchButton != null) _pitchButton.clicked -= OnEditPitch;
             if (_velocityButton != null) _velocityButton.clicked -= OnEditVelocity;
             if (_durationButton != null) _durationButton.clicked -= OnEditLength;
+            if (_chanceButton != null) _chanceButton.clicked -= OnChance;
+            if (_weightButton != null) _weightButton.clicked -= OnWeights;
         }
     }
 }

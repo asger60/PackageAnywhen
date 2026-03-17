@@ -27,15 +27,18 @@ namespace Anywhen.Composing
         private bool _sectionEditLock;
         public bool SectionEditLock => _sectionEditLock;
         private int _currentPlaybackSectionIndex = 0;
+
         public int CurrentSectionIndex
         {
             get => Mathf.Min(Mathf.Max(_currentPlaybackSectionIndex, 0), Sections.Count - 1);
             set => _currentPlaybackSectionIndex = value;
         }
 
-        
-        
-        
+
+        public AnywhenSnapshot SnapshotA = new();
+        public AnywhenSnapshot SnapshotB = new();
+
+
         public string author = "Floppy Club";
 
         [ContextMenu("Init")]
@@ -99,11 +102,12 @@ namespace Anywhen.Composing
         {
             _currentEditSectionIndex = sectionIndex;
         }
+
         public void SetEditSectionLock(bool value)
         {
             _sectionEditLock = value;
         }
-        
+
         public void AdvanceSection()
         {
             if (CurrentPlayMode == SongPlayModes.Edit && SectionEditLock)
@@ -115,7 +119,6 @@ namespace Anywhen.Composing
                 _currentPlaybackSectionIndex++;
                 _currentPlaybackSectionIndex = (int)Mathf.Repeat(_currentPlaybackSectionIndex, Sections.Count);
             }
-            
         }
 
         public void SyncToClock()

@@ -243,7 +243,7 @@ namespace Anywhen
                         float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(_currentIntensity));
                         float thisRnd = Random.Range(0, 1f);
 
-                        if (thisRnd < step.chance && step.mixWeight < thisIntensity && !_isMuted)
+                        if (thisRnd < step.chance && (1 - step.mixWeight) < thisIntensity && !_isMuted)
                         {
                             TriggerNotePlayback(tickRate, trackIndex, step);
                         }
@@ -606,10 +606,16 @@ namespace Anywhen
             _audioSource.outputAudioMixerGroup = group;
         }
 
+        public virtual void SetMixAB(float mixValue)
+        {
+            AnywhenSnapshotBlender.ApplyBlend(_currentSong, mixValue, _tracksList);
+        }
+
 #if UNITY_EDITOR
         public void UpdateTrackInstrument(AnysongTrack track)
         {
             bool didLoad = false;
+            
             if (track.instrument is AnywhenSampleInstrument sampleInstrument)
             {
                 if (!InstrumentDatabase.IsLoaded(sampleInstrument))

@@ -29,7 +29,8 @@ namespace Anysong
             NotePitch,
             NoteVelocity,
             NoteLength,
-            NoteChance
+            NoteChance,
+            NoteWeights
         }
 
         static EditModes _currentEditMode;

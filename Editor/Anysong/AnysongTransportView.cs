@@ -1,3 +1,4 @@
+using Anysong;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -8,6 +9,7 @@ public static class AnysongTransportView
 {
     private static VisualElement _parent;
     private static Button _playButton;
+    static SerializedObject _song;
 
     public static void Clear()
     {
@@ -49,10 +51,10 @@ public static class AnysongTransportView
 
         controlsElement.Add(Spacer());
 
-        var song = new SerializedObject(currentSong);
-        var tempoProperty = song.FindProperty("tempo");
+        _song = new SerializedObject(currentSong);
+        var tempoProperty = _song.FindProperty("tempo");
 
-        var volumeProperty = song.FindProperty("songVolume");
+        var volumeProperty = _song.FindProperty("songVolume");
         var tempoPopertyField = new PropertyField(tempoProperty);
         tempoPopertyField.BindProperty(tempoProperty);
         tempoPopertyField.style.width = 300;
@@ -105,6 +107,11 @@ public static class AnysongTransportView
                 width = 200
             }
         };
+        _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
+        {
+            float newValue = evt.newValue;
+            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.SnapshotA,  AnysongEditorWindow.CurrentSong.SnapshotB, _song, newValue);
+        });
 
         snapShotControlElement.Add(_snapshotButtonA);
         snapShotControlElement.Add(_snapShotLerpSlider);
@@ -147,11 +154,13 @@ public static class AnysongTransportView
         {
             _snapshotButtonB.AddToClassList("triggered");
             _snapshotButtonA.RemoveFromClassList("triggered");
+            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.SnapshotB);
         }
         else
         {
             _snapshotButtonA.AddToClassList("triggered");
             _snapshotButtonB.RemoveFromClassList("triggered");
+            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.SnapshotA);
         }
     }
 }
