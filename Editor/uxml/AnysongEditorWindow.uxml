@@ -6,7 +6,12 @@
             <engine:Slider label="test" value="42" high-value="100" name="TestSlider"/>
             <engine:Slider label="Tempo" value="42" high-value="200" low-value="50"/>
             <engine:Slider label="Volume" value="42" high-value="100"/>
-            <engine:Slider label="Intensity" value="42" high-value="100"/>
+            <engine:Slider label="Intensity" value="42" high-value="100" show-input-field="true"/>
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <engine:Button text="Button"/>
+                <engine:Slider label="Slider" value="42" high-value="100"/>
+                <engine:Button text="Button"/>
+            </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement name="Sections" style="flex-grow: 1; max-height: 70px; min-height: 70px; justify-content: center;">
             <engine:Label text="Sections" class="section-header" style="height: 10px;"/>
