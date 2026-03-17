@@ -33,6 +33,9 @@ namespace Anywhen.Composing
             set => _currentPlaybackSectionIndex = value;
         }
 
+        
+        
+        
         public string author = "Floppy Club";
 
         [ContextMenu("Init")]

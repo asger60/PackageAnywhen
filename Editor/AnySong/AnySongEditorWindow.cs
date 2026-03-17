@@ -146,7 +146,7 @@ namespace Anysong
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong window - " + songObject.name);
-            window.minSize = new Vector2(1450, 1200);
+            window.minSize = new Vector2(1450, 850);
             window.CreateGUI();
         }
 
