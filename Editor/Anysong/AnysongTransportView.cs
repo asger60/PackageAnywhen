@@ -70,10 +70,47 @@ public static class AnysongTransportView
             direction = SliderDirection.Horizontal,
             name = "TestIntensitySlider",
             label = "Intensity",
-            value = 1
+            value = 1,
+            showInputField = true,
         };
 
+        controlsElement.Add(Spacer());
         controlsElement.Add(intensitySlider);
+
+        VisualElement snapShotControlElement = new VisualElement
+        {
+            style =
+            {
+                flexDirection = FlexDirection.Row,
+                width = 400,
+                flexShrink = 0,
+            }
+        };
+        _snapshotButtonA = new Button
+        {
+            text = "A"
+        };
+        _snapshotButtonA.clicked += () => ToggleSnapShot(false);
+        _snapshotButtonA.AddToClassList("snapshot-button");
+        _snapshotButtonB = new Button
+        {
+            text = "B"
+        };
+        _snapshotButtonB.AddToClassList("snapshot-button");
+        _snapshotButtonB.clicked += () => ToggleSnapShot(true);
+        _snapShotLerpSlider = new Slider(0, 1)
+        {
+            style =
+            {
+                width = 200
+            }
+        };
+
+        snapShotControlElement.Add(_snapshotButtonA);
+        snapShotControlElement.Add(_snapShotLerpSlider);
+        snapShotControlElement.Add(_snapshotButtonB);
+
+        controlsElement.Add(snapShotControlElement);
     }
 
     static VisualElement Spacer(float width = 20)
@@ -96,5 +133,25 @@ public static class AnysongTransportView
             _playButton.AddToClassList("triggered");
         else
             _playButton.RemoveFromClassList("triggered");
+    }
+
+    static bool _isSnapShotEnabled = false;
+    private static Slider _snapShotLerpSlider;
+    private static Button _snapshotButtonA, _snapshotButtonB;
+
+    static void ToggleSnapShot(bool state)
+    {
+        _isSnapShotEnabled = state;
+        _snapShotLerpSlider.SetValueWithoutNotify(_isSnapShotEnabled ? 1f : 0);
+        if (_isSnapShotEnabled)
+        {
+            _snapshotButtonB.AddToClassList("triggered");
+            _snapshotButtonA.RemoveFromClassList("triggered");
+        }
+        else
+        {
+            _snapshotButtonA.AddToClassList("triggered");
+            _snapshotButtonB.RemoveFromClassList("triggered");
+        }
     }
 }

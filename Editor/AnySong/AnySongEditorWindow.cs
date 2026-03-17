@@ -146,7 +146,7 @@ namespace Anysong
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong window - " + songObject.name);
-            window.minSize = new Vector2(450, 200);
+            window.minSize = new Vector2(1450, 1200);
             window.CreateGUI();
         }
 
@@ -171,13 +171,11 @@ namespace Anysong
 
             // Set the default UXML template if not already set
             if (!window.uxmlAsset)
-                window.uxmlAsset =
-                    AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
+                window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
 
 
             if (!window.styleAsset)
-                window.styleAsset =
-                    AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
+                window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
 
             _currentSelection = new AnySelection(songObject);
 
@@ -626,10 +624,7 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-            {
-                CopyPattern(_currentSelection.CurrentPattern);
-            });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 

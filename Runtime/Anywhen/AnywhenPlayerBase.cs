@@ -191,6 +191,7 @@ namespace Anywhen
                     volumeMod.Set(newPlayerTrack);
                 }
 
+                anySongTrack.pitchMods ??= Array.Empty<SynthFilterBase.ModRouting>();
                 foreach (var pitchMod in anySongTrack.pitchMods)
                 {
                     pitchMod.Set(newPlayerTrack);
