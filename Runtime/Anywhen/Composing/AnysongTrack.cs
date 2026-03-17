@@ -15,7 +15,9 @@ namespace Anywhen.Composing
         public SynthFilterBase.ModRouting[] volumeMods;
 
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-        [FormerlySerializedAs("pitchLFOSettings")] public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
+
+        [FormerlySerializedAs("pitchLFOSettings")]
+        public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
         public float TrackPitch => trackPitch;
@@ -46,7 +48,15 @@ namespace Anywhen.Composing
         public AnyTrackTypes trackType;
 
         [SerializeField] private SynthSettingsObjectFilter[] trackFilters;
-        public SynthSettingsObjectFilter[] TrackFilters => trackFilters;
+
+        public SynthSettingsObjectFilter[] TrackFilters
+        {
+            get
+            {
+                trackFilters ??= Array.Empty<SynthSettingsObjectFilter>();
+                return trackFilters;
+            }
+        }
 
         public void Init()
         {
@@ -76,7 +86,5 @@ namespace Anywhen.Composing
             IsSolo = false;
             IsMuted = false;
         }
-
-  
     }
 }

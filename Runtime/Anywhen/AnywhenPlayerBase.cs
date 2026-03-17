@@ -139,7 +139,6 @@ namespace Anywhen
 
                 List<SynthFilterBase> filters = new();
 
-
                 foreach (var trackFilter in anySongTrack.TrackFilters)
                 {
                     if (!trackFilter) continue;
