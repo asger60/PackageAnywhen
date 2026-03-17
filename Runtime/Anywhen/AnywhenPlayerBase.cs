@@ -209,10 +209,27 @@ namespace Anywhen
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
         }
 
+        bool GetTrackOfType(AnysongTrack.AnyTrackTypes trackType)
+        {
+            if (trackType == AnysongTrack.AnyTrackTypes.None) return true;
+            foreach (var track in _tracksList)
+            {
+                if (track.track.trackType == trackType) return true;
+            }
+
+            return false;
+        }
+
         private void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
         {
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
+                if (!GetTrackOfType(_currentSong.Tracks[trackIndex].trackType))
+                {
+                    print("no track of type: " + _currentSong.Tracks[trackIndex].trackType);
+                    continue;
+                }
+
                 if (_currentSong.Tracks[trackIndex].IsMuted) continue;
 
                 for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
@@ -592,6 +609,7 @@ namespace Anywhen
             for (var i = 0; i < _tracksList.Count; i++)
             {
                 var track = _tracksList[i];
+                if (newTrackSettings.Tracks.Count <= i) continue;
                 track.track.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
                 track.track.trackLFO = newTrackSettings.Tracks[i].trackLFO;
                 track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
@@ -615,7 +633,7 @@ namespace Anywhen
         public void UpdateTrackInstrument(AnysongTrack track)
         {
             bool didLoad = false;
-            
+
             if (track.instrument is AnywhenSampleInstrument sampleInstrument)
             {
                 if (!InstrumentDatabase.IsLoaded(sampleInstrument))
