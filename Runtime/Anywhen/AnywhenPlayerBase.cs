@@ -209,24 +209,26 @@ namespace Anywhen
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
         }
 
-        bool GetTrackOfType(AnysongTrack.AnyTrackTypes trackType)
+        int GetTrackIndexOfType(AnysongTrack.AnyTrackTypes trackType)
         {
-            if (trackType == AnysongTrack.AnyTrackTypes.None) return true;
-            foreach (var track in _tracksList)
+            if (trackType == AnysongTrack.AnyTrackTypes.None) return 0;
+            for (var i = 0; i < _tracksList.Count; i++)
             {
-                if (track.track.trackType == trackType) return true;
+                var track = _tracksList[i];
+                if (track.track.trackType == trackType) return i;
             }
 
-            return false;
+            return -1;
         }
 
         private void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
         {
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+            for (int i = 0; i < _currentSong.Tracks.Count; i++)
             {
-                if (!GetTrackOfType(_currentSong.Tracks[trackIndex].trackType))
+                int trackIndex = GetTrackIndexOfType(_currentSong.Tracks[i].trackType);
+                if (trackIndex == -1)
                 {
-                    print("no track of type: " + _currentSong.Tracks[trackIndex].trackType);
+                    print("no track of type: " + _currentSong.Tracks[i].trackType);
                     continue;
                 }
 
