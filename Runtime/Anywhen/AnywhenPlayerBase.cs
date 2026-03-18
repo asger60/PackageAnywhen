@@ -247,6 +247,7 @@ namespace Anywhen
                 AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackType);
                 if (trackSettingsSettings == null)
                 {
+                    Debug.LogWarning($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
@@ -258,6 +259,7 @@ namespace Anywhen
                 var playerTrack = GetTrackForTrackType(trackSettingsSettings.trackType);
                 if (playerTrack == null)
                 {
+                    Debug.LogWarning($"Player track for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
@@ -267,6 +269,7 @@ namespace Anywhen
                 var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackType);
                 if (sectionTrack == null)
                 {
+                    Debug.LogWarning($"Section track for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
