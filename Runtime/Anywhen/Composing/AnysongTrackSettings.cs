@@ -3,20 +3,17 @@ using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnysongTrack
+    public class AnysongTrackSettings
     {
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
         public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-
-        [FormerlySerializedAs("pitchLFOSettings")]
         public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
@@ -39,6 +36,8 @@ namespace Anywhen.Composing
         {
             None = 0,
             Bass = 10,
+            Rhythm = 20,
+            Notes = 30,
             NoteShort = 35,
             NoteLong = 36,
             [InspectorName("Rhythm/Hihat")] Hihat = 40,
@@ -70,9 +69,9 @@ namespace Anywhen.Composing
             trackLFO = new AnywhenSampleInstrument.PitchLFOSettings(2, 0.01f, false);
         }
 
-        public AnysongTrack Clone()
+        public AnysongTrackSettings Clone()
         {
-            var clone = new AnysongTrack
+            var clone = new AnysongTrackSettings
             {
                 instrument = instrument,
                 volume = volume,
@@ -80,6 +79,7 @@ namespace Anywhen.Composing
                 trackEnvelope = trackEnvelope,
                 trackLFO = trackLFO,
                 trackType = trackType,
+                TrackPitch = TrackPitch,
             };
             return clone;
         }

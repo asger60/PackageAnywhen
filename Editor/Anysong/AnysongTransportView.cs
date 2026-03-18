@@ -110,7 +110,7 @@ public static class AnysongTransportView
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
             float newValue = evt.newValue;
-            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.SnapshotA,  AnysongEditorWindow.CurrentSong.SnapshotB, _song, newValue);
+            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA,  AnysongEditorWindow.CurrentSong.snapshotB, _song, newValue);
         });
 
         snapShotControlElement.Add(_snapshotButtonA);
@@ -154,13 +154,13 @@ public static class AnysongTransportView
         {
             _snapshotButtonB.AddToClassList("triggered");
             _snapshotButtonA.RemoveFromClassList("triggered");
-            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.SnapshotB);
+            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.snapshotB);
         }
         else
         {
             _snapshotButtonA.AddToClassList("triggered");
             _snapshotButtonB.RemoveFromClassList("triggered");
-            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.SnapshotA);
+            AnywhenSnapshotEditor.CaptureSnapshot(_song, ref AnysongEditorWindow.CurrentSong.snapshotA);
         }
     }
 }

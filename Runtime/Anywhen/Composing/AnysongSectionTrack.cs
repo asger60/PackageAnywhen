@@ -26,10 +26,14 @@ namespace Anywhen.Composing
         private AnysongPattern _currentPattern;
         private int _currentPatternBar;
         int _currentPatternIndex;
+        AnysongTrackSettings _anysongTrackSettings;
+        public AnysongTrackSettings AnysongTrackSettings => _anysongTrackSettings;
         
         
-        public void Init(AnysongTrack songSongTrack)
+        public void Init(AnysongTrackSettings songSongTrackSettings)
         {
+            Debug.Log("Initing track " + songSongTrackSettings.trackType);
+            _anysongTrackSettings = songSongTrackSettings;
             _selectedTrackPatternIndex = 0;
             patterns = new List<AnysongPattern> { new() };
             foreach (var pattern in patterns)
@@ -185,6 +189,11 @@ namespace Anywhen.Composing
             _currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
             _currentPattern = GetPattern(_currentPatternIndex);
             _currentPattern.SyncToClock();
+        }
+
+        public void SetTrack(AnysongTrackSettings songTrack)
+        {
+            _anysongTrackSettings = songTrack;
         }
     }
 }

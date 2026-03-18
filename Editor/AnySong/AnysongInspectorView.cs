@@ -143,7 +143,7 @@ namespace Anysong
                 var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
                 if (instrument)
                 {
-                    selection.CurrentSongTrack.trackType = instrument.InstrumentType;
+                    selection.currentSongTrackSettings.trackType = instrument.InstrumentType;
                     EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
                 }
             }
@@ -163,7 +163,7 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackLFO"), didUpdateInstrument));
             _parent.Add(Spacer());
 
-            foreach (var filter in selection.CurrentSongTrack.TrackFilters)
+            foreach (var filter in selection.currentSongTrackSettings.TrackFilters)
             {
                 VisualElement filterElement = new VisualElement
                 {

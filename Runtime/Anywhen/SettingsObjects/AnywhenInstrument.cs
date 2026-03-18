@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class AnywhenInstrument : AnywhenSettingsBase
 {
-    [SerializeField]  AnysongTrack.AnyTrackTypes instrumentType;
+    [SerializeField]  AnysongTrackSettings.AnyTrackTypes instrumentType;
 
-    public AnysongTrack.AnyTrackTypes InstrumentType => instrumentType;
+    public AnysongTrackSettings.AnyTrackTypes InstrumentType => instrumentType;
 
 }

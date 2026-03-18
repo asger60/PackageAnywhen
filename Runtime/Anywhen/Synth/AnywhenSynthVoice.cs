@@ -48,8 +48,8 @@ namespace Anywhen.Synth
 
         private bool _isCreated;
 
-        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings,
-            trackSettings)
+        public AnywhenSynthVoice(AnywhenInstrument instrumentSettings, AnysongTrackSettings trackSettingsSettings) : base(instrumentSettings,
+            trackSettingsSettings)
         {
             InitializeFreqTab();
             SetPreset(instrumentSettings as AnywhenSynthPreset);
@@ -184,7 +184,7 @@ namespace Anywhen.Synth
                 for (int smp = 0; smp < sampleFrames; ++smp)
                 {
                     float pitch = (float)CurrentPitch;
-                    foreach (var pitchMod in CurrentTrack.pitchMods)
+                    foreach (var pitchMod in currentTrackSettings.pitchMods)
                     {
                         pitch = pitchMod.Process(pitch);
                     }
@@ -202,7 +202,7 @@ namespace Anywhen.Synth
                             if (!synthOscillator.IsActive) continue;
 
                             synthOscillator.SetPitchMod(pitch);
-                            synthOscillator.SetPitchRaw((float)CurrentPitch * CurrentTrack.TrackPitch);
+                            synthOscillator.SetPitchRaw((float)CurrentPitch * currentTrackSettings.TrackPitch);
                             oscillatorOutput += synthOscillator.Process();
                             totalActiveOsc++;
                         }

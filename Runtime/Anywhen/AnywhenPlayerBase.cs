@@ -31,28 +31,25 @@ namespace Anywhen
         bool _resetOnNextBar;
 
         [Serializable]
-        public class PlayerTracks
+        public class PlayerTrack
         {
-            public AnywhenInstrument instrument;
-            public AnysongTrack track;
+            [FormerlySerializedAs("track")] public AnysongTrackSettings trackSettings;
             public AnywhenVoiceBase[] Voices;
             public float trackPitch;
             public List<SynthFilterBase> trackFilters;
             public SynthControlEnvelope trackEnvelope;
             public SynthControlLFO trackLFO;
 
-            public PlayerTracks(AnywhenInstrument instrument, AnysongTrack track, AnywhenVoiceBase[] voices,
-                List<SynthFilterBase> filters)
+            public PlayerTrack(AnysongTrackSettings trackSettings, AnywhenVoiceBase[] voices, List<SynthFilterBase> filters)
             {
-                this.instrument = instrument;
-                this.track = track;
+                this.trackSettings = trackSettings;
                 Voices = voices;
-                trackPitch = track.TrackPitch;
+                trackPitch = trackSettings.TrackPitch;
                 trackFilters = filters;
                 trackLFO = new SynthControlLFO();
-                trackLFO.UpdateSettings(track.trackLFO);
+                trackLFO.UpdateSettings(trackSettings.trackLFO);
                 trackEnvelope = new SynthControlEnvelope();
-                trackEnvelope.UpdateSettings(track.trackEnvelope);
+                trackEnvelope.UpdateSettings(trackSettings.trackEnvelope);
             }
 
             public AnywhenVoiceBase GetVoice()
@@ -90,8 +87,8 @@ namespace Anywhen
             {
                 while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].playTime)
                 {
-                    trackLFO.UpdateSettings(track.trackLFO);
-                    trackEnvelope.UpdateSettings(track.trackEnvelope);
+                    trackLFO.UpdateSettings(trackSettings.trackLFO);
+                    trackEnvelope.UpdateSettings(trackSettings.trackEnvelope);
 
                     _currentPlaybackSettings = playbackQueue[0];
                     playbackQueue.RemoveAt(0);
@@ -109,8 +106,8 @@ namespace Anywhen
             }
         }
 
-        private List<PlayerTracks> _tracksList = new();
-        public List<PlayerTracks> TracksList => _tracksList;
+        private List<PlayerTrack> _tracksList = new();
+        public List<PlayerTrack> TracksList => _tracksList;
         private AudioSource _audioSource;
         private float[] _trackBuffer;
 
@@ -127,7 +124,7 @@ namespace Anywhen
             Stop();
         }
 
-        public void SetupTracks(List<AnysongTrack> tracks)
+        public void SetupTracks(List<AnysongTrackSettings> tracks)
         {
             _tracksList.Clear();
 
@@ -135,7 +132,7 @@ namespace Anywhen
             {
                 var anySongTrack = tracks[index];
                 if (!anySongTrack.instrument) continue;
-                var newPlayerTrack = new PlayerTracks(anySongTrack.instrument, anySongTrack, null, null);
+                var newPlayerTrack = new PlayerTrack(anySongTrack, null, null);
 
                 List<SynthFilterBase> filters = new();
 
@@ -184,7 +181,7 @@ namespace Anywhen
                     }
                 }
 
-                newPlayerTrack.track = anySongTrack;
+                newPlayerTrack.trackSettings = anySongTrack;
                 anySongTrack.volumeMods ??= Array.Empty<SynthFilterBase.ModRouting>();
                 foreach (var volumeMod in anySongTrack.volumeMods)
                 {
@@ -209,64 +206,89 @@ namespace Anywhen
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
         }
 
-        int GetTrackIndexOfType(AnysongTrack.AnyTrackTypes trackType)
+        AnysongTrackSettings GetTrackSettingsForTrackType(AnysongTrackSettings.AnyTrackTypes trackType)
         {
-            if (trackType == AnysongTrack.AnyTrackTypes.None) return 0;
-            for (var i = 0; i < _tracksList.Count; i++)
+            if (trackType == AnysongTrackSettings.AnyTrackTypes.None) return null;
+            foreach (var track in _tracksList)
             {
-                var track = _tracksList[i];
-                if (track.track.trackType == trackType) return i;
+                if (track.trackSettings.trackType == trackType) return track.trackSettings;
             }
 
-            return -1;
+            return null;
+        }
+
+        AnysongSectionTrack GetSectionTrackSettingsForTrackType(AnysongSection section,
+            AnysongTrackSettings.AnyTrackTypes trackType)
+        {
+            foreach (var sectionTrack in section.tracks)
+            {
+                if (sectionTrack.AnysongTrackSettings.trackType == trackType) return sectionTrack;
+            }
+
+            return null;
         }
 
         private void TriggerStep(int stepIndex, AnywhenMetronome.TickRate tickRate)
         {
             for (int i = 0; i < _currentSong.Tracks.Count; i++)
             {
-                int trackIndex = GetTrackIndexOfType(_currentSong.Tracks[i].trackType);
-                if (trackIndex == -1)
+                AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackType);
+                if (trackSettingsSettings == null)
                 {
                     print("no track of type: " + _currentSong.Tracks[i].trackType);
                     continue;
                 }
 
-                if (_currentSong.Tracks[trackIndex].IsMuted) continue;
-
-                for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
+                if (trackSettingsSettings.IsMuted)
                 {
-                    var section = _currentSong.Sections[sectionIndex];
-                    var sectionTrack = section.tracks[trackIndex];
-                    var track = _currentSong.Tracks[trackIndex];
-                    var pattern = sectionTrack.GetPlayingPattern();
+                    Debug.Log("track is muted: " + trackSettingsSettings.trackType);
+                    continue;
+                }
+
+                var playerTrack = GetTrackForTrackType(trackSettingsSettings.trackType);
+                if (playerTrack == null)
+                {
+                    print("no playertrack for track type: " + trackSettingsSettings.trackType);
+                    continue;
+                }
+
+                //for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
+
+                var section = _currentSong.Sections[CurrentSong.CurrentSectionIndex];
+                var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackType);
+                if (sectionTrack == null)
+                {
+                    print("no section track of type: " + _currentSong.Tracks[i].trackType);
+                    continue;
+                }
+
+                //var track = _currentSong.Tracks[trackSettings];
+                var pattern = sectionTrack.GetPlayingPattern();
 
 
-                    var step = pattern.GetCurrentStep();
+                var step = pattern.GetCurrentStep();
 
-                    if (stepIndex >= 0)
-                    {
-                        step = pattern.GetStep(stepIndex);
-                    }
-                    else if (triggerStepIndex >= 0)
-                    {
-                        step = pattern.GetStep(triggerStepIndex);
-                    }
+                if (stepIndex >= 0)
+                {
+                    step = pattern.GetStep(stepIndex);
+                }
+                else if (triggerStepIndex >= 0)
+                {
+                    step = pattern.GetStep(triggerStepIndex);
+                }
 
-                    if (tickRate != AnywhenMetronome.TickRate.None)
-                        pattern.Advance();
+                if (tickRate != AnywhenMetronome.TickRate.None)
+                    pattern.Advance();
 
 
-                    if (sectionIndex == CurrentSong.CurrentSectionIndex && step.NoteOn)
-                    {
-                        float thisIntensity = Mathf.Clamp01(track.intensityMappingCurve.Evaluate(_currentIntensity));
-                        float thisRnd = Random.Range(0, 1f);
+                if (!step.NoteOn) continue;
 
-                        if (thisRnd < step.chance && (1 - step.mixWeight) < thisIntensity && !_isMuted)
-                        {
-                            TriggerNotePlayback(tickRate, trackIndex, step);
-                        }
-                    }
+                float thisIntensity = Mathf.Clamp01(trackSettingsSettings.intensityMappingCurve.Evaluate(_currentIntensity));
+                float thisRnd = Random.Range(0, 1f);
+
+                if (thisRnd < step.chance && (1 - step.mixWeight) < thisIntensity && !_isMuted)
+                {
+                    TriggerNotePlayback(playerTrack, trackSettingsSettings, step);
                 }
             }
 
@@ -277,7 +299,8 @@ namespace Anywhen
             }
         }
 
-        protected virtual void TriggerNotePlayback(AnywhenMetronome.TickRate tickRate, int trackIndex, AnysongPatternStep step)
+        protected virtual void TriggerNotePlayback(PlayerTrack playerTrack, AnysongTrackSettings trackSettingsSettings,
+            AnysongPatternStep step)
         {
             if (step.GetNoteEvents(0).Length > 0)
             {
@@ -296,38 +319,47 @@ namespace Anywhen
                     volume = nextStepEvent.velocity
                 };
 
-                TracksList[trackIndex].playbackQueue.Add(playbackSettings);
+                playerTrack.playbackQueue.Add(playbackSettings);
             }
 
-            var songTrack = _currentSong.Tracks[trackIndex];
             var noteEvents = step.GetNoteEvents(0);
 
             foreach (var noteEvent in noteEvents)
             {
-                HandleNoteEvent(noteEvent, songTrack, _playerVolume);
+                HandleNoteEvent(noteEvent, trackSettingsSettings, _playerVolume);
             }
         }
 
+        PlayerTrack GetTrackForTrackType(AnysongTrackSettings.AnyTrackTypes trackType)
+        {
+            foreach (var track in TracksList)
+            {
+                if (track.trackSettings.trackType == trackType) return track;
+            }
 
-        protected void HandleNoteEvent(NoteEvent noteEvent, AnysongTrack track, float playerVolume)
+            return null;
+        }
+
+
+        protected void HandleNoteEvent(NoteEvent noteEvent, AnysongTrackSettings trackSettings, float playerVolume)
         {
             for (var i = 0; i < noteEvent.notes.Length; i++)
             {
                 var note = noteEvent.notes[i];
-                var voice = GetVoice(track);
+                var voice = GetVoice(trackSettings);
                 if (voice == null)
                 {
-                    print("no voice for track: " + track);
+                    print("no voice for track: " + trackSettings);
                     continue;
                 }
 
                 var playTime = AnywhenMetronome.Instance.GetScheduledPlaytime() + noteEvent.drift + noteEvent.chordStrum[i];
-                var volume = noteEvent.velocity * track.volume * playerVolume;
+                var volume = noteEvent.velocity * trackSettings.volume * playerVolume;
                 var playbackSettings = new AnywhenVoiceBase.PlaybackSettings
                 {
                     note = note,
                     playTime = playTime,
-                    stopTime = playTime + noteEvent.duration + noteEvent.drift + track.trackEnvelope.release,
+                    stopTime = playTime + noteEvent.duration + noteEvent.drift + trackSettings.trackEnvelope.release,
                     volume = volume
                 };
 
@@ -454,26 +486,26 @@ namespace Anywhen
             }
         }
 
-        protected virtual AnywhenVoiceBase GetVoice(AnysongTrack track)
+        protected virtual AnywhenVoiceBase GetVoice(AnysongTrackSettings trackSettings)
         {
             foreach (var voice in _tracksList)
             {
                 //if (IsDrums(track.trackType) && voice.instrument != track.instrument) continue;
-                if (track == voice.track)
+                if (trackSettings == voice.trackSettings)
                     return voice.GetVoice();
             }
 
             return null;
         }
 
-        bool IsDrums(AnysongTrack.AnyTrackTypes trackType)
+        bool IsDrums(AnysongTrackSettings.AnyTrackTypes trackType)
         {
-            return trackType is AnysongTrack.AnyTrackTypes.Clap
-                or AnysongTrack.AnyTrackTypes.Snare
-                or AnysongTrack.AnyTrackTypes.Hihat
-                or AnysongTrack.AnyTrackTypes.Kick
-                or AnysongTrack.AnyTrackTypes.Tick
-                or AnysongTrack.AnyTrackTypes.Tom;
+            return trackType is AnysongTrackSettings.AnyTrackTypes.Clap
+                or AnysongTrackSettings.AnyTrackTypes.Snare
+                or AnysongTrackSettings.AnyTrackTypes.Hihat
+                or AnysongTrackSettings.AnyTrackTypes.Kick
+                or AnysongTrackSettings.AnyTrackTypes.Tick
+                or AnysongTrackSettings.AnyTrackTypes.Tom;
         }
 
 
@@ -556,8 +588,8 @@ namespace Anywhen
                     track.trackEnvelope.DoUpdate();
                     track.trackLFO.DoUpdate();
 
-                    float amp = track.track.volume;
-                    foreach (var volumeMod in track.track.volumeMods)
+                    float amp = track.trackSettings.volume;
+                    foreach (var volumeMod in track.trackSettings.volumeMods)
                     {
                         amp = volumeMod.Process(amp);
                     }
@@ -612,10 +644,10 @@ namespace Anywhen
             {
                 var track = _tracksList[i];
                 if (newTrackSettings.Tracks.Count <= i) continue;
-                track.track.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
-                track.track.trackLFO = newTrackSettings.Tracks[i].trackLFO;
+                track.trackSettings.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
+                track.trackSettings.trackLFO = newTrackSettings.Tracks[i].trackLFO;
                 track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
-                track.track.volume = newTrackSettings.Tracks[i].volume;
+                track.trackSettings.volume = newTrackSettings.Tracks[i].volume;
             }
         }
 
@@ -632,11 +664,11 @@ namespace Anywhen
         }
 
 #if UNITY_EDITOR
-        public void UpdateTrackInstrument(AnysongTrack track)
+        public void UpdateTrackInstrument(AnysongTrackSettings trackSettings)
         {
             bool didLoad = false;
 
-            if (track.instrument is AnywhenSampleInstrument sampleInstrument)
+            if (trackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
             {
                 if (!InstrumentDatabase.IsLoaded(sampleInstrument))
                 {

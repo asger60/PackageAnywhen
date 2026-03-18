@@ -8,12 +8,12 @@ namespace Anywhen
 {
     public static class AnywhenSnapshotBlender
     {
-        public static void ApplyBlend(AnysongObject song, float mixValue, List<AnywhenPlayerBase.PlayerTracks> playerTracks = null)
+        public static void ApplyBlend(AnysongObject song, float mixValue, List<AnywhenPlayerBase.PlayerTrack> playerTracks = null)
         {
-            if (!song || song.SnapshotA == null || song.SnapshotB == null) return;
+            if (!song || song.snapshotA == null || song.snapshotB == null) return;
 
-            var snapshotA = song.SnapshotA.Snapshot;
-            var snapshotB = song.SnapshotB.Snapshot;
+            var snapshotA = song.snapshotA.Snapshot;
+            var snapshotB = song.snapshotB.Snapshot;
 
             if (snapshotA == null || snapshotB == null || snapshotA.Count == 0 || snapshotB.Count == 0) return;
 
@@ -106,27 +106,27 @@ namespace Anywhen
             }
         }
 
-        private static void ApplyLerpToTrack(AnysongTrack track, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        private static void ApplyLerpToTrack(AnysongTrackSettings trackSettings, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
         {
-            if (path == "volume") track.volume = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            if (path == "volume") trackSettings.volume = Mathf.Lerp(a.floatVal, b.floatVal, t);
             else if (path == "trackPitch")
             {
-                track.TrackPitch = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                trackSettings.TrackPitch = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
             else if (path.StartsWith("trackEnvelope."))
             {
                 string subPath = path.Substring("trackEnvelope.".Length);
-                if (subPath == "attack") track.trackEnvelope.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "decay") track.trackEnvelope.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "sustain") track.trackEnvelope.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "release") track.trackEnvelope.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                if (subPath == "attack") trackSettings.trackEnvelope.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "decay") trackSettings.trackEnvelope.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "sustain") trackSettings.trackEnvelope.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "release") trackSettings.trackEnvelope.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
             else if (path.StartsWith("trackLFO."))
             {
                 string subPath = path.Substring("trackLFO.".Length);
-                if (subPath == "frequency") track.trackLFO.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "amplitude") track.trackLFO.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "retrigger") track.trackLFO.retrigger = t >= 0.5f ? b.boolVal : a.boolVal;
+                if (subPath == "frequency") trackSettings.trackLFO.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "amplitude") trackSettings.trackLFO.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "retrigger") trackSettings.trackLFO.retrigger = t >= 0.5f ? b.boolVal : a.boolVal;
             }
         }
 

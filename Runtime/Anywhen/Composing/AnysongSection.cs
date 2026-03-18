@@ -20,7 +20,7 @@ namespace Anywhen.Composing
         
        
 
-        public void Init(List<AnysongTrack> songTracks)
+        public void Init(List<AnysongTrackSettings> songTracks)
         {
             //volume = 1f;
             //rootNote = 0; 
@@ -46,12 +46,21 @@ namespace Anywhen.Composing
         
         }
 
+        public void SetupTracks(List<AnysongTrackSettings> songTracks)
+        {
+            for (var i = 0; i < tracks.Count; i++)
+            {
+                var track = tracks[i];
+                track.SetTrack(songTracks[i]);
+            }
+        }
 
 
-        public void AddSongTrack(AnysongTrack songTrack)
+
+        public void AddSongTrack(AnysongTrackSettings songTrackSettings)
         {
             var newTrack = new AnysongSectionTrack();
-            newTrack.Init(songTrack);
+            newTrack.Init(songTrackSettings);
             tracks.Add(newTrack);
             
         }

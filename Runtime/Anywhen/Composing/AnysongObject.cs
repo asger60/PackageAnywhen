@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen.Composing
@@ -23,27 +24,37 @@ namespace Anywhen.Composing
         int _currentEditSectionIndex = 0;
         public int CurrentEditSectionIndex => _currentEditSectionIndex;
         public List<AnysongSection> Sections;
-        public List<AnysongTrack> Tracks;
+        public List<AnysongTrackSettings> Tracks;
         private bool _sectionEditLock;
         public bool SectionEditLock => _sectionEditLock;
         private int _currentPlaybackSectionIndex = 0;
 
-        public int CurrentSectionIndex
+        public int CurrentSectionIndex // todo, move this out of the setting object
         {
             get => Mathf.Min(Mathf.Max(_currentPlaybackSectionIndex, 0), Sections.Count - 1);
             set => _currentPlaybackSectionIndex = value;
         }
 
 
-        public AnywhenSnapshot SnapshotA = new();
-        public AnywhenSnapshot SnapshotB = new();
+        [FormerlySerializedAs("SnapshotA")] public AnywhenSnapshot snapshotA = new();
+        [FormerlySerializedAs("SnapshotB")] public AnywhenSnapshot snapshotB = new();
 
 
         public string author = "Floppy Club";
 
-        [ContextMenu("Init")]
-        void Init()
+        private void OnEnable()
         {
+            Debug.Log("Setting up tracks");
+            foreach (var section in Sections)
+            {
+                section.SetupTracks(Tracks);
+            }
+        }
+
+        [ContextMenu("ClearPatterns")]
+        void ClearPatterns()
+        {
+            Debug.Log("ClearPatterns");
             foreach (var section in Sections)
             {
                 section.Init(Tracks);

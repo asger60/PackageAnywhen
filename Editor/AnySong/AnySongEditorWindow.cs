@@ -54,7 +54,7 @@ namespace Anysong
             private int _currentTrackIndex;
             public int CurrentTrackIndex => _currentTrackIndex;
 
-            public AnysongTrack CurrentSongTrack;
+            public AnysongTrackSettings currentSongTrackSettings;
             public AnysongSection CurrentSection;
             public AnysongSectionTrack CurrentSectionTrack;
             public AnysongPatternStep CurrentStep;
@@ -103,7 +103,7 @@ namespace Anysong
             void Refresh()
             {
                 _song.Update();
-                CurrentSongTrack = _anysongObject.Tracks[_currentTrackIndex];
+                currentSongTrackSettings = _anysongObject.Tracks[_currentTrackIndex];
                 CurrentSection = _anysongObject.Sections[_currentSectionIndex];
                 CurrentSectionTrack = CurrentSection.tracks[_currentTrackIndex];
                 _currentPatternIndex = Mathf.Clamp(_currentPatternIndex, 0, CurrentSectionTrack.patterns.Count - 1);
@@ -476,7 +476,7 @@ namespace Anysong
 
         void CreateNewTrack()
         {
-            var newTrack = new AnysongTrack();
+            var newTrack = new AnysongTrackSettings();
             newTrack.Init();
             CurrentSong.Tracks.Add(newTrack);
             foreach (var section in CurrentSong.Sections)
@@ -596,7 +596,7 @@ namespace Anysong
                     break;
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack(_currentSelection,
-                        () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrack); });
+                        () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.currentSongTrackSettings); });
 
                     break;
                 case InspectorModes.Step:

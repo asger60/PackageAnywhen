@@ -11,7 +11,7 @@ namespace Anywhen
     {
         public bool IsReady => _playbackQueue.Count == 0 && !IsPlaying;
 
-        protected AnysongTrack CurrentTrack;
+        protected AnysongTrackSettings currentTrackSettings;
 
         //protected ADSR AmplitudeEnvelope;
         protected bool IsPlaying;
@@ -34,10 +34,10 @@ namespace Anywhen
 
         protected PlaybackSettings CurrentPlaybackSettings;
 
-        protected AnywhenVoiceBase(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings)
+        protected AnywhenVoiceBase(AnywhenInstrument instrumentSettings, AnysongTrackSettings trackSettingsSettings)
         {
             CurrentSampleRate = AudioSettings.outputSampleRate;
-            CurrentTrack = trackSettings;
+            currentTrackSettings = trackSettingsSettings;
         }
 
 

@@ -14,8 +14,8 @@ namespace Anywhen
         private AnywhenNoteClip _currentNoteClip;
         private readonly AnywhenSampleInstrument _thisInstrument;
 
-        public AnywhenSampleVoice(AnywhenInstrument instrumentSettings, AnysongTrack trackSettings) : base(instrumentSettings,
-            trackSettings)
+        public AnywhenSampleVoice(AnywhenInstrument instrumentSettings, AnysongTrackSettings trackSettingsSettings) : base(instrumentSettings,
+            trackSettingsSettings)
         {
             _thisInstrument = instrumentSettings as AnywhenSampleInstrument;
         }
@@ -79,7 +79,7 @@ namespace Anywhen
 
                 //ampMod *= AmplitudeEnvelope.Process();
                 Double pitch = CurrentPitch;
-                foreach (var pitchMod in CurrentTrack.pitchMods)
+                foreach (var pitchMod in currentTrackSettings.pitchMods)
                 {
                     pitch = pitchMod.Process((float)pitch);
                 }
@@ -122,7 +122,7 @@ namespace Anywhen
                     }
                 }
 
-                _samplePosBuffer1 += (_sampleStepFrac * pitch * CurrentTrack.TrackPitch);
+                _samplePosBuffer1 += (_sampleStepFrac * pitch * currentTrackSettings.TrackPitch);
             }
 
             return data;

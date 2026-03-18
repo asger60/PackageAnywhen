@@ -39,7 +39,7 @@ public class InstrumentDatabase : MonoBehaviour
 
     public List<LoadedInstrument> LoadedInstruments = new List<LoadedInstrument>();
 
-    public AnywhenInstrument GetInstrumentOfType(AnysongTrack.AnyTrackTypes type)
+    public AnywhenInstrument GetInstrumentOfType(AnysongTrackSettings.AnyTrackTypes type)
     {
         instruments = ShuffleArray(instruments);
 

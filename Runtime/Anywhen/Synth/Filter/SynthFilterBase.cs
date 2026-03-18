@@ -19,9 +19,9 @@ namespace Anywhen.Synth.Filter
             [Range(0, 1f)] public float modAmount;
             private SynthControlBase _modSourceControl;
 
-            public void Set(AnywhenPlayerBase.PlayerTracks tracks)
+            public void Set(AnywhenPlayerBase.PlayerTrack track)
             {
-                _modSourceControl = modSource == ModSources.LFO ? tracks.trackLFO : tracks.trackEnvelope;
+                _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
             }
 
 
