@@ -44,7 +44,6 @@ namespace Anywhen.Composing
 
         private void OnEnable()
         {
-            Debug.Log("Setting up tracks");
             foreach (var section in Sections)
             {
                 section.SetupTracks(Tracks);
