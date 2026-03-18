@@ -8,22 +8,33 @@ namespace Anywhen.Composing
     [Serializable]
     public class AnysongSection
     {
-        //public int rootNote;
-
-
+        
         public AnywhenProgressionPatternObject.ProgressionStep[] patternSteps;
-
-        //[Range(0, 1f)] public float volume = 0.85f;
-
+        
         public List<AnysongSectionTrack> tracks;
         public int sectionLength = 4;
         
-       
+        [NonSerialized] private Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongSectionTrack> _trackDictionary;
+
+        private void RebuildDictionary()
+        {
+            _trackDictionary = new Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongSectionTrack>();
+            if (tracks == null) return;
+            foreach (var track in tracks)
+            {
+                if (track.AnysongTrackSettings == null) continue;
+                _trackDictionary.TryAdd(track.AnysongTrackSettings.trackType, track);
+            }
+        }
+
+        public AnysongSectionTrack GetTrack(AnysongTrackSettings.AnyTrackTypes trackType)
+        {
+            if (_trackDictionary == null) RebuildDictionary();
+            return _trackDictionary.GetValueOrDefault(trackType);
+        }
 
         public void Init(List<AnysongTrackSettings> songTracks)
         {
-            //volume = 1f;
-            //rootNote = 0; 
             sectionLength = 4;
             tracks = new List<AnysongSectionTrack>();
 
@@ -43,7 +54,8 @@ namespace Anywhen.Composing
                 newTrack.Init(track);
                 tracks.Add(newTrack);
             }
-        
+
+            RebuildDictionary();
         }
 
         public void SetupTracks(List<AnysongTrackSettings> songTracks)
@@ -53,6 +65,8 @@ namespace Anywhen.Composing
                 var track = tracks[i];
                 track.SetTrack(songTracks[i]);
             }
+
+            RebuildDictionary();
         }
 
 
@@ -62,12 +76,13 @@ namespace Anywhen.Composing
             var newTrack = new AnysongSectionTrack();
             newTrack.Init(songTrackSettings);
             tracks.Add(newTrack);
-            
+            RebuildDictionary();
         }
 
         public void RemoveSongTrack(int trackIndex)
         {
             tracks.RemoveAt(trackIndex);
+            RebuildDictionary();
         }
 
         public AnywhenProgressionPatternObject.ProgressionStep GetProgressionStep(int currentBar, AnysongSection masterSection)
