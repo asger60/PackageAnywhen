@@ -1,43 +1,24 @@
 using System;
-using Anysong;
 using Anywhen.Composing;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-
-public static class AnysongSectionsView
+namespace Anysong
 {
-    private static VisualElement _parent;
-
-    public static void Clear()
+    public static class AnysongSectionsView
     {
-        _parent = null;
-    }
+        private static VisualElement _parent;
 
-    public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
-    {
-        _parent = parent;
-        parent.Clear();
-        var headerElement = new VisualElement
+        public static void Clear()
         {
-            style =
-            {
-                alignItems = Align.Center,
-                flexDirection = FlexDirection.Row
-            }
-        };
-        parent.Add(headerElement);
+            _parent = null;
+        }
 
-
-        var spacer = new ToolbarSpacer
+        public static void Draw(VisualElement parent, AnysongObject currentSong, int currentSelectionIndex)
         {
-            style = { width = 8 }
-        };
-
-
-        for (var i = 0; i < currentSong.Sections.Count; i++)
-        {
-            var sectionElement = new VisualElement
+            _parent = parent;
+            parent.Clear();
+            var headerElement = new VisualElement
             {
                 style =
                 {
@@ -45,83 +26,103 @@ public static class AnysongSectionsView
                     flexDirection = FlexDirection.Row
                 }
             };
+            parent.Add(headerElement);
 
 
-            var button = new Button
+            var spacer = new ToolbarSpacer
             {
-                name = "SectionButton",
-                tooltip = i.ToString(),
-                text = "Section " + i,
+                style = { width = 8 }
             };
 
-            button.AddToClassList("section-edit-button");
-            if (i == currentSelectionIndex)
-                button.AddToClassList("editing");
+
+            for (var i = 0; i < currentSong.Sections.Count; i++)
+            {
+                var sectionElement = new VisualElement
+                {
+                    style =
+                    {
+                        alignItems = Align.Center,
+                        flexDirection = FlexDirection.Row
+                    }
+                };
 
 
-            sectionElement.Add(button);
-            parent.Add(sectionElement);
-            parent.Add(spacer);
+                var button = new Button
+                {
+                    name = "SectionButton",
+                    tooltip = i.ToString(),
+                    text = "Section " + i,
+                };
+
+                button.AddToClassList("section-edit-button");
+                if (i == currentSelectionIndex)
+                    button.AddToClassList("editing");
+
+
+                sectionElement.Add(button);
+                parent.Add(sectionElement);
+                parent.Add(spacer);
+            }
+
+            var lockButton = new Button
+            {
+                name = "SectionLockButton",
+                text = "Lock",
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row,
+                    width = new StyleLength(35),
+                    height = 20,
+                    backgroundColor = IsSectionLocked()
+                        ? AnysongEditorWindow.ColorGreyDark
+                        : AnysongEditorWindow.ColorGreyDefault,
+                }
+            };
+
+            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+
+            var lockElement = new VisualElement
+            {
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+            parent.Add(lockElement);
+            lockElement.Add(lockButton);
         }
 
-        var lockButton = new Button
+        public static void RefreshSectionLocked()
         {
-            name = "SectionLockButton",
-            text = "Lock",
-            style =
+            _parent.Query<Button>("SectionLockButton").ForEach(button =>
             {
-                alignItems = Align.Center,
-                flexDirection = FlexDirection.Row,
-                width = new StyleLength(35),
-                height = 20,
-                backgroundColor = IsSectionLocked()
+                button.style.backgroundColor = IsSectionLocked()
                     ? AnysongEditorWindow.ColorGreyDark
-                    : AnysongEditorWindow.ColorGreyDefault,
-            }
-        };
+                    : AnysongEditorWindow.ColorGreyDefault;
+            });
+        }
 
-        parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
-
-        var lockElement = new VisualElement
+        static bool IsSectionLocked()
         {
-            style =
-            {
-                alignItems = Align.Center,
-                flexDirection = FlexDirection.Row
-            }
-        };
-        parent.Add(lockElement);
-        lockElement.Add(lockButton);
-    }
+            return AnysongEditorWindow.CurrentSong.SectionEditLock;
+        }
 
-    public static void RefreshSectionLocked()
-    {
-        _parent.Query<Button>("SectionLockButton").ForEach(button =>
+        public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
         {
-            button.style.backgroundColor = IsSectionLocked()
-                ? AnysongEditorWindow.ColorGreyDark
-                : AnysongEditorWindow.ColorGreyDefault;
-        });
-    }
-
-    static bool IsSectionLocked()
-    {
-        return AnysongEditorWindow.CurrentSong.SectionEditLock;
-    }
-
-    public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
-    {
-        _parent.Query<Button>("SectionButton").ForEach(button =>
-        {
-            int thisIndex = Int32.Parse(button.tooltip);
-            if (thisIndex == currentSectionIndex)
+            _parent.Query<Button>("SectionButton").ForEach(button =>
             {
-                button.AddToClassList("triggered");
-            }
-            else
-            {
-                button.RemoveFromClassList("triggered");
-            }
-        });
+                int thisIndex = Int32.Parse(button.tooltip);
+                if (thisIndex == currentSectionIndex)
+                {
+                    button.AddToClassList("triggered");
+                }
+                else
+                {
+                    button.RemoveFromClassList("triggered");
+                }
+            });
+        }
     }
 }

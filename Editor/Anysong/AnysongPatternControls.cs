@@ -27,7 +27,7 @@ namespace Anysong
                 }
             };
 
-            bool isPercussion = AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument &&
+            bool isPercussion = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument &&
                                 sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
 
             if (!isPercussion)
@@ -83,7 +83,7 @@ namespace Anysong
                 controls.Add(MakeSpacer());
                 controls.Add(_patternNoteOfsetUp);
                 controls.Add(_patternNoteOfsetDown);
-                if (AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.voices == 1)
+                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.voices == 1)
                     OnMono();
                 else
                     OnPoly();

@@ -99,11 +99,11 @@ namespace Anysong
             }
 
             _currentPatternNoteIndex = 0;
-            _isPercussionTrack = AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument
+            _isPercussionTrack = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument
                                  && sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
             if (_isPercussionTrack)
                 SetPolyfonic(true);
-            _isMonoVoice = AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.voices == 1;
+            _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.voices == 1;
 
 
             AddCallbacks();
@@ -260,7 +260,7 @@ namespace Anysong
             int rowCount = 1;
             if (!compact) rowCount = 15;
             int noteStartIndex = _currentPatternNoteIndex;
-            if (AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
+            if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
             {
                 if (sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion)
                 {
@@ -283,7 +283,7 @@ namespace Anysong
                     }
                 };
                 string text = "";
-                if (AnysongEditorWindow.CurrentSelection.currentSongTrackSettings.instrument is AnywhenSampleInstrument
+                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
                     {
                         clipSelectType: AnywhenSampleInstrument.ClipSelectType.Percussion
                     })

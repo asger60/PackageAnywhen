@@ -54,7 +54,7 @@ namespace Anysong
             private int _currentTrackIndex;
             public int CurrentTrackIndex => _currentTrackIndex;
 
-            public AnysongTrackSettings currentSongTrackSettings;
+            public AnysongTrackSettings CurrentSongTrackSettings;
             public AnysongSection CurrentSection;
             public AnysongSectionTrack CurrentSectionTrack;
             public AnysongPatternStep CurrentStep;
@@ -103,7 +103,7 @@ namespace Anysong
             void Refresh()
             {
                 _song.Update();
-                currentSongTrackSettings = _anysongObject.Tracks[_currentTrackIndex];
+                CurrentSongTrackSettings = _anysongObject.Tracks[_currentTrackIndex];
                 CurrentSection = _anysongObject.Sections[_currentSectionIndex];
                 CurrentSectionTrack = CurrentSection.tracks[_currentTrackIndex];
                 _currentPatternIndex = Mathf.Clamp(_currentPatternIndex, 0, CurrentSectionTrack.patterns.Count - 1);
@@ -380,9 +380,9 @@ namespace Anysong
 
                         SetInspectorMode(InspectorModes.Sections);
                         AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
+                        AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
                         AnysongPatternView.Draw(_sequencesPanel);
                         AnysongPatternView.Refresh();
-                        //();
                         RefreshSectionLockIndex();
                         HandleSectionsLogic();
                         HandleProgressionLogic();
@@ -408,12 +408,15 @@ namespace Anysong
                 {
                     if (ev.currentTarget is Button btn)
                     {
-                        SetSelectionFromTooltip(btn.tooltip);
+                        SetSelectionFromTooltip(btn.tooltip, _currentSelection);
+                        Debug.Log("SetSelectionFromTooltip " + _currentSelection.CurrentTrackIndex);
                         SetInspectorMode(InspectorModes.Track);
-                    }
 
-                    TrackEdit = true;
-                    AnysongPatternView.Draw(_sequencesPanel);
+                        TrackEdit = true;
+                        AnysongPatternView.Draw(_sequencesPanel);
+                        AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+                        HandleTracksLogic();
+                    }
                 });
             });
 
@@ -484,6 +487,7 @@ namespace Anysong
                 section.AddSongTrack(newTrack);
             }
 
+            _currentSelection.SetTrackIndex(CurrentSong.Tracks.Count - 1);
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
             AnysongPatternView.Draw(_sequencesPanel);
             HandleTracksLogic();
@@ -499,7 +503,8 @@ namespace Anysong
             }
 
             CurrentSong.Tracks.RemoveAt(_currentSelection.CurrentTrackIndex);
-            _currentSelection.SetTrackIndex(0);
+            _currentSelection.SetTrackIndex(CurrentSong.Tracks.Count - 1);
+
 
             AnysongTracksView.Draw(_tracksPanel, CurrentSong);
             AnysongPatternView.Draw(_sequencesPanel);
@@ -596,7 +601,7 @@ namespace Anysong
                     break;
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack(_currentSelection,
-                        () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.currentSongTrackSettings); });
+                        () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings); });
 
                     break;
                 case InspectorModes.Step:

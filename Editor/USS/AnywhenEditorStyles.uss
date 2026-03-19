@@ -5,11 +5,10 @@
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 5px;
     margin-left: 10px;
+    background-color: rgb(60, 60, 60);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .progression-add-button {
@@ -18,13 +17,11 @@
     border-bottom-width: 1px;
     border-left-width: 1px;
     background-color: rgba(0, 0, 0, 0);
+    
 }
 
 .progression-select-button {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 5px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -43,24 +40,15 @@
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-image: none;
+    border-radius: 5px;
+    background-color: rgb(60, 60, 60);
+    color: rgba(255, 255, 255, 0.4);
     -unity-background-scale-mode: scale-and-crop;
     -unity-background-image-tint-color: rgb(79, 79, 79);
     
 }
 
-.editing {
-    color: rgba(255, 255, 255, 1);
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
-    border-top-color: rgb(0, 0, 0);
-    border-bottom-color: rgb(0, 0, 0);
-    background-color: rgba(255, 255, 255, 0.13);
-}
+
 
 .triggered {
     border-left-color: rgb(202, 132, 136);
@@ -143,10 +131,7 @@ Button:hover {
 }
 
 .section-edit-button {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 5px;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -157,6 +142,8 @@ Button:hover {
     font-size: 10px;
     max-height: 40px;
     min-height: 40px;
+    background-color: rgb(60, 60, 60);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .section-header {
@@ -174,6 +161,15 @@ Button:hover {
     background-color: rgb(0, 0, 0);
     color: rgb(102, 177, 229);
     -unity-font-style: bold;
+}
+
+.editing {
+    color: rgba(255, 255, 255, 1);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    background-color: rgba(255, 255, 255, 0.13);
 }
 
 #Slider {

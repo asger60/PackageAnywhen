@@ -84,8 +84,7 @@ public static class AnysongTracksView
 
 
             var thisTrack = currentSong.Tracks[i];
-            var instrumentName =
-                thisTrack.instrument != null ? thisTrack.instrument.name : "no instrument selected";
+            var instrumentName = thisTrack.instrument ? thisTrack.instrument.name : "no instrument selected";
 
             var button = new Button
             {
@@ -99,6 +98,9 @@ public static class AnysongTracksView
                 }
             };
             button.AddToClassList("track-edit-button");
+            
+            if (i == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex)
+                button.AddToClassList("editing");
 
             trackElement.Add(button);
             parent.Add(trackElement);

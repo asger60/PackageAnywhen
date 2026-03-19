@@ -83,14 +83,14 @@
 }
 
 .section-button {
-    flex-grow: 1;
-    border-top-width: 0;
+    min-height: 25px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgb(188, 188, 188);
+    border-right-color: rgb(188, 188, 188);
+    border-top-color: rgb(188, 188, 188);
+    border-bottom-color: rgba(188, 188, 188, 0);
+    border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 0;
-    border-left-width: 0;
-    background-color: rgba(0, 0, 0, 0);
-    border-left-color: rgb(149, 149, 149);
-    border-right-color: rgb(149, 149, 149);
-    border-top-color: rgb(149, 149, 149);
-    border-bottom-color: rgb(149, 149, 149);
+    border-left-width: 1px;
 }
