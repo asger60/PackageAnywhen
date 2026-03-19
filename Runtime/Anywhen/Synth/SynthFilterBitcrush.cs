@@ -8,6 +8,7 @@ namespace Anywhen.Synth
         private int _downsampling;
         private float[] _lastSamples = new float[2];
         private int _downsamplingCounter;
+        private float _filterMod;
 
         public override void SetExpression(float data)
         {
@@ -18,6 +19,11 @@ namespace Anywhen.Synth
             Settings = settingsObjectFilter;
             _bitDepth = settingsObjectFilter.bitcrushSettings.bitDepth;
             _downsampling = settingsObjectFilter.bitcrushSettings.downsampling;
+            _filterMod = 1;
+            foreach (var mod in ModRoutings)
+            {
+                _filterMod = mod.Process(_filterMod);
+            }
         }
 
 
@@ -48,7 +54,8 @@ namespace Anywhen.Synth
                 int channel = _downsamplingCounter % 2;
                 int step = _downsamplingCounter / 2;
 
-                if (step % _downsampling == 0)
+                int modifiedDownsampling = (int)(_downsampling * (_filterMod * 2));
+                if (step % modifiedDownsampling == 0)
                 {
                     _lastSamples[channel] = sample;
                 }

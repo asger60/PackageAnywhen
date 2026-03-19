@@ -37,8 +37,8 @@ public class SynthSettingsInspector : Editor
             DrawDefaultInspector();
         }
 
-        if (_settingsObject == null) _settingsObject = (AnywhenSynthPreset)this.target;
-        if (_settingsObject == null) return;
+        if (!_settingsObject) _settingsObject = (AnywhenSynthPreset)this.target;
+        if (!_settingsObject) return;
         if (!_settingsObject.isInit)
         {
             if (GUILayout.Button("Init"))
@@ -125,8 +125,8 @@ public class SynthSettingsInspector : Editor
     void CreateOscillator(string propertyName, string settingsName)
     {
         SerializedProperty filterList = serializedObject.FindProperty(propertyName);
-        var newOSC = _settingsObject.AddElement<SynthSettingsObjectOscillator>(filterList, settingsName);
-        newOSC.Init();
+        var newOscilator = _settingsObject.AddElement<SynthSettingsObjectOscillator>(filterList, settingsName);
+        newOscilator.Init();
         serializedObject.ApplyModifiedProperties();
         EditorUtility.SetDirty(_settingsObject);
         _settingsObject.RebuildSynth();

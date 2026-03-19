@@ -67,6 +67,10 @@ public class SynthOSCInspector : UnityEditor.Editor
         }
 
 
+        settings.glide = EditorGUILayout.Toggle("Glide", settings.glide);
+        if (settings.glide)
+            settings.glideTime = EditorGUILayout.Slider("Glide time", settings.glideTime, 0f, 50000f);
+
         GUILayout.EndVertical();
 
         GUILayout.Space(10);

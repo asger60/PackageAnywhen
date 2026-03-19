@@ -33,6 +33,7 @@ namespace Anywhen.Synth
         public bool IsActive => _isActive;
 
         int _sampleRate;
+        private float _pitch;
 
         public void Init()
         {
@@ -85,8 +86,8 @@ namespace Anywhen.Synth
 
         public void ResetPhase()
         {
-            _freqPhPSmpTarget = 0;
-            _freqPhPSmpCurrent = 0;
+            //_freqPhPSmpTarget = 0;
+            //_freqPhPSmpCurrent = 0;
             _phase = 0u;
         }
 
@@ -162,7 +163,7 @@ namespace Anywhen.Synth
             return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
         }
 
-        private float _pitch;
+  
 
         public void SetPitchRaw(float pitch)
         {
@@ -374,7 +375,7 @@ namespace Anywhen.Synth
 
         public void SetInactive()
         {
-            _freqPhPSmpCurrent = 0;
+            //_freqPhPSmpCurrent = 0;
             _isActive = false;
         }
     }

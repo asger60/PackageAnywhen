@@ -16,6 +16,7 @@ namespace Anywhen.Synth
         private float _s1, _s2, _s3, _s4;
         private float _g;
         private float _h;
+        private float _frequencyMod;
 
         public override void SetExpression(float data)
         {
@@ -27,6 +28,11 @@ namespace Anywhen.Synth
             _resolution = settingsObjectFilter.ladderSettings.resonance;
             SetCutOff(settingsObjectFilter.ladderSettings.cutoffFrequency);
             SetOversampling(settingsObjectFilter.ladderSettings.oversampling);
+            _frequencyMod = 1;
+            foreach (var mod in ModRoutings)
+            {
+                _frequencyMod = mod.Process(_frequencyMod);
+            }
         }
 
         public override void HandleModifiers(float mod1)
@@ -49,7 +55,7 @@ namespace Anywhen.Synth
 
             // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.
             // Diode ladder characteristics: stages load each other, feedback is non-linear.
-            
+
             float k = _resolution * 17.0f; // Resonance range tuning
             k = Clamp(k, 0, 16.5f); // Keep it within stable self-oscillation limit
 
@@ -58,15 +64,15 @@ namespace Anywhen.Synth
                 // Calculate feedback based on previous outputs to solve the delay-free loop
                 // In a true TPT diode ladder, this is a bit complex due to stage coupling.
                 // We use a simplified coupling approximation.
-                
+
                 float G = _g;
                 float G2 = G * G;
                 float G3 = G2 * G;
-                
+
                 // Simplified estimate of the filter's "instantaneous response" (S)
                 // for the delay-free loop resolution: x = (input - k*S) / (1 + k*gamma)
                 // gamma is the feedback gain through the stages.
-                float S = (G3 * G * _s1 + G3 * _s2 + G2 * _s3 + G * _s4) / (1.0f + G); 
+                float S = (G3 * G * _s1 + G3 * _s2 + G2 * _s3 + G * _s4) / (1.0f + G);
                 float gamma = G3 * G / (1.0f + G);
 
                 float input = sample;
@@ -125,14 +131,14 @@ namespace Anywhen.Synth
             // Proper frequency mapping for TPT filters
             float sampleRate = AnywhenRuntime.SampleRate;
             if (sampleRate <= 0) sampleRate = 44100;
-            float omega = 2.0f * 3.14159265f * frequency / (sampleRate * _oversampling) * _cutoffMod;
-            
+            float omega = 2.0f * 3.14159265f * frequency / (sampleRate * _oversampling) * _cutoffMod * _frequencyMod;
+
             // Guard against NaN/Inf
             if (float.IsNaN(omega) || float.IsInfinity(omega)) omega = 0.1f;
 
             // Guard against Tan(PI/2) and instability at high frequencies
             omega = Clamp(omega, 0, 3.1f);
-            
+
             _g = (float)System.Math.Tan(omega * 0.5f);
             _g = Clamp(_g, 0, 100); // Allow some high-frequency response but avoid Infinity
             _h = _g / (1.0f + _g);

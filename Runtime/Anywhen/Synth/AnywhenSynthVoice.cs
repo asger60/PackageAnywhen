@@ -216,7 +216,7 @@ namespace Anywhen.Synth
 
                     if (float.IsNaN(oscillatorOutput) || float.IsInfinity(oscillatorOutput)) oscillatorOutput = 0;
 
-                    float sample = oscillatorOutput;
+                    float sample = oscillatorOutput * CurrentPlaybackSettings.volume;
 
 
                     if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;

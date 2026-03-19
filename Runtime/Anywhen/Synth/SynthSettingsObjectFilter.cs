@@ -16,7 +16,8 @@ namespace Anywhen.Synth
             LadderFilter,
             BitcrushFilter,
             SaturatorFilter,
-            DelayFilter
+            DelayFilter,
+            ChorusFilter
         }
 
         public FilterTypes filterType;
@@ -87,6 +88,18 @@ namespace Anywhen.Synth
 
         public DelaySettings delaySettings;
 
+        [Serializable]
+        public struct ChorusSettings
+        {
+            [Range(0, 1)] public float rate;
+            [Range(0, 1)] public float depth;
+            [Range(0, 1)] public float delay;
+            [Range(0, 1)] public float feedback;
+            [Range(0, 1)] public float wet;
+        }
+
+        public ChorusSettings chorusSettings;
+
         public void Init()
         {
             lowPassSettings.oversampling = 2;
@@ -112,6 +125,12 @@ namespace Anywhen.Synth
             delaySettings.delayTime = 0.5f;
             delaySettings.feedback = 0.5f;
             delaySettings.wet = 0.5f;
+
+            chorusSettings.rate = 0.1f;
+            chorusSettings.depth = 0.2f;
+            chorusSettings.delay = 0.5f;
+            chorusSettings.feedback = 0.3f;
+            chorusSettings.wet = 0.5f;
         }
 
         public void SyncBandPassFromQ()

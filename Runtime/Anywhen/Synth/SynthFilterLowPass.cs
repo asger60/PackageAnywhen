@@ -135,8 +135,6 @@ namespace Anywhen.Synth
 
         public override void HandleModifiers(float mod1)
         {
-
-
             _frequencyMod *= mod1;
         }
 

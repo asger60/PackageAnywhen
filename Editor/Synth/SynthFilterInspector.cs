@@ -294,6 +294,13 @@ namespace Synth
                     element.Add(CreateBoundSlider(so.FindProperty("delaySettings.feedback"), "Feedback", 0, 1, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("delaySettings.wet"), "Wet", 0, 1, false, preview));
                     break;
+                case SynthSettingsObjectFilter.FilterTypes.ChorusFilter:
+                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.rate"), "Rate", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.depth"), "Depth", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.delay"), "Delay", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.feedback"), "Feedback", 0, 1, false, preview));
+                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.wet"), "Wet", 0, 1, false, preview));
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

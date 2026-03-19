@@ -27,7 +27,7 @@ namespace Anywhen.Composing
         public AnimationCurve intensityMappingCurve = new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
 
         //public bool monophonic;
-        [Range(1, 8)] public int voices = 4;
+        [Range(1, 16)] public int voices = 1;
 
         [NonSerialized] public bool IsMuted = false;
         [NonSerialized] public bool IsSolo = false;

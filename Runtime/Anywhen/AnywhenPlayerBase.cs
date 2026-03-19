@@ -150,6 +150,7 @@ namespace Anywhen
                         SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
                         SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
                         SynthSettingsObjectFilter.FilterTypes.DelayFilter => new SynthFilterDelay(),
+                        SynthSettingsObjectFilter.FilterTypes.ChorusFilter => new SynthFilterChorus(),
                         _ => throw new ArgumentOutOfRangeException()
                     };
 
@@ -247,7 +248,7 @@ namespace Anywhen
                 AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackType);
                 if (trackSettingsSettings == null)
                 {
-                    Debug.LogWarning($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
+                    AnywhenRuntime.Log($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
@@ -259,7 +260,7 @@ namespace Anywhen
                 var playerTrack = GetTrackForTrackType(trackSettingsSettings.trackType);
                 if (playerTrack == null)
                 {
-                    Debug.LogWarning($"Player track for track type {_currentSong.Tracks[i].trackType} is null");
+                    AnywhenRuntime.Log($"Player track for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
@@ -269,7 +270,7 @@ namespace Anywhen
                 var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackType);
                 if (sectionTrack == null)
                 {
-                    Debug.LogWarning($"Section track for track type {_currentSong.Tracks[i].trackType} is null");
+                    AnywhenRuntime.Log($"Section track for track type {_currentSong.Tracks[i].trackType} is null");
                     continue;
                 }
 
