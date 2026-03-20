@@ -409,7 +409,6 @@ namespace Anysong
                     if (ev.currentTarget is Button btn)
                     {
                         SetSelectionFromTooltip(btn.tooltip, _currentSelection);
-                        Debug.Log("SetSelectionFromTooltip " + _currentSelection.CurrentTrackIndex);
                         SetInspectorMode(InspectorModes.Track);
 
                         TrackEdit = true;

@@ -17,6 +17,8 @@ namespace Anywhen.Synth.Filter
 
             public ModSources modSource;
             [Range(0, 1f)] public float modAmount;
+            [DynamicRange] public DynamicRangeFloat modDepth = new (0,10);
+
             private SynthControlBase _modSourceControl;
 
             public void Set(AnywhenPlayerBase.PlayerTrack track)
@@ -30,7 +32,7 @@ namespace Anywhen.Synth.Filter
                 switch (modSource)
                 {
                     case ModSources.LFO:
-                        return input + (_modSourceControl.Process() * modAmount);
+                        return input + (_modSourceControl.Process(true) * modDepth.value);
 
                     case ModSources.Envelope:
                         return input * Mathf.Lerp(1, _modSourceControl.Process(), modAmount);

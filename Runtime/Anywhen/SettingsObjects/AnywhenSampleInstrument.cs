@@ -48,17 +48,17 @@ namespace Anywhen.SettingsObjects
         [Serializable]
         public struct PitchLFOSettings
         {
-            public bool enabled;
             [Range(0.01f, 10)] public float frequency;
             [Range(0, 1)] public float amplitude;
             public bool retrigger;
+            public bool enabled;
 
             public PitchLFOSettings(float frequency, float amplitude, bool retrigger) : this()
             {
                 this.frequency = frequency;
                 this.amplitude = amplitude;
                 this.retrigger = retrigger;
-                enabled = false;
+                
             }
 
             public bool IsUnset()
