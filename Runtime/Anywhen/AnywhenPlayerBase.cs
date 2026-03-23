@@ -29,6 +29,8 @@ namespace Anywhen
         public bool IsPlaying { get; private set; }
 
         bool _resetOnNextBar;
+        private Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings> _trackSettingsCache;
+        private Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack> _playerTrackCache;
 
         [Serializable]
         public class PlayerTrack
@@ -209,14 +211,12 @@ namespace Anywhen
             TriggerStep(-1, AnywhenMetronome.TickRate.Sub16);
         }
 
-        private Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings> _trackSettingsCache;
-        private Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack> _playerTrackCache;
 
         private void RebuildCaches()
         {
             _trackSettingsCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings>();
             _playerTrackCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack>();
-            
+
             foreach (var track in _tracksList)
             {
                 if (track.trackSettings == null) continue;
@@ -224,6 +224,7 @@ namespace Anywhen
                 {
                     _trackSettingsCache.Add(track.trackSettings.trackType, track.trackSettings);
                 }
+
                 _playerTrackCache.TryAdd(track.trackSettings.trackType, track);
             }
         }
@@ -502,16 +503,6 @@ namespace Anywhen
             return playerTrack?.GetVoice();
         }
 
-        bool IsDrums(AnysongTrackSettings.AnyTrackTypes trackType)
-        {
-            return trackType is AnysongTrackSettings.AnyTrackTypes.Clap
-                or AnysongTrackSettings.AnyTrackTypes.Snare
-                or AnysongTrackSettings.AnyTrackTypes.Hihat
-                or AnysongTrackSettings.AnyTrackTypes.Kick
-                or AnysongTrackSettings.AnyTrackTypes.Tick
-                or AnysongTrackSettings.AnyTrackTypes.Tom;
-        }
-
 
         public void SetVolume(float value)
         {
@@ -609,16 +600,35 @@ namespace Anywhen
             _currentIntensity = value;
         }
 
-        public virtual int[] EditorGetPlayingTrackPatternIndexes()
+        public int[] EditorGetPlayingTrackPatternIndexes()
         {
             List<int> returnList = new List<int>();
-            for (var i = 0; i < _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
+            foreach (var track in _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks)
             {
-                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
                 returnList.Add(track.GetPlayingPatternIndex());
             }
 
             return returnList.ToArray();
+        }
+
+        public int GetPlayingSectionIndex()
+        {
+            return CurrentSong.CurrentSectionIndex;
+        }
+
+        public AnysongSection GetPlayingSection()
+        {
+            return _currentSong.Sections[CurrentSong.CurrentSectionIndex];
+        }
+
+        public int GetPlayingPatternIndexForTrackIndex(int trackIndex)
+        {
+            return GetPlayingSection().tracks[trackIndex].GetPlayingPatternIndex();
+        }
+
+        public AnysongPattern GetPlayingPatternForTrackIndex(int trackIndex)
+        {
+            return GetPlayingSection().tracks[trackIndex].patterns[GetPlayingSectionIndex()];
         }
 
         public virtual void Load(AnysongObject anysong)

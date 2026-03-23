@@ -217,20 +217,7 @@ namespace Anywhen
             Load(CurrentSong);
         }
 
-
-        public override int[] EditorGetPlayingTrackPatternIndexes()
-        {
-            List<int> returnList = new List<int>();
-            for (var i = 0; i < CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks.Count; i++)
-            {
-                var track = CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[i];
-
-                returnList.Add(track.GetPlayingPatternIndex());
-            }
-
-            return returnList.ToArray();
-        }
-
+        
 
         public void EditorSetTempo(int newTempo)
         {
