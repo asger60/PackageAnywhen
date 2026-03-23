@@ -42,7 +42,11 @@ namespace Anywhen.Composing
 
         public string author = "Floppy Club";
 
-        private void OnEnable()
+
+
+        
+
+        public void Rebuild()
         {
             foreach (var section in Sections)
             {
@@ -62,6 +66,7 @@ namespace Anywhen.Composing
 
         public void Play(SongPlayModes playMode)
         {
+            Rebuild();
             _currentPlayMode = playMode;
             switch (playMode)
             {
