@@ -17,7 +17,7 @@ namespace Anywhen.Composing
         {
             foreach (var track in tracks)
             {
-                if (track.AnysongTrackSettings.trackType == trackType) return track;
+                if (track.anysongTrackSettings.trackType == trackType) return track;
             }
 
             return null;
@@ -48,7 +48,6 @@ namespace Anywhen.Composing
 
         public void SetupTracks(List<AnysongTrackSettings> songTracks)
         {
-            if (tracks.Count == songTracks.Count) return;
             for (var i = 0; i < tracks.Count; i++)
             {
                 var track = tracks[i];
