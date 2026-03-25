@@ -28,7 +28,8 @@ namespace Anywhen.SettingsObjects
             new MidiDrumMapping { Name = "HH2", MidiNote = 44 },
             new MidiDrumMapping { Name = "Tom3", MidiNote = 45 },
             new MidiDrumMapping { Name = "OpenHH", MidiNote = 46 },
-            new MidiDrumMapping { Name = "Crash", MidiNote = 49 },
+            new MidiDrumMapping { Name = "Cowbell", MidiNote = 47 },
+            new MidiDrumMapping { Name = "Crash", MidiNote = 48 },
         };
 
         private readonly System.Random _random = new();
@@ -58,7 +59,6 @@ namespace Anywhen.SettingsObjects
                 this.frequency = frequency;
                 this.amplitude = amplitude;
                 this.retrigger = retrigger;
-                
             }
 
             public bool IsUnset()

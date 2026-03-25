@@ -79,7 +79,7 @@ namespace Anywhen.Composing
 
         public void Init()
         {
-            duration = 1;
+            duration = (float)AnywhenMetronome.Instance.GetLength();
             expression = 1;
             velocity = 1;
             chordNotes = new List<int> { };
