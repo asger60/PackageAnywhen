@@ -213,7 +213,7 @@ namespace Anywhen
         }
 
 
-        private void RebuildCaches()
+        protected void RebuildCaches()
         {
             _trackSettingsCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings>();
             _playerTrackCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack>();
