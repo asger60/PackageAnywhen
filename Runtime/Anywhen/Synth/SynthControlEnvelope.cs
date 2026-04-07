@@ -157,9 +157,6 @@ namespace Anywhen.Synth
             Settings = newSettings;
         }
 
-        public void UpdateSettings(SynthSettingsObjectEnvelope newSettings)
-        {
-            Settings = new AnywhenSampleInstrument.EnvelopeSettings(newSettings.attack, newSettings.decay, newSettings.sustain, newSettings.release);
-        }
+     
     }
 }

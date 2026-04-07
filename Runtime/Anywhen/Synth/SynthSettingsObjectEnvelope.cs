@@ -1,5 +1,5 @@
-
-
+namespace Anywhen.Synth
+{
     public class SynthSettingsObjectEnvelope : SynthSettingsObjectBase
     {
         public float attack;
@@ -8,4 +8,4 @@
         public float release;
         public float sendAmount = 100;
     }
-
+}

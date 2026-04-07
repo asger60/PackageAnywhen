@@ -142,8 +142,9 @@ namespace Anywhen
                 foreach (var trackFilter in anySongTrack.TrackFilters)
                 {
                     if (!trackFilter) continue;
-                    trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
-                    SynthFilterBase newFilter = trackFilter.filterType switch
+                    var trackFilterCopy = Instantiate(trackFilter);
+                    trackFilterCopy.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
+                    SynthFilterBase newFilter = trackFilterCopy.filterType switch
                     {
                         SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
                         SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
@@ -156,9 +157,9 @@ namespace Anywhen
                         _ => throw new ArgumentOutOfRangeException()
                     };
 
-                    newFilter.SetSettings(trackFilter);
+                    newFilter.SetSettings(trackFilterCopy);
                     filters.Add(newFilter);
-                    foreach (var modRouting in trackFilter.modRouting)
+                    foreach (var modRouting in trackFilterCopy.modRouting)
                     {
                         modRouting.Set(newPlayerTrack);
                         newFilter.AddModRouting(modRouting);
@@ -639,10 +640,8 @@ namespace Anywhen
                 return;
             }
 
-            SetupTracks(anysong.Tracks);
-
-
             _currentSong = anysong;
+            SetupTracks(_currentSong.Tracks);
             _currentSong.Reset();
         }
 
