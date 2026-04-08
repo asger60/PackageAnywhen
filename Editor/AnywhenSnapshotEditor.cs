@@ -65,7 +65,23 @@ public static class AnywhenSnapshotEditor
 
     private static AnywhenSnapshot.PropertyValue? ReadProperty(SerializedProperty prop)
     {
-        var pv = new AnywhenSnapshot.PropertyValue { path = prop.propertyPath, type = prop.propertyType };
+        AnywhenPropertyType anywhenType;
+        switch (prop.propertyType)
+        {
+            case SerializedPropertyType.Float: anywhenType = AnywhenPropertyType.Float; break;
+            case SerializedPropertyType.Integer: anywhenType = AnywhenPropertyType.Integer; break;
+            case SerializedPropertyType.Boolean: anywhenType = AnywhenPropertyType.Boolean; break;
+            case SerializedPropertyType.String: anywhenType = AnywhenPropertyType.String; break;
+            case SerializedPropertyType.Color: anywhenType = AnywhenPropertyType.Color; break;
+            case SerializedPropertyType.Vector2: anywhenType = AnywhenPropertyType.Vector2; break;
+            case SerializedPropertyType.Vector3: anywhenType = AnywhenPropertyType.Vector3; break;
+            case SerializedPropertyType.Vector4: anywhenType = AnywhenPropertyType.Vector4; break;
+            case SerializedPropertyType.Quaternion: anywhenType = AnywhenPropertyType.Quaternion; break;
+            //case SerializedPropertyType.Enum: anywhenType = AnywhenPropertyType.Enum; break;
+            default: return null;
+        }
+
+        var pv = new AnywhenSnapshot.PropertyValue { path = prop.propertyPath, type = anywhenType };
 
         switch (prop.propertyType)
         {
@@ -155,34 +171,34 @@ public static class AnywhenSnapshotEditor
     {
         switch (a.type)
         {
-            case SerializedPropertyType.Float:
+            case AnywhenPropertyType.Float:
                 prop.floatValue = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 break;
-            case SerializedPropertyType.Integer:
+            case AnywhenPropertyType.Integer:
                 prop.intValue = Mathf.RoundToInt(Mathf.Lerp(a.intVal, b.intVal, t));
                 break;
-            case SerializedPropertyType.Boolean:
+            case AnywhenPropertyType.Boolean:
                 prop.boolValue = t >= 0.5f ? b.boolVal : a.boolVal;
                 break;
-            case SerializedPropertyType.Color:
+            case AnywhenPropertyType.Color:
                 prop.colorValue = Color.Lerp(a.colorVal, b.colorVal, t);
                 break;
-            case SerializedPropertyType.Vector2:
+            case AnywhenPropertyType.Vector2:
                 prop.vector2Value = Vector2.Lerp(a.vec2Val, b.vec2Val, t);
                 break;
-            case SerializedPropertyType.Vector3:
+            case AnywhenPropertyType.Vector3:
                 prop.vector3Value = Vector3.Lerp(a.vec3Val, b.vec3Val, t);
                 break;
-            case SerializedPropertyType.Vector4:
+            case AnywhenPropertyType.Vector4:
                 prop.vector4Value = Vector4.Lerp(a.vec4Val, b.vec4Val, t);
                 break;
-            case SerializedPropertyType.Quaternion:
+            case AnywhenPropertyType.Quaternion:
                 prop.quaternionValue = Quaternion.Slerp(a.quatVal, b.quatVal, t);
                 break;
-            case SerializedPropertyType.String:
+            case AnywhenPropertyType.String:
                 prop.stringValue = t >= 0.5f ? b.stringVal : a.stringVal;
                 break;
-            //case SerializedPropertyType.Enum:
+            //case AnywhenPropertyType.Enum:
             //    prop.enumValueIndex = t >= 0.5f ? b.intVal : a.intVal;
             //    break;
         }

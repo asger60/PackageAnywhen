@@ -1,10 +1,23 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Anywhen
 {
+    public enum AnywhenPropertyType
+    {
+        Float,
+        Integer,
+        Boolean,
+        String,
+        Color,
+        Vector2,
+        Vector3,
+        Vector4,
+        Quaternion,
+        Enum,
+    }
+
     [Serializable]
     public class AnywhenSnapshot
     {
@@ -12,7 +25,7 @@ namespace Anywhen
         public struct PropertyValue
         {
             public string path;
-            public SerializedPropertyType type;
+            public AnywhenPropertyType type;
             public float floatVal;
             public int intVal;
             public bool boolVal;
