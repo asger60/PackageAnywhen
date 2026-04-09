@@ -172,8 +172,8 @@ namespace Anywhen.Synth
 
         private void set_freq(float freqHz)
         {
-            float sampleRate = _sampleRate > 0 ? _sampleRate : AnywhenRuntime.SampleRate;
-            if (sampleRate <= 0) sampleRate = 44100;
+            float sampleRate = _sampleRate > 1 ? _sampleRate : AnywhenRuntime.SampleRate;
+            if (sampleRate <= 1) sampleRate = 44100;
 
             float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample
 

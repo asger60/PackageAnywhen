@@ -86,8 +86,8 @@ namespace Anywhen
         {
             get
             {
-                if (_sampleRate == 0)
-                    _sampleRate = 1;
+                if (_sampleRate <= 1)
+                    _sampleRate = AudioSettings.outputSampleRate;
 
                 return _sampleRate;
             }

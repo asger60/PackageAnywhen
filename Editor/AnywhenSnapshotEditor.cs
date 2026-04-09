@@ -45,7 +45,7 @@ public static class AnywhenSnapshotEditor
                                         if (fpv.HasValue)
                                         {
                                             var prefixedPv = fpv.Value;
-                                            prefixedPv.path = $"{element.propertyPath}.{fpv.Value.path}";
+                                            prefixedPv.path = $"{NormalizePath(element.propertyPath)}.{fpv.Value.path}";
                                             snapshot.Snapshot.Add(prefixedPv);
                                         }
                                     } while (filterIterator.NextVisible(true));
@@ -63,25 +63,53 @@ public static class AnywhenSnapshotEditor
         } while (iterator.NextVisible(false));
     }
 
+    private static string NormalizePath(string path)
+    {
+        // Unity property paths use .Array.data[i] for array elements.
+        // We normalize this to just [i] to be more robust and independent of internal format.
+        return path.Replace(".Array.data[", "[").Replace("Array.data[", "[");
+    }
+
+    private static string RestoreUnityPath(string path)
+    {
+        // Simple regex-like replacement for [i] to .Array.data[i]
+        // This is primarily for SerializedObject.FindProperty in Editor.
+        // We look for [ followed by digits followed by ]
+        var sb = new System.Text.StringBuilder();
+        for (int i = 0; i < path.Length; i++)
+        {
+            if (path[i] == '[' && i > 0 && char.IsDigit(path[i + 1]))
+            {
+                sb.Append(".Array.data[");
+            }
+            else
+            {
+                sb.Append(path[i]);
+            }
+        }
+        return sb.ToString();
+    }
+
     private static AnywhenSnapshot.PropertyValue? ReadProperty(SerializedProperty prop)
     {
-        AnywhenPropertyType anywhenType;
+        AnywhenSnapshot.AnywhenPropertyType anywhenType;
         switch (prop.propertyType)
         {
-            case SerializedPropertyType.Float: anywhenType = AnywhenPropertyType.Float; break;
-            case SerializedPropertyType.Integer: anywhenType = AnywhenPropertyType.Integer; break;
-            case SerializedPropertyType.Boolean: anywhenType = AnywhenPropertyType.Boolean; break;
-            case SerializedPropertyType.String: anywhenType = AnywhenPropertyType.String; break;
-            case SerializedPropertyType.Color: anywhenType = AnywhenPropertyType.Color; break;
-            case SerializedPropertyType.Vector2: anywhenType = AnywhenPropertyType.Vector2; break;
-            case SerializedPropertyType.Vector3: anywhenType = AnywhenPropertyType.Vector3; break;
-            case SerializedPropertyType.Vector4: anywhenType = AnywhenPropertyType.Vector4; break;
-            case SerializedPropertyType.Quaternion: anywhenType = AnywhenPropertyType.Quaternion; break;
-            //case SerializedPropertyType.Enum: anywhenType = AnywhenPropertyType.Enum; break;
+            case SerializedPropertyType.Float: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Float; break;
+            case SerializedPropertyType.Integer: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Integer; break;
+            case SerializedPropertyType.Boolean: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Boolean; break;
+            case SerializedPropertyType.String: anywhenType = AnywhenSnapshot.AnywhenPropertyType.String; break;
+            case SerializedPropertyType.Color: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Color; break;
+            case SerializedPropertyType.Vector2: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Vector2; break;
+            case SerializedPropertyType.Vector3: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Vector3; break;
+            case SerializedPropertyType.Vector4: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Vector4; break;
+            case SerializedPropertyType.Quaternion: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Quaternion; break;
+            case SerializedPropertyType.AnimationCurve: anywhenType = AnywhenSnapshot.AnywhenPropertyType.AnimationCurve; break;
+            //case SerializedPropertyType.Enum: anywhenType = AnywhenSnapshot.AnywhenPropertyType.Enum; break;
             default: return null;
         }
 
-        var pv = new AnywhenSnapshot.PropertyValue { path = prop.propertyPath, type = anywhenType };
+        var pv = new AnywhenSnapshot.PropertyValue { path = NormalizePath(prop.propertyPath), type = anywhenType };
 
         switch (prop.propertyType)
         {
@@ -94,6 +122,7 @@ public static class AnywhenSnapshotEditor
             case SerializedPropertyType.Vector3: pv.vec3Val = prop.vector3Value; break;
             case SerializedPropertyType.Vector4: pv.vec4Val = prop.vector4Value; break;
             case SerializedPropertyType.Quaternion: pv.quatVal = prop.quaternionValue; break;
+            case SerializedPropertyType.AnimationCurve: pv.curveVal = prop.animationCurveValue; break;
             //case SerializedPropertyType.Enum: pv.intVal = prop.intValue; break;
             default: return null;
         }
@@ -116,11 +145,11 @@ public static class AnywhenSnapshotEditor
             if (!bLookup.TryGetValue(a.path, out var b)) continue;
 
             SerializedProperty prop = null;
-            if (a.path.Contains(".trackFilters.Array.data["))
+            if (a.path.Contains(".trackFilters["))
             {
-                // Path like: Tracks.Array.data[0].trackFilters.Array.data[0].lowPassSettings.cutoffFrequency
-                var parts = a.path.Split(new[] { ".trackFilters.Array.data[" }, StringSplitOptions.None);
-                var trackPath = parts[0];
+                // Path like: Tracks[0].trackFilters[0].lowPassSettings.cutoffFrequency
+                var parts = a.path.Split(new[] { ".trackFilters[" }, StringSplitOptions.None);
+                var trackPath = RestoreUnityPath(parts[0]);
                 var rest = parts[1]; // 0].lowPassSettings.cutoffFrequency
 
                 var indexEnd = rest.IndexOf(']');
@@ -152,7 +181,7 @@ public static class AnywhenSnapshotEditor
             }
             else
             {
-                prop = serializedObject.FindProperty(a.path);
+                prop = serializedObject.FindProperty(RestoreUnityPath(a.path));
             }
 
             if (prop == null) continue;
@@ -171,36 +200,36 @@ public static class AnywhenSnapshotEditor
     {
         switch (a.type)
         {
-            case AnywhenPropertyType.Float:
+            case AnywhenSnapshot.AnywhenPropertyType.Float:
                 prop.floatValue = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 break;
-            case AnywhenPropertyType.Integer:
+            case AnywhenSnapshot.AnywhenPropertyType.Integer:
                 prop.intValue = Mathf.RoundToInt(Mathf.Lerp(a.intVal, b.intVal, t));
                 break;
-            case AnywhenPropertyType.Boolean:
+            case AnywhenSnapshot.AnywhenPropertyType.Boolean:
                 prop.boolValue = t >= 0.5f ? b.boolVal : a.boolVal;
                 break;
-            case AnywhenPropertyType.Color:
+            case AnywhenSnapshot.AnywhenPropertyType.Color:
                 prop.colorValue = Color.Lerp(a.colorVal, b.colorVal, t);
                 break;
-            case AnywhenPropertyType.Vector2:
+            case AnywhenSnapshot.AnywhenPropertyType.Vector2:
                 prop.vector2Value = Vector2.Lerp(a.vec2Val, b.vec2Val, t);
                 break;
-            case AnywhenPropertyType.Vector3:
+            case AnywhenSnapshot.AnywhenPropertyType.Vector3:
                 prop.vector3Value = Vector3.Lerp(a.vec3Val, b.vec3Val, t);
                 break;
-            case AnywhenPropertyType.Vector4:
+            case AnywhenSnapshot.AnywhenPropertyType.Vector4:
                 prop.vector4Value = Vector4.Lerp(a.vec4Val, b.vec4Val, t);
                 break;
-            case AnywhenPropertyType.Quaternion:
+            case AnywhenSnapshot.AnywhenPropertyType.Quaternion:
                 prop.quaternionValue = Quaternion.Slerp(a.quatVal, b.quatVal, t);
                 break;
-            case AnywhenPropertyType.String:
+            case AnywhenSnapshot.AnywhenPropertyType.String:
                 prop.stringValue = t >= 0.5f ? b.stringVal : a.stringVal;
                 break;
-            //case AnywhenPropertyType.Enum:
-            //    prop.enumValueIndex = t >= 0.5f ? b.intVal : a.intVal;
-            //    break;
+            case AnywhenSnapshot.AnywhenPropertyType.AnimationCurve:
+                prop.animationCurveValue = t >= 0.5f ? b.curveVal : a.curveVal;
+                break;
         }
     }
 }

@@ -4,23 +4,24 @@ using UnityEngine;
 
 namespace Anywhen
 {
-    public enum AnywhenPropertyType
-    {
-        Float,
-        Integer,
-        Boolean,
-        String,
-        Color,
-        Vector2,
-        Vector3,
-        Vector4,
-        Quaternion,
-        Enum,
-    }
-
     [Serializable]
     public class AnywhenSnapshot
     {
+        public enum AnywhenPropertyType
+        {
+            Float,
+            Integer,
+            Boolean,
+            String,
+            Color,
+            Vector2,
+            Vector3,
+            Vector4,
+            Quaternion,
+            Enum,
+            AnimationCurve,
+        }
+
         [Serializable]
         public struct PropertyValue
         {
@@ -35,6 +36,7 @@ namespace Anywhen
             public Color colorVal;
             public Quaternion quatVal;
             public string stringVal;
+            public AnimationCurve curveVal;
         }
 
         [SerializeField] private List<PropertyValue> _snapshot = new();

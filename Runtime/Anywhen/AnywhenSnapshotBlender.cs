@@ -37,8 +37,8 @@ namespace Anywhen
                     continue;
                 }
 
-                // Track properties: Tracks.Array.data[0].volume
-                if (a.path.StartsWith("Tracks.Array.data["))
+                // Track properties: Tracks[0].volume
+                if (a.path.StartsWith("Tracks["))
                 {
                     var openBracketIdx = a.path.IndexOf('[');
                     var closeBracketIdx = a.path.IndexOf(']');
@@ -52,8 +52,8 @@ namespace Anywhen
 
                     string propertyPath = a.path.Substring(closeBracketIdx + 2); // skip "]."
 
-                    // Filter properties: trackFilters.Array.data[0].lowPassSettings.cutoffFrequency
-                    if (propertyPath.StartsWith("trackFilters.Array.data["))
+                    // Filter properties: trackFilters[0].lowPassSettings.cutoffFrequency
+                    if (propertyPath.StartsWith("trackFilters["))
                     {
                         var fOpenBracketIdx = propertyPath.IndexOf('[');
                         var fCloseBracketIdx = propertyPath.IndexOf(']');
@@ -127,6 +127,12 @@ namespace Anywhen
                 if (subPath == "frequency") trackSettings.trackLFO.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 else if (subPath == "amplitude") trackSettings.trackLFO.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 else if (subPath == "retrigger") trackSettings.trackLFO.retrigger = t >= 0.5f ? b.boolVal : a.boolVal;
+            }
+            else if (path == "intensityMappingCurve")
+            {
+                // AnimationCurves cannot be easily lerped at runtime without custom logic.
+                // For now, we just switch at 0.5.
+                trackSettings.intensityMappingCurve = t >= 0.5f ? b.curveVal : a.curveVal;
             }
         }
 
