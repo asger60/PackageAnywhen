@@ -138,6 +138,9 @@ namespace Anysong
 
 
             var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
+            //var trackTypeIndexProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackTypeIndex");
+
+
             if (trackTypeProperty.enumValueIndex == 0)
             {
                 var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
@@ -148,8 +151,10 @@ namespace Anysong
                 }
             }
 
-            _parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
-
+            var trackTypeIndexProperty = CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackTypeIndex"), null);
+            trackTypeIndexProperty.label = "Track type";
+            //_parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
+            _parent.Add(trackTypeIndexProperty);
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"), null));
             _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volumeMods"), null));
