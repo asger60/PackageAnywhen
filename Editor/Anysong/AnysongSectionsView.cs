@@ -34,7 +34,29 @@ namespace Anysong
                 style = { width = 8 }
             };
 
+            var lockButton = new Button
+            {
+                name = "SectionLockButton",
+                text = "L",
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row,
+                }
+            };
+            lockButton.AddToClassList("section-lock-button");
+         
 
+            var lockElement = new VisualElement
+            {
+                style =
+                {
+                    alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row
+                }
+            };
+            parent.Add(lockElement);
+            lockElement.Add(lockButton);
             for (var i = 0; i < currentSong.Sections.Count; i++)
             {
                 var sectionElement = new VisualElement
@@ -64,53 +86,23 @@ namespace Anysong
                 parent.Add(spacer);
             }
 
-            var lockButton = new Button
-            {
-                name = "SectionLockButton",
-                text = "Lock",
-                style =
-                {
-                    alignItems = Align.Center,
-                    flexDirection = FlexDirection.Row,
-                    width = new StyleLength(35),
-                    height = 20,
-                    backgroundColor = IsSectionLocked()
-                        ? AnysongEditorWindow.ColorGreyDark
-                        : AnysongEditorWindow.ColorGreyDefault,
-                }
-            };
-
             parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
-
-            var lockElement = new VisualElement
-            {
-                style =
-                {
-                    alignItems = Align.Center,
-                    flexDirection = FlexDirection.Row
-                }
-            };
-            parent.Add(lockElement);
-            lockElement.Add(lockButton);
+            RefreshSectionLocked();
         }
 
         public static void RefreshSectionLocked()
         {
             _parent.Query<Button>("SectionLockButton").ForEach(button =>
             {
-                button.style.backgroundColor = IsSectionLocked()
-                    ? AnysongEditorWindow.ColorGreyDark
-                    : AnysongEditorWindow.ColorGreyDefault;
+                if (AnysongEditorWindow.IsSectionLocked)
+                    button.AddToClassList("triggered");
+                else
+                    button.RemoveFromClassList("triggered");
             });
         }
 
-        static bool IsSectionLocked()
-        {
-            return AnysongEditorWindow.CurrentSong.SectionEditLock;
-        }
 
-        
-        
+
         public static void SetPlayingSectionIndex(int currentSectionIndex)
         {
             _parent.Query<Button>("SectionButton").ForEach(button =>

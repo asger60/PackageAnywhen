@@ -46,11 +46,7 @@ namespace Anywhen
         {
             if (!IsRunning) return;
             CurrentBar++;
-            if (CurrentSong.CurrentPlayMode == AnysongObject.SongPlayModes.Edit)
-            {
-                // todo, have editor set the section index
-                ResetSection();
-            }
+
 
             //CurrentSectionIndex = Mathf.Min(CurrentSectionIndex, CurrentSong.Sections.Count - 1);
 

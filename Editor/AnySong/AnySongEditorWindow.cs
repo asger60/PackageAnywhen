@@ -385,7 +385,6 @@ namespace Anysong
                         AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);
                         AnysongPatternView.Draw(_sequencesPanel);
                         AnysongPatternView.Refresh();
-                        RefreshSectionLockIndex();
                         HandleSectionsLogic();
                         HandleProgressionLogic();
 
@@ -553,20 +552,14 @@ namespace Anysong
         }
 
 
-        void RefreshSectionLockIndex()
-        {
-            if (!CurrentSong.SectionEditLock) return;
-            CurrentSong.SetEditSection(_currentSelection.CurrentSectionIndex);
-        }
-
-
         void ToggleSectionLock()
         {
-            CurrentSong.SetEditSectionLock(!CurrentSong.SectionEditLock);
+            CurrentRuntimeSongPlayer.SetSectionLock(!CurrentRuntimeSongPlayer.SectionLockState, _currentSelection.CurrentSectionIndex);
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
             HandleSectionsLogic();
         }
 
+        public static bool IsSectionLocked => CurrentRuntimeSongPlayer.SectionLockState;
 
         void SetSelectionFromTooltip(string tooltip, AnySelection targetSelection = null)
         {
@@ -708,6 +701,7 @@ namespace Anysong
                     name = "AddButton",
                     text = "+"
                 };
+                newAddButton.AddToClassList("section-add-button");
                 buttons.Add(newAddButton);
             }
 
@@ -718,7 +712,7 @@ namespace Anysong
                     name = "RemoveButton",
                     text = "-"
                 };
-
+                deleteButton.AddToClassList("section-add-button");
                 buttons.Add(deleteButton);
             }
 

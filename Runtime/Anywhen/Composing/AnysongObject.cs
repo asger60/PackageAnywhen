@@ -25,8 +25,6 @@ namespace Anywhen.Composing
         public int CurrentEditSectionIndex => _currentEditSectionIndex;
         public List<AnysongSection> Sections;
         public List<AnysongTrackSettings> Tracks;
-        private bool _sectionEditLock;
-        public bool SectionEditLock => _sectionEditLock;
 
 
 
@@ -96,10 +94,6 @@ namespace Anywhen.Composing
             _currentEditSectionIndex = sectionIndex;
         }
 
-        public void SetEditSectionLock(bool value)
-        {
-            _sectionEditLock = value;
-        }
 
 
 

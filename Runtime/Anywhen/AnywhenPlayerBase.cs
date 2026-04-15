@@ -109,6 +109,7 @@ namespace Anywhen
         private List<PlayerTrack> _tracksList = new();
         public List<PlayerTrack> TracksList => _tracksList;
         public int CurrentSectionIndex => _currentSectionIndex;
+        public bool SectionLockState => _sectionLockState;
 
         private AudioSource _audioSource;
         private float[] _trackBuffer;
@@ -428,33 +429,39 @@ namespace Anywhen
 
             CurrentBar++;
 
-            if (AnywhenMetronome.Instance.CurrentBar % 4 == 0 && CurrentBar % 4 != 0)
-            {
-                CurrentBar = 0;
-            }
-
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                track.AdvancePlayingPattern();
-            }
-
-            int sectionLength = _currentSong.Sections[GetPlayingSectionIndex()].sectionLength;
+            int sectionLength = _currentSong.Sections[_currentSectionIndex].sectionLength;
 
             if (CurrentBar == sectionLength)
             {
                 CurrentBar = 0;
                 NextSection();
             }
+            else if (!_firstBar)
+            {
+                for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
+                {
+                    var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
+                    track.AdvancePlayingPattern();
+                }
+            }
 
-            Debug.Log($"Current bar: {CurrentBar} : {sectionLength}");
+            _firstBar = false;
         }
 
         protected void NextSection()
         {
-            _currentSectionIndex++;
+            if (_sectionLockState)
+            {
+                _currentSectionIndex = _currentLockSectionIndex;
+            }
+            else
+            {
+                _currentSectionIndex++;
+                if (_currentSectionIndex >= _currentSong.Sections.Count)
+                    _currentSectionIndex = 0;
+            }
 
-            ResetSection();
+            GetPlayingSection().Reset();
         }
 
         public virtual void Load(AnysongObject anysong)
@@ -467,8 +474,9 @@ namespace Anywhen
 
             _currentSong = anysong;
             SetupTracks(_currentSong.Tracks);
-            _currentSong.Reset();
         }
+
+        private bool _firstBar;
 
         public virtual void Play(bool syncToGlobalTime = false)
         {
@@ -479,9 +487,12 @@ namespace Anywhen
             }
 
             IsPlaying = true;
+            _firstBar = true;
+            CurrentBar = -1;
+            _currentSectionIndex = 0;
+            if (_sectionLockState)
+                _currentSectionIndex = _currentLockSectionIndex;
             _currentSong.Reset();
-            CurrentBar = 0;
-
 
             if (syncToGlobalTime)
             {
@@ -497,15 +508,6 @@ namespace Anywhen
             ReleaseFromMetronome();
         }
 
-
-        protected void ResetSection()
-        {
-            for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
-            {
-                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
-                track.Reset();
-            }
-        }
 
         protected virtual AnywhenVoiceBase GetVoice(AnysongTrackSettings trackSettings)
         {
@@ -634,6 +636,15 @@ namespace Anywhen
         public virtual void SetMixAB(float mixValue)
         {
             AnywhenSnapshotBlender.ApplyBlend(_currentSong, mixValue, _tracksList);
+        }
+
+        private bool _sectionLockState;
+        int _currentLockSectionIndex;
+
+        public void SetSectionLock(bool state, int lockedSectionIndex)
+        {
+            _currentLockSectionIndex = lockedSectionIndex;
+            _sectionLockState = state;
         }
 
         public int GetPlayingSectionIndex()

@@ -11,6 +11,8 @@
     color: rgba(255, 255, 255, 0.4);
 }
 
+
+
 .progression-add-button {
     border-top-width: 1px;
     border-right-width: 1px;
@@ -132,6 +134,26 @@ Button:hover {
     min-height: 40px;
     background-color: rgb(60, 60, 60);
     color: rgba(255, 255, 255, 0.4);
+}
+.section-add-button {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    background-color: rgba(0, 0, 0, 0);
+    max-height: 40px;
+    min-height: 40px;
+}
+
+.section-lock-button {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    background-color: rgba(0, 0, 0, 0);
+    max-height: 40px;
+    min-height: 40px;
+    font-size: 10px;
 }
 
 .section-header {
