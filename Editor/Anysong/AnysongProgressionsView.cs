@@ -50,12 +50,14 @@ namespace Anysong
                 };
                 trackElement.Add(button);
                 var track = AnysongEditorWindow.CurrentSelection.CurrentSection.tracks[i];
-                trackElement.Add(DrawTrackPattern(parent, i, track.GetSelectedPatternIndex()));
+                trackElement.Add(DrawTrackPattern(i));
                 parent.Add(trackElement);
             }
+
+            Refresh();
         }
 
-        public static void HilightPattern(int trackIndex, int currentPatternIndex, int currentSelectionIndex)
+        public static void SetIsPatternPlaying(int trackIndex, int currentPatternIndex)
         {
             if (trackIndex > _patternButtonsHolders.Count - 1) return;
             _patternButtonsHolders[trackIndex].Query<Button>("PatternButton").ForEach(button =>
@@ -83,7 +85,7 @@ namespace Anysong
         }
 
 
-        private static VisualElement DrawTrackPattern(VisualElement parent, int trackIndex, int selectedPattern)
+        private static VisualElement DrawTrackPattern(int trackIndex)
         {
             var patternsButtonHolder = new VisualElement
             {
@@ -110,7 +112,8 @@ namespace Anysong
                     }
                 };
                 button.AddToClassList("progression-select-button");
-                if (patternIndex == selectedPattern)
+
+                if (patternIndex == AnysongEditorWindow.CurrentSelection.CurrentPatternIndex)
                     button.AddToClassList("editing");
                 else
                     button.RemoveFromClassList("editing");
@@ -160,35 +163,24 @@ namespace Anysong
             return patternsButtonHolder;
         }
 
-        static void Refresh()
+        public static void Refresh()
         {
             ResetTriggered();
-            _patternButtonsHolders[AnysongEditorWindow.CurrentSelection.CurrentTrackIndex].Query<Button>("PatternButton").ForEach(button =>
+            foreach (var patternButtonsHolder in _patternButtonsHolders)
             {
-                var str = button.tooltip.Split("-");
-                int thisPatternIndex = Int32.Parse((string)str[2]);
+                patternButtonsHolder.Query<Button>("PatternButton").ForEach(button =>
+                {
+                    var str = button.tooltip.Split("-");
+                    int thisPatternIndex = Int32.Parse((string)str[2]);
+                    int thisTrackIndex = Int32.Parse((string)str[1]);
 
-                if (thisPatternIndex == AnysongEditorWindow.CurrentSelection.CurrentPatternIndex)
-                    button.AddToClassList("editing");
-                else
-                    button.RemoveFromClassList("editing");
-            });
-        }
-
-        public static void SetPatternIndexForTrack(int trackIndex, int patternIndex)
-        {
-            AnysongEditorWindow.CurrentSelection.CurrentSection.tracks[trackIndex].SetSelectedPattern(patternIndex);
-
-            _patternButtonsHolders[trackIndex].Query<Button>("PatternButton").ForEach(button =>
-            {
-                var str = button.tooltip.Split("-");
-                int thisPatternIndex = Int32.Parse((string)str[2]);
-
-                if (thisPatternIndex == patternIndex)
-                    button.AddToClassList("editing");
-                else
-                    button.RemoveFromClassList("editing");
-            });
+                    if (thisPatternIndex == AnysongEditorWindow.CurrentSelection.CurrentPatternIndex &&
+                        thisTrackIndex == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex)
+                        button.AddToClassList("editing");
+                    else
+                        button.RemoveFromClassList("editing");
+                });
+            }
         }
     }
 }

@@ -24,18 +24,16 @@ namespace Anywhen
         public AnysongObject CurrentSong => _currentSong;
 
         float _currentIntensity = 1;
-        [SerializeField] protected AudioMixerGroup outputMixerGroup;
 
         public bool IsPlaying { get; private set; }
 
-        bool _resetOnNextBar;
         private Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings> _trackSettingsCache;
         private Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack> _playerTrackCache;
 
         [Serializable]
         public class PlayerTrack
         {
-            [FormerlySerializedAs("track")] public AnysongTrackSettings trackSettings;
+            public AnysongTrackSettings trackSettings;
             public AnywhenVoiceBase[] Voices;
             public float trackPitch;
             public List<SynthFilterBase> trackFilters;
@@ -110,8 +108,11 @@ namespace Anywhen
 
         private List<PlayerTrack> _tracksList = new();
         public List<PlayerTrack> TracksList => _tracksList;
+        public int CurrentSectionIndex => _currentSectionIndex;
+
         private AudioSource _audioSource;
         private float[] _trackBuffer;
+        private int _currentSectionIndex;
 
         protected virtual void Awake()
         {
@@ -268,7 +269,7 @@ namespace Anywhen
 
                 //for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
 
-                var section = _currentSong.Sections[CurrentSong.CurrentSectionIndex];
+                var section = _currentSong.Sections[_currentSectionIndex];
                 var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackType);
                 if (sectionTrack == null)
                 {
@@ -313,8 +314,7 @@ namespace Anywhen
             }
         }
 
-        protected virtual void TriggerNotePlayback(PlayerTrack playerTrack, AnysongTrackSettings trackSettingsSettings,
-            AnysongPatternStep step)
+        protected virtual void TriggerNotePlayback(PlayerTrack playerTrack, AnysongTrackSettings trackSettingsSettings, AnysongPatternStep step)
         {
             if (step.GetNoteEvents(0).Length > 0)
             {
@@ -426,35 +426,49 @@ namespace Anywhen
         {
             if (!IsRunning) return;
 
-            if (_resetOnNextBar)
-            {
-                CurrentBar = 0;
-                _resetOnNextBar = false;
-            }
-            else
-            {
-                CurrentBar++;
-            }
+            CurrentBar++;
 
             if (AnywhenMetronome.Instance.CurrentBar % 4 == 0 && CurrentBar % 4 != 0)
             {
                 CurrentBar = 0;
             }
 
-
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
                 track.AdvancePlayingPattern();
             }
 
-            int progress = (int)Mathf.Repeat(CurrentBar, _currentSong.Sections[CurrentSong.CurrentSectionIndex].sectionLength);
-            if (progress == 0)
+            int sectionLength = _currentSong.Sections[GetPlayingSectionIndex()].sectionLength;
+
+            if (CurrentBar == sectionLength)
             {
+                CurrentBar = 0;
                 NextSection();
             }
+
+            Debug.Log($"Current bar: {CurrentBar} : {sectionLength}");
         }
 
+        protected void NextSection()
+        {
+            _currentSectionIndex++;
+
+            ResetSection();
+        }
+
+        public virtual void Load(AnysongObject anysong)
+        {
+            if (!anysong)
+            {
+                AnywhenRuntime.Log("Can't load, song is null");
+                return;
+            }
+
+            _currentSong = anysong;
+            SetupTracks(_currentSong.Tracks);
+            _currentSong.Reset();
+        }
 
         public virtual void Play(bool syncToGlobalTime = false)
         {
@@ -467,6 +481,7 @@ namespace Anywhen
             IsPlaying = true;
             _currentSong.Reset();
             CurrentBar = 0;
+
 
             if (syncToGlobalTime)
             {
@@ -482,18 +497,12 @@ namespace Anywhen
             ReleaseFromMetronome();
         }
 
-        protected void NextSection()
-        {
-            CurrentBar = 0;
-            CurrentSong.AdvanceSection();
-            ResetSection();
-        }
 
         protected void ResetSection()
         {
             for (int trackIndex = 0; trackIndex < _currentSong.Tracks.Count; trackIndex++)
             {
-                var track = _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                var track = _currentSong.Sections[_currentSectionIndex].tracks[trackIndex];
                 track.Reset();
             }
         }
@@ -502,12 +511,6 @@ namespace Anywhen
         {
             var playerTrack = GetTrackForTrackType(trackSettings.trackType);
             return playerTrack?.GetVoice();
-        }
-
-
-        public void SetVolume(float value)
-        {
-            _playerVolume = value;
         }
 
 
@@ -526,13 +529,8 @@ namespace Anywhen
             }
         }
 
-        public void SetIsMuted(bool state)
-        {
-            _isMuted = state;
-        }
 
-
-        void OnAudioFilterRead(float[] data, int channels)
+        private void OnAudioFilterRead(float[] data, int channels)
         {
             if (!IsRunning) return;
 
@@ -596,53 +594,20 @@ namespace Anywhen
             }
         }
 
+        public void SetVolume(float value)
+        {
+            _playerVolume = value;
+        }
+
+
+        public void SetIsMuted(bool state)
+        {
+            _isMuted = state;
+        }
+
         public virtual void SetIntensity(float value)
         {
             _currentIntensity = value;
-        }
-
-        public int[] EditorGetPlayingTrackPatternIndexes()
-        {
-            List<int> returnList = new List<int>();
-            foreach (var track in _currentSong.Sections[CurrentSong.CurrentSectionIndex].tracks)
-            {
-                returnList.Add(track.GetPlayingPatternIndex());
-            }
-
-            return returnList.ToArray();
-        }
-
-        public int GetPlayingSectionIndex()
-        {
-            return CurrentSong.CurrentSectionIndex;
-        }
-
-        public AnysongSection GetPlayingSection()
-        {
-            return _currentSong.Sections[CurrentSong.CurrentSectionIndex];
-        }
-
-        public int GetPlayingPatternIndexForTrackIndex(int trackIndex)
-        {
-            return GetPlayingSection().tracks[trackIndex].GetPlayingPatternIndex();
-        }
-
-        public AnysongPattern GetPlayingPatternForTrackIndex(int trackIndex)
-        {
-            return GetPlayingSection().tracks[trackIndex].patterns[GetPlayingSectionIndex()];
-        }
-
-        public virtual void Load(AnysongObject anysong)
-        {
-            if (!anysong)
-            {
-                AnywhenRuntime.Log("Can't load, song is null");
-                return;
-            }
-
-            _currentSong = anysong;
-            SetupTracks(_currentSong.Tracks);
-            _currentSong.Reset();
         }
 
         public virtual void SetTrackMidi(AnysongObject newTrackMidi)
@@ -650,6 +615,7 @@ namespace Anywhen
             _currentSong = newTrackMidi;
             _currentSong.Reset();
         }
+
 
         public virtual void SetTrackSettings(AnysongObject newTrackSettings)
         {
@@ -664,17 +630,32 @@ namespace Anywhen
             }
         }
 
-        public void SetOutputMixerGroup(AudioMixerGroup group)
-        {
-            outputMixerGroup = group;
-            if (!_audioSource) _audioSource = GetComponent<AudioSource>();
-            _audioSource.outputAudioMixerGroup = group;
-        }
 
         public virtual void SetMixAB(float mixValue)
         {
             AnywhenSnapshotBlender.ApplyBlend(_currentSong, mixValue, _tracksList);
         }
+
+        public int GetPlayingSectionIndex()
+        {
+            return _currentSectionIndex;
+        }
+
+        public AnysongSection GetPlayingSection()
+        {
+            return _currentSong.Sections[_currentSectionIndex];
+        }
+
+        public int GetPlayingPatternIndexForTrackIndex(int trackIndex)
+        {
+            return GetPlayingSection().tracks[trackIndex].GetPlayingPatternIndex();
+        }
+
+        public AnysongPattern GetPlayingPatternForTrackIndex(int trackIndex)
+        {
+            return GetPlayingSection().tracks[trackIndex].patterns[GetPlayingSectionIndex()];
+        }
+
 
 #if UNITY_EDITOR
         public void UpdateTrackInstrument(AnysongTrackSettings trackSettings)

@@ -364,7 +364,7 @@ namespace Anysong
             {
                 foreach (var stepView in stepViews)
                 {
-                    stepView.SetHighLighted(true);
+                    stepView.SetHighLighted(state);
                 }
             }
         }

@@ -54,12 +54,12 @@ namespace Anywhen
 
             //CurrentSectionIndex = Mathf.Min(CurrentSectionIndex, CurrentSong.Sections.Count - 1);
 
-            var thisSection = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            var thisSection = CurrentSong.Sections[CurrentSectionIndex];
             int progress = (int)Mathf.Repeat(CurrentBar, thisSection.sectionLength);
 
             for (int trackIndex = 0; trackIndex < CurrentSong.Tracks.Count; trackIndex++)
             {
-                var track = CurrentSong.Sections[CurrentSong.CurrentSectionIndex].tracks[trackIndex];
+                var track = CurrentSong.Sections[CurrentSectionIndex].tracks[trackIndex];
                 track.AdvancePlayingPattern();
             }
 
@@ -69,7 +69,7 @@ namespace Anywhen
             }
 
 
-            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
 
@@ -108,7 +108,7 @@ namespace Anywhen
             }
 
             CurrentBar = 0;
-            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSectionIndex];
 
             SetupTracks(CurrentSong.Tracks);
             AttachToMetronome();

@@ -27,13 +27,7 @@ namespace Anywhen.Composing
         public List<AnysongTrackSettings> Tracks;
         private bool _sectionEditLock;
         public bool SectionEditLock => _sectionEditLock;
-        private int _currentPlaybackSectionIndex = 0;
 
-        public int CurrentSectionIndex // todo, move this out of the setting object
-        {
-            get => Mathf.Min(Mathf.Max(_currentPlaybackSectionIndex, 0), Sections.Count - 1);
-            set => _currentPlaybackSectionIndex = value;
-        }
 
 
         [FormerlySerializedAs("SnapshotA")] public AnywhenSnapshot snapshotA = new();
@@ -64,23 +58,7 @@ namespace Anywhen.Composing
             }
         }
 
-        public void Play(SongPlayModes playMode)
-        {
-            Rebuild();
-            _currentPlayMode = playMode;
-            switch (playMode)
-            {
-                case SongPlayModes.Edit:
-                    _currentPlaybackSectionIndex = CurrentEditSectionIndex;
-                    break;
-                case SongPlayModes.Playback:
-                    _currentPlaybackSectionIndex = 0;
-                    Reset();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(playMode), playMode, null);
-            }
-        }
+
 
         [ContextMenu("RandomizeStepWeights")]
         void RandomizeStepWeights()
@@ -123,18 +101,7 @@ namespace Anywhen.Composing
             _sectionEditLock = value;
         }
 
-        public void AdvanceSection()
-        {
-            if (CurrentPlayMode == SongPlayModes.Edit && SectionEditLock)
-            {
-                _currentPlaybackSectionIndex = CurrentEditSectionIndex;
-            }
-            else
-            {
-                _currentPlaybackSectionIndex++;
-                _currentPlaybackSectionIndex = (int)Mathf.Repeat(_currentPlaybackSectionIndex, Sections.Count);
-            }
-        }
+
 
         public void SyncToClock()
         {

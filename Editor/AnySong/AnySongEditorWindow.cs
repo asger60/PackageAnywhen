@@ -207,8 +207,6 @@ namespace Anysong
             if (_isPLaying)
             {
                 _currentRuntimeSongPlayer.Load(CurrentSong);
-
-                CurrentSong.Play(AnysongObject.SongPlayModes.Edit);
                 AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
                 AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
@@ -221,7 +219,7 @@ namespace Anysong
                 AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
                 AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
                 AnywhenRuntime.Metronome.OnNextBar -= OnBar;
-                AnysongSectionsView.HilightSection(-1, _currentSelection.CurrentSectionIndex);
+                AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
             }
@@ -340,28 +338,32 @@ namespace Anysong
         {
             if (_currentSelection.CurrentSection == null)
                 _currentSelection.CurrentSection = CurrentSong.Sections[0];
-            if (_currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex)
-            {
-                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-                {
-                    AnysongPatternView.HilightStepIndex(i,
-                        _currentSelection.CurrentSection.tracks[i].GetSelectedPatternIndex() ==
-                        _currentSelection.CurrentSection.tracks[i].GetPlayingPatternIndex());
-                }
-            }
+
+            bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
+                               _currentSelection.CurrentPatternIndex ==
+                               CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
+
+            AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, doHighLight);
         }
 
         static void OnBar()
         {
             if (CurrentSong != CurrentRuntimeSongPlayer.CurrentSong) return;
-            AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex,
-                _currentSelection.CurrentSectionIndex);
+            AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
 
-            var ints = CurrentRuntimeSongPlayer.EditorGetPlayingTrackPatternIndexes();
-            for (var i = 0; i < ints.Length; i++)
+            if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
             {
-                var patternIndex = ints[i];
-                AnysongProgressionsView.HilightPattern(i, patternIndex, _currentSelection.CurrentPatternIndex);
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    AnysongProgressionsView.SetIsPatternPlaying(i, CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(i));
+                }
+            }
+            else
+            {
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    AnysongProgressionsView.SetIsPatternPlaying(i, -1);
+                }
             }
         }
 
@@ -388,8 +390,8 @@ namespace Anysong
                         HandleProgressionLogic();
 
                         AnysongTracksView.UpdateMuteSoleState();
-                        AnysongSectionsView.HilightSection(CurrentRuntimeSongPlayer.CurrentSong.CurrentSectionIndex,
-                            _currentSelection.CurrentSectionIndex);
+                        AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.CurrentSectionIndex);
+                        AnysongProgressionsView.Refresh();
                     }
                 });
             });
@@ -414,6 +416,7 @@ namespace Anysong
                         TrackEdit = true;
                         AnysongPatternView.Draw(_sequencesPanel);
                         AnysongTracksView.Draw(_tracksPanel, CurrentSong);
+                        AnysongProgressionsView.Refresh();
                         HandleTracksLogic();
                     }
                 });
@@ -455,7 +458,6 @@ namespace Anysong
             _currentSelection.SetStepIndex(0);
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             _currentSelection.SetTrackIndex(trackIndex);
-            thisTrack.SetSelectedPattern(_currentSelection.CurrentPatternIndex);
 
             AnysongPatternView.Draw(_sequencesPanel);
             AnysongPatternView.Refresh();
@@ -469,7 +471,6 @@ namespace Anysong
             var thisTrack = _currentSelection.CurrentSectionTrack;
             thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
-            thisTrack.SetSelectedPattern(thisTrack.patterns.Count - 1);
             AnysongPatternView.Draw(_sequencesPanel);
             AnysongPatternView.Refresh();
             AnysongProgressionsView.Draw(_progressionPanel, CurrentSong);

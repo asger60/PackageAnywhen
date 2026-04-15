@@ -73,22 +73,7 @@ namespace Anywhen.Composing
 
             return _currentPattern ??= patterns[0];
         }
-
-        public int GetPlayingPatternIndex()
-        {
-            return _currentPatternIndex;
-        }
-
-        public int GetSelectedPatternIndex()
-        {
-            return _selectedTrackPatternIndex;
-        }
-
-
-        public void SetSelectedPattern(int index)
-        {
-            _selectedTrackPatternIndex = index;
-        }
+        
         
 
         public void AdvancePlayingPattern()
@@ -189,6 +174,11 @@ namespace Anywhen.Composing
         public void SetTrack(AnysongTrackSettings songTrack)
         {
             anysongTrackSettings = songTrack;
+        }
+
+        public int GetPlayingPatternIndex()
+        {
+            return _currentPatternIndex;
         }
     }
 }

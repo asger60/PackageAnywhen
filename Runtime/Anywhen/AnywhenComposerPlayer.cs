@@ -8,7 +8,7 @@ namespace Anywhen
         public override void Play(bool syncToGlobalClock = false)
         {
             base.Play(syncToGlobalClock);
-            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
 
@@ -16,7 +16,7 @@ namespace Anywhen
         {
             if (!IsRunning) return;
             base.OnBar();
-            var section = CurrentSong.Sections[CurrentSong.CurrentSectionIndex];
+            var section = CurrentSong.Sections[CurrentSectionIndex];
             AnywhenRuntime.Conductor.SetScaleProgression(section.GetProgressionStep(CurrentBar, CurrentSong.Sections[0]));
         }
     }

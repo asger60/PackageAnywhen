@@ -50,18 +50,6 @@
 
 
 
-.triggered {
-    border-left-color: rgb(202, 132, 136);
-    border-right-color: rgb(202, 132, 136);
-    border-top-color: rgb(202, 132, 136);
-    border-bottom-color: rgb(202, 132, 136);
-    border-top-width: 0.5px;
-    border-right-width: 0.5px;
-    border-bottom-width: 0.5px;
-    border-left-width: 0.5px;
-    transition-duration: 0s;
-    transition-timing-function: ease-in-out;
-}
 
 .pattern-step-button {
     min-height: 40px;
@@ -171,6 +159,10 @@ Button:hover {
     border-bottom-color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.13);
 }
+.triggered {
+    border-color: rgb(202, 132, 136);
+}
+
 
 #Slider {
     background-color: rgb(255, 255, 255);

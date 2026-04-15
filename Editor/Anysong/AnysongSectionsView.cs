@@ -109,7 +109,9 @@ namespace Anysong
             return AnysongEditorWindow.CurrentSong.SectionEditLock;
         }
 
-        public static void HilightSection(int currentSectionIndex, int currentSelectionIndex)
+        
+        
+        public static void SetPlayingSectionIndex(int currentSectionIndex)
         {
             _parent.Query<Button>("SectionButton").ForEach(button =>
             {
