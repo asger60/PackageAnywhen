@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen.Composing
 {
     [Serializable]
     public class AnysongSection
     {
-        [FormerlySerializedAs("patternSteps")] public AnywhenProgressionPatternObject.ProgressionStep[] progressionSteps;
+        public AnywhenProgressionPatternObject.ProgressionStep[] progressionSteps;
         public List<AnysongSectionTrack> tracks;
         public int sectionLength = 4;
 
@@ -96,7 +95,13 @@ namespace Anywhen.Composing
                 clone.tracks.Add(tracks[i].Clone());
             }
 
-
+            clone.progressionSteps = new AnywhenProgressionPatternObject.ProgressionStep[progressionSteps.Length];
+            for (var i = 0; i < progressionSteps.Length; i++)
+            {
+                clone.progressionSteps[i] = progressionSteps[i].Clone();
+            }
+            clone.sectionLength = sectionLength;
+            
             return clone;
         }
 

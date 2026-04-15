@@ -42,6 +42,15 @@ namespace Anysong
         private AnysongSection _sectionCopy;
         static AnysongPattern _patternCopy;
 
+        private VisualElement _mainViewPanel;
+        private VisualElement _transportPanel;
+        private static VisualElement _sequencesPanel;
+        private VisualElement _sectionsPanel;
+        private VisualElement _tracksPanel;
+        private static VisualElement _inspectorPanel;
+        private static VisualElement _progressionPanel;
+        [SerializeField] VisualTreeAsset uxmlAsset;
+        [SerializeField] StyleSheet styleAsset;
 
         public class AnySelection
         {
@@ -206,6 +215,7 @@ namespace Anysong
 
             if (_isPLaying)
             {
+                CurrentSong.Rebuild();
                 _currentRuntimeSongPlayer.Load(CurrentSong);
                 AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
@@ -255,15 +265,6 @@ namespace Anysong
         }
 
 
-        private VisualElement _mainViewPanel;
-        private VisualElement _transportPanel;
-        private static VisualElement _sequencesPanel;
-        private VisualElement _sectionsPanel;
-        private VisualElement _tracksPanel;
-        private static VisualElement _inspectorPanel;
-        private static VisualElement _progressionPanel;
-        [SerializeField] VisualTreeAsset uxmlAsset;
-        [SerializeField] StyleSheet styleAsset;
 
         public void CreateGUI()
         {
@@ -537,7 +538,7 @@ namespace Anysong
         void CopySection()
         {
             Debug.Log("CopySection");
-            _sectionCopy = _currentSelection.CurrentSection;
+            _sectionCopy = _currentSelection.CurrentSection.Clone();
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
             HandleSectionsLogic();
         }
@@ -545,7 +546,7 @@ namespace Anysong
         void PasteSection()
         {
             Debug.Log("PasteSection");
-            CurrentSong.Sections[_currentSelection.CurrentSectionIndex] = _sectionCopy.Clone();
+            CurrentSong.Sections[_currentSelection.CurrentSectionIndex] = _sectionCopy;
             AnysongPatternView.Refresh();
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
             HandleSectionsLogic();

@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Anywhen
 {
     [CreateAssetMenu(fileName = "New progression pattern", menuName = "Anywhen/Conductor/Note Progression")]
-
     public class AnywhenProgressionPatternObject : ScriptableObject
     {
         [System.Serializable]
@@ -12,10 +11,19 @@ namespace Anywhen
         {
             public int rootNote;
             public AnywhenScaleObject anywhenScale;
+
+            public ProgressionStep Clone()
+            {
+                var clone = new ProgressionStep
+                {
+                    rootNote = rootNote,
+                    anywhenScale = anywhenScale
+                };
+                return clone;
+            }
         }
 
-        
-        public ProgressionStep[] patternSteps;
 
+        public ProgressionStep[] patternSteps;
     }
 }

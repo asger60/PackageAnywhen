@@ -19,19 +19,17 @@ namespace Anywhen.Composing
 
 
         public List<AnysongPattern> patterns;
-        private int _selectedTrackPatternIndex; // this should probably storred in a different place
 
         private AnysongPattern _currentPattern;
         private int _currentPatternBar;
         int _currentPatternIndex;
         public AnysongTrackSettings anysongTrackSettings;
-        
-        
+
+
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
             Debug.Log("Initing track " + songSongTrackSettings.trackType);
             anysongTrackSettings = songSongTrackSettings;
-            _selectedTrackPatternIndex = 0;
             patterns = new List<AnysongPattern> { new() };
             foreach (var pattern in patterns)
             {
@@ -50,6 +48,9 @@ namespace Anywhen.Composing
                 clone.patterns.Add(patterns[i].Clone());
             }
 
+            clone.anysongTrackSettings = anysongTrackSettings;
+            clone.patternProgressionType = patternProgressionType;
+            
 
             return clone;
         }
@@ -73,8 +74,7 @@ namespace Anywhen.Composing
 
             return _currentPattern ??= patterns[0];
         }
-        
-        
+
 
         public void AdvancePlayingPattern()
         {
@@ -90,7 +90,7 @@ namespace Anywhen.Composing
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
-                    
+
                     break;
                 case PatternProgressionType.WeightedRandom:
                     bool didFindPattern = false;
