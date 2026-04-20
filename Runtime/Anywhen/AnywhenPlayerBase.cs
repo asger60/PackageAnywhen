@@ -144,9 +144,9 @@ namespace Anywhen
                 foreach (var trackFilter in anySongTrack.TrackFilters)
                 {
                     if (!trackFilter) continue;
-                    var trackFilterCopy = Instantiate(trackFilter);
-                    trackFilterCopy.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
-                    SynthFilterBase newFilter = trackFilterCopy.filterType switch
+                    //var trackFilterCopy = Instantiate(trackFilter);
+                    trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
+                    SynthFilterBase newFilter = trackFilter.filterType switch
                     {
                         SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
                         SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
@@ -159,9 +159,9 @@ namespace Anywhen
                         _ => throw new ArgumentOutOfRangeException()
                     };
 
-                    newFilter.SetSettings(trackFilterCopy);
+                    newFilter.SetSettings(trackFilter);
                     filters.Add(newFilter);
-                    foreach (var modRouting in trackFilterCopy.modRouting)
+                    foreach (var modRouting in trackFilter.modRouting)
                     {
                         modRouting.Set(newPlayerTrack);
                         newFilter.AddModRouting(modRouting);

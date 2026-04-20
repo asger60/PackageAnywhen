@@ -119,25 +119,26 @@ namespace Anysong
         }
 
 
-        public static void DrawTrack(AnysongEditorWindow.AnySelection selection, Action didUpdateInstrument)
+        public static void DrawTrack(Action didUpdateInstrument)
         {
             _parent.Clear();
             Draw(_parent);
-            var instrumentProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("instrument");
+            var selection = AnysongEditorWindow.CurrentSelection.CurrentSongTrackProperty;
+            var instrumentProperty = selection.FindPropertyRelative("instrument");
 
 
             _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
 
 
             _parent.Add(CreatePropertyFieldWithCallback(
-                selection.CurrentSongTrackProperty.FindPropertyRelative("intensityMappingCurve"), null));
+                selection.FindPropertyRelative("intensityMappingCurve"), null));
 
 
             _parent.Add(CreatePropertyFieldWithCallback(
-                selection.CurrentSongTrackProperty.FindPropertyRelative("voices"), null));
+                selection.FindPropertyRelative("voices"), null));
 
 
-            var trackTypeProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackType");
+            var trackTypeProperty = selection.FindPropertyRelative("trackType");
             //var trackTypeIndexProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackTypeIndex");
 
 
@@ -146,29 +147,30 @@ namespace Anysong
                 var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
                 if (instrument)
                 {
-                    selection.CurrentSongTrackSettings.trackType = instrument.InstrumentType;
+                    
+                    AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.trackType = instrument.InstrumentType;
                     EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
                 }
             }
 
-            var trackTypeIndexProperty = CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackTypeIndex"), null);
+            var trackTypeIndexProperty = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackTypeIndex"), null);
             trackTypeIndexProperty.label = "Track type";
             //_parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
             _parent.Add(trackTypeIndexProperty);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volume"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("volumeMods"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volumeMods"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackPitch"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("pitchMods"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackEnvelope"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackEnvelope"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.CurrentSongTrackProperty.FindPropertyRelative("trackLFO"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackLFO"), didUpdateInstrument));
             _parent.Add(Spacer());
 
-            foreach (var filter in selection.CurrentSongTrackSettings.TrackFilters)
+            foreach (var filter in AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.TrackFilters)
             {
                 VisualElement filterElement = new VisualElement
                 {
@@ -193,9 +195,7 @@ namespace Anysong
                     text = "x"
                 };
 
-                var currentFilter = filter;
-                deleteFilter.clicked += () => { RemoveFilter(selection, currentFilter); };
-
+                deleteFilter.clicked += () => { RemoveFilter(AnysongEditorWindow.CurrentSelection, filter); };
                 filterElement.Add(SynthFilterInspector.Draw(filter));
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
@@ -212,7 +212,7 @@ namespace Anysong
                 foreach (SynthSettingsObjectFilter.FilterTypes filterType in Enum.GetValues(
                              typeof(SynthSettingsObjectFilter.FilterTypes)))
                 {
-                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(selection, filterType); });
+                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(AnysongEditorWindow.CurrentSelection, filterType); });
                 }
 
                 menu.ShowAsContext();
@@ -239,7 +239,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
 
             // Refresh the inspector
-            DrawTrack(selection, null);
+            DrawTrack( null);
         }
 
         private static void RemoveFilter(AnysongEditorWindow.AnySelection selection,
@@ -276,7 +276,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
 
             // Refresh the inspector
-            DrawTrack(selection, null);
+            DrawTrack( null);
         }
 
         public static void DrawProgression()

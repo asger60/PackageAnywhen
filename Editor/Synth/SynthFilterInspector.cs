@@ -384,7 +384,7 @@ namespace Synth
                     float oldFreq = settings.bandPassSettings.frequency;
                     settings.bandPassSettings.frequency = EditorGUILayout.Slider("Frequency",
                         settings.bandPassSettings.frequency, 1, 24000);
-                    if (oldFreq != settings.bandPassSettings.frequency)
+                    if (!Mathf.Approximately(oldFreq, settings.bandPassSettings.frequency))
                     {
                         settings.SyncBandPassFromQ();
                     }
@@ -392,7 +392,7 @@ namespace Synth
                     float oldBW = settings.bandPassSettings.bandWidth;
                     settings.bandPassSettings.bandWidth = EditorGUILayout.Slider("Bandwidth",
                         settings.bandPassSettings.bandWidth, 1, 10000);
-                    if (oldBW != settings.bandPassSettings.bandWidth)
+                    if (!Mathf.Approximately(oldBW, settings.bandPassSettings.bandWidth))
                     {
                         settings.SyncBandPassFromBandwidth();
                     }
@@ -400,7 +400,7 @@ namespace Synth
                     float oldQ = settings.bandPassSettings.q;
                     settings.bandPassSettings.q = EditorGUILayout.Slider("Q",
                         settings.bandPassSettings.q, 0.01f, 100);
-                    if (oldQ != settings.bandPassSettings.q)
+                    if (!Mathf.Approximately(oldQ, settings.bandPassSettings.q))
                     {
                         settings.SyncBandPassFromQ();
                     }

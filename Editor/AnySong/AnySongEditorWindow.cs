@@ -39,6 +39,7 @@ namespace Anysong
             }
         }
 
+
         private AnysongSection _sectionCopy;
         static AnysongPattern _patternCopy;
 
@@ -263,7 +264,6 @@ namespace Anysong
             if (!CurrentRuntimeSongPlayer) return;
             CurrentRuntimeSongPlayer.SetIntensity(value);
         }
-
 
 
         public void CreateGUI()
@@ -594,8 +594,10 @@ namespace Anysong
 
                     break;
                 case InspectorModes.Track:
-                    AnysongInspectorView.DrawTrack(_currentSelection,
-                        () => { CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings); });
+                    AnysongInspectorView.DrawTrack(() =>
+                    {
+                        CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings);
+                    });
 
                     break;
                 case InspectorModes.Step:
