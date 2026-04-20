@@ -13,11 +13,10 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+        protected override void UpdateSettings()
         {
-            Settings = settingsObjectFilter;
-            _drive = settingsObjectFilter.saturatorSettings.drive;
-            _wet = settingsObjectFilter.saturatorSettings.wet;
+            _drive = Settings.saturatorSettings.drive;
+            _wet = Settings.saturatorSettings.wet;
             _filterMod = 1;
             foreach (var mod in ModRoutings)
             {
@@ -32,12 +31,12 @@ namespace Anywhen.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
         public override float Process(float sample)
         {
-            SetSettings(Settings);
+            UpdateSettings();
             // Simple soft clipping saturation using tanh-like shaping
             // output = tanh(input * drive)
 

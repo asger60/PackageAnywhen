@@ -167,7 +167,7 @@ namespace Anysong
             };
             var composerPlayer = player.AddComponent<AnywhenComposerPlayer>();
             composerPlayer.Load(songObject);
-            songObject.Reset();
+            //songObject.Reset();
 
             _currentRuntimeSongPlayer = composerPlayer;
             CurrentSong = songObject;

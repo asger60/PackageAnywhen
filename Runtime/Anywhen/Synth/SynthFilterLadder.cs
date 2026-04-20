@@ -22,12 +22,12 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+
+        protected override void UpdateSettings()
         {
-            Settings = settingsObjectFilter;
-            _resolution = settingsObjectFilter.ladderSettings.resonance;
-            SetCutOff(settingsObjectFilter.ladderSettings.cutoffFrequency);
-            SetOversampling(settingsObjectFilter.ladderSettings.oversampling);
+            _resolution = Settings.ladderSettings.resonance;
+            SetCutOff(Settings.ladderSettings.cutoffFrequency);
+            SetOversampling(Settings.ladderSettings.oversampling);
             _frequencyMod = 1;
             foreach (var mod in ModRoutings)
             {
@@ -45,12 +45,12 @@ namespace Anywhen.Synth
         {
             _cutoffMod = 1;
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
         public override float Process(float sample)
         {
-            SetParameters(Settings);
+            UpdateSettings();
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.

@@ -76,7 +76,7 @@ namespace Anywhen
                             var playerTrack = playerTracks[trackIndex];
                             if (playerTrack.trackFilters != null && filterIndex < playerTrack.trackFilters.Count)
                             {
-                                playerTrack.trackFilters[filterIndex].SetParameters(filterSettings);
+                                playerTrack.trackFilters[filterIndex].SetSettings(filterSettings);
                             }
                         }
                     }

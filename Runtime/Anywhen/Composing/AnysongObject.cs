@@ -27,16 +27,12 @@ namespace Anywhen.Composing
         public List<AnysongTrackSettings> Tracks;
 
 
-
         [FormerlySerializedAs("SnapshotA")] public AnywhenSnapshot snapshotA = new();
         [FormerlySerializedAs("SnapshotB")] public AnywhenSnapshot snapshotB = new();
 
 
         public string author = "Floppy Club";
 
-
-
-        
 
         public void Rebuild()
         {
@@ -55,7 +51,6 @@ namespace Anywhen.Composing
                 section.Init(Tracks);
             }
         }
-
 
 
         [ContextMenu("RandomizeStepWeights")]
@@ -78,14 +73,17 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
-            foreach (var track in Tracks)
-            {
-                track.Reset();
-            }
-
             foreach (var section in Sections)
             {
                 section.Reset();
+            }
+        }
+
+        public void UnMuteAll()
+        {
+            foreach (var track in Tracks)
+            {
+                track.UnMute();
             }
         }
 
@@ -93,8 +91,6 @@ namespace Anywhen.Composing
         {
             _currentEditSectionIndex = sectionIndex;
         }
-
-
 
 
         public void SyncToClock()

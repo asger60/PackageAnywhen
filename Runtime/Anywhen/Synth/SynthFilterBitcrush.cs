@@ -14,11 +14,12 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+
+
+        protected override void UpdateSettings()
         {
-            Settings = settingsObjectFilter;
-            _bitDepth = settingsObjectFilter.bitcrushSettings.bitDepth;
-            _downsampling = settingsObjectFilter.bitcrushSettings.downsampling;
+            _bitDepth = Settings.bitcrushSettings.bitDepth;
+            _downsampling = Settings.bitcrushSettings.downsampling;
             _filterMod = 1;
             foreach (var mod in ModRoutings)
             {
@@ -34,7 +35,7 @@ namespace Anywhen.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
 

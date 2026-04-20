@@ -119,9 +119,8 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+        protected override void UpdateSettings()
         {
-            Settings = settingsObjectFilter;
             _reso = Settings.lowPassSettings.resonance;
             SetCutOff(Settings.lowPassSettings.cutoffFrequency);
             SetOversampling(Settings.lowPassSettings.oversampling);
@@ -143,13 +142,13 @@ namespace Anywhen.Synth
             _v = V_t * 0.5f; // 1/2V_t
             _frequencyMod = 1;
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
 
         public override float Process(float sample)
         {
-            SetParameters(Settings);
+            UpdateSettings();
 
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 

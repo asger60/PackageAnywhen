@@ -492,7 +492,9 @@ namespace Anywhen
             _currentSectionIndex = 0;
             if (_sectionLockState)
                 _currentSectionIndex = _currentLockSectionIndex;
+
             _currentSong.Reset();
+            if (Application.isPlaying) _currentSong.UnMuteAll();
 
             if (syncToGlobalTime)
             {

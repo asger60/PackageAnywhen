@@ -27,7 +27,7 @@ namespace Anywhen.Synth
         {
             Init();
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
 
@@ -40,11 +40,16 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+
+        public override void HandleModifiers(float mod1)
         {
-            Settings = settingsObjectFilter;
-            SetFrequency(settingsObjectFilter.bandPassSettings.frequency);
-            _q = settingsObjectFilter.bandPassSettings.q;
+            _frequencyMod = mod1;
+        }
+
+        protected override void UpdateSettings()
+        {
+            SetFrequency(Settings.bandPassSettings.frequency);
+            _q = Settings.bandPassSettings.q;
             _frequencyMod = 1;
             foreach (var mod in ModRoutings)
             {
@@ -52,16 +57,11 @@ namespace Anywhen.Synth
             }
         }
 
-        public override void HandleModifiers(float mod1)
-        {
-            _frequencyMod = mod1;
-        }
-
 
         public override float Process(float sample)
         {
-            SetParameters(Settings);
-            
+            UpdateSettings();
+
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             float sampleRate = AnywhenRuntime.SampleRate;

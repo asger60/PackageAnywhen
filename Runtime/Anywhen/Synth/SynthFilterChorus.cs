@@ -22,14 +22,13 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
+        protected override void UpdateSettings()
         {
-            Settings = settingsObjectFilter;
-            _rate = settingsObjectFilter.chorusSettings.rate;
-            _depth = settingsObjectFilter.chorusSettings.depth;
-            _delay = settingsObjectFilter.chorusSettings.delay;
-            _feedback = settingsObjectFilter.chorusSettings.feedback;
-            _wet = settingsObjectFilter.chorusSettings.wet;
+            _rate = Settings.chorusSettings.rate;
+            _depth = Settings.chorusSettings.depth;
+            _delay = Settings.chorusSettings.delay;
+            _feedback = Settings.chorusSettings.feedback;
+            _wet = Settings.chorusSettings.wet;
 
             if (_sampleRate == 0)
             {
@@ -64,12 +63,12 @@ namespace Anywhen.Synth
         public override void SetSettings(SynthSettingsObjectFilter newSettings)
         {
             Settings = newSettings;
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
         public override float Process(float sample)
         {
-            SetSettings(Settings);
+            UpdateSettings();
 
             int channel = _channelCounter % 2;
             _channelCounter++;

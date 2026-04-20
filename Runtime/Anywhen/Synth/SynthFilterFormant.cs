@@ -123,14 +123,14 @@ namespace Anywhen.Synth
         {
             Settings = newSettings;
             Init(AnywhenRuntime.SampleRate);
-            SetParameters(newSettings);
+            UpdateSettings();
         }
 
 
         private void Init(int sampleRate)
         {
             if (sampleRate <= 0) sampleRate = 44100;
-            _sampleRate = sampleRate;
+
 
             _synthFilterBandPass1 = new SynthFilterBandPass();
             _synthFilterBandPass2 = new SynthFilterBandPass();
@@ -163,28 +163,25 @@ namespace Anywhen.Synth
             _synthFilterBandPass3.SetQ(_currentVowel.GetBand(2).q);
         }
 
-        float _sampleRate = 48000; // Sample rate
-
         public override void SetExpression(float data)
         {
         }
 
 
-        public override void SetParameters(SynthSettingsObjectFilter settingsObjectFilter)
-        {
-            SetVowel(settingsObjectFilter.formantSettings.vowel);
-        }
-
         public override void HandleModifiers(float mod1)
         {
         }
 
+        protected override void UpdateSettings()
+        {
+            SetVowel(Settings.formantSettings.vowel);
+        }
 
 
         public override float Process(float sample)
         {
-            SetParameters(Settings);
-            
+            UpdateSettings();
+
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             float mix1 = _synthFilterBandPass1.Process(sample);

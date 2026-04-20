@@ -50,11 +50,15 @@ namespace Anywhen.Synth.Filter
             ModRoutings.Add(modRouting);
         }
 
+        protected virtual void UpdateSettings()
+        {
+            
+        }
+        
         public abstract void SetExpression(float data);
 
         public abstract void SetSettings(SynthSettingsObjectFilter newSettings);
 
-        public abstract void SetParameters(SynthSettingsObjectFilter settingsObjectFilter);
 
         public abstract void HandleModifiers(float mod1);
 

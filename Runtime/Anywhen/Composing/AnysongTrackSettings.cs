@@ -90,8 +90,13 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
+        }
+
+        public void UnMute()
+        {
             IsSolo = false;
             IsMuted = false;
+
         }
     }
 }
