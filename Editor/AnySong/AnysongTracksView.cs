@@ -73,7 +73,7 @@ public static class AnysongTracksView
             soloButton.RegisterCallback<ClickEvent>((evt) =>
             {
                 if (evt.currentTarget is not Button btn) return;
-                SoloTrackAtIndex(btn.tooltip);
+                SoloTrackAtIndex();
             });
 
             soundControlElement.Add(muteButton);
@@ -98,7 +98,7 @@ public static class AnysongTracksView
                 }
             };
             button.AddToClassList("track-edit-button");
-            
+
             if (i == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex)
                 button.AddToClassList("editing");
 
@@ -156,16 +156,15 @@ public static class AnysongTracksView
         UpdateMuteButtons();
     }
 
-    static void SoloTrackAtIndex(string indexString)
+    static void SoloTrackAtIndex()
     {
-        var track = AnysongEditorWindow.CurrentSong.Tracks[Int32.Parse(indexString)];
+        bool unSolo = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsSolo;
 
-        bool unSolo = track.IsSolo;
-
-        foreach (var sectionTrack in AnysongEditorWindow.CurrentSong.Tracks)
+        for (var i = 0; i < AnysongEditorWindow.CurrentSong.Tracks.Count; i++)
         {
+            var sectionTrack = AnysongEditorWindow.CurrentSong.Tracks[i];
             sectionTrack.IsSolo = false;
-            if (sectionTrack == track && !unSolo)
+            if (i == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex && !unSolo)
             {
                 sectionTrack.IsSolo = true;
             }
@@ -176,8 +175,10 @@ public static class AnysongTracksView
             }
             else
             {
-                sectionTrack.IsMuted = sectionTrack != track;
+                sectionTrack.IsMuted = i != AnysongEditorWindow.CurrentSelection.CurrentTrackIndex;
             }
+
+            AnysongEditorWindow.CurrentSong.Tracks[i] = sectionTrack;
         }
 
         UpdateSoloButtons();

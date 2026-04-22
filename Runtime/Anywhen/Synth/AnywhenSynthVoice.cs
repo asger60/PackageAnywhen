@@ -20,6 +20,7 @@
 
 using System;
 using Anywhen.Composing;
+using Anywhen.SettingsObjects;
 using Anywhen.Synth.Filter;
 using UnityEngine;
 

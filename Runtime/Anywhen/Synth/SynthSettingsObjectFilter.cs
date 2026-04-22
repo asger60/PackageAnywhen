@@ -100,6 +100,35 @@ namespace Anywhen.Synth
 
         public ChorusSettings chorusSettings;
 
+        public struct Unmanaged
+        {
+            public FilterTypes filterType;
+            public LowPassSettings lowPassSettings;
+            public LadderSettings ladderSettings;
+            public BandPassSettings bandPassSettings;
+            public FormantSettings formantSettings;
+            public BitcrushSettings bitcrushSettings;
+            public SaturatorSettings saturatorSettings;
+            public DelaySettings delaySettings;
+            public ChorusSettings chorusSettings;
+        }
+
+        public Unmanaged ToUnmanaged()
+        {
+            return new Unmanaged
+            {
+                filterType = filterType,
+                lowPassSettings = lowPassSettings,
+                ladderSettings = ladderSettings,
+                bandPassSettings = bandPassSettings,
+                formantSettings = formantSettings,
+                bitcrushSettings = bitcrushSettings,
+                saturatorSettings = saturatorSettings,
+                delaySettings = delaySettings,
+                chorusSettings = chorusSettings
+            };
+        }
+
         public void Init()
         {
             lowPassSettings.oversampling = 2;

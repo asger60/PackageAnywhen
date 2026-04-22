@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Unity.Collections;
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
@@ -32,6 +35,52 @@ namespace Anywhen.SettingsObjects
         {
             get => noteIndex;
             set => noteIndex = value;
+        }
+
+        public struct Unmanaged : IDisposable
+        {
+            public ClipType clipType;
+            public int noteIndex;
+            public int frequency;
+            public int channels;
+            public NativeArray<float> clipSamples;
+
+            public void Dispose()
+            {
+                if (clipSamples.IsCreated)
+                {
+                    clipSamples.Dispose();
+                }
+            }
+        }
+
+        private Unmanaged? _cachedUnmanaged;
+
+        public Unmanaged ToUnmanaged()
+        {
+            if (_cachedUnmanaged.HasValue && _cachedUnmanaged.Value.clipSamples.IsCreated)
+            {
+                return _cachedUnmanaged.Value;
+            }
+
+            _cachedUnmanaged = new Unmanaged
+            {
+                clipType = clipType,
+                noteIndex = noteIndex,
+                frequency = frequency,
+                channels = channels,
+                clipSamples = new NativeArray<float>(clipSamples, Allocator.Persistent),
+            };
+            return _cachedUnmanaged.Value;
+        }
+
+        private void OnDisable()
+        {
+            if (_cachedUnmanaged.HasValue)
+            {
+                _cachedUnmanaged.Value.Dispose();
+                _cachedUnmanaged = null;
+            }
         }
         
         //public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;

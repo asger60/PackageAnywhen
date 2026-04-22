@@ -112,4 +112,44 @@ public class InstrumentDatabase : MonoBehaviour
 
         return null;
     }
+
+    public static List<AnywhenNoteClip> GetNoteClips(AnywhenSampleInstrument.Unmanaged instrument)
+    {
+        return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].clips;
+        
+        for (var i = 0; i < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; i++)
+        {
+            var loaded = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[i];
+            if (loaded.Instrument != null &&
+                loaded.Instrument.ToUnmanaged().Equals(instrument))
+            {
+                return loaded.clips;
+            }
+        }
+        
+        // If exact match fails, try matching without seed (in case seed was generated differently)
+        for (var i = 0; i < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; i++)
+        {
+            var loaded = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[i];
+            if (loaded.Instrument != null)
+            {
+                var unmanaged = loaded.Instrument.ToUnmanaged();
+                unmanaged.seed = instrument.seed; // Ignore seed for comparison
+                if (unmanaged.Equals(instrument))
+                {
+                    return loaded.clips;
+                }
+            }
+        }
+
+        if (AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count > 0)
+        {
+            Debug.LogWarning("No instrument found for unmanaged struct. Falling back to first loaded instrument. Searched for: " +
+                             instrument.clipSelectType + " seed: " + instrument.seed);
+            return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].clips;
+        }
+
+        Debug.LogError("No instruments loaded in InstrumentDatabase!");
+        return null;
+    }
 }

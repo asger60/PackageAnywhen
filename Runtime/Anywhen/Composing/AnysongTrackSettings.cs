@@ -87,6 +87,41 @@ namespace Anywhen.Composing
             return clone;
         }
 
+        public struct Unmanaged
+        {
+            public float volume;
+            public AnywhenSampleInstrument.Unmanaged instrument;
+            public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
+            public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
+            public float trackPitch;
+            public int voices;
+            public AnyTrackTypes trackType;
+            public int trackTypeIndex;
+            public bool isMuted;
+            public bool isSolo;
+
+            // Note: AnimationCurve and ModRouting[] are not included as they are managed/non-blittable.
+            // If they are needed in Burst, they must be passed via NativeArrays or sampled beforehand.
+        }
+
+        public Unmanaged ToUnmanaged()
+        {
+            return new Unmanaged
+            {
+                instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
+                volume = volume,
+                trackEnvelope = trackEnvelope,
+                trackLFO = trackLFO,
+                trackPitch = trackPitch,
+                voices = voices,
+                trackType = trackType,
+                trackTypeIndex = trackTypeIndex,
+                isMuted = IsMuted,
+                isSolo = IsSolo
+            };
+            
+        }
+
 
         public void Reset()
         {

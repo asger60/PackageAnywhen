@@ -4,6 +4,7 @@ using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Serialization;
@@ -141,30 +142,33 @@ namespace Anywhen
 
                 List<SynthFilterBase> filters = new();
 
-                foreach (var trackFilter in anySongTrack.TrackFilters)
+                if (anySongTrack.TrackFilters != null)
                 {
-                    if (!trackFilter) continue;
-                    //var trackFilterCopy = Instantiate(trackFilter);
-                    trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
-                    SynthFilterBase newFilter = trackFilter.filterType switch
+                    foreach (var trackFilter in anySongTrack.TrackFilters)
                     {
-                        SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
-                        SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
-                        SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
-                        SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
-                        SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
-                        SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
-                        SynthSettingsObjectFilter.FilterTypes.DelayFilter => new SynthFilterDelay(),
-                        SynthSettingsObjectFilter.FilterTypes.ChorusFilter => new SynthFilterChorus(),
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
+                        if (!trackFilter) continue;
+                        //var trackFilterCopy = Instantiate(trackFilter);
+                        trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
+                        SynthFilterBase newFilter = trackFilter.filterType switch
+                        {
+                            SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
+                            SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
+                            SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
+                            SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
+                            SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
+                            SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
+                            SynthSettingsObjectFilter.FilterTypes.DelayFilter => new SynthFilterDelay(),
+                            SynthSettingsObjectFilter.FilterTypes.ChorusFilter => new SynthFilterChorus(),
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
 
-                    newFilter.SetSettings(trackFilter);
-                    filters.Add(newFilter);
-                    foreach (var modRouting in trackFilter.modRouting)
-                    {
-                        modRouting.Set(newPlayerTrack);
-                        newFilter.AddModRouting(modRouting);
+                        newFilter.SetSettings(trackFilter);
+                        filters.Add(newFilter);
+                        foreach (var modRouting in trackFilter.modRouting)
+                        {
+                            modRouting.Set(newPlayerTrack);
+                            newFilter.AddModRouting(modRouting);
+                        }
                     }
                 }
 
@@ -189,13 +193,14 @@ namespace Anywhen
                 }
 
                 newPlayerTrack.trackSettings = anySongTrack;
-                anySongTrack.volumeMods ??= Array.Empty<SynthFilterBase.ModRouting>();
+                //anySongTrack.volumeMods ??= new NativeArray<SynthFilterBase.ModRouting>(0, Allocator.Persistent);
+
                 foreach (var volumeMod in anySongTrack.volumeMods)
                 {
                     volumeMod.Set(newPlayerTrack);
                 }
 
-                anySongTrack.pitchMods ??= Array.Empty<SynthFilterBase.ModRouting>();
+                //anySongTrack.pitchMods ??= new NativeArray<SynthFilterBase.ModRouting>(0, Allocator.Persistent);
                 foreach (var pitchMod in anySongTrack.pitchMods)
                 {
                     pitchMod.Set(newPlayerTrack);
@@ -222,7 +227,7 @@ namespace Anywhen
 
             foreach (var track in _tracksList)
             {
-                if (track.trackSettings == null) continue;
+                //if (track.trackSettings == null) continue;
                 if (!_trackSettingsCache.ContainsKey(track.trackSettings.trackType))
                 {
                     _trackSettingsCache.Add(track.trackSettings.trackType, track.trackSettings);
@@ -234,7 +239,7 @@ namespace Anywhen
 
         AnysongTrackSettings GetTrackSettingsForTrackType(AnysongTrackSettings.AnyTrackTypes trackType)
         {
-            if (trackType == AnysongTrackSettings.AnyTrackTypes.None) return null;
+            if (trackType == AnysongTrackSettings.AnyTrackTypes.None) return new AnysongTrackSettings();
             if (_trackSettingsCache == null) RebuildCaches();
             return _trackSettingsCache.GetValueOrDefault(trackType);
         }
@@ -250,11 +255,11 @@ namespace Anywhen
             for (int i = 0; i < _currentSong.Tracks.Count; i++)
             {
                 AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackType);
-                if (trackSettingsSettings == null)
-                {
-                    AnywhenRuntime.Log($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
-                    continue;
-                }
+                //if (trackSettingsSettings == null)
+                //{
+                //    AnywhenRuntime.Log($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
+                //    continue;
+                //}
 
                 if (trackSettingsSettings.IsMuted)
                 {
@@ -299,7 +304,8 @@ namespace Anywhen
 
                 if (!step.NoteOn) continue;
 
-                float thisIntensity = Mathf.Clamp01(trackSettingsSettings.intensityMappingCurve.Evaluate(_currentIntensity));
+                //float thisIntensity = Mathf.Clamp01(trackSettingsSettings.intensityMappingCurve.Evaluate(_currentIntensity));
+                float thisIntensity = 1;
                 float thisRnd = Random.Range(0, 1f);
 
                 if (thisRnd < step.chance && (1 - step.mixWeight) < thisIntensity && !_isMuted)

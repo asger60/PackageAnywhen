@@ -7,7 +7,7 @@ namespace Anywhen.Synth.Filter
     public abstract class SynthFilterBase
     {
         [Serializable]
-        public class ModRouting
+        public struct ModRouting
         {
             public enum ModSources
             {
@@ -17,9 +17,36 @@ namespace Anywhen.Synth.Filter
 
             public ModSources modSource;
             [Range(0, 1f)] public float modAmount;
-            [DynamicRange] public DynamicRangeFloat modDepth = new (0,10);
+            [DynamicRange] public DynamicRangeFloat modDepth;
 
             private SynthControlBase _modSourceControl;
+
+            public ModRouting(ModSources modSource, float modAmount, DynamicRangeFloat modDepth)
+            {
+                this.modSource = modSource;
+                this.modAmount =modAmount;
+                this.modDepth = modDepth;
+                _modSourceControl = null;
+            }
+
+            public struct Unmanaged
+            {
+                public ModSources modSource;
+                public float modAmount;
+                public DynamicRangeFloat modDepth;
+
+                public Unmanaged(ModSources modSource, float modAmount, DynamicRangeFloat modDepth)
+                {
+                    this.modSource = modSource;
+                    this.modAmount = modAmount;
+                    this.modDepth = modDepth;
+                }
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged(modSource, modAmount, modDepth);
+            }
 
             public void Set(AnywhenPlayerBase.PlayerTrack track)
             {
@@ -52,9 +79,8 @@ namespace Anywhen.Synth.Filter
 
         protected virtual void UpdateSettings()
         {
-            
         }
-        
+
         public abstract void SetExpression(float data);
 
         public abstract void SetSettings(SynthSettingsObjectFilter newSettings);

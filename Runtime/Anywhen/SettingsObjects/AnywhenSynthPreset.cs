@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +13,24 @@ public class AnywhenSynthPreset : AnywhenInstrument
     public int voices = 3;
     public float voiceSpread;
 
+    public struct Unmanaged
+    {
+        public AnywhenInstrument.Unmanaged baseData;
+        public bool isInit;
+        public int voices;
+        public float voiceSpread;
+    }
+
+    public new Unmanaged ToUnmanaged()
+    {
+        return new Unmanaged
+        {
+            baseData = base.ToUnmanaged(),
+            isInit = isInit,
+            voices = voices,
+            voiceSpread = voiceSpread
+        };
+    }
 
     public SynthSettingsObjectOscillator[] oscillatorSettings;
     

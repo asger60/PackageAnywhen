@@ -132,7 +132,7 @@ namespace Anywhen
             {
                 // AnimationCurves cannot be easily lerped at runtime without custom logic.
                 // For now, we just switch at 0.5.
-                trackSettings.intensityMappingCurve = t >= 0.5f ? b.curveVal : a.curveVal;
+                //trackSettings.intensityMappingCurve = t >= 0.5f ? b.curveVal : a.curveVal;
             }
         }
 

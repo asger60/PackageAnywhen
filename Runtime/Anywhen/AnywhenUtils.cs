@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class AnywhenUtils : MonoBehaviour
 {
+    /*
     public static AnysongObject CloneAnysong(AnysongObject source)
     {
         AnysongObject clone = (AnysongObject)ScriptableObject.CreateInstance(source.GetType());
@@ -217,4 +218,5 @@ public class AnywhenUtils : MonoBehaviour
         clone.Snapshot.AddRange(source.Snapshot); // PropertyValue is a struct, so this is a value copy
         return clone;
     }
+    */
 }

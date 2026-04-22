@@ -38,12 +38,11 @@ namespace Anywhen.SettingsObjects
         {
             ScalePitchedNotes,
             RandomVariations,
-            UnscaledNotes,
             Percussion
         }
 
 
-        public ClipSelectType clipSelectType;
+        [SerializeField] public ClipSelectType clipSelectType = ClipSelectType.ScalePitchedNotes;
 
 
         [Serializable]
@@ -108,6 +107,167 @@ namespace Anywhen.SettingsObjects
         [SerializeField] private int originalTempo = 100;
         [SerializeField] private bool tempoControlPitch;
         public bool TempoControlPitch => tempoControlPitch;
+
+        public new struct Unmanaged : IEquatable<Unmanaged>
+        {
+            public AnywhenInstrument.Unmanaged baseData;
+            public ClipSelectType clipSelectType;
+            public float volume;
+            public int originalTempo;
+            public bool tempoControlPitch;
+            public uint seed;
+
+            public bool Equals(Unmanaged other)
+            {
+                return baseData.Equals(other.baseData) &&
+                       clipSelectType == other.clipSelectType &&
+                       Mathf.Approximately(volume, other.volume) &&
+                       originalTempo == other.originalTempo &&
+                       tempoControlPitch == other.tempoControlPitch &&
+                       seed == other.seed;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Unmanaged other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                var hashCode = new HashCode();
+                hashCode.Add(baseData);
+                hashCode.Add((int)clipSelectType);
+                hashCode.Add(volume);
+                hashCode.Add(originalTempo);
+                hashCode.Add(tempoControlPitch);
+                hashCode.Add(seed);
+                return hashCode.ToHashCode();
+            }
+
+            public static bool operator ==(Unmanaged left, Unmanaged right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(Unmanaged left, Unmanaged right)
+            {
+                return !left.Equals(right);
+            }
+
+            public AnywhenNoteClipPlaybackSettings GetNoteClipSettings(int note, ref uint seed)
+            {
+                Debug.LogWarning("Get noteclipsettings " + clipSelectType + " " + note + " " + seed + " originalTempo: " + originalTempo);
+                var clips = InstrumentDatabase.GetNoteClips(this);
+                if (clips == null)
+                {
+                    return new AnywhenNoteClipPlaybackSettings();
+                }
+
+                // Simple LCG for randomness to avoid System.Random object and stay Burst-compatible
+                uint state = seed == 0 ? 1 : seed;
+                state = state * 1664525 + 1013904223;
+
+                int NextInt(int min, int max)
+                {
+                    if (min >= max) return min;
+                    state = state * 1664525 + 1013904223;
+                    return min + (int)(state % (uint)(max - min));
+                }
+
+                AnywhenNoteClipPlaybackSettings settings;
+                switch (clipSelectType)
+                {
+                    case ClipSelectType.ScalePitchedNotes:
+                        note = AnywhenRuntime.Conductor.GetScaledNote(note);
+
+                        int bestDistance = int.MaxValue;
+                        int unsignedDistance = 0;
+                        foreach (var noteClip in clips)
+                        {
+                            var thisDist = Mathf.Abs(noteClip.NoteIndex - note);
+                            if (thisDist <= bestDistance)
+                            {
+                                bestDistance = thisDist;
+                                unsignedDistance = note - noteClip.NoteIndex;
+                            }
+                        }
+
+                        List<AnywhenNoteClip> clipsList = new List<AnywhenNoteClip>();
+                        foreach (var noteClip in clips)
+                        {
+                            if (noteClip.NoteIndex == note - unsignedDistance)
+                            {
+                                clipsList.Add(noteClip);
+                            }
+                        }
+
+                        float pitch = 1;
+                        if (bestDistance > 0)
+                        {
+                            pitch = Mathf.Pow(2, unsignedDistance / 12f);
+                        }
+
+                        if (clipsList.Count == 0)
+                        {
+                            settings = new AnywhenNoteClipPlaybackSettings();
+                        }
+                        else
+                        {
+                            settings = new AnywhenNoteClipPlaybackSettings(clipsList[NextInt(0, clipsList.Count)], pitch, volume);
+                        }
+                        break;
+
+
+                    case ClipSelectType.RandomVariations:
+                        Debug.LogWarning("Random variation");
+                        settings = new AnywhenNoteClipPlaybackSettings(clips[NextInt(0, clips.Count)], 1, volume);
+                        break;
+
+
+                    case ClipSelectType.Percussion:
+                        List<AnywhenNoteClip> percussionClips = new List<AnywhenNoteClip>();
+                        foreach (var noteClip in clips)
+                        {
+                            if (noteClip.NoteIndex == note)
+                            {
+                                percussionClips.Add(noteClip);
+                            }
+                        }
+
+                        if (percussionClips.Count == 0)
+                        {
+                            settings = new AnywhenNoteClipPlaybackSettings();
+                        }
+                        else
+                        {
+                            settings = new AnywhenNoteClipPlaybackSettings(percussionClips[NextInt(0, percussionClips.Count)], 1, volume);
+                        }
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                seed = state;
+                return settings;
+            }
+        }
+
+        public new Unmanaged ToUnmanaged()
+        {
+            lock (_random)
+            {
+                return new Unmanaged
+                {
+                    baseData = base.ToUnmanaged(),
+                    clipSelectType = clipSelectType,
+                    volume = volume,
+                    originalTempo = originalTempo,
+                    tempoControlPitch = tempoControlPitch,
+                    seed = (uint)_random.Next(1, int.MaxValue)
+                };
+            }
+        }
 
         public float GetPitchFromTempo(float tempo)
         {
@@ -182,12 +342,6 @@ namespace Anywhen.SettingsObjects
                         return new AnywhenNoteClipPlaybackSettings(clips[_random.Next(0, clips.Count)], 1, volume);
                     }
 
-                case ClipSelectType.UnscaledNotes:
-                    Debug.LogWarning("Unscaled notes are not supported anymore.");
-                    lock (_random)
-                    {
-                        return new AnywhenNoteClipPlaybackSettings(clips[Mathf.Clamp(note, 0, clips.Count)], 1, volume);
-                    }
 
                 case ClipSelectType.Percussion:
                     List<AnywhenNoteClip> percussionClips = new List<AnywhenNoteClip>();
