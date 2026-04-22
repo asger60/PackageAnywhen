@@ -156,7 +156,6 @@ namespace Anywhen.SettingsObjects
 
             public AnywhenNoteClipPlaybackSettings GetNoteClipSettings(int note, ref uint seed)
             {
-                Debug.LogWarning("Get noteclipsettings " + clipSelectType + " " + note + " " + seed + " originalTempo: " + originalTempo);
                 var clips = InstrumentDatabase.GetNoteClips(this);
                 if (clips == null)
                 {
@@ -219,7 +218,6 @@ namespace Anywhen.SettingsObjects
 
 
                     case ClipSelectType.RandomVariations:
-                        Debug.LogWarning("Random variation");
                         settings = new AnywhenNoteClipPlaybackSettings(clips[NextInt(0, clips.Count)], 1, volume);
                         break;
 

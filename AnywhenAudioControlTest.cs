@@ -45,15 +45,15 @@ public class AnywhenAudioControlTest : MonoBehaviour
             TriggerNoteClip(noteEvent, metronome.GetScheduledPlaytime(), 0);
         }
 
-        //if (metronome.Sub16 % 2 == 0)
-        //{
-        //    var noteEvent = new SimpleNoteEvent(39)
-        //    {
-        //        duration = 0.1f
-        //    };
+        if (metronome.Sub16 % 2 == 0)
+        {
+            var noteEvent = new SimpleNoteEvent(39)
+            {
+                duration = 0.1f
+            };
 //
-        //    TriggerNoteClip(noteEvent, metronome.GetScheduledPlaytime(), 0);
-        //}
+            TriggerNoteClip(noteEvent, metronome.GetScheduledPlaytime(), 1);
+        }
 //
         //if (metronome.Sub16 % 8 == 0)
         //{

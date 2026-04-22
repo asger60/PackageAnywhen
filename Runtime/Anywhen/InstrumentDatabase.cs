@@ -115,7 +115,6 @@ public class InstrumentDatabase : MonoBehaviour
 
     public static List<AnywhenNoteClip> GetNoteClips(AnywhenSampleInstrument.Unmanaged instrument)
     {
-        return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].clips;
         
         for (var i = 0; i < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; i++)
         {

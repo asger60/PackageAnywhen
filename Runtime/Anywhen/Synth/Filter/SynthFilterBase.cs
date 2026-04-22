@@ -50,7 +50,8 @@ namespace Anywhen.Synth.Filter
 
             public void Set(AnywhenPlayerBase.PlayerTrack track)
             {
-                _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
+                Debug.LogWarning("Not implemented yet");
+               // _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
             }
 
 

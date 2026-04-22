@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthControlEnvelope : SynthControlBase
+    public struct SynthControlEnvelope : ISynthControl
     {
         private enum EnvState
         {
@@ -31,22 +31,28 @@ namespace Anywhen.Synth
 
 
         public AnywhenSampleInstrument.EnvelopeSettings Settings;
+        int _sampleRate;
 
-        public override void NoteOn()
+        public SynthControlEnvelope(int samepleRate) : this()
+        {
+            _sampleRate = samepleRate;
+        }
+
+        public void NoteOn()
         {
             //Reset();
-            SetAttackRate(Settings.attack * AnywhenRuntime.SampleRate);
-            SetDecayRate(Settings.decay * AnywhenRuntime.SampleRate);
+            SetAttackRate(Settings.attack * _sampleRate);
+            SetDecayRate(Settings.decay * _sampleRate);
             SetSustainLevel(Settings.sustain);
-            SetReleaseRate(Settings.release * AnywhenRuntime.SampleRate);
+            SetReleaseRate(Settings.release * _sampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_attack;
         }
 
-        public override void NoteOff()
+        public void NoteOff()
         {
-            SetReleaseRate(Settings.release * AnywhenRuntime.SampleRate);
+            SetReleaseRate(Settings.release * _sampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_release;
@@ -112,7 +118,30 @@ namespace Anywhen.Synth
         }
 
 
-        public override float Process(bool unipolar = false)
+        public void DoUpdate()
+        {
+        }
+
+
+        private bool _currentGate;
+
+        public void SetGate(bool gate)
+        {
+             if (gate == _currentGate) return;
+            Debug.Log("SetGate: " + gate);
+            if (gate)
+            {
+                NoteOff();
+            }
+            else
+            {
+                NoteOff();
+            }
+
+            _currentGate = gate;
+        }
+
+        public float Process(bool unipolar = false)
         {
             switch (_state)
             {
@@ -156,7 +185,5 @@ namespace Anywhen.Synth
         {
             Settings = newSettings;
         }
-
-     
     }
 }

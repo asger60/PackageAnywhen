@@ -4,8 +4,6 @@ namespace Anywhen.Synth
 {
     public class SynthControlBase
     {
-    
-
         
         public virtual void DoUpdate()
         {
@@ -26,5 +24,17 @@ namespace Anywhen.Synth
         {
             return 1;
         }
+    }
+}
+
+namespace Anywhen.Synth
+{
+    public interface ISynthControl
+    {
+        public void DoUpdate();
+
+        public float Process(bool unipolar = false);
+
+        public void SetGate(bool gate);
     }
 }
