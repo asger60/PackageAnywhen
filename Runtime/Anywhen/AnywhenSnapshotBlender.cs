@@ -135,7 +135,7 @@ namespace Anywhen
             }
         }
 
-        private static void ApplyLerpToFilter(SynthSettingsObjectFilter filter, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        private static void ApplyLerpToFilter(AudioProcessorSettingsObject filter, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
         {
             if (path.StartsWith("lowPassSettings."))
             {

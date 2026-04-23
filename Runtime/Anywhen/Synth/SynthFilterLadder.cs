@@ -41,7 +41,7 @@ namespace Anywhen.Synth
             SetCutOff(Settings.ladderSettings.cutoffFrequency);
         }
 
-        public override void SetSettings(SynthSettingsObjectFilter newSettings)
+        public override void SetSettings(AudioProcessorSettingsObject newSettings)
         {
             _cutoffMod = 1;
             Settings = newSettings;

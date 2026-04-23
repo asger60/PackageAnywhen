@@ -55,13 +55,13 @@ namespace Anywhen.Composing
         public AnyTrackTypes trackType;
         [AnywhenTrackType] public int trackTypeIndex;
 
-        [SerializeField] private SynthSettingsObjectFilter[] trackFilters;
+        [SerializeField] private AudioProcessorSettingsObject[] trackFilters;
 
-        public SynthSettingsObjectFilter[] TrackFilters
+        public AudioProcessorSettingsObject[] TrackFilters
         {
             get
             {
-                trackFilters ??= Array.Empty<SynthSettingsObjectFilter>();
+                trackFilters ??= Array.Empty<AudioProcessorSettingsObject>();
                 return trackFilters;
             }
         }
@@ -102,12 +102,12 @@ namespace Anywhen.Composing
             public int trackTypeIndex;
             public bool isMuted;
             public bool isSolo;
-            public NativeArray<SynthSettingsObjectFilter.Unmanaged> trackFilters;
+            public NativeArray<AudioProcessorSettingsObject.Unmanaged> trackFilters;
         }
 
         public Unmanaged ToUnmanaged(Allocator allocator = Allocator.Temp)
         {
-            var filters = new NativeArray<SynthSettingsObjectFilter.Unmanaged>(TrackFilters.Length, allocator);
+            var filters = new NativeArray<AudioProcessorSettingsObject.Unmanaged>(TrackFilters.Length, allocator);
             for (int i = 0; i < TrackFilters.Length; i++)
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();

@@ -23,7 +23,7 @@ namespace Anywhen.Synth
             _q = q;
         }
 
-        public override void SetSettings(SynthSettingsObjectFilter newSettings)
+        public override void SetSettings(AudioProcessorSettingsObject newSettings)
         {
             Init();
             Settings = newSettings;

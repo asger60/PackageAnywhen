@@ -210,8 +210,8 @@ namespace Anysong
             addFilterButton.clicked += () =>
             {
                 var menu = new GenericMenu();
-                foreach (SynthSettingsObjectFilter.FilterTypes filterType in Enum.GetValues(
-                             typeof(SynthSettingsObjectFilter.FilterTypes)))
+                foreach (AudioProcessorSettingsObject.FilterTypes filterType in Enum.GetValues(
+                             typeof(AudioProcessorSettingsObject.FilterTypes)))
                 {
                     menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(AnysongEditorWindow.CurrentSelection, filterType); });
                 }
@@ -221,9 +221,9 @@ namespace Anysong
             _parent.Add(addFilterButton);
         }
 
-        private static void AddFilter(AnysongEditorWindow.AnySelection selection, SynthSettingsObjectFilter.FilterTypes filterType)
+        private static void AddFilter(AnysongEditorWindow.AnySelection selection, AudioProcessorSettingsObject.FilterTypes filterType)
         {
-            var filter = ScriptableObject.CreateInstance<SynthSettingsObjectFilter>();
+            var filter = ScriptableObject.CreateInstance<AudioProcessorSettingsObject>();
             filter.filterType = filterType;
             filter.Init();
             filter.name = "Filter_" + filterType;
@@ -244,7 +244,7 @@ namespace Anysong
         }
 
         private static void RemoveFilter(AnysongEditorWindow.AnySelection selection,
-            SynthSettingsObjectFilter filter)
+            AudioProcessorSettingsObject filter)
         {
             var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
             for (int i = 0; i < trackFiltersProperty.arraySize; i++)

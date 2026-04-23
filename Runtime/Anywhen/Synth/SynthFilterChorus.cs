@@ -60,7 +60,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public override void SetSettings(SynthSettingsObjectFilter newSettings)
+        public override void SetSettings(AudioProcessorSettingsObject newSettings)
         {
             Settings = newSettings;
             UpdateSettings();

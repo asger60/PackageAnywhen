@@ -11,11 +11,11 @@ namespace Synth
     {
         private class FilterPreviewElement : VisualElement
         {
-            private SynthSettingsObjectFilter _settings;
+            private AudioProcessorSettingsObject _settings;
             private const int Resolution = 50;
             private readonly float[] _response = new float[Resolution];
 
-            public FilterPreviewElement(SynthSettingsObjectFilter settings)
+            public FilterPreviewElement(AudioProcessorSettingsObject settings)
             {
                 _settings = settings;
                 style.height = 100;
@@ -38,13 +38,13 @@ namespace Synth
                 // Simplified linear approximations for preview
                 switch (_settings.filterType)
                 {
-                    case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
-                    case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
                     {
-                        float cutoff = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter
+                        float cutoff = _settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter
                             ? _settings.lowPassSettings.cutoffFrequency
                             : _settings.ladderSettings.cutoffFrequency;
-                        float resonance = _settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter
+                        float resonance = _settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter
                             ? _settings.lowPassSettings.resonance
                             : _settings.ladderSettings.resonance;
 
@@ -67,7 +67,7 @@ namespace Synth
 
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
                     {
                         float center = _settings.bandPassSettings.frequency;
                         float width = _settings.bandPassSettings.bandWidth;
@@ -83,7 +83,7 @@ namespace Synth
 
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
                     {
                         // Formant filters have multiple peaks. For preview we'll just show a generic "vowel" shape or just 3 peaks.
                         // Ideally we'd pull these from SynthFilterFormant but it's internal.
@@ -105,7 +105,7 @@ namespace Synth
 
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
                     {
                         float bitDepth = _settings.bitcrushSettings.bitDepth;
                         int downsampling = _settings.bitcrushSettings.downsampling;
@@ -134,7 +134,7 @@ namespace Synth
 
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
                     {
                         float drive = _settings.saturatorSettings.drive;
                         float wet = _settings.saturatorSettings.wet;
@@ -200,13 +200,13 @@ namespace Synth
 
                 // Draw cutoff line if applicable
                 float cutoff = -1;
-                if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LowPassFilter)
+                if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter)
                     cutoff = _settings.lowPassSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.LadderFilter)
+                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.LadderFilter)
                     cutoff = _settings.ladderSettings.cutoffFrequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BandPassFilter)
+                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.BandPassFilter)
                     cutoff = _settings.bandPassSettings.frequency;
-                else if (_settings.filterType == SynthSettingsObjectFilter.FilterTypes.BitcrushFilter)
+                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.BitcrushFilter)
                     cutoff = 20000.0f / _settings.bitcrushSettings.downsampling;
 
                 if (cutoff > 0)
@@ -223,7 +223,7 @@ namespace Synth
             }
         }
 
-        public static VisualElement Draw(SynthSettingsObjectFilter settings)
+        public static VisualElement Draw(AudioProcessorSettingsObject settings)
         {
             VisualElement element = new VisualElement();
             var so = new SerializedObject(settings);
@@ -243,7 +243,7 @@ namespace Synth
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true,
                         preview));
                     element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
@@ -251,7 +251,7 @@ namespace Synth
                     element.Add(
                         CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 24000, false,
                         preview));
 
@@ -270,10 +270,10 @@ namespace Synth
                     element.Add(bwSlider);
                     element.Add(qSlider);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
+                case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("formantSettings.vowel"), "Vowel", 1, 6, true, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true,
                         preview));
                     element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
@@ -281,20 +281,20 @@ namespace Synth
                     element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false,
                         preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.bitDepth"), "Bit Depth", 1, 24, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.downsampling"), "Downsampling", 1, 100, true, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.drive"), "Drive", 0, 10, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.wet"), "Wet", 0, 1, false, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.DelayFilter:
+                case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("delaySettings.delayTime"), "Time", 0, 1, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("delaySettings.feedback"), "Feedback", 0, 1, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("delaySettings.wet"), "Wet", 0, 1, false, preview));
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.ChorusFilter:
+                case AudioProcessorSettingsObject.FilterTypes.ChorusFilter:
                     element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.rate"), "Rate", 0, 1, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.depth"), "Depth", 0, 1, false, preview));
                     element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.delay"), "Delay", 0, 1, false, preview));
@@ -342,14 +342,14 @@ namespace Synth
             return slider;
         }
 
-        public static void Draw(SynthSettingsInspector parent, SynthSettingsObjectFilter settings)
+        public static void Draw(SynthSettingsInspector parent, AudioProcessorSettingsObject settings)
         {
             EditorGUILayout.BeginVertical("box");
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("X", GUILayout.Width(20)))
             {
-                parent.DeleteElement<SynthSettingsObjectFilter>(settings, "filterSettings");
+                parent.DeleteElement<AudioProcessorSettingsObject>(settings, "filterSettings");
                 parent.RebuildSynth();
             }
 
@@ -357,7 +357,7 @@ namespace Synth
 
 
             var newFilterType =
-                (SynthSettingsObjectFilter.FilterTypes)EditorGUILayout.EnumPopup("Filter type:", settings.filterType);
+                (AudioProcessorSettingsObject.FilterTypes)EditorGUILayout.EnumPopup("Filter type:", settings.filterType);
 
             if (newFilterType != settings.filterType)
             {
@@ -371,7 +371,7 @@ namespace Synth
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
 
                     settings.lowPassSettings.oversampling =
                         EditorGUILayout.IntSlider("Oversampling", settings.lowPassSettings.oversampling, 1, 4);
@@ -380,7 +380,7 @@ namespace Synth
                     settings.lowPassSettings.resonance =
                         EditorGUILayout.Slider("Resonance", settings.lowPassSettings.resonance, 0, 1);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
                     float oldFreq = settings.bandPassSettings.frequency;
                     settings.bandPassSettings.frequency = EditorGUILayout.Slider("Frequency",
                         settings.bandPassSettings.frequency, 1, 24000);
@@ -406,11 +406,11 @@ namespace Synth
                     }
 
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
+                case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
                     settings.formantSettings.vowel = EditorGUILayout.IntSlider("Vowel",
                         settings.formantSettings.vowel, 1, 6);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
                     settings.ladderSettings.oversampling = EditorGUILayout.IntSlider("Oversampling",
                         settings.ladderSettings.oversampling, 1, 4);
                     settings.ladderSettings.cutoffFrequency =
@@ -418,19 +418,19 @@ namespace Synth
                     settings.ladderSettings.resonance =
                         EditorGUILayout.Slider("Resonance", settings.ladderSettings.resonance, 0, 1);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BitcrushFilter:
+                case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
                     settings.bitcrushSettings.bitDepth =
                         EditorGUILayout.Slider("Bit Depth", settings.bitcrushSettings.bitDepth, 1, 24);
                     settings.bitcrushSettings.downsampling =
                         EditorGUILayout.IntSlider("Downsampling", settings.bitcrushSettings.downsampling, 1, 100);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.SaturatorFilter:
+                case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
                     settings.saturatorSettings.drive =
                         EditorGUILayout.Slider("Drive", settings.saturatorSettings.drive, 0, 10);
                     settings.saturatorSettings.wet =
                         EditorGUILayout.Slider("Wet", settings.saturatorSettings.wet, 0, 1);
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.DelayFilter:
+                case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
                     settings.delaySettings.delayTime =
                         EditorGUILayout.Slider("Time", settings.delaySettings.delayTime, 0, 1);
                     settings.delaySettings.feedback =
@@ -446,7 +446,7 @@ namespace Synth
             GUILayout.Space(10);
         }
 
-        private static void DrawFilterPreview(Rect rect, SynthSettingsObjectFilter settings)
+        private static void DrawFilterPreview(Rect rect, AudioProcessorSettingsObject settings)
         {
             EditorGUI.DrawRect(rect, new Color(0.1f, 0.1f, 0.1f, 1f));
             Handles.color = Color.grey;
@@ -460,15 +460,15 @@ namespace Synth
 
             switch (settings.filterType)
             {
-                case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
                     cutoff = settings.lowPassSettings.cutoffFrequency;
                     resonance = settings.lowPassSettings.resonance;
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
                     cutoff = settings.ladderSettings.cutoffFrequency;
                     resonance = settings.ladderSettings.resonance;
                     break;
-                case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
                     cutoff = settings.bandPassSettings.frequency;
                     bandWidth = settings.bandPassSettings.bandWidth;
                     q = settings.bandPassSettings.q;
@@ -483,8 +483,8 @@ namespace Synth
 
                 switch (settings.filterType)
                 {
-                    case SynthSettingsObjectFilter.FilterTypes.LowPassFilter:
-                    case SynthSettingsObjectFilter.FilterTypes.LadderFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
                     {
                         float x = freq / cutoff;
                         mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(x, 8.0f));
@@ -493,14 +493,14 @@ namespace Synth
                         mag /= (1.0f + resonance * 2.0f);
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.BandPassFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
                     {
                         float x = freq / cutoff;
                         // q = 100.0f / Mathf.Max(bandWidth, 1.0f);
                         mag = 1.0f / Mathf.Sqrt(1.0f + Mathf.Pow(q * (x - 1.0f / x), 2.0f));
                         break;
                     }
-                    case SynthSettingsObjectFilter.FilterTypes.FormantFilter:
+                    case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
                     {
                         float[] peaks = GetVowelPeaksStatic(settings.formantSettings.vowel);
                         foreach (var p in peaks)

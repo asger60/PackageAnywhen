@@ -152,13 +152,13 @@ namespace Anywhen
                         SynthFilterBase newFilter = trackFilter.filterType switch
                         {
                           //  SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new AudioProcessorLowPass(),
-                            SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
-                            SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
-                            SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),
-                            SynthSettingsObjectFilter.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
-                            SynthSettingsObjectFilter.FilterTypes.SaturatorFilter => new SynthFilterSaturator(),
-                            SynthSettingsObjectFilter.FilterTypes.DelayFilter => new SynthFilterDelay(),
-                            SynthSettingsObjectFilter.FilterTypes.ChorusFilter => new SynthFilterChorus(),
+                            AudioProcessorSettingsObject.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
+                            AudioProcessorSettingsObject.FilterTypes.FormantFilter => new SynthFilterFormant(),
+                            AudioProcessorSettingsObject.FilterTypes.LadderFilter => new SynthFilterLadder(),
+                            AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
+                            //AudioProcessorSettingsObject.FilterTypes.SaturatorFilter => new AudioProcessorSaturator(),
+                            AudioProcessorSettingsObject.FilterTypes.DelayFilter => new SynthFilterDelay(),
+                            AudioProcessorSettingsObject.FilterTypes.ChorusFilter => new SynthFilterChorus(),
                             _ => throw new ArgumentOutOfRangeException()
                         };
 

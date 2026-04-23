@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthSettingsObjectFilter : SynthSettingsObjectBase
+    public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
         public SynthFilterBase.ModRouting[] modRouting;
 

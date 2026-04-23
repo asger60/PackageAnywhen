@@ -119,7 +119,7 @@ namespace Anywhen.Synth
 
         private FormantVowel _currentVowel;
 
-        public override void SetSettings(SynthSettingsObjectFilter newSettings)
+        public override void SetSettings(AudioProcessorSettingsObject newSettings)
         {
             Settings = newSettings;
             Init(AnywhenRuntime.SampleRate);
