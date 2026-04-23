@@ -2,6 +2,7 @@ using System;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -101,13 +102,17 @@ namespace Anywhen.Composing
             public int trackTypeIndex;
             public bool isMuted;
             public bool isSolo;
-
-            // Note: AnimationCurve and ModRouting[] are not included as they are managed/non-blittable.
-            // If they are needed in Burst, they must be passed via NativeArrays or sampled beforehand.
+            public NativeArray<SynthSettingsObjectFilter.Unmanaged> trackFilters;
         }
 
-        public Unmanaged ToUnmanaged()
+        public Unmanaged ToUnmanaged(Allocator allocator = Allocator.Temp)
         {
+            var filters = new NativeArray<SynthSettingsObjectFilter.Unmanaged>(TrackFilters.Length, allocator);
+            for (int i = 0; i < TrackFilters.Length; i++)
+            {
+                filters[i] = TrackFilters[i].ToUnmanaged();
+            }
+
             return new Unmanaged
             {
                 instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
@@ -119,9 +124,9 @@ namespace Anywhen.Composing
                 trackType = trackType,
                 trackTypeIndex = trackTypeIndex,
                 isMuted = IsMuted,
-                isSolo = IsSolo
+                isSolo = IsSolo,
+                trackFilters = filters
             };
-            
         }
 
 

@@ -80,7 +80,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     var trackSettings = initialSong.Tracks[i];
                     if (trackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
                     {
-                        _tracks[i] = new Track(_sampleRate, trackSettings.ToUnmanaged());
+                        var unmanagedSettings = trackSettings.ToUnmanaged(Allocator.Persistent);
+                        _tracks[i] = new Track(_sampleRate, unmanagedSettings);
                     }
                 }
             }
@@ -228,20 +229,31 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private NativeArray<SampleVoice> _voices;
             private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
             private float _trackVolume;
-            private SynthControlEnvelope _trackEnvelope;
+            private AudioProcessorEnvelope _trackEnvelope;
             private PlaybackEvent _nextEvent;
+            private NativeArray<TrackAudioProcessor> _trackFilters;
 
             public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings)
             {
                 _voices = new NativeArray<SampleVoice>(settings.voices, Allocator.Persistent);
                 _trackVolume = settings.volume;
                 _sampleInstrument = settings.instrument;
-                _trackEnvelope = new SynthControlEnvelope(sampleRate);
+                _trackEnvelope = new AudioProcessorEnvelope(sampleRate);
                 _trackEnvelope.UpdateSettings(settings.TrackAudioEnvelope);
-                
+
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
-                
-                
+
+                _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
+
+                for (int i = 0; i < settings.trackFilters.Length; i++)
+                {
+                    _trackFilters[i] = new TrackAudioProcessor(sampleRate, settings.trackFilters[i]);
+                }
+
+                if (settings.trackFilters.IsCreated)
+                {
+                    settings.trackFilters.Dispose();
+                }
             }
 
 
@@ -303,7 +315,20 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     _voices[i] = voice;
                 }
 
-                return clipAmplitude * _trackVolume * _trackEnvelope.Process();
+
+                clipAmplitude = _trackEnvelope.Process(clipAmplitude);
+
+                if (_trackFilters.IsCreated)
+                {
+                    for (int i = 0; i < _trackFilters.Length; i++)
+                    {
+                        var filter = _trackFilters[i];
+                        clipAmplitude = filter.Process(clipAmplitude);
+                        _trackFilters[i] = filter;
+                    }
+                }
+
+                return clipAmplitude * _trackVolume;
             }
 
 
@@ -312,6 +337,11 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 if (_voices.IsCreated)
                 {
                     _voices.Dispose();
+                }
+
+                if (_trackFilters.IsCreated)
+                {
+                    _trackFilters.Dispose();
                 }
             }
 

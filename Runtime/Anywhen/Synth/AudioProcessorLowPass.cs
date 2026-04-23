@@ -88,78 +88,90 @@
 //  He also suggests a half sample delay as phase compensation, which
 //  is not implemented yet.
 
-using System;
-using Anywhen.Synth.Filter;
 
 namespace Anywhen.Synth
 {
-    public class SynthFilterLowPass : SynthFilterBase
+    public struct AudioProcessorLowPass : IAudioProcessor
     {
         /// Static config
         //const float C = 1.0f; // ????
         const float V_t = 1.22070313f; // From Diakopoulos
 
-        private float _frequencyMod = 1;
+        private float _frequencyMod;
 
         /// Config
-        float _reso;
+        float _resonance;
 
-        int _oversampling = 1; // 1 means don't oversample
+        int _oversampling; // 1 means don't oversample
 
         /// State
-        float y_a, y_b, y_c, y_d;
+        float y_a;
 
-        float w_a, w_b, w_c;
+        float y_b;
+        float y_c;
+        float y_d;
+        float w_a;
+        float w_b;
+        float w_c;
 
         /// Cache
         float _s, _v;
 
+        private float _cutoff;
 
-        public override void SetExpression(float data)
-        {
-        }
+        private int _sampleRate;
 
-        protected override void UpdateSettings()
+
+        public AudioProcessorLowPass(int sampleRate) : this()
         {
-            _reso = Settings.lowPassSettings.resonance;
-            SetCutOff(Settings.lowPassSettings.cutoffFrequency);
-            SetOversampling(Settings.lowPassSettings.oversampling);
+            _sampleRate = sampleRate;
+            _v = 1.0f / (2.0f * V_t);
             _frequencyMod = 1;
-            foreach (var mod in ModRoutings)
-            {
-                _frequencyMod = mod.Process(_frequencyMod);
-            }
+            _oversampling = 1;
         }
 
 
-        public override void HandleModifiers(float mod1)
+        public void HandleModifiers(float mod1)
         {
-            _frequencyMod *= mod1;
-        }
-
-        public override void SetSettings(SynthSettingsObjectFilter newSettings)
-        {
-            _v = V_t * 0.5f; // 1/2V_t
-            _frequencyMod = 1;
-            Settings = newSettings;
-            UpdateSettings();
+            _frequencyMod = mod1;
+            RecalculateS();
         }
 
 
-        public override float Process(float sample)
+        public void DoUpdate()
         {
-            UpdateSettings();
+        }
 
+        public float Process(float sample)
+        {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+
+            // Input scaling/normalization for the nonlinear ladder
+            // The filter works best when the input is in a range that interacts well with Tanh(x * _v)
+            float input = sample;
 
             for (int j = 0; j < _oversampling; ++j)
             {
-                y_a += _s * (FastTanh(sample - 4 * _reso * y_d * _v) - w_a);
+                // Feedback with thermal voltage scaling and resonance.
+                // Moog ladder feedback is typically 4 * resonance * output.
+                // We use y_d (the output of the 4th stage).
+                float resonanceFeedback = 4.0f * _resonance * y_d;
+                float x = input - resonanceFeedback;
+
+                // Stage 1
+                y_a += _s * (FastTanh(x * _v) - w_a);
                 w_a = FastTanh(y_a * _v);
+
+                // Stage 2
                 y_b += _s * (w_a - w_b);
                 w_b = FastTanh(y_b * _v);
-                y_c += _s * (w_b - y_c);
+
+                // Stage 3
+                y_c += _s * (w_b - w_c);
                 w_c = FastTanh(y_c * _v);
+
+                // Stage 4
+                // According to Huovilainen, the 4th stage uses tanh(y_d) as feedback
                 y_d += _s * (w_c - FastTanh(y_d * _v));
 
                 // Guard against state explosion
@@ -171,7 +183,13 @@ namespace Anywhen.Synth
                 }
             }
 
-            return Clamp(y_d, -1f, 1f); // Ensure float clamping
+            float outSample = y_d * (1.0f + _resonance * 4.0f);
+            return Clamp(outSample, -1f, 1f);
+        }
+
+
+        public void SetGate(bool gate)
+        {
         }
 
 
@@ -193,23 +211,37 @@ namespace Anywhen.Synth
         }
 
 
-        private void SetCutOff(float value)
+        public void SetResonance(float value)
         {
-            float sampleRate = AnywhenRuntime.SampleRate;
-            if (sampleRate <= 0) sampleRate = 44100;
-            _s = (value * _frequencyMod) / 1.0f / sampleRate / _oversampling * 6.28318530717959f;
-
-            // Guard against NaN/Inf
-            if (float.IsNaN(_s) || float.IsInfinity(_s)) _s = 0;
-
-            _s = Clamp(_s, 0, 0.999f); // Keep it within stable range
+            _resonance = Clamp(value, 0, 1.0f);
         }
 
-        private void SetOversampling(int iterationCount)
+        public void SetCutOff(float value)
+        {
+            _cutoff = value;
+            RecalculateS();
+        }
+
+        private void RecalculateS()
+        {
+            if (_sampleRate <= 0) return;
+            
+            float compensation = 0.435f;
+            float f = _cutoff * _frequencyMod * compensation;
+            float omega = 2.0f * 3.14159265f * f / (_sampleRate * _oversampling);
+            
+            _s = 1.0f - UnityEngine.Mathf.Exp(-omega);
+            
+            // Limit _s to ensure stability.
+            _s = Clamp(_s, 0, 1.0f); 
+        }
+
+        public void SetOversampling(int iterationCount)
         {
             _oversampling = iterationCount;
             if (_oversampling < 1)
                 _oversampling = 1;
+            RecalculateS();
         }
     }
 }

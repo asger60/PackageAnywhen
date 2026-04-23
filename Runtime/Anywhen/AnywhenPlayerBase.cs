@@ -38,7 +38,7 @@ namespace Anywhen
             public AnywhenVoiceBase[] Voices;
             public float trackPitch;
             public List<SynthFilterBase> trackFilters;
-            public SynthControlEnvelope trackEnvelope;
+            public AudioProcessorEnvelope trackEnvelope;
             public SynthControlLFO trackLFO;
 
             public PlayerTrack(AnysongTrackSettings trackSettings, AnywhenVoiceBase[] voices, List<SynthFilterBase> filters)
@@ -49,7 +49,7 @@ namespace Anywhen
                 trackFilters = filters;
                 trackLFO = new SynthControlLFO();
                 trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
-                trackEnvelope = new SynthControlEnvelope();
+                trackEnvelope = new AudioProcessorEnvelope();
                 trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
             }
 
@@ -102,7 +102,7 @@ namespace Anywhen
                 {
                     _currentPlaybackSettings.note = -1;
                     trackEnvelope.NoteOff();
-                    trackLFO.NoteOff();
+                    //trackLFO.NoteOff();
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace Anywhen
                         trackFilter.modRouting ??= Array.Empty<SynthFilterBase.ModRouting>();
                         SynthFilterBase newFilter = trackFilter.filterType switch
                         {
-                            SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new SynthFilterLowPass(),
+                          //  SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new AudioProcessorLowPass(),
                             SynthSettingsObjectFilter.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
                             SynthSettingsObjectFilter.FilterTypes.FormantFilter => new SynthFilterFormant(),
                             SynthSettingsObjectFilter.FilterTypes.LadderFilter => new SynthFilterLadder(),

@@ -1,10 +1,9 @@
 using System;
-using Anywhen.SettingsObjects;
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthControlLFO : SynthControlBase
+    public class SynthControlLFO 
     {
         private UInt32 _phase = 0u; // using an integer type automatically ensures limits
 
@@ -39,13 +38,13 @@ namespace Anywhen.Synth
         }
 
 
-        public override void DoUpdate()
+        public  void DoUpdate()
         {
             _phase += _freqPhPSmp;
         }
 
 
-        public override void NoteOn()
+        public  void NoteOn()
         {
             if (_retrigger)
                 Restart();
@@ -64,7 +63,7 @@ namespace Anywhen.Synth
             _freqPhPSmp = (uint)(freqPpsmp * PhaseMax);
         }
 
-        public override float Process(bool unipolar = false)
+        public  float Process(bool unipolar = false)
         {
             if (unipolar)
                 return Sin();

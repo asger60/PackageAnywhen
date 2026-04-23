@@ -19,14 +19,14 @@ namespace Anywhen.Synth.Filter
             [Range(0, 1f)] public float modAmount;
             [DynamicRange] public DynamicRangeFloat modDepth;
 
-            private SynthControlBase _modSourceControl;
+           // private SynthControlBase _modSourceControl;
 
             public ModRouting(ModSources modSource, float modAmount, DynamicRangeFloat modDepth)
             {
                 this.modSource = modSource;
                 this.modAmount =modAmount;
                 this.modDepth = modDepth;
-                _modSourceControl = null;
+              //  _modSourceControl = null;
             }
 
             public struct Unmanaged
@@ -57,16 +57,17 @@ namespace Anywhen.Synth.Filter
 
             public float Process(float input)
             {
-                switch (modSource)
-                {
-                    case ModSources.LFO:
-                        return input + (_modSourceControl.Process(true) * modDepth.value);
-
-                    case ModSources.Envelope:
-                        return input * Mathf.Lerp(1, _modSourceControl.Process(), modAmount);
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                return 0;
+                //switch (modSource)
+                //{
+                //    case ModSources.LFO:
+                //        return input + (_modSourceControl.Process(true) * modDepth.value);
+//
+                //    case ModSources.Envelope:
+                //        return input * Mathf.Lerp(1, _modSourceControl.Process(), modAmount);
+                //    default:
+                //        throw new ArgumentOutOfRangeException();
+                //}
             }
         }
 

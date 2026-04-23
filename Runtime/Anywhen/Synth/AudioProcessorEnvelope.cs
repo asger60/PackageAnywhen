@@ -1,10 +1,9 @@
 using System;
-using Anywhen.SettingsObjects;
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct SynthControlEnvelope : ISynthControl
+    public struct AudioProcessorEnvelope : IAudioProcessor
     {
         private enum EnvState
         {
@@ -36,9 +35,11 @@ namespace Anywhen.Synth
 
         public bool IsActive => _state != EnvState.env_idle;
 
-        public SynthControlEnvelope(int samepleRate) : this()
+
+
+        public AudioProcessorEnvelope(int sampleRate) : this()
         {
-            _sampleRate = samepleRate;
+            _sampleRate = sampleRate;
         }
 
         public void NoteOn()
@@ -127,9 +128,10 @@ namespace Anywhen.Synth
 
         private bool _currentGate;
 
+
         public void SetGate(bool gate)
         {
-             if (gate == _currentGate) return;
+            if (gate == _currentGate) return;
             if (gate)
             {
                 NoteOn();
@@ -142,7 +144,12 @@ namespace Anywhen.Synth
             _currentGate = gate;
         }
 
-        public float Process(bool unipolar = false)
+        public float Process(float sample)
+        {
+            return sample * HandleEnvelope();
+        }
+
+        public float HandleEnvelope(bool unipolar = false)
         {
             switch (_state)
             {
@@ -182,14 +189,14 @@ namespace Anywhen.Synth
             return Mathf.Clamp01(_output);
         }
 
-        public bool Equals(SynthControlEnvelope other)
+        public bool Equals(AudioProcessorEnvelope other)
         {
             return _state == other._state && _output.Equals(other._output) && Settings.Equals(other.Settings);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is SynthControlEnvelope other && Equals(other);
+            return obj is AudioProcessorEnvelope other && Equals(other);
         }
 
         public override int GetHashCode()
