@@ -8,6 +8,7 @@ using Unity.IntegerTime;
 using UnityEngine;
 using UnityEngine.Audio;
 
+
 [CreateAssetMenu(fileName = "AnywhenAudioPlayer", menuName = "Sample/Create AnywhenAudioPlayer asset", order = 2)]
 public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 {
@@ -16,6 +17,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     public bool isFinite => false;
     public bool isRealtime => true;
     public DiscreteTime? length => null;
+
 
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
@@ -47,10 +49,15 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         NativeArray<Track> _tracks;
         private int _sampleRate;
         GeneratorInstance.Setup _setup;
+        private GeneratorInstance _selfHandle;
+        private int _lastSub16Count;
 
         public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong = null)
         {
-            return context.AllocateGenerator(new Processor(sampleRate, initialSong), new Control());
+            var processor = new Processor(sampleRate, initialSong);
+            var handle = context.AllocateGenerator(processor, new Control());
+            processor._selfHandle = handle;
+            return handle;
         }
 
         public bool isFinite => false;
@@ -62,6 +69,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         {
             _sampleRate = sampleRate;
             _setup = new GeneratorInstance.Setup();
+            _selfHandle = default;
+            _lastSub16Count = -1;
             if (initialSong != null)
             {
                 _tracks = new NativeArray<Track>(initialSong.Tracks.Count, Allocator.Persistent);
@@ -105,9 +114,40 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public GeneratorInstance.Result Process(in RealtimeContext ctx, ProcessorInstance.Pipe pipe, ChannelBuffer buffer,
             GeneratorInstance.Arguments args)
         {
-            double dspTime = ctx.dspTime;
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
+            // The dspTime in ctx.dspTime is actually in samples, while the metronome uses seconds from AudioSettings.dspTime.
+            // We convert to seconds to match the metronome and scheduled event times.
+            // Additionally, there's often an offset between AudioSettings.dspTime (main thread) and sample count (audio thread).
+            double dspTime = ctx.dspTime * invSampleRate;
+            int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
+            if (currentSub16Count != _lastSub16Count)
+            {
+                _lastSub16Count = currentSub16Count;
+                if (currentSub16Count % 4 == 0)
+                {
+                    //for (int i = 0; i < _tracks.Length; i++)
+                    {
+                        var track = _tracks[0];
+                        track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(0), dspTime, 0));
+                        _tracks[0] = track;
+                    }
+                }
+                //if (currentSub16Count % 6 == 0)
+                //{
+                //    //for (int i = 0; i < _tracks.Length; i++)
+                //    {
+                //        _tracks[1].HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(0), dspTime, 1));
+                //    }
+                //}
+            }
+
+
+            // Log for verifying synchronization
+            if (_tracks is { IsCreated: true, Length: > 0 })
+            {
+                //Debug.Log($"[AudioProcessor] SampleDspTime: {ctx.dspTime} -> Seconds: {dspTime:F4} | FirstEvent: {_tracks[0].ScheduledPlayTime:F4} | Diff: {dspTime - _tracks[0].ScheduledPlayTime:F4}");
+            }
 
             if (sampleRate <= 0)
                 return buffer.frameCount;
@@ -179,33 +219,25 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         {
             private NativeArray<SampleVoice> _voices;
             private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
-            public AnywhenSampleInstrument.Unmanaged Instrument => _sampleInstrument;
-
             private float _trackVolume;
             private SynthControlEnvelope _trackEnvelope;
-
+            private PlaybackEvent _nextEvent;
 
             public Track(int voices, int sampleRate, float trackVolume, AnywhenSampleInstrument.Unmanaged instrument)
             {
                 _voices = new NativeArray<SampleVoice>(voices, Allocator.Persistent);
-                for (var i = 0; i < _voices.Length; i++)
-                {
-                    _voices[i].Init(sampleRate);
-                }
-
                 _trackVolume = trackVolume;
                 _sampleInstrument = instrument;
                 _trackEnvelope = new SynthControlEnvelope(sampleRate);
-                //_trackEnvelope.UpdateSettings();
+                _trackEnvelope.UpdateSettings(new AnywhenSampleInstrument.EnvelopeSettings(0f, 0.01f, 0.1f, 0.1f));
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
             }
 
 
-            private PlaybackEvent _nextEvent;
-
             internal void HandlePlaybackEvent(PlaybackEvent playbackEvent)
             {
                 _nextEvent = playbackEvent;
+                
                 for (int i = 0; i < _voices.Length; i++)
                 {
                     var voice = _voices[i];
@@ -229,7 +261,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
                 if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
                 {
-                    Debug.Log("Playing note");
                     _trackEnvelope.SetGate(true);
                 }
                 else if (dspTime >= _nextEvent.ScheduledEndTime)
@@ -245,7 +276,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     _voices[i] = voice;
                 }
 
-                return clipAmplitude * _trackVolume /* * _trackEnvelope.Process()*/;
+                return clipAmplitude * _trackVolume * _trackEnvelope.Process();
             }
 
 
@@ -277,14 +308,11 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         private struct SampleVoice
         {
             private double _scheduledStartTime;
-
             private AnywhenNoteClip.Unmanaged _clipData;
-
             private int _sampleCount;
             private int _sampleIndex;
             private bool _noteOn;
             private bool _noteQueued;
-            private int _sampleRate;
 
             internal float Process(double dspTime)
             {
@@ -305,12 +333,11 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     else
                     {
                         _noteQueued = false;
-                        Dispose();
                     }
                 }
 
 
-                return clipAmplitude /* * _clipData.Volume*/;
+                return clipAmplitude;
             }
 
 
@@ -318,22 +345,13 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
                 _noteQueued = true;
                 _scheduledStartTime = playTime;
-                _clipData = sampleInstrument.GetNoteClipSettings(noteEvent.note, ref sampleInstrument.seed).noteClip.ToUnmanaged();
+                _clipData = sampleInstrument.GetNoteClipSettings(noteEvent.note).NoteClipUnmanaged;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
                 _sampleIndex = 0;
             }
 
 
-            private void Dispose()
-            {
-            }
-
             public bool IsIdle => !_noteQueued;
-
-            public void Init(int sampleRate)
-            {
-                _sampleRate = sampleRate;
-            }
         }
     }
 
@@ -343,32 +361,14 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public SimpleNoteEvent SimpleNoteEvent;
         public readonly double ScheduledPlayTime;
         public readonly int TrackIndex;
-        public double ScheduledEndTime => ScheduledPlayTime + SimpleNoteEvent.duration;
+        public readonly double ScheduledEndTime;
 
         public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime, int trackIndex)
         {
             SimpleNoteEvent = simpleNoteEvent;
             ScheduledPlayTime = scheduledPlayTime;
             TrackIndex = trackIndex;
-        }
-    }
-
-    public struct NoteClipData
-    {
-        public NativeArray<float> Samples;
-        public readonly int Channels;
-        public float Volume;
-        public float Pitch;
-        public int NoteIndex;
-
-
-        public NoteClipData(float[] samples, int channels, float volume, int noteIndex)
-        {
-            Samples = new NativeArray<float>(samples, Allocator.Persistent);
-            Channels = channels;
-            Volume = volume;
-            Pitch = 1;
-            NoteIndex = noteIndex;
+            ScheduledEndTime = ScheduledPlayTime + SimpleNoteEvent.duration;
         }
     }
 }

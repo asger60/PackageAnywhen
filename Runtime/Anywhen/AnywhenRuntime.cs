@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Anywhen
 {
@@ -12,6 +14,8 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
+        public static List<GeneratorInstance> ActiveGenerators = new List<GeneratorInstance>();
+
         private static AnywhenMetronome _metronome;
 
         public static AnywhenMetronome Metronome

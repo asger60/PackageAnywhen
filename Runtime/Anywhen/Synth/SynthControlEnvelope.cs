@@ -1,3 +1,4 @@
+using System;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
@@ -30,8 +31,10 @@ namespace Anywhen.Synth
         private float _releaseBase;
 
 
-        public AnywhenSampleInstrument.EnvelopeSettings Settings;
+        private AnywhenSampleInstrument.EnvelopeSettings Settings;
         int _sampleRate;
+
+        public bool IsActive => _state != EnvState.env_idle;
 
         public SynthControlEnvelope(int samepleRate) : this()
         {
@@ -122,16 +125,14 @@ namespace Anywhen.Synth
         {
         }
 
-
         private bool _currentGate;
 
         public void SetGate(bool gate)
         {
              if (gate == _currentGate) return;
-            Debug.Log("SetGate: " + gate);
             if (gate)
             {
-                NoteOff();
+                NoteOn();
             }
             else
             {
@@ -179,6 +180,21 @@ namespace Anywhen.Synth
             }
 
             return Mathf.Clamp01(_output);
+        }
+
+        public bool Equals(SynthControlEnvelope other)
+        {
+            return _state == other._state && _output.Equals(other._output) && Settings.Equals(other.Settings);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SynthControlEnvelope other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine((int)_state, _output, Settings);
         }
 
         public void UpdateSettings(AnywhenSampleInstrument.EnvelopeSettings newSettings)

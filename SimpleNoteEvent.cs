@@ -27,7 +27,7 @@ public struct SimpleNoteEvent
         expression1 = 0;
         expression2 = 0;
         velocity = 1;
-        duration = 0.25f;
+        duration = 0.025f;
     }
 
 

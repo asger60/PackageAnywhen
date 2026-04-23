@@ -64,7 +64,7 @@ namespace Anywhen
         {
             if (_instrument == null) return;
 
-            _currentClip = _instrument.GetNoteClip(note.notes[0]).noteClip;
+          //  _currentClip = _instrument.GetNoteClip(note.notes[0]).noteClip;
             if (_currentClip == null) return;
 
             PlaySampleDirectly(_currentClip, note);

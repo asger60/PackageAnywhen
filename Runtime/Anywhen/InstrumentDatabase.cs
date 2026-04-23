@@ -4,6 +4,7 @@ using System.Linq;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using Unity.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -19,6 +20,20 @@ public class InstrumentDatabase : MonoBehaviour
     {
         public AnywhenSampleInstrument Instrument;
         public List<AnywhenNoteClip> clips;
+
+        public NativeArray<AnywhenNoteClip.Unmanaged> UnmanagedClips
+        {
+            get
+            {
+                var r = new NativeArray<AnywhenNoteClip.Unmanaged>(clips.Count, Allocator.Temp);
+                for (int i = 0; i < clips.Count; i++)
+                {
+                    r[i] = clips[i].ToUnmanaged();
+                }
+
+                return r;
+            }
+        }
 
         public bool Equals(LoadedInstrument other)
         {
@@ -113,19 +128,17 @@ public class InstrumentDatabase : MonoBehaviour
         return null;
     }
 
-    public static List<AnywhenNoteClip> GetNoteClips(AnywhenSampleInstrument.Unmanaged instrument)
+    public static NativeArray<AnywhenNoteClip.Unmanaged> GetNoteClips(AnywhenSampleInstrument.Unmanaged instrument)
     {
-        
         for (var i = 0; i < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; i++)
         {
             var loaded = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[i];
-            if (loaded.Instrument != null &&
-                loaded.Instrument.ToUnmanaged().Equals(instrument))
+            if (loaded.Instrument != null && loaded.Instrument.ToUnmanaged().Equals(instrument))
             {
-                return loaded.clips;
+                return loaded.UnmanagedClips;
             }
         }
-        
+
         // If exact match fails, try matching without seed (in case seed was generated differently)
         for (var i = 0; i < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; i++)
         {
@@ -136,7 +149,7 @@ public class InstrumentDatabase : MonoBehaviour
                 unmanaged.seed = instrument.seed; // Ignore seed for comparison
                 if (unmanaged.Equals(instrument))
                 {
-                    return loaded.clips;
+                    return loaded.UnmanagedClips;
                 }
             }
         }
@@ -145,10 +158,10 @@ public class InstrumentDatabase : MonoBehaviour
         {
             Debug.LogWarning("No instrument found for unmanaged struct. Falling back to first loaded instrument. Searched for: " +
                              instrument.clipSelectType + " seed: " + instrument.seed);
-            return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].clips;
+            return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].UnmanagedClips;
         }
 
         Debug.LogError("No instruments loaded in InstrumentDatabase!");
-        return null;
+        return default;
     }
 }

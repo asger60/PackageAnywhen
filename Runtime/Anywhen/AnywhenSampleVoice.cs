@@ -32,7 +32,7 @@ namespace Anywhen
         {
             base.StartPlay(playbackSettings);
             var clipSettings = _thisInstrument.GetNoteClip(playbackSettings.note);
-            _currentNoteClip = clipSettings.noteClip;
+          //  _currentNoteClip = clipSettings.noteClip;
             if (_currentNoteClip == null) return;
             _samplePosBuffer1 = 0;
             _sampleStepFrac = _currentNoteClip.frequency / CurrentSampleRate;

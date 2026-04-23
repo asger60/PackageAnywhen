@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,9 @@ namespace Anywhen.SettingsObjects
     [CreateAssetMenu(fileName = "New instrument object", menuName = "Anywhen/AudioObjects/InstrumentObject")]
     public class AnywhenSampleInstrument : AnywhenInstrument
     {
+        [SerializeField] private int seed;
+        private readonly System.Random _random = new System.Random();
+
         public struct MidiDrumMapping
         {
             public string Name;
@@ -32,7 +36,6 @@ namespace Anywhen.SettingsObjects
             new MidiDrumMapping { Name = "Crash", MidiNote = 48 },
         };
 
-        private readonly System.Random _random = new();
 
         public enum ClipSelectType
         {
@@ -154,24 +157,26 @@ namespace Anywhen.SettingsObjects
                 return !left.Equals(right);
             }
 
-            public AnywhenNoteClipPlaybackSettings GetNoteClipSettings(int note, ref uint seed)
+            public AnywhenNoteClipPlaybackSettings GetNoteClipSettings(int note)
             {
                 var clips = InstrumentDatabase.GetNoteClips(this);
-                if (clips == null)
+                if (!clips.IsCreated)
                 {
+                    Debug.LogWarning("no clip found for instrument");
                     return new AnywhenNoteClipPlaybackSettings();
                 }
 
-                // Simple LCG for randomness to avoid System.Random object and stay Burst-compatible
-                uint state = seed == 0 ? 1 : seed;
-                state = state * 1664525 + 1013904223;
+                uint state = seed;
 
                 int NextInt(int min, int max)
                 {
                     if (min >= max) return min;
-                    state = state * 1664525 + 1013904223;
-                    return min + (int)(state % (uint)(max - min));
+                    state = state * 1103515245 + 12345;
+                    return min + (int)((state >> 16) % (uint)(max - min));
                 }
+
+                // Advance state at least once to ensure variety even if seed was just set
+                NextInt(0, 1);
 
                 AnywhenNoteClipPlaybackSettings settings;
                 switch (clipSelectType)
@@ -183,20 +188,20 @@ namespace Anywhen.SettingsObjects
                         int unsignedDistance = 0;
                         foreach (var noteClip in clips)
                         {
-                            var thisDist = Mathf.Abs(noteClip.NoteIndex - note);
+                            var thisDist = Mathf.Abs(noteClip.noteIndex - note);
                             if (thisDist <= bestDistance)
                             {
                                 bestDistance = thisDist;
-                                unsignedDistance = note - noteClip.NoteIndex;
+                                unsignedDistance = note - noteClip.noteIndex;
                             }
                         }
 
-                        List<AnywhenNoteClip> clipsList = new List<AnywhenNoteClip>();
+                        var clipsList = new NativeArray<AnywhenNoteClip.Unmanaged>(0, Allocator.Persistent);
                         foreach (var noteClip in clips)
                         {
-                            if (noteClip.NoteIndex == note - unsignedDistance)
+                            if (noteClip.noteIndex == note - unsignedDistance)
                             {
-                                clipsList.Add(noteClip);
+                                // clipsList.Add(noteClip);
                             }
                         }
 
@@ -206,40 +211,38 @@ namespace Anywhen.SettingsObjects
                             pitch = Mathf.Pow(2, unsignedDistance / 12f);
                         }
 
-                        if (clipsList.Count == 0)
-                        {
-                            settings = new AnywhenNoteClipPlaybackSettings();
-                        }
-                        else
-                        {
-                            settings = new AnywhenNoteClipPlaybackSettings(clipsList[NextInt(0, clipsList.Count)], pitch, volume);
-                        }
+                        settings = clipsList.Length == 0
+                            ? new AnywhenNoteClipPlaybackSettings()
+                            : new AnywhenNoteClipPlaybackSettings(clipsList[NextInt(0, clipsList.Length)], pitch, volume);
+
                         break;
 
 
                     case ClipSelectType.RandomVariations:
-                        settings = new AnywhenNoteClipPlaybackSettings(clips[NextInt(0, clips.Count)], 1, volume);
+                        int index = NextInt(0, clips.Length);
+                        settings = new AnywhenNoteClipPlaybackSettings(clips[index], 1, volume);
                         break;
 
 
                     case ClipSelectType.Percussion:
-                        List<AnywhenNoteClip> percussionClips = new List<AnywhenNoteClip>();
+                        NativeArray<AnywhenNoteClip.Unmanaged> percussionClips = new NativeArray<AnywhenNoteClip.Unmanaged>();
                         foreach (var noteClip in clips)
                         {
-                            if (noteClip.NoteIndex == note)
+                            if (noteClip.noteIndex == note)
                             {
-                                percussionClips.Add(noteClip);
+                                // percussionClips.Add(noteClip);
                             }
                         }
 
-                        if (percussionClips.Count == 0)
+                        if (percussionClips.Length == 0)
                         {
                             settings = new AnywhenNoteClipPlaybackSettings();
                         }
                         else
                         {
-                            settings = new AnywhenNoteClipPlaybackSettings(percussionClips[NextInt(0, percussionClips.Count)], 1, volume);
+                            settings = new AnywhenNoteClipPlaybackSettings(percussionClips[NextInt(0, percussionClips.Length)], 1, volume);
                         }
+
                         break;
 
                     default:
@@ -250,6 +253,8 @@ namespace Anywhen.SettingsObjects
                 return settings;
             }
         }
+
+        [SerializeField] private EnvelopeSettings envelope = new EnvelopeSettings(0.01f, 0.1f, 0.5f, 0.1f);
 
         public new Unmanaged ToUnmanaged()
         {
@@ -275,12 +280,22 @@ namespace Anywhen.SettingsObjects
         public struct AnywhenNoteClipPlaybackSettings
         {
             public AnywhenNoteClip noteClip;
+            public AnywhenNoteClip.Unmanaged NoteClipUnmanaged;
             public float clipPitch;
             public float clipVolume;
 
             public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip noteClip, float clipPitch, float clipVolume)
             {
                 this.noteClip = noteClip;
+                this.NoteClipUnmanaged = noteClip.ToUnmanaged();
+                this.clipPitch = clipPitch;
+                this.clipVolume = clipVolume;
+            }
+
+            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip.Unmanaged noteClip, float clipPitch, float clipVolume)
+            {
+                this.noteClip = null;
+                this.NoteClipUnmanaged = noteClip;
                 this.clipPitch = clipPitch;
                 this.clipVolume = clipVolume;
             }
