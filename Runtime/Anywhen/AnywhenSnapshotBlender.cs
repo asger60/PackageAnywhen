@@ -90,11 +90,11 @@ namespace Anywhen
                             var playerTrack = playerTracks[trackIndex];
                             if (propertyPath.StartsWith("trackEnvelope."))
                             {
-                                playerTrack.trackEnvelope.UpdateSettings(track.trackEnvelope);
+                                playerTrack.trackEnvelope.UpdateSettings(track.trackAudioEnvelope);
                             }
                             else if (propertyPath.StartsWith("trackLFO."))
                             {
-                                playerTrack.trackLFO.UpdateSettings(track.trackLFO);
+                                playerTrack.trackLFO.UpdateSettings(track.trackAudioLFO);
                             }
                             else if (propertyPath == "trackPitch")
                             {
@@ -116,17 +116,16 @@ namespace Anywhen
             else if (path.StartsWith("trackEnvelope."))
             {
                 string subPath = path.Substring("trackEnvelope.".Length);
-                if (subPath == "attack") trackSettings.trackEnvelope.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "decay") trackSettings.trackEnvelope.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "sustain") trackSettings.trackEnvelope.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "release") trackSettings.trackEnvelope.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                if (subPath == "attack") trackSettings.trackAudioEnvelope.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "decay") trackSettings.trackAudioEnvelope.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "sustain") trackSettings.trackAudioEnvelope.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "release") trackSettings.trackAudioEnvelope.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
             else if (path.StartsWith("trackLFO."))
             {
                 string subPath = path.Substring("trackLFO.".Length);
-                if (subPath == "frequency") trackSettings.trackLFO.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "amplitude") trackSettings.trackLFO.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "retrigger") trackSettings.trackLFO.retrigger = t >= 0.5f ? b.boolVal : a.boolVal;
+                if (subPath == "frequency") trackSettings.trackAudioLFO.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "amplitude") trackSettings.trackAudioLFO.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
             else if (path == "intensityMappingCurve")
             {

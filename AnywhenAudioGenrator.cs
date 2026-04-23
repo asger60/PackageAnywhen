@@ -67,6 +67,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
         Processor(int sampleRate, AnysongObject initialSong = null)
         {
+            seed = 12345;
             _sampleRate = sampleRate;
             _setup = new GeneratorInstance.Setup();
             _selfHandle = default;
@@ -79,9 +80,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     var trackSettings = initialSong.Tracks[i];
                     if (trackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
                     {
-                        int voiceCount = trackSettings.voices;
-                        _tracks[i] = new Track(voiceCount, _sampleRate, trackSettings.volume,
-                            sampleInstrument.ToUnmanaged());
+                        _tracks[i] = new Track(_sampleRate, trackSettings.ToUnmanaged());
                     }
                 }
             }
@@ -111,14 +110,23 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             }
         }
 
+        private uint seed;
+
         public GeneratorInstance.Result Process(in RealtimeContext ctx, ProcessorInstance.Pipe pipe, ChannelBuffer buffer,
             GeneratorInstance.Arguments args)
         {
+            uint state = seed;
+
+            int NextInt(int min, int max)
+            {
+                if (min >= max) return min;
+                state = state * 1103515245 + 12345;
+                return min + (int)((state >> 16) % (uint)(max - min));
+            }
+
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
-            // The dspTime in ctx.dspTime is actually in samples, while the metronome uses seconds from AudioSettings.dspTime.
-            // We convert to seconds to match the metronome and scheduled event times.
-            // Additionally, there's often an offset between AudioSettings.dspTime (main thread) and sample count (audio thread).
+
             double dspTime = ctx.dspTime * invSampleRate;
             int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
             if (currentSub16Count != _lastSub16Count)
@@ -126,28 +134,28 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _lastSub16Count = currentSub16Count;
                 if (currentSub16Count % 4 == 0)
                 {
-                    //for (int i = 0; i < _tracks.Length; i++)
-                    {
-                        var track = _tracks[0];
-                        track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(0), dspTime, 0));
-                        _tracks[0] = track;
-                    }
+                    var track = _tracks[0];
+                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 0));
+                    _tracks[0] = track;
+
+                    seed = state;
                 }
-                //if (currentSub16Count % 6 == 0)
-                //{
-                //    //for (int i = 0; i < _tracks.Length; i++)
-                //    {
-                //        _tracks[1].HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(0), dspTime, 1));
-                //    }
-                //}
+
+                if (currentSub16Count % 8 == 0)
+                {
+                    var track = _tracks[1];
+                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 1));
+                    _tracks[1] = track;
+                }
+
+                if (currentSub16Count % 2 == 0)
+                {
+                    var track = _tracks[2];
+                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 1));
+                    _tracks[2] = track;
+                }
             }
 
-
-            // Log for verifying synchronization
-            if (_tracks is { IsCreated: true, Length: > 0 })
-            {
-                //Debug.Log($"[AudioProcessor] SampleDspTime: {ctx.dspTime} -> Seconds: {dspTime:F4} | FirstEvent: {_tracks[0].ScheduledPlayTime:F4} | Diff: {dspTime - _tracks[0].ScheduledPlayTime:F4}");
-            }
 
             if (sampleRate <= 0)
                 return buffer.frameCount;
@@ -223,21 +231,27 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private SynthControlEnvelope _trackEnvelope;
             private PlaybackEvent _nextEvent;
 
-            public Track(int voices, int sampleRate, float trackVolume, AnywhenSampleInstrument.Unmanaged instrument)
+            public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings)
             {
-                _voices = new NativeArray<SampleVoice>(voices, Allocator.Persistent);
-                _trackVolume = trackVolume;
-                _sampleInstrument = instrument;
+                _voices = new NativeArray<SampleVoice>(settings.voices, Allocator.Persistent);
+                _trackVolume = settings.volume;
+                _sampleInstrument = settings.instrument;
                 _trackEnvelope = new SynthControlEnvelope(sampleRate);
-                _trackEnvelope.UpdateSettings(new AnywhenSampleInstrument.EnvelopeSettings(0f, 0.01f, 0.1f, 0.1f));
+                _trackEnvelope.UpdateSettings(settings.TrackAudioEnvelope);
+                
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
+                
+                
             }
 
 
             internal void HandlePlaybackEvent(PlaybackEvent playbackEvent)
             {
                 _nextEvent = playbackEvent;
-                
+
+                int voiceToSteal = -1;
+                double oldestStartTime = double.MaxValue;
+
                 for (int i = 0; i < _voices.Length; i++)
                 {
                     var voice = _voices[i];
@@ -245,10 +259,23 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     {
                         voice.QueueNote(playbackEvent.SimpleNoteEvent, playbackEvent.ScheduledPlayTime, ref _sampleInstrument);
                         _voices[i] = voice;
-                        break;
+                        return;
+                    }
+
+                    if (voice.ScheduledStartTime < oldestStartTime)
+                    {
+                        oldestStartTime = voice.ScheduledStartTime;
+                        voiceToSteal = i;
                     }
 
                     _voices[i] = voice;
+                }
+
+                if (voiceToSteal != -1)
+                {
+                    var voice = _voices[voiceToSteal];
+                    voice.QueueNote(playbackEvent.SimpleNoteEvent, playbackEvent.ScheduledPlayTime, ref _sampleInstrument);
+                    _voices[voiceToSteal] = voice;
                 }
             }
 
@@ -310,25 +337,46 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private double _scheduledStartTime;
             private AnywhenNoteClip.Unmanaged _clipData;
             private int _sampleCount;
-            private int _sampleIndex;
+            private double _samplePosition;
             private bool _noteOn;
             private bool _noteQueued;
+            private float _pitch;
 
             internal float Process(double dspTime)
             {
                 float clipAmplitude = 0;
                 if (_noteQueued && dspTime >= _scheduledStartTime)
                 {
-                    if (_clipData.clipSamples.IsCreated && _sampleIndex < _sampleCount)
+                    int channels = _clipData.channels;
+                    int frameCount = channels > 0 ? _sampleCount / channels : 0;
+
+                    if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
                     {
-                        int channels = _clipData.channels;
-                        for (int c = 0; c < channels && _sampleIndex < _sampleCount; c++)
+                        int index = (int)_samplePosition;
+                        float t = (float)(_samplePosition - index);
+
+                        float frameAmplitude = 0;
+                        bool canInterpolate = index < frameCount - 1;
+
+                        for (int c = 0; c < channels; c++)
                         {
-                            clipAmplitude += _clipData.clipSamples[_sampleIndex++];
+                            float s0 = _clipData.clipSamples[index * channels + c];
+                            if (canInterpolate)
+                            {
+                                float s1 = _clipData.clipSamples[(index + 1) * channels + c];
+                                frameAmplitude += s0 + t * (s1 - s0);
+                            }
+                            else
+                            {
+                                frameAmplitude += s0;
+                            }
                         }
 
                         if (channels > 1)
-                            clipAmplitude /= channels;
+                            frameAmplitude /= channels;
+
+                        clipAmplitude = frameAmplitude;
+                        _samplePosition += _pitch;
                     }
                     else
                     {
@@ -345,13 +393,16 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
                 _noteQueued = true;
                 _scheduledStartTime = playTime;
-                _clipData = sampleInstrument.GetNoteClipSettings(noteEvent.note).NoteClipUnmanaged;
+                var playbackSettings = sampleInstrument.GetNoteClipSettings(noteEvent.note);
+                _clipData = playbackSettings.NoteClipUnmanaged;
+                _pitch = playbackSettings.clipPitch;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
-                _sampleIndex = 0;
+                _samplePosition = 0;
             }
 
 
             public bool IsIdle => !_noteQueued;
+            public double ScheduledStartTime => _scheduledStartTime;
         }
     }
 

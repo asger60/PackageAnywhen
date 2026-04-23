@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen.SettingsObjects
 {
@@ -48,63 +49,7 @@ namespace Anywhen.SettingsObjects
         [SerializeField] public ClipSelectType clipSelectType = ClipSelectType.ScalePitchedNotes;
 
 
-        [Serializable]
-        public struct PitchLFOSettings
-        {
-            [Range(0.01f, 10)] public float frequency;
-            [Range(0, 1)] public float amplitude;
-            public bool retrigger;
-            public bool enabled;
 
-            public PitchLFOSettings(float frequency, float amplitude, bool retrigger) : this()
-            {
-                this.frequency = frequency;
-                this.amplitude = amplitude;
-                this.retrigger = retrigger;
-            }
-
-            public bool IsUnset()
-            {
-                return frequency == 0 && amplitude == 0;
-            }
-
-            public void Initialize()
-            {
-                frequency = 1;
-                amplitude = 1;
-            }
-        }
-
-        [Serializable]
-        public struct EnvelopeSettings
-        {
-            //public bool enabled;
-            [Range(0, 2f)] public float attack;
-            [Range(0, 1f)] public float decay;
-            [Range(0, 1f)] public float sustain;
-            [Range(0, 3f)] public float release;
-
-            public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
-            {
-                this.attack = attack;
-                this.decay = decay;
-                this.sustain = sustain;
-                this.release = release;
-            }
-
-            public bool IsUnset()
-            {
-                return attack == 0 && decay == 0 && sustain == 0 && release == 0;
-            }
-
-            public void Initialize()
-            {
-                attack = 0.01f;
-                decay = 0.1f;
-                sustain = 0.5f;
-                release = 0.1f;
-            }
-        }
 
         [Range(0, 1f)] public float volume = 1;
         [SerializeField] private int originalTempo = 100;
@@ -175,7 +120,6 @@ namespace Anywhen.SettingsObjects
                     return min + (int)((state >> 16) % (uint)(max - min));
                 }
 
-                // Advance state at least once to ensure variety even if seed was just set
                 NextInt(0, 1);
 
                 AnywhenNoteClipPlaybackSettings settings;
@@ -185,36 +129,40 @@ namespace Anywhen.SettingsObjects
                         note = AnywhenRuntime.Conductor.GetScaledNote(note);
 
                         int bestDistance = int.MaxValue;
-                        int unsignedDistance = 0;
+                        int matchingCount = 0;
+                        AnywhenNoteClip.Unmanaged selectedClip = default;
+
                         foreach (var noteClip in clips)
                         {
-                            var thisDist = Mathf.Abs(noteClip.noteIndex - note);
-                            if (thisDist <= bestDistance)
+                            var thisDist = noteClip.noteIndex - note;
+                            if (thisDist < 0) thisDist = -thisDist;
+
+                            if (thisDist < bestDistance)
                             {
                                 bestDistance = thisDist;
-                                unsignedDistance = note - noteClip.noteIndex;
+                                matchingCount = 1;
+                                selectedClip = noteClip;
                             }
-                        }
-
-                        var clipsList = new NativeArray<AnywhenNoteClip.Unmanaged>(0, Allocator.Persistent);
-                        foreach (var noteClip in clips)
-                        {
-                            if (noteClip.noteIndex == note - unsignedDistance)
+                            else if (thisDist == bestDistance)
                             {
-                                // clipsList.Add(noteClip);
+                                matchingCount++;
+                                if (NextInt(0, matchingCount) == 0)
+                                {
+                                    selectedClip = noteClip;
+                                }
                             }
                         }
 
                         float pitch = 1;
-                        if (bestDistance > 0)
+                        if (matchingCount > 0 && bestDistance > 0)
                         {
-                            pitch = Mathf.Pow(2, unsignedDistance / 12f);
+                            pitch = Mathf.Pow(2, (note - selectedClip.noteIndex) * (1f / 12f));
                         }
 
-                        settings = clipsList.Length == 0
+                        settings = matchingCount == 0
                             ? new AnywhenNoteClipPlaybackSettings()
-                            : new AnywhenNoteClipPlaybackSettings(clipsList[NextInt(0, clipsList.Length)], pitch, volume);
-
+                            : new AnywhenNoteClipPlaybackSettings(selectedClip, pitch, volume);
+                        
                         break;
 
 
@@ -225,23 +173,23 @@ namespace Anywhen.SettingsObjects
 
 
                     case ClipSelectType.Percussion:
-                        NativeArray<AnywhenNoteClip.Unmanaged> percussionClips = new NativeArray<AnywhenNoteClip.Unmanaged>();
+                        int count = 0;
+                        AnywhenNoteClip.Unmanaged resultClip = default;
                         foreach (var noteClip in clips)
                         {
                             if (noteClip.noteIndex == note)
                             {
-                                // percussionClips.Add(noteClip);
+                                count++;
+                                if (NextInt(0, count) == 0)
+                                {
+                                    resultClip = noteClip;
+                                }
                             }
                         }
 
-                        if (percussionClips.Length == 0)
-                        {
-                            settings = new AnywhenNoteClipPlaybackSettings();
-                        }
-                        else
-                        {
-                            settings = new AnywhenNoteClipPlaybackSettings(percussionClips[NextInt(0, percussionClips.Length)], 1, volume);
-                        }
+                        settings = count == 0
+                            ? new AnywhenNoteClipPlaybackSettings()
+                            : new AnywhenNoteClipPlaybackSettings(resultClip, 1, volume);
 
                         break;
 
@@ -254,7 +202,7 @@ namespace Anywhen.SettingsObjects
             }
         }
 
-        [SerializeField] private EnvelopeSettings envelope = new EnvelopeSettings(0.01f, 0.1f, 0.5f, 0.1f);
+        [FormerlySerializedAs("envelope")] [SerializeField] private AudioEnvelopeSettings audioEnvelope = new AudioEnvelopeSettings(0.01f, 0.1f, 0.5f, 0.1f);
 
         public new Unmanaged ToUnmanaged()
         {
@@ -282,14 +230,12 @@ namespace Anywhen.SettingsObjects
             public AnywhenNoteClip noteClip;
             public AnywhenNoteClip.Unmanaged NoteClipUnmanaged;
             public float clipPitch;
-            public float clipVolume;
 
             public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip noteClip, float clipPitch, float clipVolume)
             {
                 this.noteClip = noteClip;
                 this.NoteClipUnmanaged = noteClip.ToUnmanaged();
                 this.clipPitch = clipPitch;
-                this.clipVolume = clipVolume;
             }
 
             public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip.Unmanaged noteClip, float clipPitch, float clipVolume)
@@ -297,7 +243,6 @@ namespace Anywhen.SettingsObjects
                 this.noteClip = null;
                 this.NoteClipUnmanaged = noteClip;
                 this.clipPitch = clipPitch;
-                this.clipVolume = clipVolume;
             }
         }
 
@@ -315,38 +260,53 @@ namespace Anywhen.SettingsObjects
                 case ClipSelectType.ScalePitchedNotes:
                     note = AnywhenRuntime.Conductor.GetScaledNote(note);
 
-                    int bestDistance = int.MaxValue;
-                    int unsignedDistance = 0;
+                    int bestDist = int.MaxValue;
+                    int bestNoteIndex = 0;
+
                     foreach (var noteClip in clips)
                     {
-                        var thisDist = Mathf.Abs(noteClip.NoteIndex - note);
-                        if (thisDist <= bestDistance)
+                        var thisDist = noteClip.NoteIndex - note;
+                        if (thisDist < 0) thisDist = -thisDist;
+
+                        if (thisDist < bestDist)
                         {
-                            bestDistance = thisDist;
-                            unsignedDistance = note - noteClip.NoteIndex;
+                            bestDist = thisDist;
+                            bestNoteIndex = noteClip.NoteIndex;
                         }
                     }
 
-                    List<AnywhenNoteClip> clipsList = new List<AnywhenNoteClip>();
+                    int count = 0;
+                    AnywhenNoteClip resultClip = null;
                     foreach (var noteClip in clips)
                     {
-                        if (noteClip.NoteIndex == note - unsignedDistance)
+                        if (noteClip.NoteIndex == bestNoteIndex)
                         {
-                            clipsList.Add(noteClip);
+                            count++;
+                            if (count == 1)
+                            {
+                                resultClip = noteClip;
+                            }
+                            else
+                            {
+                                lock (_random)
+                                {
+                                    if (_random.Next(0, count) == 0)
+                                    {
+                                        resultClip = noteClip;
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    float pitch = 1;
-                    if (bestDistance > 0)
+                    float p = 1;
+                    if (bestDist > 0 && resultClip != null)
                     {
-                        pitch = Mathf.Pow(2, unsignedDistance / 12f);
+                        p = Mathf.Pow(2, (note - resultClip.NoteIndex) * (1f / 12f));
                     }
 
-                    lock (_random)
-                    {
-                        if (clipsList.Count == 0) return new AnywhenNoteClipPlaybackSettings();
-                        return new AnywhenNoteClipPlaybackSettings(clipsList[_random.Next(0, clipsList.Count)], pitch, volume);
-                    }
+                    if (resultClip == null) return new AnywhenNoteClipPlaybackSettings();
+                    return new AnywhenNoteClipPlaybackSettings(resultClip, p, volume);
 
 
                 case ClipSelectType.RandomVariations:
@@ -464,5 +424,61 @@ namespace Anywhen.SettingsObjects
         }
 
 #endif
+    }
+}
+
+[Serializable]
+public struct AudioLFOSettings
+{
+    [Range(0.01f, 10)] public float frequency;
+    [Range(0, 1)] public float amplitude;
+    
+    public AudioLFOSettings(float frequency, float amplitude) : this()
+    {
+        this.frequency = frequency;
+        this.amplitude = amplitude;
+
+    }
+
+    public bool IsUnset()
+    {
+        return frequency == 0 && amplitude == 0;
+    }
+
+    public void Initialize()
+    {
+        frequency = 1;
+        amplitude = 1;
+    }
+}
+
+[Serializable]
+public struct AudioEnvelopeSettings
+{
+    //public bool enabled;
+    [Range(0, 2f)] public float attack;
+    [Range(0, 1f)] public float decay;
+    [Range(0, 1f)] public float sustain;
+    [Range(0, 3f)] public float release;
+
+    public AudioEnvelopeSettings(float attack, float decay, float sustain, float release) : this()
+    {
+        this.attack = attack;
+        this.decay = decay;
+        this.sustain = sustain;
+        this.release = release;
+    }
+
+    public bool IsUnset()
+    {
+        return attack == 0 && decay == 0 && sustain == 0 && release == 0;
+    }
+
+    public void Initialize()
+    {
+        attack = 0.01f;
+        decay = 0.1f;
+        sustain = 0.5f;
+        release = 0.1f;
     }
 }

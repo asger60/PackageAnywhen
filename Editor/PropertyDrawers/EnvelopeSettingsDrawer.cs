@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Anywhen.SettingsObjects
 {
-    [CustomPropertyDrawer(typeof(AnywhenSampleInstrument.EnvelopeSettings))]
+    [CustomPropertyDrawer(typeof(AudioEnvelopeSettings))]
     public class EnvelopeSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 80f;
@@ -43,8 +43,7 @@ namespace Anywhen.SettingsObjects
                     position.width,
                     PreviewHeight
                 );
-                DrawEnvelopePreview(previewRect, attackProp.floatValue, decayProp.floatValue,
-                    sustainProp.floatValue, releaseProp.floatValue);
+                DrawEnvelopePreview(previewRect, attackProp.floatValue, decayProp.floatValue, sustainProp.floatValue, releaseProp.floatValue);
 
                 float yPos = position.y + EditorGUIUtility.singleLineHeight + PreviewHeight + Spacing;
                 float indent = 15f;

@@ -48,9 +48,9 @@ namespace Anywhen
                 trackPitch = trackSettings.TrackPitch;
                 trackFilters = filters;
                 trackLFO = new SynthControlLFO();
-                trackLFO.UpdateSettings(trackSettings.trackLFO);
+                trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
                 trackEnvelope = new SynthControlEnvelope();
-                trackEnvelope.UpdateSettings(trackSettings.trackEnvelope);
+                trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
             }
 
             public AnywhenVoiceBase GetVoice()
@@ -88,8 +88,8 @@ namespace Anywhen
             {
                 while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].playTime)
                 {
-                    trackLFO.UpdateSettings(trackSettings.trackLFO);
-                    trackEnvelope.UpdateSettings(trackSettings.trackEnvelope);
+                    trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
+                    trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
 
                     _currentPlaybackSettings = playbackQueue[0];
                     playbackQueue.RemoveAt(0);
@@ -377,7 +377,7 @@ namespace Anywhen
                 {
                     note = note,
                     playTime = playTime,
-                    stopTime = playTime + noteEvent.duration + noteEvent.drift + trackSettings.trackEnvelope.release,
+                    stopTime = playTime + noteEvent.duration + noteEvent.drift + trackSettings.trackAudioEnvelope.release,
                     volume = volume
                 };
 
@@ -633,8 +633,8 @@ namespace Anywhen
             {
                 var track = _tracksList[i];
                 if (newTrackSettings.Tracks.Count <= i) continue;
-                track.trackSettings.trackEnvelope = newTrackSettings.Tracks[i].trackEnvelope;
-                track.trackSettings.trackLFO = newTrackSettings.Tracks[i].trackLFO;
+                track.trackSettings.trackAudioEnvelope = newTrackSettings.Tracks[i].trackAudioEnvelope;
+                track.trackSettings.trackAudioLFO = newTrackSettings.Tracks[i].trackAudioLFO;
                 track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
                 track.trackSettings.volume = newTrackSettings.Tracks[i].volume;
             }

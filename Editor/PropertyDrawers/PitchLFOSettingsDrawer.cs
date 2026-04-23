@@ -3,22 +3,16 @@ using UnityEditor;
 
 namespace Anywhen.SettingsObjects
 {
-    [CustomPropertyDrawer(typeof(AnywhenSampleInstrument.PitchLFOSettings))]
+    [CustomPropertyDrawer(typeof(AudioLFOSettings))]
     public class PitchLFOSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 60f;
         private const float Spacing = 2f;
         private const float SliderHeight = 16f;
-
+        private bool _foldout = true;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var enabledProp = property.FindPropertyRelative("enabled");
-            bool isEnabled = enabledProp.boolValue;
-
-            if (!isEnabled)
-                return EditorGUIUtility.singleLineHeight;
-
-            return EditorGUIUtility.singleLineHeight + // Foldout line
+           return EditorGUIUtility.singleLineHeight + // Foldout line
                    PreviewHeight + Spacing + // LFO wave preview
                    (SliderHeight + Spacing) * 3; // 3 controls with spacing (frequency, amplitude, retrigger - enabled is now the foldout)
         }
@@ -27,25 +21,22 @@ namespace Anywhen.SettingsObjects
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            var enabledProp = property.FindPropertyRelative("enabled");
             var frequencyProp = property.FindPropertyRelative("frequency");
             
 
             var amplitudeProp = property.FindPropertyRelative("amplitude");
-            var retriggerProp = property.FindPropertyRelative("retrigger");
 
             // Create foldout header that controls the enabled state
             var foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
             EditorGUI.BeginChangeCheck();
-            bool newFoldoutState = EditorGUI.Foldout(foldoutRect, enabledProp.boolValue, label, true);
+            _foldout = EditorGUI.Foldout(foldoutRect, _foldout, label, true);
 
             if (EditorGUI.EndChangeCheck())
             {
-                enabledProp.boolValue = newFoldoutState;
 
                 // Initialize default values when enabling for the first time
-                if (newFoldoutState && frequencyProp.floatValue == 0 && amplitudeProp.floatValue == 0)
+                if (_foldout && frequencyProp.floatValue == 0 && amplitudeProp.floatValue == 0)
                 {
                     
                     frequencyProp.floatValue = 1f;
@@ -53,7 +44,7 @@ namespace Anywhen.SettingsObjects
                 }
             }
 
-            if (enabledProp.boolValue)
+            if (_foldout)
             {
                 // Draw LFO wave preview
                 var previewRect = new Rect(
@@ -62,7 +53,7 @@ namespace Anywhen.SettingsObjects
                     position.width,
                     PreviewHeight
                 );
-                DrawLFOPreview(previewRect, frequencyProp.floatValue, amplitudeProp.floatValue, enabledProp.boolValue);
+                DrawLFOPreview(previewRect, frequencyProp.floatValue, amplitudeProp.floatValue, _foldout);
 
                 float yPos = position.y + EditorGUIUtility.singleLineHeight + PreviewHeight + Spacing;
                 float indent = 15f;
@@ -77,7 +68,6 @@ namespace Anywhen.SettingsObjects
 
                 yPos += SliderHeight + Spacing;
                 controlRect.y = yPos;
-                EditorGUI.PropertyField(controlRect, retriggerProp);
             }
 
             EditorGUI.EndProperty();

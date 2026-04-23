@@ -20,13 +20,12 @@ namespace Anywhen.Synth
         private float _sendAmount;
         bool _retrigger;
 
-        public void UpdateSettings(AnywhenSampleInstrument.PitchLFOSettings newSettings)
+        public void UpdateSettings(AudioLFOSettings newSettings)
         {
             _currentFrequency = newSettings.frequency;
             SetFreq(newSettings.frequency);
             _isActive = true;
             _currentAmp = newSettings.amplitude;
-            _retrigger = newSettings.retrigger;
             _sendAmount = 100;
         }
     

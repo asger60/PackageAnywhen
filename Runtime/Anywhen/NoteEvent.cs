@@ -1,5 +1,6 @@
 using System;
 using Anywhen.SettingsObjects;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
@@ -22,7 +23,7 @@ namespace Anywhen
         public float expression2;
         public float velocity;
         public float duration;
-        public AnywhenSampleInstrument.EnvelopeSettings envelope;
+        [FormerlySerializedAs("envelope")] public AudioEnvelopeSettings audioEnvelope;
 
 
 
@@ -36,7 +37,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -50,7 +51,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -64,11 +65,11 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             this.duration = duration;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
-        public NoteEvent(int note, float duration, AnywhenSampleInstrument.EnvelopeSettings envelope)
+        public NoteEvent(int note, float duration, AudioEnvelopeSettings audioEnvelope)
         {
             this.state = EventTypes.NoteOn;
             notes = new[] { note };
@@ -78,7 +79,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             this.duration = duration;
-            this.envelope = envelope;
+            this.audioEnvelope = audioEnvelope;
 
         }
 
@@ -93,7 +94,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -107,7 +108,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -122,7 +123,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = noteDuration;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
   
         }
 
@@ -137,7 +138,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = volume;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -152,7 +153,7 @@ namespace Anywhen
             expression2 = 0;
             velocity = volume;
             duration = -1;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -169,12 +170,12 @@ namespace Anywhen
             this.velocity = 1;
             this.velocity = velocity;
             this.duration = duration;
-            envelope = new AnywhenSampleInstrument.EnvelopeSettings(0, 0, 1, 0.1f);
+            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
         public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum,
-            float expression1, float expression2, AnywhenSampleInstrument.EnvelopeSettings envelope)
+            float expression1, float expression2, AudioEnvelopeSettings audioEnvelope)
         {
             this.state = state;
             this.drift = drift;
@@ -185,7 +186,7 @@ namespace Anywhen
             this.velocity = 1;
             this.velocity = velocity;
             duration = -1;
-            this.envelope = envelope;
+            this.audioEnvelope = audioEnvelope;
 
         }
     }

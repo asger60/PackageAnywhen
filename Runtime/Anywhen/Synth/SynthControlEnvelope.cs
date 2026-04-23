@@ -31,7 +31,7 @@ namespace Anywhen.Synth
         private float _releaseBase;
 
 
-        private AnywhenSampleInstrument.EnvelopeSettings Settings;
+        private AudioEnvelopeSettings Settings;
         int _sampleRate;
 
         public bool IsActive => _state != EnvState.env_idle;
@@ -197,7 +197,7 @@ namespace Anywhen.Synth
             return HashCode.Combine((int)_state, _output, Settings);
         }
 
-        public void UpdateSettings(AnywhenSampleInstrument.EnvelopeSettings newSettings)
+        public void UpdateSettings(AudioEnvelopeSettings newSettings)
         {
             Settings = newSettings;
         }

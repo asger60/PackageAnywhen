@@ -110,7 +110,7 @@ namespace Anywhen
             _scheduledEndTime = Time.time + tempClip.length;
 
             // Apply ADSR envelope and duration-based release
-            _envelopeCoroutine = StartCoroutine(ApplyEnvelope(noteEvent.envelope, targetVolume, noteEvent.duration, tempClip.length));
+            _envelopeCoroutine = StartCoroutine(ApplyEnvelope(noteEvent.audioEnvelope, targetVolume, noteEvent.duration, tempClip.length));
         }
 
         private void StopScheduled(float fadeOutTime)
@@ -182,19 +182,19 @@ namespace Anywhen
             }
         }
 
-        private System.Collections.IEnumerator ApplyEnvelope(Anywhen.SettingsObjects.AnywhenSampleInstrument.EnvelopeSettings envelope,
+        private System.Collections.IEnumerator ApplyEnvelope(AudioEnvelopeSettings audioEnvelope,
             float targetVolume, float noteDuration, float clipLength)
         {
             // initialize envelope defaults if unset
-            if (envelope.IsUnset())
+            if (audioEnvelope.IsUnset())
             {
-                envelope.Initialize();
+                audioEnvelope.Initialize();
             }
 
-            float attack = Mathf.Max(0f, envelope.attack);
-            float decay = Mathf.Max(0f, envelope.decay);
-            float sustainLevel = Mathf.Clamp01(envelope.sustain);
-            float release = Mathf.Max(0f, envelope.release);
+            float attack = Mathf.Max(0f, audioEnvelope.attack);
+            float decay = Mathf.Max(0f, audioEnvelope.decay);
+            float sustainLevel = Mathf.Clamp01(audioEnvelope.sustain);
+            float release = Mathf.Max(0f, audioEnvelope.release);
 
             float startTime = Time.time;
 

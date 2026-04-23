@@ -3,6 +3,7 @@ using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen.Composing
 {
@@ -13,8 +14,8 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
-        public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-        public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
+        [FormerlySerializedAs("trackEnvelope")] public AudioEnvelopeSettings trackAudioEnvelope;
+        [FormerlySerializedAs("trackLFO")] public AudioLFOSettings trackAudioLFO;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
 
@@ -68,8 +69,8 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-            trackEnvelope = new AnywhenSampleInstrument.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
-            trackLFO = new AnywhenSampleInstrument.PitchLFOSettings(2, 0.01f, false);
+            trackAudioEnvelope = new AudioEnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
+            trackAudioLFO = new AudioLFOSettings(2, 0.01f);
         }
 
         public AnysongTrackSettings Clone()
@@ -79,8 +80,8 @@ namespace Anywhen.Composing
                 instrument = instrument,
                 volume = volume,
                 intensityMappingCurve = intensityMappingCurve,
-                trackEnvelope = trackEnvelope,
-                trackLFO = trackLFO,
+                trackAudioEnvelope = trackAudioEnvelope,
+                trackAudioLFO = trackAudioLFO,
                 trackType = trackType,
                 TrackPitch = TrackPitch,
             };
@@ -91,8 +92,9 @@ namespace Anywhen.Composing
         {
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
-            public AnywhenSampleInstrument.EnvelopeSettings trackEnvelope;
-            public AnywhenSampleInstrument.PitchLFOSettings trackLFO;
+            public AudioEnvelopeSettings TrackAudioEnvelope;
+            public AudioLFOSettings TrackAudioLFO;
+            
             public float trackPitch;
             public int voices;
             public AnyTrackTypes trackType;
@@ -110,8 +112,8 @@ namespace Anywhen.Composing
             {
                 instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
                 volume = volume,
-                trackEnvelope = trackEnvelope,
-                trackLFO = trackLFO,
+                TrackAudioEnvelope = trackAudioEnvelope,
+                TrackAudioLFO = trackAudioLFO,
                 trackPitch = trackPitch,
                 voices = voices,
                 trackType = trackType,

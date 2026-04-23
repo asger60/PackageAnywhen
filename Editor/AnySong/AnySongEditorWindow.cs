@@ -194,14 +194,14 @@ namespace Anysong
 
             foreach (var track in songObject.Tracks)
             {
-                if (track.trackEnvelope.IsUnset())
+                if (track.trackAudioEnvelope.IsUnset())
                 {
-                    track.trackEnvelope.Initialize();
+                    track.trackAudioEnvelope.Initialize();
                 }
 
-                if (track.trackLFO.IsUnset())
+                if (track.trackAudioLFO.IsUnset())
                 {
-                    track.trackLFO.Initialize();
+                    track.trackAudioLFO.Initialize();
                 }
             }
 
