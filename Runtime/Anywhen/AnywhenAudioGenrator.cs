@@ -44,7 +44,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
 
     [BurstCompile(CompileSynchronously = true)]
-    private struct Processor : GeneratorInstance.IRealtime
+    public struct Processor : GeneratorInstance.IRealtime
     {
         NativeArray<Track> _tracks;
         private int _sampleRate;
@@ -224,22 +224,30 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         }
 
 
-        struct Track : IEquatable<Track>
+        public struct Track : IEquatable<Track>
         {
             private NativeArray<SampleVoice> _voices;
             private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
             private float _trackVolume;
-            private AudioProcessorEnvelope _trackEnvelope;
+            private AudioProcessorEnvelope _trackEnvelope1, _trackEnvelope2;
+            AudioProcessorLFO _trackLFO1;
+            private float _trackLFO1Value;
+
             private PlaybackEvent _nextEvent;
             private NativeArray<TrackAudioProcessor> _trackFilters;
+
 
             public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings)
             {
                 _voices = new NativeArray<SampleVoice>(settings.voices, Allocator.Persistent);
                 _trackVolume = settings.volume;
                 _sampleInstrument = settings.instrument;
-                _trackEnvelope = new AudioProcessorEnvelope(sampleRate);
-                _trackEnvelope.SetSettings(settings.TrackAudioEnvelope);
+                _trackEnvelope1 = new AudioProcessorEnvelope(sampleRate);
+                _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope);
+                _trackEnvelope2 = new AudioProcessorEnvelope(sampleRate);
+
+                _trackLFO1 = new AudioProcessorLFO(sampleRate);
+                _trackLFO1Value = 0;
 
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
 
@@ -298,13 +306,18 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     return 0;
                 }
 
+
+                _trackLFO1Value = Mathf.Sin((float)dspTime);
+
                 if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
                 {
-                    _trackEnvelope.SetGate(true);
+                    _trackEnvelope1.SetGate(true);
+                    _trackEnvelope2.SetGate(true);
                 }
                 else if (dspTime >= _nextEvent.ScheduledEndTime)
                 {
-                    _trackEnvelope.SetGate(false);
+                    _trackEnvelope1.SetGate(false);
+                    _trackEnvelope2.SetGate(false);
                 }
 
                 float clipAmplitude = 0;
@@ -316,20 +329,22 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 }
 
 
-                clipAmplitude = _trackEnvelope.Process(clipAmplitude);
+                clipAmplitude = _trackEnvelope1.Process(clipAmplitude, this);
 
                 if (_trackFilters.IsCreated)
                 {
                     for (int i = 0; i < _trackFilters.Length; i++)
                     {
                         var filter = _trackFilters[i];
-                        clipAmplitude = filter.Process(clipAmplitude);
+                        clipAmplitude = filter.Process(clipAmplitude, this);
                         _trackFilters[i] = filter;
                     }
                 }
 
                 return clipAmplitude * _trackVolume;
             }
+
+            public float TrackLFO1Value => _trackLFO1Value;
 
 
             public void Dispose()
@@ -348,7 +363,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             public bool Equals(Track other)
             {
                 return _voices.Equals(other._voices) && _sampleInstrument.Equals(other._sampleInstrument) &&
-                       _trackVolume.Equals(other._trackVolume) && _trackEnvelope.Equals(other._trackEnvelope) && _nextEvent.Equals(other._nextEvent);
+                       _trackVolume.Equals(other._trackVolume) && _trackEnvelope1.Equals(other._trackEnvelope1) &&
+                       _nextEvent.Equals(other._nextEvent);
             }
 
             public override bool Equals(object obj)
@@ -358,7 +374,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(_voices, _sampleInstrument, _trackVolume, _trackEnvelope, _nextEvent);
+                return HashCode.Combine(_voices, _sampleInstrument, _trackVolume, _trackEnvelope1, _nextEvent);
             }
         }
 

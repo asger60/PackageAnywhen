@@ -1,13 +1,13 @@
 using System;
 using Anywhen.Synth.Filter;
+using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen.Synth
 {
     public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
-        //public SynthFilterBase.ModRouting[] modRouting;
+        public SynthFilterBase.ModRouting[] modRouting;
 
         public enum FilterTypes
         {
@@ -60,7 +60,7 @@ namespace Anywhen.Synth
         }
 
         public FormantSettings formantSettings;
-        
+
         [Serializable]
         public struct BitcrushSettings
         {
@@ -69,7 +69,7 @@ namespace Anywhen.Synth
         }
 
         public BitcrushSettings bitcrushSettings;
-        
+
         [Serializable]
         public struct SaturatorSettings
         {
@@ -78,7 +78,7 @@ namespace Anywhen.Synth
         }
 
         public SaturatorSettings saturatorSettings;
-        
+
         [Serializable]
         public struct DelaySettings
         {
@@ -100,7 +100,7 @@ namespace Anywhen.Synth
         }
 
         public ChorusSettings chorusSettings;
-        
+
         [Serializable]
         public struct EnvelopeSettings
         {
@@ -131,15 +131,16 @@ namespace Anywhen.Synth
                 release = 0.1f;
             }
         }
-        
+
         public EnvelopeSettings envelopeSettings;
-        
-        
+
+
         [Serializable]
         public struct LFOSettings
         {
             [Range(0.01f, 10)] public float frequency;
             [Range(0, 1)] public float amplitude;
+            public bool unipolar;
 
             public LFOSettings(float frequency, float amplitude) : this()
             {
@@ -156,13 +157,16 @@ namespace Anywhen.Synth
             {
                 frequency = 1;
                 amplitude = 1;
+                unipolar = false;
             }
         }
+
         public LFOSettings lfoSettings;
-        
+
 
         public struct Unmanaged
         {
+            public NativeArray<SynthFilterBase.ModRouting> modRoutings;
             public FilterTypes filterType;
             public LowPassSettings lowPassSettings;
             public LadderSettings ladderSettings;
@@ -180,6 +184,7 @@ namespace Anywhen.Synth
         {
             return new Unmanaged
             {
+                modRoutings = new NativeArray<SynthFilterBase.ModRouting>(modRouting, Allocator.Temp),
                 filterType = filterType,
                 lowPassSettings = lowPassSettings,
                 ladderSettings = ladderSettings,

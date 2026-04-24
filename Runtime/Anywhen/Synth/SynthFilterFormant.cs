@@ -180,19 +180,19 @@ namespace Anywhen.Synth
 
         public override float Process(float sample)
         {
-            UpdateSettings();
-
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
-
-            float mix1 = _audioProcessorBandPass1.Process(sample);
-            float mix2 = _audioProcessorBandPass2.Process(sample);
-            float mix3 = _audioProcessorBandPass3.Process(sample);
-
-            sample = ((mix1 * _currentVowel.GetBand(0).gain) +
-                      (mix2 * _currentVowel.GetBand(1).gain) +
-                      (mix3 * _currentVowel.GetBand(2).gain)) / 3f;
-
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+            //UpdateSettings();
+//
+            //if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+//
+            //float mix1 = _audioProcessorBandPass1.Process(sample, TODO);
+            //float mix2 = _audioProcessorBandPass2.Process(sample, TODO);
+            //float mix3 = _audioProcessorBandPass3.Process(sample, TODO);
+//
+            //sample = ((mix1 * _currentVowel.GetBand(0).gain) +
+            //          (mix2 * _currentVowel.GetBand(1).gain) +
+            //          (mix3 * _currentVowel.GetBand(2).gain)) / 3f;
+//
+            //if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
             return sample;
         }

@@ -94,7 +94,7 @@ namespace Anywhen
                             }
                             else if (propertyPath.StartsWith("trackLFO."))
                             {
-                                playerTrack.trackLFO.UpdateSettings(track.trackAudioLFO);
+                             //   playerTrack.trackLFO.UpdateSettings(track.trackAudioLFO);
                             }
                             else if (propertyPath == "trackPitch")
                             {

@@ -1,4 +1,5 @@
 using Anywhen.Synth.Filter;
+using PlasticPipe.Server;
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -35,7 +36,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             UpdateSettings();
             // Simple soft clipping saturation using tanh-like shaping

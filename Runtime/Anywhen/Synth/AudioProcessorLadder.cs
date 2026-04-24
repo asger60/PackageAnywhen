@@ -1,4 +1,5 @@
 ﻿using Anywhen.Synth.Filter;
+using PlasticPipe.Server;
 
 namespace Anywhen.Synth
 {
@@ -61,7 +62,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             UpdateSettings();
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;

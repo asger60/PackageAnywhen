@@ -17,15 +17,13 @@ namespace Anywhen.Synth.Filter
 
             public ModSources modSource;
             [Range(0, 1f)] public float modAmount;
-            [DynamicRange] public DynamicRangeFloat modDepth;
 
            // private SynthControlBase _modSourceControl;
 
-            public ModRouting(ModSources modSource, float modAmount, DynamicRangeFloat modDepth)
+            public ModRouting(ModSources modSource, float modAmount)
             {
                 this.modSource = modSource;
                 this.modAmount =modAmount;
-                this.modDepth = modDepth;
               //  _modSourceControl = null;
             }
 
@@ -33,19 +31,17 @@ namespace Anywhen.Synth.Filter
             {
                 public ModSources modSource;
                 public float modAmount;
-                public DynamicRangeFloat modDepth;
 
-                public Unmanaged(ModSources modSource, float modAmount, DynamicRangeFloat modDepth)
+                public Unmanaged(ModSources modSource, float modAmount)
                 {
                     this.modSource = modSource;
                     this.modAmount = modAmount;
-                    this.modDepth = modDepth;
                 }
             }
 
             public Unmanaged ToUnmanaged()
             {
-                return new Unmanaged(modSource, modAmount, modDepth);
+                return new Unmanaged(modSource, modAmount);
             }
 
             public void Set(AnywhenPlayerBase.PlayerTrack track)

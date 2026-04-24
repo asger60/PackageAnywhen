@@ -1,3 +1,4 @@
+using PlasticPipe.Server;
 using Unity.Collections;
 using UnityEngine;
 
@@ -66,7 +67,7 @@ namespace Anywhen.Synth
 
         public void DoUpdate() { }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             UpdateSettings();
 

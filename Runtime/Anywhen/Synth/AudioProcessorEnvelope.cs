@@ -154,7 +154,7 @@ namespace Anywhen.Synth
             _settings = settings.envelopeSettings;
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             return sample * HandleEnvelope();
         }

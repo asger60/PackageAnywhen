@@ -36,7 +36,7 @@ namespace Anywhen
             public float trackPitch;
             public List<SynthFilterBase> trackFilters;
             public AudioProcessorEnvelope trackEnvelope;
-            public SynthControlLFO trackLFO;
+            public AudioProcessorLFO trackLFO;
 
             public PlayerTrack(AnysongTrackSettings trackSettings, AnywhenVoiceBase[] voices, List<SynthFilterBase> filters)
             {
@@ -44,8 +44,8 @@ namespace Anywhen
                 Voices = voices;
                 trackPitch = trackSettings.TrackPitch;
                 trackFilters = filters;
-                trackLFO = new SynthControlLFO();
-                trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
+                trackLFO = new AudioProcessorLFO();
+               // trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
                 trackEnvelope = new AudioProcessorEnvelope();
                 //trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
             }
@@ -85,7 +85,7 @@ namespace Anywhen
             {
                 while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].playTime)
                 {
-                    trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
+                    //trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
                     //trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
 
                     _currentPlaybackSettings = playbackQueue[0];

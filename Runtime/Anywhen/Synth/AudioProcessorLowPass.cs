@@ -89,6 +89,10 @@
 //  is not implemented yet.
 
 
+using Anywhen.Synth.Filter;
+using Unity.Collections;
+using UnityEngine;
+
 namespace Anywhen.Synth
 {
     public struct AudioProcessorLowPass : IAudioProcessor
@@ -119,7 +123,7 @@ namespace Anywhen.Synth
 
         private float _cutoff;
         private int _sampleRate;
-
+        NativeArray<SynthFilterBase.ModRouting> _modRouting;
 
         public AudioProcessorLowPass(int sampleRate) : this()
         {
@@ -129,7 +133,6 @@ namespace Anywhen.Synth
             _oversampling = 1;
         }
 
-        
 
         public void DoUpdate()
         {
@@ -140,12 +143,19 @@ namespace Anywhen.Synth
             _resonance = settings.lowPassSettings.resonance;
             _cutoff = settings.lowPassSettings.cutoffFrequency;
             _oversampling = settings.lowPassSettings.oversampling;
+            _modRouting = settings.modRoutings;
             RecalculateS();
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+
+            //if (_modRouting.IsCreated && _modRouting.Length > 0)
+            {
+                _frequencyMod = 1 + (track.TrackLFO1Value );
+                RecalculateS();
+            }
 
             // Input scaling/normalization for the nonlinear ladder
             // The filter works best when the input is in a range that interacts well with Tanh(x * _v)
@@ -212,37 +222,18 @@ namespace Anywhen.Synth
         }
 
 
-        public void SetResonance(float value)
-        {
-            _resonance = Clamp(value, 0, 1.0f);
-        }
-
-        public void SetCutOff(float value)
-        {
-            _cutoff = value;
-            RecalculateS();
-        }
-
         private void RecalculateS()
         {
             if (_sampleRate <= 0) return;
-            
+
             float compensation = 0.435f;
             float f = _cutoff * _frequencyMod * compensation;
             float omega = 2.0f * 3.14159265f * f / (_sampleRate * _oversampling);
-            
-            _s = 1.0f - UnityEngine.Mathf.Exp(-omega);
-            
-            // Limit _s to ensure stability.
-            _s = Clamp(_s, 0, 1.0f); 
-        }
 
-        public void SetOversampling(int iterationCount)
-        {
-            _oversampling = iterationCount;
-            if (_oversampling < 1)
-                _oversampling = 1;
-            RecalculateS();
+            _s = 1.0f - UnityEngine.Mathf.Exp(-omega);
+
+            // Limit _s to ensure stability.
+            _s = Clamp(_s, 0, 1.0f);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Anywhen.Synth.Filter;
+using PlasticPipe.Server;
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -31,7 +32,7 @@ namespace Anywhen.Synth
             _q = q;
         }
 
-        public  void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
             _settings = settings.bandPassSettings;
         }
@@ -60,7 +61,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             UpdateSettings();
 

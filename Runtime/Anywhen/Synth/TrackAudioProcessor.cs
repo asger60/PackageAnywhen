@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Anywhen.Synth
 {
@@ -61,17 +62,17 @@ namespace Anywhen.Synth
             }
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             return _settings.filterType switch
             {
-                AudioProcessorSettingsObject.FilterTypes.LowPassFilter => _lowPass.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.SaturatorFilter => _saturator.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.BandPassFilter => _bandPass.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => _bitcrush.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.LadderFilter => _ladder.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.ChorusFilter => _chorus.Process(sample),
-                AudioProcessorSettingsObject.FilterTypes.DelayFilter => _delay.Process(sample),
+                AudioProcessorSettingsObject.FilterTypes.LowPassFilter => _lowPass.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.SaturatorFilter => _saturator.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.BandPassFilter => _bandPass.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.LadderFilter => _ladder.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.ChorusFilter => _chorus.Process(sample, track),
+                AudioProcessorSettingsObject.FilterTypes.DelayFilter => _delay.Process(sample, track),
 
                 _ => sample
             };
@@ -82,7 +83,7 @@ namespace Anywhen.Synth
     {
         public void DoUpdate();
 
-        public float Process(float sample);
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track);
 
         public void SetGate(bool gate);
 

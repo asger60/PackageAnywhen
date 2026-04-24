@@ -1,4 +1,5 @@
-﻿using Unity.Collections;
+﻿using PlasticPipe.Server;
+using Unity.Collections;
 
 namespace Anywhen.Synth
 {
@@ -34,10 +35,6 @@ namespace Anywhen.Synth
         }
 
 
-        public void HandleModifiers(float mod1)
-        {
-        }
-
 
         public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
@@ -50,7 +47,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample)
+        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
             UpdateSettings();
             // Bitcrush / Quantization
