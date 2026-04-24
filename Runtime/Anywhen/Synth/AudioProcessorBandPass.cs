@@ -13,7 +13,7 @@ namespace Anywhen.Synth
         private float _q ; // 1-10
         private float _frequencyMod ;
         private readonly int _sampleRate;
-        AudioProcessorSettingsObject.Unmanaged _settings;
+        AudioProcessorSettingsObject.BandPassSettings _settings;
         public AudioProcessorBandPass(int sampleRate) : this()
         {
             _sampleRate = sampleRate;
@@ -33,7 +33,7 @@ namespace Anywhen.Synth
 
         public  void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            _settings = settings;
+            _settings = settings.bandPassSettings;
         }
 
 
@@ -42,20 +42,12 @@ namespace Anywhen.Synth
             _frequencyMod = 1;
         }
 
-        public  void SetExpression(float data)
-        {
-        }
 
-
-        public  void HandleModifiers(float mod1)
-        {
-            _frequencyMod = mod1;
-        }
 
           void UpdateSettings()
         {
-            SetFrequency(_settings.bandPassSettings.frequency);
-            _q = _settings.bandPassSettings.q;
+            SetFrequency(_settings.frequency);
+            _q = _settings.q;
             _frequencyMod = 1;
             //foreach (var mod in ModRoutings)
             //{

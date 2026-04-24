@@ -1,10 +1,12 @@
-﻿namespace Anywhen.Synth
+﻿using Unity.Collections;
+
+namespace Anywhen.Synth
 {
     public struct AudioProcessorBitcrush : IAudioProcessor
     {
         private float _bitDepth;
         private int _downsampling;
-        private float[] _lastSamples;
+        private NativeArray<float> _lastSamples;
         private int _downsamplingCounter;
         private float _filterMod;
         AudioProcessorSettingsObject.BitcrushSettings _settings;
@@ -15,7 +17,7 @@
             _downsampling = 0;
             _downsamplingCounter = 0;
             _filterMod = 0;
-            _lastSamples = new float[2];
+            _lastSamples = new NativeArray<float>(2, Allocator.Persistent);
             _settings = new AudioProcessorSettingsObject.BitcrushSettings();
         }
 

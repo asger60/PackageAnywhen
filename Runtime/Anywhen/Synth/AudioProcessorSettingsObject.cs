@@ -7,7 +7,7 @@ namespace Anywhen.Synth
 {
     public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
-        public SynthFilterBase.ModRouting[] modRouting;
+        //public SynthFilterBase.ModRouting[] modRouting;
 
         public enum FilterTypes
         {

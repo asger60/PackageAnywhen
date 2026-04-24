@@ -1,18 +1,23 @@
-using Anywhen.Synth.Filter;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorDelay : IAudioProcessor
+    public struct AudioProcessorDelay : IAudioProcessor, System.IDisposable
     {
         private float _delayTime;
         private float _feedback;
         private float _wet;
 
-        private float[][] _delayBuffers;
-        private int[] _writePositions;
+        private NativeArray<float> _delayBuffer0;
+        private NativeArray<float> _delayBuffer1;
+        private int _writePos0;
+        private int _writePos1;
         private int _sampleRate;
         private int _channelCounter;
+        private bool _initialized;
+
+        private AudioProcessorSettingsObject.DelaySettings _settings;
 
         public AudioProcessorDelay(int sampleRate)
         {
@@ -21,12 +26,13 @@ namespace Anywhen.Synth
             _wet = 0;
             _sampleRate = sampleRate;
             _channelCounter = 0;
+            _initialized = false;
+            _writePos0 = 0;
+            _writePos1 = 0;
             _settings = new AudioProcessorSettingsObject.DelaySettings();
-            _delayBuffers = null;
-            _writePositions = null;
+            _delayBuffer0 = default;
+            _delayBuffer1 = default;
         }
-
-        AudioProcessorSettingsObject.DelaySettings _settings;
 
         void UpdateSettings()
         {
@@ -37,23 +43,20 @@ namespace Anywhen.Synth
             if (_sampleRate == 0)
             {
                 _sampleRate = AudioSettings.outputSampleRate;
-                if (_sampleRate == 0) _sampleRate = 44100; // Fallback
+                if (_sampleRate == 0) _sampleRate = 44100;
             }
 
-            // Max delay of 2 seconds to be safe
-            int bufferSize = _sampleRate * 2;
-            if (_delayBuffers == null)
+            if (!_initialized)
             {
-                _delayBuffers = new float[2][];
-                _delayBuffers[0] = new float[bufferSize];
-                _delayBuffers[1] = new float[bufferSize];
-                _writePositions = new int[2];
+                // Max delay of 2 seconds to be safe
+                int bufferSize = _sampleRate * 2;
+                _delayBuffer0 = new NativeArray<float>(bufferSize, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+                _delayBuffer1 = new NativeArray<float>(bufferSize, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+                _initialized = true;
             }
         }
 
-        public void SetGate(bool gate)
-        {
-        }
+        public void SetGate(bool gate) { }
 
         public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
@@ -61,33 +64,32 @@ namespace Anywhen.Synth
             UpdateSettings();
         }
 
-        public void DoUpdate()
-        {
-        }
+        public void DoUpdate() { }
 
         public float Process(float sample)
         {
             UpdateSettings();
 
+            if (!_initialized) return sample;
+
             int channel = _channelCounter % 2;
             _channelCounter++;
 
-            if (_delayBuffers == null) return sample;
-
-            float[] buffer = _delayBuffers[channel];
-            int writePos = _writePositions[channel];
+            ref NativeArray<float> buffer = ref (channel == 0 ? ref _delayBuffer0 : ref _delayBuffer1);
+            ref int writePos = ref (channel == 0 ? ref _writePos0 : ref _writePos1);
 
             // Calculate read position
             float delayInSamples = _delayTime * _sampleRate;
             float readPos = writePos - delayInSamples;
 
             // Wrap read position
-            while (readPos < 0) readPos += buffer.Length;
+            int bufLen = buffer.Length;
+            while (readPos < 0) readPos += bufLen;
 
-            // Simple linear interpolation
-            int idx1 = (int)readPos;
-            int idx2 = (idx1 + 1) % buffer.Length;
-            float frac = readPos - idx1;
+            // Linear interpolation
+            int idx1 = (int)readPos % bufLen;
+            int idx2 = (idx1 + 1) % bufLen;
+            float frac = readPos - (int)readPos;
 
             float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
 
@@ -95,10 +97,17 @@ namespace Anywhen.Synth
             buffer[writePos] = sample + (delayedSample * _feedback);
 
             // Advance write position
-            _writePositions[channel] = (writePos + 1) % buffer.Length;
+            writePos = (writePos + 1) % bufLen;
 
             // Mix dry and wet
             return (delayedSample * _wet) + (sample * (1f - _wet));
+        }
+
+        public void Dispose()
+        {
+            if (_delayBuffer0.IsCreated) _delayBuffer0.Dispose();
+            if (_delayBuffer1.IsCreated) _delayBuffer1.Dispose();
+            _initialized = false;
         }
     }
 }

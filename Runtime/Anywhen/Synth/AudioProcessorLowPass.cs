@@ -118,7 +118,6 @@ namespace Anywhen.Synth
         float _s, _v;
 
         private float _cutoff;
-
         private int _sampleRate;
 
 
@@ -130,13 +129,7 @@ namespace Anywhen.Synth
             _oversampling = 1;
         }
 
-
-        public void HandleModifiers(float mod1)
-        {
-            _frequencyMod = mod1;
-            RecalculateS();
-        }
-
+        
 
         public void DoUpdate()
         {
