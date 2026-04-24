@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthFilterChorus : SynthFilterBase
+    public struct AudioProcessorChorus : IAudioProcessor
     {
         private float _rate;
         private float _depth;
@@ -17,18 +17,32 @@ namespace Anywhen.Synth
         private int _sampleRate;
         private int _channelCounter;
         private float _filterMod;
+        private AudioProcessorSettingsObject.ChorusSettings _settings;
 
-        public override void SetExpression(float data)
+        public AudioProcessorChorus(int sampleRate)
         {
+            _rate = 0;
+            _depth = 0;
+            _delay = 0;
+            _feedback = 0;
+            _wet = 0;
+            _sampleRate = sampleRate;
+            _channelCounter = 0;
+            _filterMod = 1;
+            _settings = new AudioProcessorSettingsObject.ChorusSettings();
+            _delayBuffers = null;
+            _writePositions = null;
+            _lfoPhases = null;
         }
 
-        protected override void UpdateSettings()
+
+        void UpdateSettings()
         {
-            _rate = Settings.chorusSettings.rate;
-            _depth = Settings.chorusSettings.depth;
-            _delay = Settings.chorusSettings.delay;
-            _feedback = Settings.chorusSettings.feedback;
-            _wet = Settings.chorusSettings.wet;
+            _rate = _settings.rate;
+            _depth = _settings.depth;
+            _delay = _settings.delay;
+            _feedback = _settings.feedback;
+            _wet = _settings.wet;
 
             if (_sampleRate == 0)
             {
@@ -50,23 +64,28 @@ namespace Anywhen.Synth
             }
 
             _filterMod = 1;
-            foreach (var mod in ModRoutings)
-            {
-                _filterMod = mod.Process(_filterMod);
-            }
+            //foreach (var mod in ModRoutings)
+            //{
+            //    _filterMod = mod.Process(_filterMod);
+            //}
         }
 
-        public override void HandleModifiers(float mod1)
+
+        public void DoUpdate()
         {
         }
 
-        public override void SetSettings(AudioProcessorSettingsObject newSettings)
+        public void SetGate(bool gate)
         {
-            Settings = newSettings;
+        }
+
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        {
+            _settings = settings.chorusSettings;
             UpdateSettings();
         }
 
-        public override float Process(float sample)
+        public float Process(float sample)
         {
             UpdateSettings();
 

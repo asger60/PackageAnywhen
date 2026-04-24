@@ -5,12 +5,12 @@ namespace Anywhen.Synth
     // A 303-style diode ladder filter.
     // Diode ladders have a specific resonance behavior and a shallower slope (18dB-ish)
     // compared to Moog-style transistor ladders (24dB/oct).
-    public class SynthFilterLadder : SynthFilterBase
+    public struct AudioProcessorLadder : IAudioProcessor
     {
-        private float _cutoffMod = 1;
+        private float _cutoffMod;
 
         private float _resolution;
-        private int _oversampling = 1;
+        private int _oversampling;
 
         // State variables for the diode ladder stages
         private float _s1, _s2, _s3, _s4;
@@ -18,37 +18,50 @@ namespace Anywhen.Synth
         private float _h;
         private float _frequencyMod;
 
-        public override void SetExpression(float data)
-        {
-        }
+
+        private AudioProcessorSettingsObject.LadderSettings _settings;
 
 
-        protected override void UpdateSettings()
+        public AudioProcessorLadder(int sampleRate)
         {
-            _resolution = Settings.ladderSettings.resonance;
-            SetCutOff(Settings.ladderSettings.cutoffFrequency);
-            SetOversampling(Settings.ladderSettings.oversampling);
+            _resolution = 0;
+            _s1 = _s2 = _s3 = _s4 = 0;
+            _g = _h = 0;
             _frequencyMod = 1;
-            foreach (var mod in ModRoutings)
-            {
-                _frequencyMod = mod.Process(_frequencyMod);
-            }
-        }
-
-        public override void HandleModifiers(float mod1)
-        {
-            _cutoffMod = mod1;
-            SetCutOff(Settings.ladderSettings.cutoffFrequency);
-        }
-
-        public override void SetSettings(AudioProcessorSettingsObject newSettings)
-        {
             _cutoffMod = 1;
-            Settings = newSettings;
+            _oversampling = 1;
+            _settings = new AudioProcessorSettingsObject.LadderSettings();
+        }
+
+
+        public void SetGate(bool gate)
+        {
+        }
+
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        {
+            _settings = settings.ladderSettings;
             UpdateSettings();
         }
 
-        public override float Process(float sample)
+        private void UpdateSettings()
+        {
+            _resolution = _settings.resonance;
+            SetCutOff(_settings.cutoffFrequency);
+            SetOversampling(_settings.oversampling);
+            _frequencyMod = 1;
+            //foreach (var mod in ModRoutings)
+            //{
+            //    _frequencyMod = mod.Process(_frequencyMod);
+            //}
+        }
+
+
+        public void DoUpdate()
+        {
+        }
+
+        public float Process(float sample)
         {
             UpdateSettings();
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
@@ -111,6 +124,7 @@ namespace Anywhen.Synth
 
             return Clamp(sample, -1f, 1f);
         }
+
 
         // Fast approximation of Tanh from SynthFilterLowPass
         private static float FastTanh(float x)

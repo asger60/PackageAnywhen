@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthFilterDelay : SynthFilterBase
+    public struct AudioProcessorDelay : IAudioProcessor
     {
         private float _delayTime;
         private float _feedback;
@@ -14,16 +14,25 @@ namespace Anywhen.Synth
         private int _sampleRate;
         private int _channelCounter;
 
-        public override void SetExpression(float data)
+        public AudioProcessorDelay(int sampleRate)
         {
+            _delayTime = 0;
+            _feedback = 0;
+            _wet = 0;
+            _sampleRate = sampleRate;
+            _channelCounter = 0;
+            _settings = new AudioProcessorSettingsObject.DelaySettings();
+            _delayBuffers = null;
+            _writePositions = null;
         }
 
-        
-        protected override void UpdateSettings()
+        AudioProcessorSettingsObject.DelaySettings _settings;
+
+        void UpdateSettings()
         {
-            _delayTime = Settings.delaySettings.delayTime;
-            _feedback = Settings.delaySettings.feedback;
-            _wet = Settings.delaySettings.wet;
+            _delayTime = _settings.delayTime;
+            _feedback = _settings.feedback;
+            _wet = _settings.wet;
 
             if (_sampleRate == 0)
             {
@@ -42,17 +51,21 @@ namespace Anywhen.Synth
             }
         }
 
-        public override void HandleModifiers(float mod1)
+        public void SetGate(bool gate)
         {
         }
 
-        public override void SetSettings(AudioProcessorSettingsObject newSettings)
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            Settings = newSettings;
+            _settings = settings.delaySettings;
             UpdateSettings();
         }
 
-        public override float Process(float sample)
+        public void DoUpdate()
+        {
+        }
+
+        public float Process(float sample)
         {
             UpdateSettings();
 
@@ -67,20 +80,20 @@ namespace Anywhen.Synth
             // Calculate read position
             float delayInSamples = _delayTime * _sampleRate;
             float readPos = writePos - delayInSamples;
-            
+
             // Wrap read position
             while (readPos < 0) readPos += buffer.Length;
-            
+
             // Simple linear interpolation
             int idx1 = (int)readPos;
             int idx2 = (idx1 + 1) % buffer.Length;
             float frac = readPos - idx1;
-            
+
             float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
 
             // Write to buffer (input + feedback)
             buffer[writePos] = sample + (delayedSample * _feedback);
-            
+
             // Advance write position
             _writePositions[channel] = (writePos + 1) % buffer.Length;
 

@@ -1,47 +1,56 @@
-﻿using Anywhen.Synth.Filter;
-
-namespace Anywhen.Synth
+﻿namespace Anywhen.Synth
 {
-    public class SynthFilterBitcrush : SynthFilterBase
+    public struct AudioProcessorBitcrush : IAudioProcessor
     {
         private float _bitDepth;
         private int _downsampling;
-        private float[] _lastSamples = new float[2];
+        private float[] _lastSamples;
         private int _downsamplingCounter;
         private float _filterMod;
+        AudioProcessorSettingsObject.BitcrushSettings _settings;
 
-        public override void SetExpression(float data)
+        public AudioProcessorBitcrush(int sampleRate)
         {
+            _bitDepth = 0;
+            _downsampling = 0;
+            _downsamplingCounter = 0;
+            _filterMod = 0;
+            _lastSamples = new float[2];
+            _settings = new AudioProcessorSettingsObject.BitcrushSettings();
         }
 
 
-
-        protected override void UpdateSettings()
+        void UpdateSettings()
         {
-            _bitDepth = Settings.bitcrushSettings.bitDepth;
-            _downsampling = Settings.bitcrushSettings.downsampling;
+            _bitDepth = _settings.bitDepth;
+            _downsampling = _settings.downsampling;
             _filterMod = 1;
-            foreach (var mod in ModRoutings)
-            {
-                _filterMod = mod.Process(_filterMod);
-            }
+            //foreach (var mod in ModRoutings)
+            //{
+            //    _filterMod = mod.Process(_filterMod);
+            //}
         }
 
 
-        public override void HandleModifiers(float mod1)
+        public void HandleModifiers(float mod1)
         {
         }
 
-        public override void SetSettings(AudioProcessorSettingsObject newSettings)
+
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            Settings = newSettings;
+            _settings = settings.bitcrushSettings;
             UpdateSettings();
         }
 
 
-        public override float Process(float sample)
+        public void DoUpdate()
         {
-            SetSettings(Settings);
+        }
+
+        public float Process(float sample)
+        {
+            UpdateSettings();
             // Bitcrush / Quantization
             if (_bitDepth < 24f)
             {
@@ -66,6 +75,10 @@ namespace Anywhen.Synth
             }
 
             return sample;
+        }
+
+        public void SetGate(bool gate)
+        {
         }
     }
 }
