@@ -23,7 +23,6 @@ namespace Anywhen
         public float expression2;
         public float velocity;
         public float duration;
-        [FormerlySerializedAs("envelope")] public AudioEnvelopeSettings audioEnvelope;
 
 
 
@@ -37,7 +36,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -51,7 +49,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -65,23 +62,10 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             this.duration = duration;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
-        public NoteEvent(int note, float duration, AudioEnvelopeSettings audioEnvelope)
-        {
-            this.state = EventTypes.NoteOn;
-            notes = new[] { note };
-            drift = 0;
-            chordStrum = new double[] { 0 };
-            expression1 = 0;
-            expression2 = 0;
-            velocity = 1;
-            this.duration = duration;
-            this.audioEnvelope = audioEnvelope;
 
-        }
 
 
         public NoteEvent(int[] notes)
@@ -94,7 +78,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -108,7 +91,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -123,7 +105,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = 1;
             duration = noteDuration;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
   
         }
 
@@ -138,7 +119,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = volume;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -153,7 +133,6 @@ namespace Anywhen
             expression2 = 0;
             velocity = volume;
             duration = -1;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
@@ -170,12 +149,11 @@ namespace Anywhen
             this.velocity = 1;
             this.velocity = velocity;
             this.duration = duration;
-            audioEnvelope = new AudioEnvelopeSettings(0, 0, 1, 0.1f);
 
         }
 
         public NoteEvent(int[] notes, EventTypes state, float velocity, double drift, double[] chordStrum,
-            float expression1, float expression2, AudioEnvelopeSettings audioEnvelope)
+            float expression1, float expression2)
         {
             this.state = state;
             this.drift = drift;
@@ -186,7 +164,6 @@ namespace Anywhen
             this.velocity = 1;
             this.velocity = velocity;
             duration = -1;
-            this.audioEnvelope = audioEnvelope;
 
         }
     }

@@ -239,7 +239,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _trackVolume = settings.volume;
                 _sampleInstrument = settings.instrument;
                 _trackEnvelope = new AudioProcessorEnvelope(sampleRate);
-                _trackEnvelope.UpdateSettings(settings.TrackAudioEnvelope);
+                _trackEnvelope.SetSettings(settings.TrackAudioEnvelope);
 
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
 

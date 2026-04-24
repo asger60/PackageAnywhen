@@ -90,7 +90,7 @@ namespace Anywhen
                             var playerTrack = playerTracks[trackIndex];
                             if (propertyPath.StartsWith("trackEnvelope."))
                             {
-                                playerTrack.trackEnvelope.UpdateSettings(track.trackAudioEnvelope);
+                               // playerTrack.trackEnvelope.UpdateSettings(track.trackAudioEnvelope);
                             }
                             else if (propertyPath.StartsWith("trackLFO."))
                             {

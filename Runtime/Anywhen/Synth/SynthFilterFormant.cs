@@ -5,9 +5,9 @@ namespace Anywhen.Synth
 {
     public class SynthFilterFormant : SynthFilterBase
     {
-        private SynthFilterBandPass _synthFilterBandPass1;
-        private SynthFilterBandPass _synthFilterBandPass2;
-        private SynthFilterBandPass _synthFilterBandPass3;
+        private AudioProcessorBandPass _audioProcessorBandPass1;
+        private AudioProcessorBandPass _audioProcessorBandPass2;
+        private AudioProcessorBandPass _audioProcessorBandPass3;
 
         struct FormantBand
         {
@@ -132,35 +132,35 @@ namespace Anywhen.Synth
             if (sampleRate <= 0) sampleRate = 44100;
 
 
-            _synthFilterBandPass1 = new SynthFilterBandPass();
-            _synthFilterBandPass2 = new SynthFilterBandPass();
-            _synthFilterBandPass3 = new SynthFilterBandPass();
+            _audioProcessorBandPass1 = new AudioProcessorBandPass();
+            _audioProcessorBandPass2 = new AudioProcessorBandPass();
+            _audioProcessorBandPass3 = new AudioProcessorBandPass();
             _currentVowel = _vowels[3];
 
-            _synthFilterBandPass1.Init();
-            _synthFilterBandPass2.Init();
-            _synthFilterBandPass3.Init();
+            _audioProcessorBandPass1.Init();
+            _audioProcessorBandPass2.Init();
+            _audioProcessorBandPass3.Init();
 
 
-            _synthFilterBandPass1.SetFrequency(_currentVowel.GetBand(0).frequency);
-            _synthFilterBandPass1.SetQ(_currentVowel.GetBand(0).q);
+            _audioProcessorBandPass1.SetFrequency(_currentVowel.GetBand(0).frequency);
+            _audioProcessorBandPass1.SetQ(_currentVowel.GetBand(0).q);
 
-            _synthFilterBandPass2.SetFrequency(_currentVowel.GetBand(1).frequency);
-            _synthFilterBandPass2.SetQ(_currentVowel.GetBand(1).q);
+            _audioProcessorBandPass2.SetFrequency(_currentVowel.GetBand(1).frequency);
+            _audioProcessorBandPass2.SetQ(_currentVowel.GetBand(1).q);
 
-            _synthFilterBandPass3.SetFrequency(_currentVowel.GetBand(2).frequency);
-            _synthFilterBandPass3.SetQ(_currentVowel.GetBand(2).q);
+            _audioProcessorBandPass3.SetFrequency(_currentVowel.GetBand(2).frequency);
+            _audioProcessorBandPass3.SetQ(_currentVowel.GetBand(2).q);
         }
 
         private void SetVowel(int index)
         {
             _currentVowel = _vowels[index];
-            _synthFilterBandPass1.SetFrequency(_currentVowel.GetBand(0).frequency);
-            _synthFilterBandPass1.SetQ(_currentVowel.GetBand(0).q);
-            _synthFilterBandPass2.SetFrequency(_currentVowel.GetBand(1).frequency);
-            _synthFilterBandPass2.SetQ(_currentVowel.GetBand(1).q);
-            _synthFilterBandPass3.SetFrequency(_currentVowel.GetBand(2).frequency);
-            _synthFilterBandPass3.SetQ(_currentVowel.GetBand(2).q);
+            _audioProcessorBandPass1.SetFrequency(_currentVowel.GetBand(0).frequency);
+            _audioProcessorBandPass1.SetQ(_currentVowel.GetBand(0).q);
+            _audioProcessorBandPass2.SetFrequency(_currentVowel.GetBand(1).frequency);
+            _audioProcessorBandPass2.SetQ(_currentVowel.GetBand(1).q);
+            _audioProcessorBandPass3.SetFrequency(_currentVowel.GetBand(2).frequency);
+            _audioProcessorBandPass3.SetQ(_currentVowel.GetBand(2).q);
         }
 
         public override void SetExpression(float data)
@@ -184,9 +184,9 @@ namespace Anywhen.Synth
 
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            float mix1 = _synthFilterBandPass1.Process(sample);
-            float mix2 = _synthFilterBandPass2.Process(sample);
-            float mix3 = _synthFilterBandPass3.Process(sample);
+            float mix1 = _audioProcessorBandPass1.Process(sample);
+            float mix2 = _audioProcessorBandPass2.Process(sample);
+            float mix3 = _audioProcessorBandPass3.Process(sample);
 
             sample = ((mix1 * _currentVowel.GetBand(0).gain) +
                       (mix2 * _currentVowel.GetBand(1).gain) +

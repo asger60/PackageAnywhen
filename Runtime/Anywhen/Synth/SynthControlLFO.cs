@@ -19,7 +19,7 @@ namespace Anywhen.Synth
         private float _sendAmount;
         bool _retrigger;
 
-        public void UpdateSettings(AudioLFOSettings newSettings)
+        public void UpdateSettings(AudioProcessorSettingsObject.LFOSettings newSettings)
         {
             _currentFrequency = newSettings.frequency;
             SetFreq(newSettings.frequency);

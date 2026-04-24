@@ -1,41 +1,50 @@
+using System;
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public interface IAudioProcessor
-    {
-        public void DoUpdate();
-
-        public float Process(float sample);
-
-        public void SetGate(bool gate);
-    }
-
     public struct TrackAudioProcessor
     {
         private AudioProcessorSettingsObject.Unmanaged _settings;
         private AudioProcessorLowPass _lowPass;
-        AudioProcessorSaturator _saturator;
+        private AudioProcessorSaturator _saturator;
+        AudioProcessorBandPass _bandPass;
         // Add other filter states here as they are ported to structs
 
         public TrackAudioProcessor(int sampleRate, AudioProcessorSettingsObject.Unmanaged settings)
         {
             _settings = settings;
-            _lowPass = new AudioProcessorLowPass(sampleRate);
-            // Initialize based on type
-            if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter)
-            {
-                _lowPass.SetCutOff(_settings.lowPassSettings.cutoffFrequency);
-                _lowPass.SetResonance(_settings.lowPassSettings.resonance);
-                _lowPass.SetOversampling(_settings.lowPassSettings.oversampling);
-            }
+            _lowPass = default;
+            _saturator = default;
+            _bandPass = default;
 
-            _saturator = new AudioProcessorSaturator(sampleRate);
-
-            if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.SaturatorFilter)
+            switch (_settings.filterType)
             {
-                Debug.Log("Saturator");
-                _saturator.SetSettings(_settings);
+                // Initialize based on type
+                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
+                    _lowPass = new AudioProcessorLowPass(sampleRate);
+                    _lowPass.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
+                    _saturator = new AudioProcessorSaturator(sampleRate);
+                    _saturator.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
+                    _bandPass = new AudioProcessorBandPass(sampleRate);
+                    _bandPass.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
+                    break;
+                case AudioProcessorSettingsObject.FilterTypes.ChorusFilter:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -52,5 +61,16 @@ namespace Anywhen.Synth
                     return sample;
             }
         }
+    }
+
+    public interface IAudioProcessor
+    {
+        public void DoUpdate();
+
+        public float Process(float sample);
+
+        public void SetGate(bool gate);
+
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings);
     }
 }

@@ -15,8 +15,8 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
-        [FormerlySerializedAs("trackEnvelope")] public AudioEnvelopeSettings trackAudioEnvelope;
-        [FormerlySerializedAs("trackLFO")] public AudioLFOSettings trackAudioLFO;
+        [FormerlySerializedAs("trackEnvelope")] public AudioProcessorSettingsObject.EnvelopeSettings trackAudioEnvelope;
+        [FormerlySerializedAs("trackLFO")] public AudioProcessorSettingsObject.LFOSettings trackAudioLFO;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
 
@@ -70,8 +70,8 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-            trackAudioEnvelope = new AudioEnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
-            trackAudioLFO = new AudioLFOSettings(2, 0.01f);
+            trackAudioEnvelope = new AudioProcessorSettingsObject.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
+            trackAudioLFO = new AudioProcessorSettingsObject.LFOSettings(2, 0.01f);
         }
 
         public AnysongTrackSettings Clone()
@@ -93,8 +93,8 @@ namespace Anywhen.Composing
         {
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
-            public AudioEnvelopeSettings TrackAudioEnvelope;
-            public AudioLFOSettings TrackAudioLFO;
+            public AudioProcessorSettingsObject.EnvelopeSettings TrackAudioEnvelope;
+            public AudioProcessorSettingsObject.LFOSettings TrackAudioLFO;
             
             public float trackPitch;
             public int voices;

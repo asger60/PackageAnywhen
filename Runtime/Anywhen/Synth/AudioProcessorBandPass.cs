@@ -3,15 +3,23 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class SynthFilterBandPass : SynthFilterBase
+    public struct AudioProcessorBandPass : IAudioProcessor
     {
         //_sampleRate = sampleRate;
 
         // // DSP variables
         private float _vF, _vD, _vZ1, _vZ2, _vZ3;
         private float _filterFrequency;
-        private float _q = 5; // 1-10
-        private float _frequencyMod = 1;
+        private float _q ; // 1-10
+        private float _frequencyMod ;
+        private readonly int _sampleRate;
+        AudioProcessorSettingsObject.Unmanaged _settings;
+        public AudioProcessorBandPass(int sampleRate) : this()
+        {
+            _sampleRate = sampleRate;
+            _q = 5; // 1-10
+            _frequencyMod = 1;
+        }
 
         public void SetFrequency(float freq)
         {
@@ -23,11 +31,9 @@ namespace Anywhen.Synth
             _q = q;
         }
 
-        public override void SetSettings(AudioProcessorSettingsObject newSettings)
+        public  void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            Init();
-            Settings = newSettings;
-            UpdateSettings();
+            _settings = settings;
         }
 
 
@@ -36,29 +42,33 @@ namespace Anywhen.Synth
             _frequencyMod = 1;
         }
 
-        public override void SetExpression(float data)
+        public  void SetExpression(float data)
         {
         }
 
 
-        public override void HandleModifiers(float mod1)
+        public  void HandleModifiers(float mod1)
         {
             _frequencyMod = mod1;
         }
 
-        protected override void UpdateSettings()
+          void UpdateSettings()
         {
-            SetFrequency(Settings.bandPassSettings.frequency);
-            _q = Settings.bandPassSettings.q;
+            SetFrequency(_settings.bandPassSettings.frequency);
+            _q = _settings.bandPassSettings.q;
             _frequencyMod = 1;
-            foreach (var mod in ModRoutings)
-            {
-                _frequencyMod = mod.Process(_frequencyMod);
-            }
+            //foreach (var mod in ModRoutings)
+            //{
+            //    _frequencyMod = mod.Process(_frequencyMod);
+            //}
         }
 
 
-        public override float Process(float sample)
+        public void DoUpdate()
+        {
+        }
+
+        public float Process(float sample)
         {
             UpdateSettings();
 
@@ -89,6 +99,10 @@ namespace Anywhen.Synth
             }
 
             return _vZ2;
+        }
+
+        public void SetGate(bool gate)
+        {
         }
     }
 }

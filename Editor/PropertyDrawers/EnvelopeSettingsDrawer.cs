@@ -1,9 +1,10 @@
+using Anywhen.Synth;
 using UnityEngine;
 using UnityEditor;
 
 namespace Anywhen.SettingsObjects
 {
-    [CustomPropertyDrawer(typeof(AudioEnvelopeSettings))]
+    [CustomPropertyDrawer(typeof(AudioProcessorSettingsObject.EnvelopeSettings))]
     public class EnvelopeSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 80f;

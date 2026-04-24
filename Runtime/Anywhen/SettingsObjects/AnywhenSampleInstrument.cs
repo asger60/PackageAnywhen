@@ -49,8 +49,6 @@ namespace Anywhen.SettingsObjects
         [SerializeField] public ClipSelectType clipSelectType = ClipSelectType.ScalePitchedNotes;
 
 
-
-
         [Range(0, 1f)] public float volume = 1;
         [SerializeField] private int originalTempo = 100;
         [SerializeField] private bool tempoControlPitch;
@@ -162,7 +160,7 @@ namespace Anywhen.SettingsObjects
                         settings = matchingCount == 0
                             ? new AnywhenNoteClipPlaybackSettings()
                             : new AnywhenNoteClipPlaybackSettings(selectedClip, pitch, volume);
-                        
+
                         break;
 
 
@@ -202,7 +200,6 @@ namespace Anywhen.SettingsObjects
             }
         }
 
-        [FormerlySerializedAs("envelope")] [SerializeField] private AudioEnvelopeSettings audioEnvelope = new AudioEnvelopeSettings(0.01f, 0.1f, 0.5f, 0.1f);
 
         public new Unmanaged ToUnmanaged()
         {
@@ -427,58 +424,4 @@ namespace Anywhen.SettingsObjects
     }
 }
 
-[Serializable]
-public struct AudioLFOSettings
-{
-    [Range(0.01f, 10)] public float frequency;
-    [Range(0, 1)] public float amplitude;
-    
-    public AudioLFOSettings(float frequency, float amplitude) : this()
-    {
-        this.frequency = frequency;
-        this.amplitude = amplitude;
 
-    }
-
-    public bool IsUnset()
-    {
-        return frequency == 0 && amplitude == 0;
-    }
-
-    public void Initialize()
-    {
-        frequency = 1;
-        amplitude = 1;
-    }
-}
-
-[Serializable]
-public struct AudioEnvelopeSettings
-{
-    //public bool enabled;
-    [Range(0, 2f)] public float attack;
-    [Range(0, 1f)] public float decay;
-    [Range(0, 1f)] public float sustain;
-    [Range(0, 3f)] public float release;
-
-    public AudioEnvelopeSettings(float attack, float decay, float sustain, float release) : this()
-    {
-        this.attack = attack;
-        this.decay = decay;
-        this.sustain = sustain;
-        this.release = release;
-    }
-
-    public bool IsUnset()
-    {
-        return attack == 0 && decay == 0 && sustain == 0 && release == 0;
-    }
-
-    public void Initialize()
-    {
-        attack = 0.01f;
-        decay = 0.1f;
-        sustain = 0.5f;
-        release = 0.1f;
-    }
-}

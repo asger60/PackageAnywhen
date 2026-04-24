@@ -1,6 +1,7 @@
 using System;
 using Anywhen.Synth.Filter;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen.Synth
 {
@@ -99,6 +100,66 @@ namespace Anywhen.Synth
         }
 
         public ChorusSettings chorusSettings;
+        
+        [Serializable]
+        public struct EnvelopeSettings
+        {
+            //public bool enabled;
+            [Range(0, 2f)] public float attack;
+            [Range(0, 1f)] public float decay;
+            [Range(0, 1f)] public float sustain;
+            [Range(0, 3f)] public float release;
+
+            public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
+            {
+                this.attack = attack;
+                this.decay = decay;
+                this.sustain = sustain;
+                this.release = release;
+            }
+
+            public bool IsUnset()
+            {
+                return attack == 0 && decay == 0 && sustain == 0 && release == 0;
+            }
+
+            public void Initialize()
+            {
+                attack = 0.01f;
+                decay = 0.1f;
+                sustain = 0.5f;
+                release = 0.1f;
+            }
+        }
+        
+        public EnvelopeSettings envelopeSettings;
+        
+        
+        [Serializable]
+        public struct LFOSettings
+        {
+            [Range(0.01f, 10)] public float frequency;
+            [Range(0, 1)] public float amplitude;
+
+            public LFOSettings(float frequency, float amplitude) : this()
+            {
+                this.frequency = frequency;
+                this.amplitude = amplitude;
+            }
+
+            public bool IsUnset()
+            {
+                return frequency == 0 && amplitude == 0;
+            }
+
+            public void Initialize()
+            {
+                frequency = 1;
+                amplitude = 1;
+            }
+        }
+        public LFOSettings lfoSettings;
+        
 
         public struct Unmanaged
         {
@@ -111,6 +172,8 @@ namespace Anywhen.Synth
             public SaturatorSettings saturatorSettings;
             public DelaySettings delaySettings;
             public ChorusSettings chorusSettings;
+            public EnvelopeSettings envelopeSettings;
+            public LFOSettings lfoSettings;
         }
 
         public Unmanaged ToUnmanaged()

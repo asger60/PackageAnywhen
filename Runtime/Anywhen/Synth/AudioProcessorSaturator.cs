@@ -10,18 +10,12 @@ namespace Anywhen.Synth
         private float _filterMod;
         private readonly int _sampleRate;
         AudioProcessorSettingsObject.Unmanaged _settings;
-
-        public void SetExpression(float data)
-        {
-        }
+        
 
         public AudioProcessorSaturator(int sampleRate) : this()
         {
             _sampleRate = sampleRate;
             _filterMod = 1;
-            //_v = 1.0f / (2.0f * V_t);
-            //_frequencyMod = 1;
-            //_oversampling = 1;
         }
 
         public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
@@ -34,10 +28,7 @@ namespace Anywhen.Synth
             _drive = _settings.saturatorSettings.drive;
             _wet = _settings.saturatorSettings.wet;
         }
-
-        public void HandleModifiers(float mod1)
-        {
-        }
+        
 
 
         public void DoUpdate()

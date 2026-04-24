@@ -30,7 +30,7 @@ namespace Anywhen.Synth
         private float _releaseBase;
 
 
-        private AudioEnvelopeSettings Settings;
+        private AudioProcessorSettingsObject.EnvelopeSettings _settings;
         int _sampleRate;
 
         public bool IsActive => _state != EnvState.env_idle;
@@ -45,10 +45,10 @@ namespace Anywhen.Synth
         public void NoteOn()
         {
             //Reset();
-            SetAttackRate(Settings.attack * _sampleRate);
-            SetDecayRate(Settings.decay * _sampleRate);
-            SetSustainLevel(Settings.sustain);
-            SetReleaseRate(Settings.release * _sampleRate);
+            SetAttackRate(_settings.attack * _sampleRate);
+            SetDecayRate(_settings.decay * _sampleRate);
+            SetSustainLevel(_settings.sustain);
+            SetReleaseRate(_settings.release * _sampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_attack;
@@ -56,7 +56,7 @@ namespace Anywhen.Synth
 
         public void NoteOff()
         {
-            SetReleaseRate(Settings.release * _sampleRate);
+            SetReleaseRate(_settings.release * _sampleRate);
             SetTargetRatioA(0.3f);
             SetTargetRatioDr(0.3f);
             _state = EnvState.env_release;
@@ -144,6 +144,16 @@ namespace Anywhen.Synth
             _currentGate = gate;
         }
 
+        public void SetSettings(AudioProcessorSettingsObject.EnvelopeSettings settings)
+        {
+            _settings = settings;
+        }
+        
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        {
+            _settings = settings.envelopeSettings;
+        }
+
         public float Process(float sample)
         {
             return sample * HandleEnvelope();
@@ -191,7 +201,7 @@ namespace Anywhen.Synth
 
         public bool Equals(AudioProcessorEnvelope other)
         {
-            return _state == other._state && _output.Equals(other._output) && Settings.Equals(other.Settings);
+            return _state == other._state && _output.Equals(other._output) && _settings.Equals(other._settings);
         }
 
         public override bool Equals(object obj)
@@ -201,12 +211,9 @@ namespace Anywhen.Synth
 
         public override int GetHashCode()
         {
-            return HashCode.Combine((int)_state, _output, Settings);
+            return HashCode.Combine((int)_state, _output, _settings);
         }
 
-        public void UpdateSettings(AudioEnvelopeSettings newSettings)
-        {
-            Settings = newSettings;
-        }
+
     }
 }

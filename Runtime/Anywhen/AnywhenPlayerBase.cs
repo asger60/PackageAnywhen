@@ -4,10 +4,7 @@ using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
-using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Anywhen
@@ -50,7 +47,7 @@ namespace Anywhen
                 trackLFO = new SynthControlLFO();
                 trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
                 trackEnvelope = new AudioProcessorEnvelope();
-                trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
+                //trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
             }
 
             public AnywhenVoiceBase GetVoice()
@@ -89,7 +86,7 @@ namespace Anywhen
                 while (playbackQueue.Count > 0 && AudioSettings.dspTime >= playbackQueue[0].playTime)
                 {
                     trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
-                    trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
+                    //trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
 
                     _currentPlaybackSettings = playbackQueue[0];
                     playbackQueue.RemoveAt(0);
@@ -141,7 +138,7 @@ namespace Anywhen
                 var newPlayerTrack = new PlayerTrack(anySongTrack, null, null);
 
                 List<SynthFilterBase> filters = new();
-
+/*
                 if (anySongTrack.TrackFilters != null)
                 {
                     foreach (var trackFilter in anySongTrack.TrackFilters)
@@ -152,13 +149,13 @@ namespace Anywhen
                         SynthFilterBase newFilter = trackFilter.filterType switch
                         {
                           //  SynthSettingsObjectFilter.FilterTypes.LowPassFilter => new AudioProcessorLowPass(),
-                            AudioProcessorSettingsObject.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
-                            AudioProcessorSettingsObject.FilterTypes.FormantFilter => new SynthFilterFormant(),
-                            AudioProcessorSettingsObject.FilterTypes.LadderFilter => new SynthFilterLadder(),
-                            AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
+                            //AudioProcessorSettingsObject.FilterTypes.BandPassFilter => new SynthFilterBandPass(),
+                            //AudioProcessorSettingsObject.FilterTypes.FormantFilter => new SynthFilterFormant(),
+                            //AudioProcessorSettingsObject.FilterTypes.LadderFilter => new SynthFilterLadder(),
+                            //AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => new SynthFilterBitcrush(),
                             //AudioProcessorSettingsObject.FilterTypes.SaturatorFilter => new AudioProcessorSaturator(),
-                            AudioProcessorSettingsObject.FilterTypes.DelayFilter => new SynthFilterDelay(),
-                            AudioProcessorSettingsObject.FilterTypes.ChorusFilter => new SynthFilterChorus(),
+                            //AudioProcessorSettingsObject.FilterTypes.DelayFilter => new SynthFilterDelay(),
+                            //AudioProcessorSettingsObject.FilterTypes.ChorusFilter => new SynthFilterChorus(),
                             _ => throw new ArgumentOutOfRangeException()
                         };
 
@@ -171,7 +168,7 @@ namespace Anywhen
                         }
                     }
                 }
-
+*/
                 List<AnywhenVoiceBase> voicesList = new();
 
                 for (int i = 0; i < anySongTrack.voices; i++)

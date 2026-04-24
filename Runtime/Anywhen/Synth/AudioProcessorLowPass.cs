@@ -142,6 +142,14 @@ namespace Anywhen.Synth
         {
         }
 
+        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        {
+            _resonance = settings.lowPassSettings.resonance;
+            _cutoff = settings.lowPassSettings.cutoffFrequency;
+            _oversampling = settings.lowPassSettings.oversampling;
+            RecalculateS();
+        }
+
         public float Process(float sample)
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;

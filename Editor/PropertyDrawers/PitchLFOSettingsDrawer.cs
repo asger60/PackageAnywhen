@@ -1,9 +1,10 @@
+using Anywhen.Synth;
 using UnityEngine;
 using UnityEditor;
 
 namespace Anywhen.SettingsObjects
 {
-    [CustomPropertyDrawer(typeof(AudioLFOSettings))]
+    [CustomPropertyDrawer(typeof(AudioProcessorSettingsObject.LFOSettings))]
     public class PitchLFOSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 60f;

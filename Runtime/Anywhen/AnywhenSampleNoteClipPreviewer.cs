@@ -1,4 +1,5 @@
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
 using UnityEngine;
 
 namespace Anywhen
@@ -110,7 +111,6 @@ namespace Anywhen
             _scheduledEndTime = Time.time + tempClip.length;
 
             // Apply ADSR envelope and duration-based release
-            _envelopeCoroutine = StartCoroutine(ApplyEnvelope(noteEvent.audioEnvelope, targetVolume, noteEvent.duration, tempClip.length));
         }
 
         private void StopScheduled(float fadeOutTime)
@@ -182,7 +182,7 @@ namespace Anywhen
             }
         }
 
-        private System.Collections.IEnumerator ApplyEnvelope(AudioEnvelopeSettings audioEnvelope,
+        private System.Collections.IEnumerator ApplyEnvelope(AudioProcessorSettingsObject.EnvelopeSettings audioEnvelope,
             float targetVolume, float noteDuration, float clipLength)
         {
             // initialize envelope defaults if unset
