@@ -192,16 +192,16 @@ namespace Anywhen
                 newPlayerTrack.trackSettings = anySongTrack;
                 //anySongTrack.volumeMods ??= new NativeArray<SynthFilterBase.ModRouting>(0, Allocator.Persistent);
 
-                foreach (var volumeMod in anySongTrack.volumeMods)
-                {
-                    volumeMod.Set(newPlayerTrack);
-                }
+                //foreach (var volumeMod in anySongTrack.volumeMods)
+                //{
+                //    volumeMod.Set(newPlayerTrack);
+                //}
 
                 //anySongTrack.pitchMods ??= new NativeArray<SynthFilterBase.ModRouting>(0, Allocator.Persistent);
-                foreach (var pitchMod in anySongTrack.pitchMods)
-                {
-                    pitchMod.Set(newPlayerTrack);
-                }
+                //foreach (var pitchMod in anySongTrack.pitchMods)
+                //{
+                //    pitchMod.Set(newPlayerTrack);
+                //}
 
                 newPlayerTrack.Voices = voicesList.ToArray();
                 newPlayerTrack.trackFilters = filters;
@@ -590,10 +590,10 @@ namespace Anywhen
                     track.trackLFO.DoUpdate();
 
                     float amp = track.trackSettings.volume;
-                    foreach (var volumeMod in track.trackSettings.volumeMods)
-                    {
-                        amp = volumeMod.Process(amp);
-                    }
+                    //foreach (var volumeMod in track.trackSettings.volumeMods)
+                    //{
+                    //    amp = volumeMod.Process(amp);
+                    //}
 
 
                     data[i] += _trackBuffer[i] * amp;

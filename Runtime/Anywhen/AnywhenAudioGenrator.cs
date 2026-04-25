@@ -232,8 +232,11 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
             private float _trackVolume;
             private AudioProcessorEnvelope _trackEnvelope1, _trackEnvelope2;
-            AudioProcessorLFO _trackLFO1;
+            AudioProcessorLFO _trackLFO1, _trackLFO2;
             private float _trackLFO1Value;
+            float _trackLFO2Value;
+            private float _trackEnvelope1Value;
+            private float _trackEnvelope2Value;
 
             private PlaybackEvent _nextEvent;
             private NativeArray<TrackAudioProcessor> _trackFilters;
@@ -246,13 +249,28 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _sampleInstrument = settings.instrument;
                 _trackEnvelope1 = new AudioProcessorEnvelope(sampleRate);
                 _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope);
+
+                var envelope2Settings = new AudioProcessorSettingsObject.Unmanaged
+                {
+                    envelopeSettings = new AudioProcessorSettingsObject.EnvelopeSettings(0.01f, 0.1f, 0.1f, 0.01f)
+                };
                 _trackEnvelope2 = new AudioProcessorEnvelope(sampleRate);
+                _trackEnvelope2.SetSettings(envelope2Settings.envelopeSettings);
+                
+                _trackEnvelope1Value = 1;
+                _trackEnvelope2Value = 1;
 
                 _trackLFO1 = new AudioProcessorLFO(sampleRate);
+                _trackLFO2 = new AudioProcessorLFO(sampleRate);
+                var lfo2Settings = new AudioProcessorSettingsObject.Unmanaged
+                {
+                    lfoSettings = new AudioProcessorSettingsObject.LFOSettings(20, 1f)
+                };
+                _trackLFO2.SetSettings(lfo2Settings);
                 _trackLFO1Value = 0;
+                _trackLFO2Value = 0;
 
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
-
                 _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
                 for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -264,7 +282,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 {
                     settings.trackFilters.Dispose();
                 }
-
             }
 
 
@@ -311,8 +328,10 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 }
 
                 _trackLFO1Value = _trackLFO1.Process((float)dspTime, this);
+                _trackLFO2Value = _trackLFO2.Process((float)dspTime, this);
+                _trackEnvelope1Value = _trackEnvelope1.Process((float)dspTime, this);
+                _trackEnvelope2Value = _trackEnvelope2.Process((float)dspTime, this);
 
-                
 
                 if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
                 {
@@ -334,8 +353,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 }
 
 
-                clipAmplitude = _trackEnvelope1.Process(clipAmplitude, this);
-
                 if (_trackFilters.IsCreated)
                 {
                     for (int i = 0; i < _trackFilters.Length; i++)
@@ -346,10 +363,13 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     }
                 }
 
-                return clipAmplitude * _trackVolume;
+                return clipAmplitude * TrackEnvelope1Value * _trackVolume;
             }
 
             public float TrackLFO1Value => _trackLFO1Value;
+            public float TrackLFO2Value => _trackLFO2Value;
+            public float TrackEnvelope1Value => _trackEnvelope1Value;
+            public float TrackEnvelope2Value => _trackEnvelope2Value;
 
 
             public void Dispose()

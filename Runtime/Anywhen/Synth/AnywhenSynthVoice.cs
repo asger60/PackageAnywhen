@@ -185,10 +185,10 @@ namespace Anywhen.Synth
                 for (int smp = 0; smp < sampleFrames; ++smp)
                 {
                     float pitch = (float)CurrentPitch;
-                    foreach (var pitchMod in currentTrackSettings.pitchMods)
-                    {
-                        pitch = pitchMod.Process(pitch);
-                    }
+                    //foreach (var pitchMod in currentTrackSettings.pitchMods)
+                    //{
+                    //    pitch = pitchMod.Process(pitch);
+                    //}
 
                     if (float.IsNaN(pitch) || float.IsInfinity(pitch)) pitch = 1;
 

@@ -79,10 +79,10 @@ namespace Anywhen
 
                 //ampMod *= AmplitudeEnvelope.Process();
                 Double pitch = CurrentPitch;
-                foreach (var pitchMod in currentTrackSettings.pitchMods)
-                {
-                    pitch = pitchMod.Process((float)pitch);
-                }
+                //foreach (var pitchMod in currentTrackSettings.pitchMods)
+                //{
+                //    pitch = pitchMod.Process((float)pitch);
+                //}
                 //if (CurrentTrack.pitchLFOSettings.enabled)
                 //{
                 //    PitchLFO.DoUpdate();

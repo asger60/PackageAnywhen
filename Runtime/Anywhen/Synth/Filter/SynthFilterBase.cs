@@ -12,59 +12,22 @@ namespace Anywhen.Synth.Filter
             public enum ModSources
             {
                 LFO1,
-                Envelope,
+                LFO2,
+                Envelope1,
+                Envelope2,
             }
 
             public ModSources modSource;
-            [Range(0, 1f)] public float modAmount;
+            [Range(0, 100f)] public float modAmount;
 
-            // private SynthControlBase _modSourceControl;
 
             public ModRouting(ModSources modSource, float modAmount)
             {
                 this.modSource = modSource;
                 this.modAmount = modAmount;
-                //  _modSourceControl = null;
             }
+            
 
-            public struct Unmanaged
-            {
-                public ModSources modSource;
-                public float modAmount;
-
-                public Unmanaged(ModSources modSource, float modAmount)
-                {
-                    this.modSource = modSource;
-                    this.modAmount = modAmount;
-                }
-            }
-
-            public Unmanaged ToUnmanaged()
-            {
-                return new Unmanaged(modSource, modAmount);
-            }
-
-            public void Set(AnywhenPlayerBase.PlayerTrack track)
-            {
-                Debug.LogWarning("Not implemented yet");
-                // _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
-            }
-
-
-            public float Process(float input)
-            {
-                return 0;
-                //switch (modSource)
-                //{
-                //    case ModSources.LFO:
-                //        return input + (_modSourceControl.Process(true) * modDepth.value);
-//
-                //    case ModSources.Envelope:
-                //        return input * Mathf.Lerp(1, _modSourceControl.Process(), modAmount);
-                //    default:
-                //        throw new ArgumentOutOfRangeException();
-                //}
-            }
         }
 
         public AudioProcessorSettingsObject Settings { get; protected set; }
