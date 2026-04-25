@@ -11,20 +11,20 @@ namespace Anywhen.Synth.Filter
         {
             public enum ModSources
             {
-                LFO,
+                LFO1,
                 Envelope,
             }
 
             public ModSources modSource;
             [Range(0, 1f)] public float modAmount;
 
-           // private SynthControlBase _modSourceControl;
+            // private SynthControlBase _modSourceControl;
 
             public ModRouting(ModSources modSource, float modAmount)
             {
                 this.modSource = modSource;
-                this.modAmount =modAmount;
-              //  _modSourceControl = null;
+                this.modAmount = modAmount;
+                //  _modSourceControl = null;
             }
 
             public struct Unmanaged
@@ -47,7 +47,7 @@ namespace Anywhen.Synth.Filter
             public void Set(AnywhenPlayerBase.PlayerTrack track)
             {
                 Debug.LogWarning("Not implemented yet");
-               // _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
+                // _modSourceControl = modSource == ModSources.LFO ? track.trackLFO : track.trackEnvelope;
             }
 
 

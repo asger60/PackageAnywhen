@@ -184,7 +184,7 @@ namespace Anywhen.Synth
         {
             return new Unmanaged
             {
-                modRoutings = new NativeArray<SynthFilterBase.ModRouting>(modRouting, Allocator.Temp),
+                modRoutings = new NativeArray<SynthFilterBase.ModRouting>(modRouting, Allocator.Persistent),
                 filterType = filterType,
                 lowPassSettings = lowPassSettings,
                 ladderSettings = ladderSettings,

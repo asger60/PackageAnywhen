@@ -105,9 +105,9 @@ namespace Anywhen.Composing
             public NativeArray<AudioProcessorSettingsObject.Unmanaged> trackFilters;
         }
 
-        public Unmanaged ToUnmanaged(Allocator allocator = Allocator.Temp)
+        public Unmanaged ToUnmanaged()
         {
-            var filters = new NativeArray<AudioProcessorSettingsObject.Unmanaged>(TrackFilters.Length, allocator);
+            var filters = new NativeArray<AudioProcessorSettingsObject.Unmanaged>(TrackFilters.Length, Allocator.Persistent);
             for (int i = 0; i < TrackFilters.Length; i++)
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();

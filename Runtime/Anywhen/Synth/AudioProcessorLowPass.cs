@@ -151,9 +151,19 @@ namespace Anywhen.Synth
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            //if (_modRouting.IsCreated && _modRouting.Length > 0)
+            if (_modRouting.IsCreated && _modRouting.Length > 0)
             {
-                _frequencyMod = 1 + (track.TrackLFO1Value );
+                for (int i = 0; i < _modRouting.Length; i++)
+                {
+                    var mod = _modRouting[i];
+                    if (mod.modSource == SynthFilterBase.ModRouting.ModSources.LFO1)
+                    {
+                        _frequencyMod = 1 + ((track.TrackLFO1Value) * mod.modAmount);
+                    }
+
+                    _modRouting[i] = mod;
+                }
+
                 RecalculateS();
             }
 

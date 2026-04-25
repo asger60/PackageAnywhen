@@ -80,7 +80,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     var trackSettings = initialSong.Tracks[i];
                     if (trackSettings.instrument is AnywhenSampleInstrument sampleInstrument)
                     {
-                        var unmanagedSettings = trackSettings.ToUnmanaged(Allocator.Persistent);
+                        var unmanagedSettings = trackSettings.ToUnmanaged();
                         _tracks[i] = new Track(_sampleRate, unmanagedSettings);
                     }
                 }
@@ -188,7 +188,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
         struct Control : GeneratorInstance.IControl<Processor>
         {
-            public void Configure(ControlContext context, ref Processor generator, in AudioFormat config, out GeneratorInstance.Setup setup,
+            public void Configure(ControlContext context, ref Processor generator, in AudioFormat config,
+                out GeneratorInstance.Setup setup,
                 ref GeneratorInstance.Properties p)
             {
                 generator._setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, config.sampleRate);
@@ -209,7 +210,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
             }
 
-            public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe, ProcessorInstance.Message message)
+            public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe,
+                ProcessorInstance.Message message)
             {
                 if (message.Is<TriggerNoteClipMsg>())
                 {
@@ -262,6 +264,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 {
                     settings.trackFilters.Dispose();
                 }
+
             }
 
 
@@ -299,6 +302,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 }
             }
 
+
             internal float Process(double dspTime)
             {
                 if (!_voices.IsCreated)
@@ -306,8 +310,9 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     return 0;
                 }
 
+                _trackLFO1Value = _trackLFO1.Process((float)dspTime, this);
 
-                _trackLFO1Value = Mathf.Sin((float)dspTime);
+                
 
                 if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
                 {
@@ -435,7 +440,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             }
 
 
-            internal void QueueNote(SimpleNoteEvent noteEvent, double playTime, ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
+            internal void QueueNote(SimpleNoteEvent noteEvent, double playTime,
+                ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
             {
                 _noteQueued = true;
                 _scheduledStartTime = playTime;
