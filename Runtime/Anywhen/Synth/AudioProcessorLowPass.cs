@@ -19,10 +19,8 @@
 //  SOFTWARE."
 
 // Huovilainen moog filter:
-// [... header comments unchanged ...]
 
-using Anywhen.Synth.Filter;
-using Unity.Collections;
+
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -31,7 +29,6 @@ namespace Anywhen.Synth
     {
         const float V_t = 1.22070313f;
 
-        private float _modOffsetSemitones; // accumulated semitone offset from all mod sources
         private float _modulatedCutoff; // final cutoff after modulation applied
 
         float _resonance;
@@ -44,13 +41,14 @@ namespace Anywhen.Synth
         private float _cutoff;
         private int _sampleRate;
         AudioProcessorSettingsObject.LowPassSettings.Unmanaged _settings;
+        private float _frequencyMod;
 
         public AudioProcessorLowPass(int sampleRate) : this()
         {
             _sampleRate = sampleRate;
             _v = 1.0f / (2.0f * V_t);
-            _modOffsetSemitones = 0f;
             _oversampling = 1;
+            _frequencyMod = 1;
         }
 
         public void DoUpdate()
@@ -63,6 +61,8 @@ namespace Anywhen.Synth
             _resonance = _settings.resonance;
             _cutoff = _settings.cutoffFrequency;
             _oversampling = _settings.oversampling;
+            _frequencyMod = 1f; // reset mod when settings change
+
             RecalculateS();
         }
 
@@ -72,9 +72,9 @@ namespace Anywhen.Synth
 
             if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
             {
-                _modOffsetSemitones = track.GetModSignal(_settings.cutoffMod);
-                _modulatedCutoff = _cutoff * Mathf.Pow(2f, _modOffsetSemitones / 12f);
-                _modulatedCutoff = Clamp(_modulatedCutoff, 20f, 20000f);
+                float mod = track.GetModSignal(_settings.cutoffMod); // (-1, 1)
+                // Map to exponential multiplier: -1 → 0.5x, 0 → 1x, +1 → 2x (±1 octave)
+                _frequencyMod = (float)System.Math.Pow(2.0, mod);
                 RecalculateS();
             }
 
@@ -130,8 +130,7 @@ namespace Anywhen.Synth
             if (_sampleRate <= 0) return;
 
             float compensation = 0.435f;
-            // Use _modulatedCutoff when mod is active, otherwise fall back to the raw cutoff
-            float f = (_modulatedCutoff > 0 ? _modulatedCutoff : _cutoff) * compensation;
+            float f = _cutoff * _frequencyMod * compensation; // always multiply, no conditional
             float omega = 2.0f * Mathf.PI * f / (_sampleRate * _oversampling);
 
             _s = 1.0f - Mathf.Exp(-omega);

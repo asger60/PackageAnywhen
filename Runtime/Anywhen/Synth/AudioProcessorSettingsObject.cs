@@ -7,7 +7,6 @@ namespace Anywhen.Synth
 {
     public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
-       
         public enum FilterTypes
         {
             LowPassFilter,
@@ -59,6 +58,7 @@ namespace Anywhen.Synth
             [Range(10, 24000)] public float cutoffFrequency;
             [Range(0, 1)] public float resonance;
             public SynthFilterBase.ModRouting[] cutoffMod;
+
             public struct Unmanaged
             {
                 public float cutoffFrequency;
@@ -74,7 +74,10 @@ namespace Anywhen.Synth
                     cutoffFrequency = cutoffFrequency,
                     resonance = resonance,
                     oversampling = oversampling,
-                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod, Allocator.Persistent),
+                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(
+                        cutoffMod ?? Array.Empty<SynthFilterBase.ModRouting>(),
+                        Allocator.Persistent
+                    ),
                 };
             }
         }

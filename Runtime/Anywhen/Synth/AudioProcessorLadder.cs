@@ -1,7 +1,4 @@
-﻿using Anywhen.Synth.Filter;
-using PlasticPipe.Server;
-
-namespace Anywhen.Synth
+﻿namespace Anywhen.Synth
 {
     // A 303-style diode ladder filter.
     // Diode ladders have a specific resonance behavior and a shallower slope (18dB-ish)
@@ -60,8 +57,14 @@ namespace Anywhen.Synth
 
         public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
+            _frequencyMod = 1f;
             if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
-                _frequencyMod = track.GetModSignal(_settings.cutoffMod);
+            {
+                float mod = track.GetModSignal(_settings.cutoffMod);
+                _frequencyMod = (float)System.Math.Pow(2.0, mod);
+            }
+
+
             UpdateSettings();
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
