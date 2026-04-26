@@ -2,6 +2,7 @@ using System;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
+using Anywhen.Synth.Filter;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.IntegerTime;
@@ -371,6 +372,26 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             public float TrackEnvelope1Value => _trackEnvelope1Value;
             public float TrackEnvelope2Value => _trackEnvelope2Value;
 
+            public float GetModSignal(NativeArray<SynthFilterBase.ModRouting> modRoutingSettings)
+            {
+                float s = 0;
+                for (int i = 0; i < modRoutingSettings.Length; i++)
+                {
+                    var mod = modRoutingSettings[i];
+                    float signal = mod.modSource switch
+                    {
+                        SynthFilterBase.ModRouting.ModSources.Envelope1 => TrackEnvelope1Value,
+                        SynthFilterBase.ModRouting.ModSources.Envelope2 => TrackEnvelope2Value,
+                        SynthFilterBase.ModRouting.ModSources.LFO1      => TrackLFO1Value,
+                        SynthFilterBase.ModRouting.ModSources.LFO2      => TrackLFO2Value,
+                        _                                               => 0f
+                    };
+
+                    s += signal * mod.modAmount;
+                }
+
+                return s;
+            }
 
             public void Dispose()
             {

@@ -32,8 +32,7 @@ namespace Anywhen.Synth
         const float V_t = 1.22070313f;
 
         private float _modOffsetSemitones; // accumulated semitone offset from all mod sources
-        private float _modulatedCutoff;    // final cutoff after modulation applied
-        private float _resonanceMod;
+        private float _modulatedCutoff; // final cutoff after modulation applied
 
         float _resonance;
         int _oversampling;
@@ -44,7 +43,7 @@ namespace Anywhen.Synth
         float _s, _v;
         private float _cutoff;
         private int _sampleRate;
-        NativeArray<SynthFilterBase.ModRouting> _modRouting;
+        AudioProcessorSettingsObject.LowPassSettings.Unmanaged _settings;
 
         public AudioProcessorLowPass(int sampleRate) : this()
         {
@@ -52,17 +51,18 @@ namespace Anywhen.Synth
             _v = 1.0f / (2.0f * V_t);
             _modOffsetSemitones = 0f;
             _oversampling = 1;
-            _resonanceMod = 1;
         }
 
-        public void DoUpdate() { }
+        public void DoUpdate()
+        {
+        }
 
         public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            _resonance = settings.lowPassSettings.resonance;
-            _cutoff = settings.lowPassSettings.cutoffFrequency;
-            _oversampling = settings.lowPassSettings.oversampling;
-            _modRouting = settings.modRoutings;
+            _settings = settings.lowPassSettings;
+            _resonance = _settings.resonance;
+            _cutoff = _settings.cutoffFrequency;
+            _oversampling = _settings.oversampling;
             RecalculateS();
         }
 
@@ -70,36 +70,11 @@ namespace Anywhen.Synth
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            if (_modRouting is { IsCreated: true, Length: > 0 })
+            if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
             {
-                _modOffsetSemitones = 0f; // start at zero — no offset
-
-                for (int i = 0; i < _modRouting.Length; i++)
-                {
-                    var mod = _modRouting[i];
-
-                    // Resolve the raw mod signal.
-                    // Envelopes are unipolar (0..1): ramp up from the base cutoff.
-                    // LFOs are bipolar (-1..1): swing symmetrically around the base cutoff.
-                    // modAmount is in semitones, e.g. ±24 = ±2 octaves.
-                    float signal = mod.modSource switch
-                    {
-                        SynthFilterBase.ModRouting.ModSources.Envelope1 => track.TrackEnvelope1Value,
-                        SynthFilterBase.ModRouting.ModSources.Envelope2 => track.TrackEnvelope2Value,
-                        SynthFilterBase.ModRouting.ModSources.LFO1      => track.TrackLFO1Value,
-                        SynthFilterBase.ModRouting.ModSources.LFO2      => track.TrackLFO2Value,
-                        _                                               => 0f
-                    };
-
-                    _modOffsetSemitones += signal * mod.modAmount;
-                }
-
-                // Apply semitone offset to the base cutoff.
-                // Formula: modulatedCutoff = baseCutoff * 2^(semitones/12)
-                // This keeps modulation perceptually linear across the full frequency range.
+                _modOffsetSemitones = track.GetModSignal(_settings.cutoffMod);
                 _modulatedCutoff = _cutoff * Mathf.Pow(2f, _modOffsetSemitones / 12f);
                 _modulatedCutoff = Clamp(_modulatedCutoff, 20f, 20000f);
-
                 RecalculateS();
             }
 
@@ -133,7 +108,9 @@ namespace Anywhen.Synth
             return Clamp(outSample, -1f, 1f);
         }
 
-        public void SetGate(bool gate) { }
+        public void SetGate(bool gate)
+        {
+        }
 
         private static float FastTanh(float x)
         {

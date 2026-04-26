@@ -7,8 +7,7 @@ namespace Anywhen.Synth
 {
     public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
-        public SynthFilterBase.ModRouting[] modRouting;
-
+       
         public enum FilterTypes
         {
             LowPassFilter,
@@ -29,6 +28,29 @@ namespace Anywhen.Synth
             [Range(1, 4)] public int oversampling;
             [Range(10, 24000)] public float cutoffFrequency;
             [Range(0, 1)] public float resonance;
+            public SynthFilterBase.ModRouting[] cutoffMod;
+            public SynthFilterBase.ModRouting[] resonanceMod;
+
+            public struct Unmanaged
+            {
+                public float cutoffFrequency;
+                public float resonance;
+                public int oversampling;
+                public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
+                public NativeArray<SynthFilterBase.ModRouting> resonanceMod;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    cutoffFrequency = cutoffFrequency,
+                    resonance = resonance,
+                    oversampling = oversampling,
+                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod, Allocator.Persistent),
+                    resonanceMod = new NativeArray<SynthFilterBase.ModRouting>(resonanceMod, Allocator.Persistent)
+                };
+            }
         }
 
         public LowPassSettings lowPassSettings;
@@ -166,9 +188,8 @@ namespace Anywhen.Synth
 
         public struct Unmanaged
         {
-            public NativeArray<SynthFilterBase.ModRouting> modRoutings;
             public FilterTypes filterType;
-            public LowPassSettings lowPassSettings;
+            public LowPassSettings.Unmanaged lowPassSettings;
             public LadderSettings ladderSettings;
             public BandPassSettings bandPassSettings;
             public FormantSettings formantSettings;
@@ -184,9 +205,8 @@ namespace Anywhen.Synth
         {
             return new Unmanaged
             {
-                modRoutings = new NativeArray<SynthFilterBase.ModRouting>(modRouting, Allocator.Persistent),
                 filterType = filterType,
-                lowPassSettings = lowPassSettings,
+                lowPassSettings = lowPassSettings.ToUnmanaged(),
                 ladderSettings = ladderSettings,
                 bandPassSettings = bandPassSettings,
                 formantSettings = formantSettings,
