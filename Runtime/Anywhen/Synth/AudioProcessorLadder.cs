@@ -20,8 +20,8 @@ namespace Anywhen.Synth
         private float _frequencyMod;
 
 
-        private AudioProcessorSettingsObject.LadderSettings _settings;
-
+        private AudioProcessorSettingsObject.LadderSettings.Unmanaged _settings;
+        int _sampleRate;
 
         public AudioProcessorLadder(int sampleRate)
         {
@@ -31,7 +31,8 @@ namespace Anywhen.Synth
             _frequencyMod = 1;
             _cutoffMod = 1;
             _oversampling = 1;
-            _settings = new AudioProcessorSettingsObject.LadderSettings();
+            _settings = new AudioProcessorSettingsObject.LadderSettings().ToUnmanaged();
+            _sampleRate = sampleRate;
         }
 
 
@@ -50,11 +51,6 @@ namespace Anywhen.Synth
             _resolution = _settings.resonance;
             SetCutOff(_settings.cutoffFrequency);
             SetOversampling(_settings.oversampling);
-            _frequencyMod = 1;
-            //foreach (var mod in ModRoutings)
-            //{
-            //    _frequencyMod = mod.Process(_frequencyMod);
-            //}
         }
 
 
@@ -64,6 +60,8 @@ namespace Anywhen.Synth
 
         public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
         {
+            if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
+                _frequencyMod = track.GetModSignal(_settings.cutoffMod);
             UpdateSettings();
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
@@ -144,9 +142,8 @@ namespace Anywhen.Synth
         private void SetCutOff(float frequency)
         {
             // Proper frequency mapping for TPT filters
-            float sampleRate = AnywhenRuntime.SampleRate;
-            if (sampleRate <= 0) sampleRate = 44100;
-            float omega = 2.0f * 3.14159265f * frequency / (sampleRate * _oversampling) * _cutoffMod * _frequencyMod;
+            if (_sampleRate <= 0) _sampleRate = 44100;
+            float omega = 2.0f * 3.14159265f * frequency / (_sampleRate * _oversampling) * _cutoffMod * _frequencyMod;
 
             // Guard against NaN/Inf
             if (float.IsNaN(omega) || float.IsInfinity(omega)) omega = 0.1f;

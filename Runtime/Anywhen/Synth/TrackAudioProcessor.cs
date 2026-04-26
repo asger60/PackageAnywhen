@@ -5,6 +5,7 @@ namespace Anywhen.Synth
     public struct TrackAudioProcessor
     {
         private AudioProcessorSettingsObject.Unmanaged _settings;
+        
         private AudioProcessorLowPass _lowPass;
         private AudioProcessorSaturator _saturator;
         private AudioProcessorBandPass _bandPass;

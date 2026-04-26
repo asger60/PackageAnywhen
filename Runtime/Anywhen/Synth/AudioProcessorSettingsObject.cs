@@ -29,7 +29,6 @@ namespace Anywhen.Synth
             [Range(10, 24000)] public float cutoffFrequency;
             [Range(0, 1)] public float resonance;
             public SynthFilterBase.ModRouting[] cutoffMod;
-            public SynthFilterBase.ModRouting[] resonanceMod;
 
             public struct Unmanaged
             {
@@ -37,7 +36,6 @@ namespace Anywhen.Synth
                 public float resonance;
                 public int oversampling;
                 public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
-                public NativeArray<SynthFilterBase.ModRouting> resonanceMod;
             }
 
             public Unmanaged ToUnmanaged()
@@ -48,7 +46,6 @@ namespace Anywhen.Synth
                     resonance = resonance,
                     oversampling = oversampling,
                     cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod, Allocator.Persistent),
-                    resonanceMod = new NativeArray<SynthFilterBase.ModRouting>(resonanceMod, Allocator.Persistent)
                 };
             }
         }
@@ -61,6 +58,25 @@ namespace Anywhen.Synth
             [Range(1, 4)] public int oversampling;
             [Range(10, 24000)] public float cutoffFrequency;
             [Range(0, 1)] public float resonance;
+            public SynthFilterBase.ModRouting[] cutoffMod;
+            public struct Unmanaged
+            {
+                public float cutoffFrequency;
+                public float resonance;
+                public int oversampling;
+                public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    cutoffFrequency = cutoffFrequency,
+                    resonance = resonance,
+                    oversampling = oversampling,
+                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod, Allocator.Persistent),
+                };
+            }
         }
 
         public LadderSettings ladderSettings;
@@ -190,7 +206,7 @@ namespace Anywhen.Synth
         {
             public FilterTypes filterType;
             public LowPassSettings.Unmanaged lowPassSettings;
-            public LadderSettings ladderSettings;
+            public LadderSettings.Unmanaged ladderSettings;
             public BandPassSettings bandPassSettings;
             public FormantSettings formantSettings;
             public BitcrushSettings bitcrushSettings;
@@ -207,7 +223,7 @@ namespace Anywhen.Synth
             {
                 filterType = filterType,
                 lowPassSettings = lowPassSettings.ToUnmanaged(),
-                ladderSettings = ladderSettings,
+                ladderSettings = ladderSettings.ToUnmanaged(),
                 bandPassSettings = bandPassSettings,
                 formantSettings = formantSettings,
                 bitcrushSettings = bitcrushSettings,
