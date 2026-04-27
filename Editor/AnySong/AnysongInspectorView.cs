@@ -149,8 +149,10 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope1"), didUpdateInstrument));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope2"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope1"),
+                didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope2"),
+                didUpdateInstrument));
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO1"), didUpdateInstrument));
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO2"), didUpdateInstrument));
@@ -232,8 +234,7 @@ namespace Anysong
             DrawTrack(null);
         }
 
-        private static void RemoveFilter(AnysongEditorWindow.AnySelection selection,
-            AudioProcessorSettingsObject filter)
+        private static void RemoveFilter(AnysongEditorWindow.AnySelection selection, AudioProcessorSettingsObject filter)
         {
             var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
             for (int i = 0; i < trackFiltersProperty.arraySize; i++)
@@ -466,11 +467,10 @@ namespace Anysong
             // Avoid division by zero
             if (totalWeight <= 0f)
             {
-                // If all weights are 0 or negative, distribute evenly
-                float evenWeight = 100f / selection.CurrentSectionTrack.patterns.Count;
                 for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
                 {
-                    selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = 0;
+                    var anysongPattern = selection.CurrentSectionTrack.patterns[y];
+                    anysongPattern.triggerChances[columnIndex] = 0;
                 }
             }
             else
@@ -479,7 +479,8 @@ namespace Anysong
                 for (var y = 0; y < selection.CurrentSectionTrack.patterns.Count; y++)
                 {
                     float normalizedWeight = (columnWeights[y] / totalWeight) * 100f;
-                    selection.CurrentSectionTrack.patterns[y].triggerChances[columnIndex] = normalizedWeight;
+                    var anysongPattern = selection.CurrentSectionTrack.patterns[y];
+                    anysongPattern.triggerChances[columnIndex] = normalizedWeight;
                 }
             }
         }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnysongSectionTrack
+    public struct AnysongSectionTrack
     {
         public enum PatternProgressionType
         {
@@ -15,7 +16,8 @@ namespace Anywhen.Composing
             Random,
         }
 
-        public PatternProgressionType patternProgressionType = PatternProgressionType.WeightedRandom;
+        public PatternProgressionType patternProgressionType;
+        public AnysongTrackSettings anysongTrackSettings;
 
 
         public List<AnysongPattern> patterns;
@@ -23,33 +25,61 @@ namespace Anywhen.Composing
         private AnysongPattern _currentPattern;
         private int _currentPatternBar;
         int _currentPatternIndex;
-        public AnysongTrackSettings anysongTrackSettings;
 
+        public struct Unmanaged
+        {
+            public PatternProgressionType patternProgressionType;
+            public AnysongTrackSettings.Unmanaged anysongTrackSettings;
+            public NativeArray<AnysongPattern.Unmanaged> patterns;
+            public AnysongPattern.Unmanaged currentPattern;
+            public int currentPatternBar;
+            public int currentPatternIndex;
+        }
+
+        public Unmanaged ToUnmanaged()
+        {
+            var unmanagedPatterns = new AnysongPattern.Unmanaged[patterns.Count];
+            for (int i = 0; i < patterns.Count; i++)
+                unmanagedPatterns[i] = patterns[i].ToUnmanaged();
+
+            return new Unmanaged
+            {
+                patternProgressionType = patternProgressionType,
+                anysongTrackSettings = anysongTrackSettings.ToUnmanaged(),
+                patterns = new NativeArray<AnysongPattern.Unmanaged>(unmanagedPatterns, Allocator.Persistent),
+                currentPattern = _currentPattern.ToUnmanaged(),
+                currentPatternBar = _currentPatternBar,
+                currentPatternIndex = _currentPatternIndex,
+            };
+        }
 
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
             anysongTrackSettings = songSongTrackSettings;
-            patterns = new List<AnysongPattern> { new() };
-            foreach (var pattern in patterns)
+            patterns = new List<AnysongPattern>(1);
+            for (var i = 0; i < patterns.Count; i++)
             {
-                pattern.Init();
+                patterns[i] = new AnysongPattern();
+                patterns[i].Init();
             }
         }
+
 
         public AnysongSectionTrack Clone()
         {
             var clone = new AnysongSectionTrack
             {
-                patterns = new List<AnysongPattern>()
+                patterns = new List<AnysongPattern>(patterns.Count),
             };
+
             for (var i = 0; i < patterns.Count; i++)
             {
-                clone.patterns.Add(patterns[i].Clone());
+                clone.patterns[i] = patterns[i].Clone();
             }
 
             clone.anysongTrackSettings = anysongTrackSettings;
             clone.patternProgressionType = patternProgressionType;
-            
+
 
             return clone;
         }
@@ -66,12 +96,12 @@ namespace Anywhen.Composing
         {
             if (patterns.Count == 0)
             {
-                var newPattern = new AnysongPattern();
-                newPattern.Init();
-                patterns.Add(newPattern);
+                patterns = new List<AnysongPattern>(1);
+                patterns[0] = new AnysongPattern();
+                patterns[0].Init();
             }
 
-            return _currentPattern ??= patterns[0];
+            return _currentPattern;
         }
 
 
@@ -178,6 +208,11 @@ namespace Anywhen.Composing
         public int GetPlayingPatternIndex()
         {
             return _currentPatternIndex;
+        }
+
+        public bool IsNull()
+        {
+            return (patterns.Count == 0 && anysongTrackSettings == null);
         }
     }
 }

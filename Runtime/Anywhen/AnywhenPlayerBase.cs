@@ -273,11 +273,11 @@ namespace Anywhen
 
                 var section = _currentSong.Sections[_currentSectionIndex];
                 var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackTypeIndex);
-                if (sectionTrack == null)
-                {
-                    AnywhenRuntime.Log($"Section track for track type {_currentSong.Tracks[i].trackTypeIndex} is null");
-                    continue;
-                }
+                //if (sectionTrack == null)
+                //{
+                //    AnywhenRuntime.Log($"Section track for track type {_currentSong.Tracks[i].trackTypeIndex} is null");
+                //    continue;
+                //}
 
                 //var track = _currentSong.Tracks[trackSettings];
                 var pattern = sectionTrack.GetPlayingPattern();

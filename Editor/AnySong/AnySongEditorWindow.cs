@@ -346,9 +346,6 @@ namespace Anysong
 
         private static void OnTick16(MetronomeTickEvent tick)
         {
-            if (_currentSelection.CurrentSection == null) return;
-            if (_currentSelection.CurrentSection == null)
-                _currentSelection.CurrentSection = CurrentSong.Sections[0];
 
             //bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
             //                   _currentSelection.CurrentPatternIndex ==
@@ -458,13 +455,13 @@ namespace Anysong
 
         static void CreatePattern(int trackIndex)
         {
-            Debug.Log("create new pattern");
+            Debug.LogWarning("create new pattern not implemented yet");
 
             var newPattern = new AnysongPattern();
             newPattern.Init();
             var thisTrack = _currentSelection.CurrentSection.tracks[trackIndex];
 
-            thisTrack.patterns.Add(newPattern);
+            //thisTrack.patterns.Add(newPattern);
             _currentSelection.SetStepIndex(0);
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             _currentSelection.SetTrackIndex(trackIndex);
@@ -477,9 +474,10 @@ namespace Anysong
 
         static void DeletePattern()
         {
-            Debug.Log("remove pattern");
+            Debug.LogWarning("remove pattern not implemented yet");
             var thisTrack = _currentSelection.CurrentSectionTrack;
-            thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
+            //thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
+            
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             AnysongPatternView.Draw(_sequencesPanel);
             AnysongPatternView.Refresh();
@@ -686,10 +684,9 @@ namespace Anysong
 
         static void PastePattern()
         {
-            if (_patternCopy == null) return;
             for (var i = 0; i < _currentSelection.CurrentSectionTrack.patterns.Count; i++)
             {
-                if (_currentSelection.CurrentSectionTrack.patterns[i] == _currentSelection.CurrentPattern)
+                if (Equals(_currentSelection.CurrentSectionTrack.patterns[i], _currentSelection.CurrentPattern))
                 {
                     _currentSelection.CurrentSectionTrack.patterns[i] = _patternCopy;
                     break;

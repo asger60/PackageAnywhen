@@ -67,7 +67,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     public DiscreteTime? length => null;
     public bool SectionLockState => _sectionLockState;
 
-    
 
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
@@ -80,15 +79,13 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     {
         private readonly SimpleNoteEvent _noteEvent;
         private readonly double _scheduledPlayTime;
-        private readonly int _trackIndex;
 
-        public PlaybackEvent PlaybackEvent => new(_noteEvent, _scheduledPlayTime, _trackIndex);
+        public PlaybackEvent PlaybackEvent => new(_noteEvent, _scheduledPlayTime);
 
-        public TriggerNoteClipMsg(SimpleNoteEvent noteEvent, double scheduledPlayTime, int trackIndex)
+        public TriggerNoteClipMsg(SimpleNoteEvent noteEvent, double scheduledPlayTime)
         {
             _noteEvent = noteEvent;
             _scheduledPlayTime = scheduledPlayTime;
-            _trackIndex = trackIndex;
         }
     }
 
@@ -97,6 +94,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     public struct Processor : GeneratorInstance.IRealtime
     {
         NativeArray<Track> _tracks;
+        NativeArray<AnysongSection.Unmanaged> _anysongSections;
         private int _sampleRate;
         GeneratorInstance.Setup _setup;
         private GeneratorInstance _selfHandle;
@@ -126,13 +124,20 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             _selfHandle = default;
             _lastSub16Count = -1;
             _disposed = default;
-            
+            _anysongSections = default;
             if (song != null)
             {
+                _anysongSections = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
+                for (int i = 0; i < song.Sections.Count; i++)
+                {
+                    _anysongSections[i] = song.Sections[i].ToUnmanaged();
+                }
+
                 _tracks = new NativeArray<Track>(song.Tracks.Count, Allocator.Persistent);
-                
+
                 _disposed = new NativeArray<byte>(1, Allocator.Persistent);
                 _disposed[0] = 0;
+                
 
                 for (int i = 0; i < _tracks.Length; i++)
                 {
@@ -164,7 +169,14 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                         actionRegistry?.Add(onSongChanged);
                         song.OnSongChanged += onSongChanged;
                         foreach (var trackFilter in trackSettings.TrackFilters)
+                        {
                             trackFilter.OnSettingsChanged += onSongChanged;
+                        }
+
+                        foreach (var pattern in _anysongSections[0].tracks[i].patterns)
+                        {
+                            
+                        }
                     }
                 }
             }
@@ -172,29 +184,13 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
                 _tracks = new NativeArray<Track>(0, Allocator.Persistent);
             }
-
-           
         }
 
         private NativeArray<byte> _disposed;
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
-            var availableData = pipe.GetAvailableData(context);
-            foreach (var element in availableData)
-            {
-                if (element.TryGetData(out PlaybackEvent playbackEvent))
-                {
-                    for (int i = 0; i < _tracks.Length; i++)
-                    {
-                        if (i != playbackEvent.TrackIndex) continue;
-                        var track = _tracks[i];
 
-                        track.HandlePlaybackEvent(playbackEvent);
-                        _tracks[i] = track;
-                    }
-                }
-            }
         }
 
         private uint seed;
@@ -214,35 +210,26 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
             double dspTime = context.dspTime * invSampleRate;
-            
-            
+
+
             int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
             if (currentSub16Count != _lastSub16Count)
             {
+                for (int trackIndex = 0; trackIndex < _anysongSections[0].tracks.Length; trackIndex++)
+                {
+                    var thisStep = _anysongSections[0].tracks[trackIndex].patterns[0].steps[currentSub16Count];
+                    //_anysongSections[0].tracks[trackIndex].ad
+                    if (thisStep.noteOn)
+                    {
+                        var track = _tracks[trackIndex];
+                        track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime));
+                        _tracks[trackIndex] = track;
+                        seed = state;
+                    }
+                }
                 
                 _lastSub16Count = currentSub16Count;
-                if (currentSub16Count % 4 == 0)
-                {
-                    var track = _tracks[0];
-                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 0));
-                    _tracks[0] = track;
-
-                    seed = state;
-                }
-
-                if (currentSub16Count % 8 == 0)
-                {
-                    var track = _tracks[1];
-                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 1));
-                    _tracks[1] = track;
-                }
-
-                if (currentSub16Count % 2 == 0)
-                {
-                    var track = _tracks[2];
-                    track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime, 1));
-                    _tracks[2] = track;
-                }
+                
             }
 
 
@@ -354,7 +341,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
                 _pendingSettings = newSettings;
                 _hasPendingUpdate = true;
-//                UpdateSettings(newSettings);
             }
 
             void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
@@ -384,7 +370,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _trackLFO1Value = 0;
                 _trackLFO2Value = 0;
 
-                _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0, 0);
+                _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0);
                 _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
                 for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -619,14 +605,12 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     {
         public SimpleNoteEvent SimpleNoteEvent;
         public readonly double ScheduledPlayTime;
-        public readonly int TrackIndex;
         public readonly double ScheduledEndTime;
 
-        public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime, int trackIndex)
+        public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime)
         {
             SimpleNoteEvent = simpleNoteEvent;
             ScheduledPlayTime = scheduledPlayTime;
-            TrackIndex = trackIndex;
             ScheduledEndTime = ScheduledPlayTime + SimpleNoteEvent.duration;
         }
     }

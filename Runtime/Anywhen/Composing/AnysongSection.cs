@@ -1,16 +1,45 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnysongSection
+    public class AnysongSection 
     {
         public AnywhenProgressionPatternObject.ProgressionStep[] progressionSteps;
         public List<AnysongSectionTrack> tracks;
-        public int sectionLength = 4;
+        public int sectionLength;
 
+
+
+        public struct Unmanaged
+        {
+            public int sectionLength;
+            public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> progressionSteps;
+            public NativeArray<AnysongSectionTrack.Unmanaged> tracks;
+        }
+
+        public Unmanaged ToUnmanaged()
+        {
+            var unmanagedPatterns = new AnywhenProgressionPatternObject.ProgressionStep.Unmanaged[progressionSteps.Length];
+            for (int i = 0; i < progressionSteps.Length; i++)
+                unmanagedPatterns[i] = progressionSteps[i].ToUnmanaged();
+
+            var unmanagedTracks = new AnysongSectionTrack.Unmanaged[tracks.Count];
+            for (int i = 0; i < tracks.Count; i++)
+                unmanagedTracks[i] = tracks[i].ToUnmanaged();
+
+            return new Unmanaged
+            {
+                sectionLength = sectionLength,
+                progressionSteps =
+                    new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(unmanagedPatterns,
+                        Allocator.Persistent),
+                tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
+            };
+        }
 
         public AnysongSectionTrack GetTrack(int trackType)
         {
@@ -19,7 +48,7 @@ namespace Anywhen.Composing
                 if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
             }
 
-            return null;
+            return tracks[0];
         }
 
         public void Init(List<AnysongTrackSettings> songTracks)
@@ -100,8 +129,9 @@ namespace Anywhen.Composing
             {
                 clone.progressionSteps[i] = progressionSteps[i].Clone();
             }
+
             clone.sectionLength = sectionLength;
-            
+
             return clone;
         }
 
@@ -120,6 +150,11 @@ namespace Anywhen.Composing
             {
                 sectionTrack.SyncToClock();
             }
+        }
+
+        public bool IsNull()
+        {
+            return (tracks.Count == 0 && sectionLength == 0);
         }
     }
 }

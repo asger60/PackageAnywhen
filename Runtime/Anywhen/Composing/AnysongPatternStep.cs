@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,25 +8,9 @@ using Random = UnityEngine.Random;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnysongPatternStep
+    public struct AnysongPatternStep
     {
-        public bool noteOn; //depricated value, only here for backwards compatibility
-
-        public bool NoteOn
-        {
-            get
-            {
-                if (noteOn)
-                {
-                    chordNotes.Add(0);
-                    noteOn = false;
-                    return true;
-                }
-
-
-                return chordNotes.Count > 0;
-            }
-        }
+        public bool NoteOn => chordNotes.Count > 0;
 
         [Range(0.01f, 1f)] public float duration;
         [Range(-1f, 1f)] public float offset;
@@ -36,7 +21,7 @@ namespace Anywhen.Composing
         public bool IsChord => chordNotes.Count > 1;
 
 
-        public List<int> chordNotes = new List<int>();
+        public List<int> chordNotes;
         [Range(0, 1f)] public float strumAmount;
 
         [Range(0, 1f)] public float strumRandom;
@@ -44,8 +29,8 @@ namespace Anywhen.Composing
 
         [Range(0, 4)] public int stepRepeats;
 
-        [Range(0, 1f)] public float chance = 1;
-        [Range(0, 1f)] public float expression = 0;
+        [Range(0, 1f)] public float chance;
+        [Range(0, 1f)] public float expression;
 
 
         public int rootNote;
@@ -59,6 +44,55 @@ namespace Anywhen.Composing
 
         public RepeatRates repeatRate;
 
+        public AnysongPatternStep(int i)
+        {
+            duration = 0.1f;
+            offset = 0;
+            velocity = 1;
+            mixWeight = 1;
+            chordNotes = new List<int>();
+            strumAmount = 0;
+            strumRandom = 0;
+            stepRepeats = 0;
+            chance = 1;
+            expression = 0;
+            rootNote = 0;
+            repeatRate = RepeatRates.ThirtyTwo;
+        }
+
+
+        public struct UnManaged
+        {
+            public int rootNote;
+            public float duration;
+            public float offset;
+            public float velocity;
+            public float mixWeight;
+            public NativeArray<int> chordNotes;
+            public float strumAmount;
+            public float strumRandom;
+            public int stepRepeats;
+            public float chance;
+            public bool noteOn;
+        }
+
+        public UnManaged ToUnmanaged()
+        {
+            return new UnManaged
+            {
+                noteOn = NoteOn,
+                rootNote = rootNote,
+                duration = duration,
+                offset = offset,
+                velocity = velocity,
+                mixWeight = mixWeight,
+                chordNotes = new NativeArray<int>(chordNotes.ToArray(), Allocator.Persistent),
+                strumAmount = strumAmount,
+                strumRandom = strumRandom,
+                stepRepeats = stepRepeats,
+                chance = chance
+            };
+        }
 
         public int[] GetNotes(int patternRoot)
         {
@@ -82,7 +116,7 @@ namespace Anywhen.Composing
             duration = (float)AnywhenMetronome.Instance.GetLength();
             expression = 1;
             velocity = 1;
-            chordNotes = new List<int> { };
+            chordNotes = new List<int>();
             mixWeight = Random.Range(0, 1f);
         }
 
@@ -148,14 +182,19 @@ namespace Anywhen.Composing
         public AnysongPatternStep Clone()
         {
             var clone = (AnysongPatternStep)MemberwiseClone();
-            clone.chordNotes = new List<int>();
-            foreach (var note in chordNotes)
+            clone.chordNotes = new List<int>(chordNotes.Count);
+            for (var i = 0; i < chordNotes.Count; i++)
             {
-                clone.chordNotes.Add(note);
+                clone.chordNotes[i] = chordNotes[i];
             }
 
 
             return clone;
+        }
+
+        public bool IsNull()
+        {
+            return (chordNotes.Count == 0 && duration == 0 && offset == 0 && velocity == 0 && mixWeight == 0);
         }
     }
 }

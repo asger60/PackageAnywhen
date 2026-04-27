@@ -11,20 +11,25 @@ namespace Anywhen.Composing
     {
         [Range(10, 200)] public int tempo;
         [Range(0, 1f)] public float songVolume = 1;
-        
+
 
         public List<AnysongSection> Sections;
         public List<AnysongTrackSettings> Tracks;
 
 
-        [FormerlySerializedAs("SnapshotA")] public AnywhenSnapshot snapshotA = new();
-        [FormerlySerializedAs("SnapshotB")] public AnywhenSnapshot snapshotB = new();
+        public AnywhenSnapshot snapshotA = new();
+        public AnywhenSnapshot snapshotB = new();
 
 
         public string author = "Floppy Club";
         public Action OnSongChanged;
 
         private void OnValidate()
+        {
+            IsUpdated();
+        }
+
+        public void IsUpdated()
         {
             OnSongChanged?.Invoke();
         }
@@ -57,17 +62,29 @@ namespace Anywhen.Composing
                 {
                     foreach (var pattern in rSectionTrack.patterns)
                     {
-                        foreach (var step in pattern.steps)
+                        for (var i = 0; i < pattern.steps.Count; i++)
                         {
-                            step.mixWeight = Random.Range(0, 1f);
+                            var step = pattern.steps[i];
+                            var patternStep = step;
+                            patternStep.mixWeight = Random.Range(0, 1f);
+                            pattern.steps[i] = patternStep;
                         }
                     }
                 }
             }
         }
 
+        [ContextMenu("Reset")]
         public void Reset()
         {
+            Sections.Clear();
+            foreach (var track in Tracks)
+            {
+                var newSection = new AnysongSection();
+                newSection.Init(Tracks);
+                Sections.Add(newSection);
+            }
+
             foreach (var section in Sections)
             {
                 section.Reset();
@@ -81,7 +98,7 @@ namespace Anywhen.Composing
                 track.UnMute();
             }
         }
-        
+
 
         public void SyncToClock()
         {

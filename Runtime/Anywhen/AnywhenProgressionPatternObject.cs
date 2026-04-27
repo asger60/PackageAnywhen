@@ -1,4 +1,5 @@
 ﻿using Anywhen.SettingsObjects;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Anywhen
@@ -21,9 +22,24 @@ namespace Anywhen
                 };
                 return clone;
             }
+
+            public struct Unmanaged
+            {
+                public int rootNote;
+                public AnywhenScaleObject.Unmanaged anywhenScale;
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    rootNote = rootNote,
+                    //anywhenScale = anywhenScale.ToUnmanaged()
+                };
+            }
         }
 
 
         public ProgressionStep[] patternSteps;
+
     }
 }
