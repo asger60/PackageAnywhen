@@ -25,8 +25,8 @@ namespace Anywhen
 
         public bool IsPlaying { get; private set; }
 
-        private Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings> _trackSettingsCache;
-        private Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack> _playerTrackCache;
+        private Dictionary<int, AnysongTrackSettings> _trackSettingsCache;
+        private Dictionary<int, PlayerTrack> _playerTrackCache;
 
         [Serializable]
         public class PlayerTrack
@@ -45,7 +45,7 @@ namespace Anywhen
                 trackPitch = trackSettings.TrackPitch;
                 trackFilters = filters;
                 trackLFO = new AudioProcessorLFO();
-               // trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
+                // trackLFO.UpdateSettings(trackSettings.trackAudioLFO);
                 trackEnvelope = new AudioProcessorEnvelope();
                 //trackEnvelope.UpdateSettings(trackSettings.trackAudioEnvelope);
             }
@@ -219,30 +219,29 @@ namespace Anywhen
 
         protected void RebuildCaches()
         {
-            _trackSettingsCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, AnysongTrackSettings>();
-            _playerTrackCache = new Dictionary<AnysongTrackSettings.AnyTrackTypes, PlayerTrack>();
+            _trackSettingsCache = new Dictionary<int, AnysongTrackSettings>();
+            _playerTrackCache = new Dictionary<int, PlayerTrack>();
 
             foreach (var track in _tracksList)
             {
                 //if (track.trackSettings == null) continue;
-                if (!_trackSettingsCache.ContainsKey(track.trackSettings.trackType))
+                if (!_trackSettingsCache.ContainsKey(track.trackSettings.trackTypeIndex))
                 {
-                    _trackSettingsCache.Add(track.trackSettings.trackType, track.trackSettings);
+                    _trackSettingsCache.Add(track.trackSettings.trackTypeIndex, track.trackSettings);
                 }
 
-                _playerTrackCache.TryAdd(track.trackSettings.trackType, track);
+                _playerTrackCache.TryAdd(track.trackSettings.trackTypeIndex, track);
             }
         }
 
-        AnysongTrackSettings GetTrackSettingsForTrackType(AnysongTrackSettings.AnyTrackTypes trackType)
+        AnysongTrackSettings GetTrackSettingsForTrackType(int trackType)
         {
-            if (trackType == AnysongTrackSettings.AnyTrackTypes.None) return new AnysongTrackSettings();
+            if (trackType == -1) return new AnysongTrackSettings();
             if (_trackSettingsCache == null) RebuildCaches();
             return _trackSettingsCache.GetValueOrDefault(trackType);
         }
 
-        AnysongSectionTrack GetSectionTrackSettingsForTrackType(AnysongSection section,
-            AnysongTrackSettings.AnyTrackTypes trackType)
+        AnysongSectionTrack GetSectionTrackSettingsForTrackType(AnysongSection section, int trackType)
         {
             return section.GetTrack(trackType);
         }
@@ -251,7 +250,7 @@ namespace Anywhen
         {
             for (int i = 0; i < _currentSong.Tracks.Count; i++)
             {
-                AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackType);
+                AnysongTrackSettings trackSettingsSettings = GetTrackSettingsForTrackType(_currentSong.Tracks[i].trackTypeIndex);
                 //if (trackSettingsSettings == null)
                 //{
                 //    AnywhenRuntime.Log($"Track settings for track type {_currentSong.Tracks[i].trackType} is null");
@@ -263,20 +262,20 @@ namespace Anywhen
                     continue;
                 }
 
-                var playerTrack = GetTrackForTrackType(trackSettingsSettings.trackType);
+                var playerTrack = GetTrackForTrackType(trackSettingsSettings.trackTypeIndex);
                 if (playerTrack == null)
                 {
-                    AnywhenRuntime.Log($"Player track for track type {_currentSong.Tracks[i].trackType} is null");
+                    AnywhenRuntime.Log($"Player track for track type {_currentSong.Tracks[i].trackTypeIndex} is null");
                     continue;
                 }
 
                 //for (var sectionIndex = 0; sectionIndex < _currentSong.Sections.Count; sectionIndex++)
 
                 var section = _currentSong.Sections[_currentSectionIndex];
-                var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackType);
+                var sectionTrack = GetSectionTrackSettingsForTrackType(section, trackSettingsSettings.trackTypeIndex);
                 if (sectionTrack == null)
                 {
-                    AnywhenRuntime.Log($"Section track for track type {_currentSong.Tracks[i].trackType} is null");
+                    AnywhenRuntime.Log($"Section track for track type {_currentSong.Tracks[i].trackTypeIndex} is null");
                     continue;
                 }
 
@@ -318,7 +317,8 @@ namespace Anywhen
             }
         }
 
-        protected virtual void TriggerNotePlayback(PlayerTrack playerTrack, AnysongTrackSettings trackSettingsSettings, AnysongPatternStep step)
+        protected virtual void TriggerNotePlayback(PlayerTrack playerTrack, AnysongTrackSettings trackSettingsSettings,
+            AnysongPatternStep step)
         {
             if (step.GetNoteEvents(0).Length > 0)
             {
@@ -348,9 +348,9 @@ namespace Anywhen
             }
         }
 
-        PlayerTrack GetTrackForTrackType(AnysongTrackSettings.AnyTrackTypes trackType)
+        PlayerTrack GetTrackForTrackType(int trackType)
         {
-            if (trackType == AnysongTrackSettings.AnyTrackTypes.None) return null;
+            if (trackType == -1) return null;
             if (_playerTrackCache == null) RebuildCaches();
             return _playerTrackCache != null && _playerTrackCache.TryGetValue(trackType, out var track) ? track : null;
         }
@@ -374,7 +374,7 @@ namespace Anywhen
                 {
                     note = note,
                     playTime = playTime,
-                    stopTime = playTime + noteEvent.duration + noteEvent.drift + trackSettings.trackAudioEnvelope.release,
+                    stopTime = playTime + noteEvent.duration + noteEvent.drift + trackSettings.trackAudioEnvelope1.release,
                     volume = volume
                 };
 
@@ -516,7 +516,7 @@ namespace Anywhen
 
         protected virtual AnywhenVoiceBase GetVoice(AnysongTrackSettings trackSettings)
         {
-            var playerTrack = GetTrackForTrackType(trackSettings.trackType);
+            var playerTrack = GetTrackForTrackType(trackSettings.trackTypeIndex);
             return playerTrack?.GetVoice();
         }
 
@@ -630,8 +630,8 @@ namespace Anywhen
             {
                 var track = _tracksList[i];
                 if (newTrackSettings.Tracks.Count <= i) continue;
-                track.trackSettings.trackAudioEnvelope = newTrackSettings.Tracks[i].trackAudioEnvelope;
-                track.trackSettings.trackAudioLFO = newTrackSettings.Tracks[i].trackAudioLFO;
+                track.trackSettings.trackAudioEnvelope1 = newTrackSettings.Tracks[i].trackAudioEnvelope1;
+                track.trackSettings.trackAudioLFO1 = newTrackSettings.Tracks[i].trackAudioLFO1;
                 track.trackPitch = newTrackSettings.Tracks[i].TrackPitch;
                 track.trackSettings.volume = newTrackSettings.Tracks[i].volume;
             }

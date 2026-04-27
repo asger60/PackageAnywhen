@@ -18,7 +18,7 @@ namespace Anywhen.Synth.Filter
             }
 
             public ModSources modSource;
-            [Range(0, 100f)] public float modAmount;
+            [Range(0, 10f)] public float modAmount;
 
 
             public ModRouting(ModSources modSource, float modAmount)

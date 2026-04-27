@@ -15,7 +15,6 @@ public class AnywhenSynthPreset : AnywhenInstrument
 
     public struct Unmanaged
     {
-        public AnywhenInstrument.Unmanaged baseData;
         public bool isInit;
         public int voices;
         public float voiceSpread;
@@ -25,7 +24,6 @@ public class AnywhenSynthPreset : AnywhenInstrument
     {
         return new Unmanaged
         {
-            baseData = base.ToUnmanaged(),
             isInit = isInit,
             voices = voices,
             voiceSpread = voiceSpread

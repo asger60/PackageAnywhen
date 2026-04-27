@@ -7,6 +7,14 @@ namespace Anywhen.Synth
 {
     public class AudioProcessorSettingsObject : SynthSettingsObjectBase
     {
+        public event Action OnSettingsChanged;
+
+        void OnValidate()
+        {
+            OnSettingsChanged?.Invoke();
+        }
+
+
         public enum FilterTypes
         {
             LowPassFilter,
@@ -90,7 +98,7 @@ namespace Anywhen.Synth
             [Range(10, 24000)] public float frequency;
             [Range(1, 10000)] public float bandWidth;
             [Range(0.01f, 100)] public float q;
-            
+
             public struct Unmanaged
             {
                 public float frequency;
@@ -115,10 +123,12 @@ namespace Anywhen.Synth
         public struct FormantSettings
         {
             [Range(1, 6)] public int vowel;
+
             public struct Unmanaged
             {
                 public int vowel;
             }
+
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
@@ -141,6 +151,7 @@ namespace Anywhen.Synth
                 public float bitDepth;
                 public int downsampling;
             }
+
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
@@ -162,8 +173,9 @@ namespace Anywhen.Synth
             public struct Unmanaged
             {
                 public float drive;
-                public float wet; 
+                public float wet;
             }
+
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
@@ -182,13 +194,14 @@ namespace Anywhen.Synth
             [Range(0, 1)] public float delayTime;
             [Range(0, 1)] public float feedback;
             [Range(0, 1)] public float wet;
-            
+
             public struct Unmanaged
             {
                 public float delayTime;
                 public float feedback;
                 public float wet;
             }
+
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
@@ -210,7 +223,7 @@ namespace Anywhen.Synth
             [Range(0, 1)] public float delay;
             [Range(0, 1)] public float feedback;
             [Range(0, 1)] public float wet;
-             
+
             public struct Unmanaged
             {
                 public float rate;
@@ -218,8 +231,8 @@ namespace Anywhen.Synth
                 public float delay;
                 public float feedback;
                 public float wet;
-                
             }
+
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
@@ -243,6 +256,25 @@ namespace Anywhen.Synth
             [Range(0, 1f)] public float decay;
             [Range(0, 1f)] public float sustain;
             [Range(0, 3f)] public float release;
+
+            public struct Unmanaged
+            {
+                public float attack;
+                public float decay;
+                public float sustain;
+                public float release;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    attack = attack,
+                    decay = decay,
+                    sustain = sustain,
+                    release = release,
+                };
+            }
 
             public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
             {
@@ -276,6 +308,23 @@ namespace Anywhen.Synth
             [Range(0, 1)] public float amplitude;
             public bool unipolar;
 
+            public struct Unmanaged
+            {
+                public float frequency;
+                public float amplitude;
+                public bool unipolar;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    frequency = frequency,
+                    amplitude = amplitude,
+                    unipolar = unipolar,
+                };
+            }
+
             public LFOSettings(float frequency, float amplitude) : this()
             {
                 this.frequency = frequency;
@@ -298,7 +347,7 @@ namespace Anywhen.Synth
         public LFOSettings lfoSettings;
 
 
-        public struct Unmanaged
+        public struct Unmanaged : IEquatable<Unmanaged>
         {
             public FilterTypes filterType;
             public LowPassSettings.Unmanaged lowPassSettings;
@@ -311,6 +360,38 @@ namespace Anywhen.Synth
             public ChorusSettings.Unmanaged chorusSettings;
             public EnvelopeSettings envelopeSettings;
             public LFOSettings lfoSettings;
+
+            public bool Equals(Unmanaged other)
+            {
+                return filterType == other.filterType && lowPassSettings.Equals(other.lowPassSettings) &&
+                       ladderSettings.Equals(other.ladderSettings) && bandPassSettings.Equals(other.bandPassSettings) &&
+                       formantSettings.Equals(other.formantSettings) && bitcrushSettings.Equals(other.bitcrushSettings) &&
+                       saturatorSettings.Equals(other.saturatorSettings) && delaySettings.Equals(other.delaySettings) &&
+                       chorusSettings.Equals(other.chorusSettings) && envelopeSettings.Equals(other.envelopeSettings) &&
+                       lfoSettings.Equals(other.lfoSettings);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Unmanaged other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                var hashCode = new HashCode();
+                hashCode.Add((int)filterType);
+                hashCode.Add(lowPassSettings);
+                hashCode.Add(ladderSettings);
+                hashCode.Add(bandPassSettings);
+                hashCode.Add(formantSettings);
+                hashCode.Add(bitcrushSettings);
+                hashCode.Add(saturatorSettings);
+                hashCode.Add(delaySettings);
+                hashCode.Add(chorusSettings);
+                hashCode.Add(envelopeSettings);
+                hashCode.Add(lfoSettings);
+                return hashCode.ToHashCode();
+            }
         }
 
         public Unmanaged ToUnmanaged()

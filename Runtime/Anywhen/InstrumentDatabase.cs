@@ -54,23 +54,23 @@ public class InstrumentDatabase : MonoBehaviour
 
     public List<LoadedInstrument> LoadedInstruments = new List<LoadedInstrument>();
 
-    public AnywhenInstrument GetInstrumentOfType(AnysongTrackSettings.AnyTrackTypes type)
-    {
-        instruments = ShuffleArray(instruments);
-
-        for (var i = 0; i < instruments.Length; i++)
-        {
-            var instrument = instruments[i];
-            if (instrument.InstrumentType == type)
-            {
-                return instrument;
-            }
-        }
-
-        print("returning null");
-
-        return null;
-    }
+    //public AnywhenInstrument GetInstrumentOfType(AnysongTrackSettings.AnyTrackTypes type)
+    //{
+    //    instruments = ShuffleArray(instruments);
+//
+    //    for (var i = 0; i < instruments.Length; i++)
+    //    {
+    //        var instrument = instruments[i];
+    //        if (instrument.InstrumentType == type)
+    //        {
+    //            return instrument;
+    //        }
+    //    }
+//
+    //    print("returning null");
+//
+    //    return null;
+    //}
 
     static T[] ShuffleArray<T>(T[] array)
     {
@@ -156,8 +156,7 @@ public class InstrumentDatabase : MonoBehaviour
 
         if (AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count > 0)
         {
-            Debug.LogWarning("No instrument found for unmanaged struct. Falling back to first loaded instrument. Searched for: " +
-                             instrument.clipSelectType + " seed: " + instrument.seed);
+            Debug.LogWarning("No instrument found for unmanaged struct. Falling back to first loaded instrument.");
             return AnywhenRuntime.InstrumentDatabase.LoadedInstruments[0].UnmanagedClips;
         }
 

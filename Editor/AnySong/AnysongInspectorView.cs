@@ -131,12 +131,10 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(
-                selection.FindPropertyRelative("intensityMappingCurve"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("intensityMappingCurve"), null));
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(
-                selection.FindPropertyRelative("voices"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"), null));
 
 
             var trackTypeProperty = selection.FindPropertyRelative("trackType");
@@ -148,8 +146,7 @@ namespace Anysong
                 var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
                 if (instrument)
                 {
-                    
-                    AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.trackType = instrument.InstrumentType;
+                    //AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.trackTypeIndex = instrument.InstrumentType;
                     EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
                 }
             }

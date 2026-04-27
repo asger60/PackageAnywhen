@@ -56,7 +56,6 @@ namespace Anywhen.SettingsObjects
 
         public new struct Unmanaged : IEquatable<Unmanaged>
         {
-            public AnywhenInstrument.Unmanaged baseData;
             public ClipSelectType clipSelectType;
             public float volume;
             public int originalTempo;
@@ -65,7 +64,7 @@ namespace Anywhen.SettingsObjects
 
             public bool Equals(Unmanaged other)
             {
-                return baseData.Equals(other.baseData) &&
+                return 
                        clipSelectType == other.clipSelectType &&
                        Mathf.Approximately(volume, other.volume) &&
                        originalTempo == other.originalTempo &&
@@ -81,7 +80,6 @@ namespace Anywhen.SettingsObjects
             public override int GetHashCode()
             {
                 var hashCode = new HashCode();
-                hashCode.Add(baseData);
                 hashCode.Add((int)clipSelectType);
                 hashCode.Add(volume);
                 hashCode.Add(originalTempo);
@@ -207,7 +205,6 @@ namespace Anywhen.SettingsObjects
             {
                 return new Unmanaged
                 {
-                    baseData = base.ToUnmanaged(),
                     clipSelectType = clipSelectType,
                     volume = volume,
                     originalTempo = originalTempo,

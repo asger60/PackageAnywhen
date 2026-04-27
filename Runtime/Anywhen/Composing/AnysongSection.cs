@@ -12,11 +12,11 @@ namespace Anywhen.Composing
         public int sectionLength = 4;
 
 
-        public AnysongSectionTrack GetTrack(AnysongTrackSettings.AnyTrackTypes trackType)
+        public AnysongSectionTrack GetTrack(int trackType)
         {
             foreach (var track in tracks)
             {
-                if (track.anysongTrackSettings.trackType == trackType) return track;
+                if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
             }
 
             return null;

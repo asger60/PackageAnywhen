@@ -15,7 +15,7 @@ namespace Anywhen.Synth
 
         private float _currentFrequency;
         bool _retrigger;
-        AudioProcessorSettingsObject.LFOSettings _settings;
+        AudioProcessorSettingsObject.LFOSettings.Unmanaged _settings;
         private int _sampleRate;
 
         public AudioProcessorLFO(int sampleRate)
@@ -26,12 +26,7 @@ namespace Anywhen.Synth
             _freqPhPSmp = 0u;
             _phase = 0u;
             _isActive = false;
-            _settings = new AudioProcessorSettingsObject.LFOSettings
-            {
-                frequency = 0.5f,
-                amplitude = 1,
-                unipolar = false
-            };
+            _settings = default;
             UpdateSettings();
         }
 
@@ -68,10 +63,17 @@ namespace Anywhen.Synth
         }
 
         public void SetGate(bool gate) { }
-
+        
         public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
         {
-            _settings = settings.lfoSettings;
+            
+            
+        }
+
+
+        public void SetSettings(AudioProcessorSettingsObject.LFOSettings.Unmanaged settings)
+        {
+            _settings = settings;
             UpdateSettings();
         }
 

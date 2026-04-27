@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -31,7 +32,20 @@ namespace Anywhen.Composing
 
 
         public string author = "Floppy Club";
+        public Action OnSongChanged;
 
+        private void OnValidate()
+        {
+            OnSongChanged?.Invoke();
+            //foreach (var track in Tracks)
+            //{
+            //    foreach (var filter in track.TrackFilters)
+            //    {
+            //        if (filter == null) continue;
+            //        filter.OnSettingsChanged += OnSongChanged;
+            //    }
+            //}
+        }
 
         public void Rebuild()
         {
@@ -85,12 +99,7 @@ namespace Anywhen.Composing
                 track.UnMute();
             }
         }
-
-        public void SetEditSection(int sectionIndex)
-        {
-            _currentEditSectionIndex = sectionIndex;
-        }
-
+        
 
         public void SyncToClock()
         {

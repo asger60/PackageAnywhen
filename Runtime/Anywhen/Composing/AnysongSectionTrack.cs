@@ -28,7 +28,6 @@ namespace Anywhen.Composing
 
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
-            Debug.Log("Initing track " + songSongTrackSettings.trackType);
             anysongTrackSettings = songSongTrackSettings;
             patterns = new List<AnysongPattern> { new() };
             foreach (var pattern in patterns)
