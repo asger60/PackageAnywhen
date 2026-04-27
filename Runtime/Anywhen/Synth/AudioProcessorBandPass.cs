@@ -67,7 +67,7 @@ namespace Anywhen.Synth
 
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            float sampleRate = AnywhenRuntime.SampleRate;
+            float sampleRate = 0;
             if (sampleRate <= 0) sampleRate = 44100;
 
             float filterFreq = _filterFrequency * _frequencyMod;

@@ -15,30 +15,42 @@ namespace Anysong
         private bool _currentPatternIsBase;
         private Event _currentEvent;
 
-        public static Color ColorGreyDefault = new Color(0.35f, 0.35f, 0.35f, 1);
-        public static Color ColorGreyDark = new Color(0.15f, 0.15f, 0.2f, 1);
-        private static AnywhenPlayerBase _currentRuntimeSongPlayer;
+        static AnywhenAudioGenrator _currentPlayer;
+        static AnywhenAudioMetronome _currentMetronome;
+        //private static AnywhenPlayerBase _currentRuntimeSongPlayer;
 
-        private static AnywhenPlayerBase CurrentRuntimeSongPlayer
+        //private static AnywhenPlayerBase CurrentRuntimeSongPlayer
+        //{
+        //    get
+        //    {
+        //        if (!_currentRuntimeSongPlayer)
+        //        {
+        //        }
+//
+        //        return _currentRuntimeSongPlayer;
+        //    }
+        //}
+
+        private GameObject _playerObject;
+
+        void CreatePlayer()
         {
-            get
+            Debug.Log("Create player");
+            _playerObject = new GameObject("AnywhenComposerPlayer")
             {
-                if (!_currentRuntimeSongPlayer)
-                {
-                    var player = new GameObject("AnywhenComposerPlayer")
-                    {
-                        hideFlags = HideFlags.HideAndDontSave
-                    };
-                    _currentRuntimeSongPlayer = player.AddComponent<AnywhenComposerPlayer>();
-                    _currentRuntimeSongPlayer.Load(CurrentSong);
-                    _currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
-                    _currentRuntimeSongPlayer.LoadInstruments();
-                }
+                // hideFlags = HideFlags.HideAndDontSave
+            };
+            var metronomeSource = _playerObject.AddComponent<AudioSource>();
+            _currentMetronome = CreateInstance<AnywhenAudioMetronome>();
+            metronomeSource.generator = _currentMetronome;
+            metronomeSource.Play();
 
-                return _currentRuntimeSongPlayer;
-            }
+            var songSource = _playerObject.AddComponent<AudioSource>();
+            _currentPlayer = CreateInstance<AnywhenAudioGenrator>();
+            _currentPlayer.SetSong(CurrentSong);
+            songSource.generator = _currentPlayer;
+            songSource.Play();
         }
-
 
         private AnysongSection _sectionCopy;
         static AnysongPattern _patternCopy;
@@ -139,7 +151,6 @@ namespace Anysong
         private static AnySelection _currentSelection;
         public static AnySelection CurrentSelection => _currentSelection;
 
-        public static bool TrackEdit;
 
         public enum InspectorModes
         {
@@ -157,35 +168,26 @@ namespace Anysong
             window.Show(true);
             window.titleContent = new GUIContent("Anysong window - " + songObject.name);
             window.minSize = new Vector2(1450, 850);
-            window.CreateGUI();
         }
 
         public static void LoadSong(AnysongObject songObject)
         {
-            var player = new GameObject("AnywhenComposerPlayer")
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
-            var composerPlayer = player.AddComponent<AnywhenComposerPlayer>();
-            composerPlayer.Load(songObject);
-            //songObject.Reset();
-
-            _currentRuntimeSongPlayer = composerPlayer;
             CurrentSong = songObject;
+            _currentSelection = new AnySelection(songObject);
             //_currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
-            _currentRuntimeSongPlayer.LoadInstruments();
+            //  _currentRuntimeSongPlayer.LoadInstruments();
 
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
             AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
 
             // Set the default UXML template if not already set
+            string basePath = "Assets/PackageAnywhen/Editor/";
             if (!window.uxmlAsset)
-                window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/PackageAnywhen/Editor/uxml/AnysongEditorWindow.uxml");
-
+                window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(basePath + "uxml/AnysongEditorWindow.uxml");
 
             if (!window.styleAsset)
-                window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/PackageAnywhen/Editor/USS/AnywhenEditorStyles.uss");
+                window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>(basePath + "USS/AnywhenEditorStyles.uss");
 
             _currentSelection = new AnySelection(songObject);
 
@@ -204,8 +206,6 @@ namespace Anysong
                     track.trackAudioLFO1.Initialize();
                 }
             }
-
-            window.CreateGUI();
         }
 
         private static bool _isPLaying;
@@ -217,19 +217,19 @@ namespace Anysong
             if (_isPLaying)
             {
                 CurrentSong.Rebuild();
-                _currentRuntimeSongPlayer.Load(CurrentSong);
-                AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
+                _currentPlayer.Load(CurrentSong);
+                //AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
                 AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
-                AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-                AnywhenRuntime.Metronome.OnNextBar += OnBar;
+                AnywhenAudioMetronome.OnAudioTick += OnTick16;
+                AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
             }
             else
             {
-                AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
-                AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-                AnywhenRuntime.Metronome.OnNextBar -= OnBar;
+                //AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
+                AnywhenAudioMetronome.OnAudioTick -= OnTick16;
+                AnywhenAudioMetronome.OnBar -= OnBar;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
@@ -238,15 +238,22 @@ namespace Anysong
 
         private void OnDestroy()
         {
-            if (_currentRuntimeSongPlayer)
+            _currentPlayer = null;
+            if (_playerObject)
             {
-                CurrentRuntimeSongPlayer.Stop();
-                DestroyImmediate(CurrentRuntimeSongPlayer.gameObject);
-                _currentRuntimeSongPlayer = null;
+                DestroyImmediate(_playerObject);
+                _playerObject = null;
             }
 
-            AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-            AnywhenRuntime.Metronome.OnNextBar -= OnBar;
+            //if (_currentRuntimeSongPlayer)
+            //{
+            //    CurrentRuntimeSongPlayer.Stop();
+            //    DestroyImmediate(CurrentRuntimeSongPlayer.gameObject);
+            //    _currentRuntimeSongPlayer = null;
+            //}
+
+            //AnywhenRuntime.Metronome.a -= OnTick16;
+            //AnywhenRuntime.Metronome.OnNextBar -= OnBar;
 
             CurrentSong = null;
             _currentSelection = null;
@@ -261,13 +268,15 @@ namespace Anysong
 
         static void SetTestIntensity(float value)
         {
-            if (!CurrentRuntimeSongPlayer) return;
-            CurrentRuntimeSongPlayer.SetIntensity(value);
+            Debug.LogWarning("set intensity not implemented yet");
+            //if (!CurrentRuntimeSongPlayer) return;
+            //CurrentRuntimeSongPlayer.SetIntensity(value);
         }
 
 
         public void CreateGUI()
         {
+            CreatePlayer();
             rootVisualElement.Clear();
             if (!CurrentSong)
             {
@@ -335,37 +344,39 @@ namespace Anysong
                 .RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
         }
 
-        private static void OnTick16()
+        private static void OnTick16(MetronomeTickEvent tick)
         {
+            if (_currentSelection.CurrentSection == null) return;
             if (_currentSelection.CurrentSection == null)
                 _currentSelection.CurrentSection = CurrentSong.Sections[0];
 
-            bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
-                               _currentSelection.CurrentPatternIndex ==
-                               CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
+            //bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
+            //                   _currentSelection.CurrentPatternIndex ==
+            //                   CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
 
-            AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, doHighLight);
+            AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, true);
         }
 
         static void OnBar()
         {
-            if (CurrentSong != CurrentRuntimeSongPlayer.CurrentSong) return;
-            AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
-
-            if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
-            {
-                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-                {
-                    AnysongProgressionsView.SetIsPatternPlaying(i, CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(i));
-                }
-            }
-            else
-            {
-                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-                {
-                    AnysongProgressionsView.SetIsPatternPlaying(i, -1);
-                }
-            }
+            Debug.LogWarning("OnBar not implemented yet");
+            //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
+//
+            //if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
+            //{
+            //    for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+            //    {
+            //        AnysongProgressionsView.SetIsPatternPlaying(i,
+            //            CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(i));
+            //    }
+            //}
+            //else
+            //{
+            //    for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+            //    {
+            //        AnysongProgressionsView.SetIsPatternPlaying(i, -1);
+            //    }
+            //}
         }
 
 
@@ -390,7 +401,8 @@ namespace Anysong
                         HandleProgressionLogic();
 
                         AnysongTracksView.UpdateMuteSoleState();
-                        AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.CurrentSectionIndex);
+                        Debug.LogWarning("AnysongSectionsView not completely implemented");
+                        //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.CurrentSectionIndex);
                         AnysongProgressionsView.Refresh();
                     }
                 });
@@ -412,8 +424,6 @@ namespace Anysong
                     {
                         SetSelectionFromTooltip(btn.tooltip, _currentSelection);
                         SetInspectorMode(InspectorModes.Track);
-
-                        TrackEdit = true;
                         AnysongPatternView.Draw(_sequencesPanel);
                         AnysongTracksView.Draw(_tracksPanel, CurrentSong);
                         AnysongProgressionsView.Refresh();
@@ -555,12 +565,12 @@ namespace Anysong
 
         void ToggleSectionLock()
         {
-            CurrentRuntimeSongPlayer.SetSectionLock(!CurrentRuntimeSongPlayer.SectionLockState, _currentSelection.CurrentSectionIndex);
+            _currentPlayer.SetSectionLock(!_currentPlayer.SectionLockState, _currentSelection.CurrentSectionIndex);
             AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
             HandleSectionsLogic();
         }
 
-        public static bool IsSectionLocked => CurrentRuntimeSongPlayer.SectionLockState;
+        public static bool IsSectionLocked => _currentPlayer.SectionLockState;
 
         void SetSelectionFromTooltip(string tooltip, AnySelection targetSelection = null)
         {
@@ -596,7 +606,8 @@ namespace Anysong
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack(() =>
                     {
-                        CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings);
+                        Debug.Log("AnysongTracksView not completely implemented");
+                        //CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings);
                     });
 
                     break;
@@ -625,7 +636,10 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
+            {
+                CopyPattern(_currentSelection.CurrentPattern);
+            });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 

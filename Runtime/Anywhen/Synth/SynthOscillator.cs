@@ -38,7 +38,7 @@ namespace Anywhen.Synth
         public void Init()
         {
             _pitch = 1;
-            _sampleRate = AnywhenRuntime.SampleRate;
+            _sampleRate = 0;
             _isActive = true;
             switch (_settings.oscillatorType)
             {
@@ -172,7 +172,7 @@ namespace Anywhen.Synth
 
         private void set_freq(float freqHz)
         {
-            float sampleRate = _sampleRate > 1 ? _sampleRate : AnywhenRuntime.SampleRate;
+            float sampleRate = _sampleRate > 1 ? _sampleRate : 0;
             if (sampleRate <= 1) sampleRate = 44100;
 
             float freqPpsmp = ((freqHz * _pitchModAmount * _pitch) + _fineTune) / sampleRate; // periods per sample

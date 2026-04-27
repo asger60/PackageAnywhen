@@ -122,7 +122,7 @@ namespace Anywhen.Synth
         public override void SetSettings(AudioProcessorSettingsObject newSettings)
         {
             Settings = newSettings;
-            Init(AnywhenRuntime.SampleRate);
+            //Init(AnywhenRuntime.SampleRate);
             UpdateSettings();
         }
 

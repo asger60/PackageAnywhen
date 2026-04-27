@@ -353,12 +353,12 @@ namespace Anysong
 
         public static void HilightStepIndex(int trackIndex, bool state)
         {
-            var pattern = AnysongEditorWindow.CurrentSelection.CurrentPattern;
             foreach (var anysongStepView in _allStepButtons)
             {
                 anysongStepView.SetHighLighted(false);
             }
 
+            var pattern = AnysongEditorWindow.CurrentSelection.CurrentPattern;
 
             if (_stepViewCullumns.TryGetValue(pattern.InternalIndex, out var stepViews))
             {

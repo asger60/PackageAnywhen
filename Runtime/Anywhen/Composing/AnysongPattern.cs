@@ -9,7 +9,6 @@ namespace Anywhen.Composing
     public class AnysongPattern
     {
         public List<float> triggerChances = new List<float>();
-
         public List<AnysongPatternStep> steps;
         [Range(0, 16)] public int patternLength = 16;
         private int _internalIndex;

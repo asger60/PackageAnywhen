@@ -11,18 +11,8 @@ namespace Anywhen.Composing
     {
         [Range(10, 200)] public int tempo;
         [Range(0, 1f)] public float songVolume = 1;
+        
 
-        public enum SongPlayModes
-        {
-            Edit,
-            Playback,
-        }
-
-        private SongPlayModes _currentPlayMode = SongPlayModes.Edit;
-        public SongPlayModes CurrentPlayMode => _currentPlayMode;
-
-        int _currentEditSectionIndex = 0;
-        public int CurrentEditSectionIndex => _currentEditSectionIndex;
         public List<AnysongSection> Sections;
         public List<AnysongTrackSettings> Tracks;
 
@@ -37,14 +27,6 @@ namespace Anywhen.Composing
         private void OnValidate()
         {
             OnSongChanged?.Invoke();
-            //foreach (var track in Tracks)
-            //{
-            //    foreach (var filter in track.TrackFilters)
-            //    {
-            //        if (filter == null) continue;
-            //        filter.OnSettingsChanged += OnSongChanged;
-            //    }
-            //}
         }
 
         public void Rebuild()

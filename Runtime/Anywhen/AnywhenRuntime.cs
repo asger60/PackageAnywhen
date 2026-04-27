@@ -48,54 +48,20 @@ namespace Anywhen
         private static AnysongPlayerBrain _anysongPlayerBrain;
 
 
+        [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
         private static InstrumentDatabase _instrumentDatabase;
 
         public static InstrumentDatabase InstrumentDatabase
         {
-            get
-            {
-                if (!_instrumentDatabase)
-                    Instance.GetAnyComponents();
-
-                return _instrumentDatabase;
-            }
+            get { return Instance._thisInstrumentDatabase; }
         }
 
         private static AnywhenRuntime _instance;
 
-        private static AnywhenRuntime Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    var anywhens =
-                        FindObjectsByType<AnywhenRuntime>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                    if (anywhens.Length == 0) return null;
-                    _instance = anywhens[0];
+        private static AnywhenRuntime Instance => _instance;
 
-                    _instance.GetAnyComponents();
-                }
-
-                return _instance;
-            }
-        }
-
-        private static bool _executeInEditMode;
         private static AnywhenPlayer _targetPlayer;
 
-        private static int _sampleRate;
-
-        public static int SampleRate
-        {
-            get
-            {
-                if (_sampleRate <= 1)
-                    _sampleRate = AudioSettings.outputSampleRate;
-
-                return _sampleRate;
-            }
-        }
 
         private bool _isPreviewing;
         [SerializeField] private bool logErrors;
@@ -107,17 +73,26 @@ namespace Anywhen
         {
             EditorApplication.update += EditorUpdate;
         }
-#endif
+
         static void EditorUpdate()
         {
             if (Application.isPlaying) return;
-            if (_sampleRate == 1)
-                _sampleRate = AudioSettings.outputSampleRate;
-            if (_executeInEditMode)
+            FindReferences();
+        }
+
+        static void FindReferences()
+        {
+            if (_instance == null)
             {
-                Metronome.Update();
+                _instance = FindObjectsByType<AnywhenRuntime>()[0];
+                if (_instance != null)
+                {
+                    _instance.GetAnyComponents();
+                }
             }
         }
+#endif
+
 
         public static AnywhenSampleNoteClipPreviewer ClipSampleNoteClipPreviewer
         {
@@ -151,8 +126,6 @@ namespace Anywhen
             {
                 targetPlayer?.Stop();
             }
-
-            _executeInEditMode = state;
         }
 
         public void Init()
@@ -201,7 +174,7 @@ namespace Anywhen
 
             Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip);
         }
-        
+
         public static void PreviewNoteClip(AnywhenSampleInstrument.AnywhenNoteClipPlaybackSettings anywhenNoteClip)
         {
             if (!Instance._noteClipPreviewer)
@@ -219,7 +192,8 @@ namespace Anywhen
         private AnywhenSampleNoteClipPreviewer FindOrCreatePreviewer()
         {
             // Look for an existing previewer
-            var previewers = FindObjectsByType<AnywhenSampleNoteClipPreviewer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var previewers =
+                FindObjectsByType<AnywhenSampleNoteClipPreviewer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             AnywhenSampleNoteClipPreviewer previewer = null;
             if (previewers.Length > 0)
                 previewer = previewers[0];

@@ -1,3 +1,4 @@
+using System;
 using Anywhen;
 using Unity.Burst;
 using Unity.IntegerTime;
@@ -26,6 +27,12 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public bool isFinite => false;
     public bool isRealtime => true;
     public DiscreteTime? length => null;
+    public static Action OnTick16 { get; set; }
+    public static Action OnTickSub16 { get; set; }
+    public static Action OnTickSub8 { get; set; }
+    public static Action OnTickSub4 { get; set; } // replaces your OnTick16
+    public static Action OnTickSub2 { get; set; }
+    public static Action OnBar { get; set; }
 
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
@@ -81,6 +88,31 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     _bpm = bpmMsg.NewBpm;
                     _sub16Length = (60.0 / _bpm) * 0.25;
                 }
+
+                if (element.TryGetData(out MetronomeTickEvent tick))
+                {
+                    TriggerTick(tick); // existing broadcast
+
+                    // Route to specific action based on tick rate
+                    switch ((AnywhenMetronome.TickRate)tick.TickRate)
+                    {
+                        case AnywhenMetronome.TickRate.Sub16:
+                            OnTickSub16?.Invoke();
+                            Debug.Log("Sub16");
+                            break;
+                        case AnywhenMetronome.TickRate.Sub8:
+                            OnTickSub8?.Invoke();
+                            break;
+                        case AnywhenMetronome.TickRate.Sub4:
+                            OnTickSub4?.Invoke();
+                            break;
+                        case AnywhenMetronome.TickRate.Sub2:
+                            OnTickSub2?.Invoke();
+                            // Count == 0 means start of bar (every 16 sub16 ticks = 1 bar in 4/4)
+                            if (tick.Count == 0) OnBar?.Invoke();
+                            break;
+                    }
+                }
             }
         }
 
@@ -96,7 +128,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
             while (_nextTime16 < endDspTime)
             {
-                EmitTicks(ctx, pipe, _nextTime16);
+                EmitTicks(ctx, pipe);
 
                 _sub16Count++;
                 if (_sub16Count >= 16) _sub16Count = 0;
@@ -108,35 +140,34 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             return buffer.frameCount;
         }
 
-        private void EmitTicks(RealtimeContext ctx, ProcessorInstance.Pipe pipe, double time)
+        private void EmitTicks(RealtimeContext context, ProcessorInstance.Pipe pipe)
         {
             MetronomeTickEvent e = new MetronomeTickEvent
             {
                 TickRate = (int)AnywhenMetronome.TickRate.Sub16,
-                ScheduledTime = time,
                 Count = _sub16Count
             };
-            pipe.SendData(ctx, e);
+            pipe.SendData(context, e);
 
             if (_sub16Count % 2 == 0)
             {
                 e.TickRate = (int)AnywhenMetronome.TickRate.Sub8;
                 e.Count = _sub16Count / 2;
-                pipe.SendData(ctx, e);
+                pipe.SendData(context, e);
             }
 
             if (_sub16Count % 4 == 0)
             {
                 e.TickRate = (int)AnywhenMetronome.TickRate.Sub4;
                 e.Count = _sub16Count / 4;
-                pipe.SendData(ctx, e);
+                pipe.SendData(context, e);
             }
 
             if (_sub16Count % 8 == 0)
             {
                 e.TickRate = (int)AnywhenMetronome.TickRate.Sub2;
                 e.Count = _sub16Count / 8;
-                pipe.SendData(ctx, e);
+                pipe.SendData(context, e);
             }
         }
 
@@ -168,7 +199,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 }
             }
 
-            public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe, ProcessorInstance.Message message)
+            public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe,
+                ProcessorInstance.Message message)
             {
                 if (message.Is<SetBpmMsg>())
                 {
@@ -185,6 +217,5 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 public struct MetronomeTickEvent
 {
     public int TickRate;
-    public double ScheduledTime;
     public int Count;
 }
