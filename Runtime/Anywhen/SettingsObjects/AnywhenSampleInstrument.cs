@@ -54,8 +54,9 @@ namespace Anywhen.SettingsObjects
         [SerializeField] private bool tempoControlPitch;
         public bool TempoControlPitch => tempoControlPitch;
 
-        public new struct Unmanaged : IEquatable<Unmanaged>
+        public struct Unmanaged : IEquatable<Unmanaged>
         {
+            public int hash;
             public ClipSelectType clipSelectType;
             public float volume;
             public int originalTempo;
@@ -64,7 +65,7 @@ namespace Anywhen.SettingsObjects
 
             public bool Equals(Unmanaged other)
             {
-                return 
+                return hash == other.hash &&
                        clipSelectType == other.clipSelectType &&
                        Mathf.Approximately(volume, other.volume) &&
                        originalTempo == other.originalTempo &&
@@ -199,12 +200,13 @@ namespace Anywhen.SettingsObjects
         }
 
 
-        public new Unmanaged ToUnmanaged()
+        public  Unmanaged ToUnmanaged()
         {
             lock (_random)
             {
                 return new Unmanaged
                 {
+                    hash = GetHashCode(),
                     clipSelectType = clipSelectType,
                     volume = volume,
                     originalTempo = originalTempo,

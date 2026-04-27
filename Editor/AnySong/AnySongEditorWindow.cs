@@ -346,7 +346,7 @@ namespace Anysong
 
         private static void OnTick16(MetronomeTickEvent tick)
         {
-
+            if (_currentSelection == null) return;
             //bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
             //                   _currentSelection.CurrentPatternIndex ==
             //                   CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
@@ -477,7 +477,7 @@ namespace Anysong
             Debug.LogWarning("remove pattern not implemented yet");
             var thisTrack = _currentSelection.CurrentSectionTrack;
             //thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
-            
+
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             AnysongPatternView.Draw(_sequencesPanel);
             AnysongPatternView.Refresh();

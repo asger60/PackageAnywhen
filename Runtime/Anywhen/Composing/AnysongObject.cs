@@ -22,17 +22,15 @@ namespace Anywhen.Composing
 
 
         public string author = "Floppy Club";
-        public Action OnSongChanged;
+        public Action OnSongMidiChanged;
+        public Action OnSongSettingsChanged;
 
         private void OnValidate()
         {
-            IsUpdated();
+     
+            OnSongSettingsChanged?.Invoke();
         }
 
-        public void IsUpdated()
-        {
-            OnSongChanged?.Invoke();
-        }
 
         public void Rebuild()
         {
@@ -106,6 +104,11 @@ namespace Anywhen.Composing
             {
                 section.SyncToClock();
             }
+        }
+
+        public void Refresh()
+        {
+            OnSongMidiChanged?.Invoke();
         }
     }
 }

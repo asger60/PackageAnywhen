@@ -128,6 +128,8 @@ namespace Anysong
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            
+            AnysongEditorWindow.CurrentSong.Refresh();
         }
 
 

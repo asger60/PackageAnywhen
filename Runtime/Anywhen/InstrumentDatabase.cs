@@ -134,6 +134,7 @@ namespace Anywhen
                 var loaded = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[i];
                 if (loaded.Instrument != null && loaded.Instrument.ToUnmanaged().Equals(instrument))
                 {
+                    Debug.Log("found exact match");
                     return loaded.UnmanagedClips;
                 }
             }
