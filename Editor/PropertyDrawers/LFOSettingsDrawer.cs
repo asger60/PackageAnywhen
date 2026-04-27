@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Anywhen.SettingsObjects
 {
     [CustomPropertyDrawer(typeof(AudioProcessorSettingsObject.LFOSettings))]
-    public class PitchLFOSettingsDrawer : PropertyDrawer
+    public class LFOSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 60f;
         private const float Spacing = 2f;
@@ -13,9 +13,12 @@ namespace Anywhen.SettingsObjects
         private bool _foldout = true;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-           return EditorGUIUtility.singleLineHeight + // Foldout line
-                   PreviewHeight + Spacing + // LFO wave preview
-                   (SliderHeight + Spacing) * 3; // 3 controls with spacing (frequency, amplitude, retrigger - enabled is now the foldout)
+            if (!_foldout)
+                return EditorGUIUtility.singleLineHeight;
+
+            return EditorGUIUtility.singleLineHeight + // Foldout line
+                   PreviewHeight + Spacing +           // LFO wave preview
+                   (SliderHeight + Spacing) * 2;       // 3 controls with spacing
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -25,8 +28,7 @@ namespace Anywhen.SettingsObjects
             var frequencyProp = property.FindPropertyRelative("frequency");
             
 
-            var amplitudeProp = property.FindPropertyRelative("amplitude");
-
+            
             // Create foldout header that controls the enabled state
             var foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
@@ -37,11 +39,10 @@ namespace Anywhen.SettingsObjects
             {
 
                 // Initialize default values when enabling for the first time
-                if (_foldout && frequencyProp.floatValue == 0 && amplitudeProp.floatValue == 0)
+                if (_foldout && frequencyProp.floatValue == 0 )
                 {
                     
                     frequencyProp.floatValue = 1f;
-                    amplitudeProp.floatValue = 0.1f;
                 }
             }
 
@@ -54,7 +55,7 @@ namespace Anywhen.SettingsObjects
                     position.width,
                     PreviewHeight
                 );
-                DrawLFOPreview(previewRect, frequencyProp.floatValue, amplitudeProp.floatValue, _foldout);
+                DrawLFOPreview(previewRect, frequencyProp.floatValue, _foldout);
 
                 float yPos = position.y + EditorGUIUtility.singleLineHeight + PreviewHeight + Spacing;
                 float indent = 15f;
@@ -63,18 +64,13 @@ namespace Anywhen.SettingsObjects
                 var controlRect = new Rect(position.x + indent, yPos, position.width - indent, SliderHeight);
                 EditorGUI.PropertyField(controlRect, frequencyProp);
 
-                yPos += SliderHeight + Spacing;
-                controlRect.y = yPos;
-                EditorGUI.PropertyField(controlRect, amplitudeProp);
-
-                yPos += SliderHeight + Spacing;
-                controlRect.y = yPos;
+               
             }
 
             EditorGUI.EndProperty();
         }
 
-        private void DrawLFOPreview(Rect rect, float frequency, float amplitude, bool enabled)
+        private void DrawLFOPreview(Rect rect, float frequency, bool enabled)
         {
             // Draw the background
             EditorGUI.DrawRect(rect, new Color(0.2f, 0.2f, 0.2f));
@@ -99,7 +95,7 @@ namespace Anywhen.SettingsObjects
             Handles.DrawLine(new Vector3(rect.x + 2, centerY), new Vector3(rect.x + rect.width - 2, centerY));
 
             // Draw LFO waveform (sine wave)
-            Handles.color = Color.cyan;
+            Handles.color = Color.white;
 
             int steps = Mathf.RoundToInt(rect.width / 2f); // Number of line segments
             float timeSpan = 4f; // Show 4 seconds worth of LFO
@@ -111,7 +107,7 @@ namespace Anywhen.SettingsObjects
                 float t = (float)i / (steps - 1);
                 float x = rect.x + 2 + t * (rect.width - 4);
                 float time = t * timeSpan;
-                float lfoValue = Mathf.Sin(time * frequency * 2f * Mathf.PI) * amplitude;
+                float lfoValue = Mathf.Sin(time * frequency * 2f * Mathf.PI) ;
                 float y = centerY - lfoValue * (rect.height * 0.4f); // Scale to fit in preview
 
                 points[i] = new Vector3(x, y);
@@ -122,14 +118,7 @@ namespace Anywhen.SettingsObjects
             {
                 Handles.DrawLine(points[i], points[i + 1]);
             }
-
-            // Draw amplitude bounds
-            Handles.color = new Color(1f, 1f, 0f, 0.3f);
-            float maxY = centerY - amplitude * (rect.height * 0.4f);
-            float minY = centerY + amplitude * (rect.height * 0.4f);
-
-            Handles.DrawDottedLine(new Vector3(rect.x + 2, maxY), new Vector3(rect.x + rect.width - 2, maxY), 3f);
-            Handles.DrawDottedLine(new Vector3(rect.x + 2, minY), new Vector3(rect.x + rect.width - 2, minY), 3f);
+            
         }
     }
 }

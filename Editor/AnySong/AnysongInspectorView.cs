@@ -137,20 +137,6 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"), null));
 
 
-            var trackTypeProperty = selection.FindPropertyRelative("trackType");
-            //var trackTypeIndexProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackTypeIndex");
-
-
-            if (trackTypeProperty.enumValueIndex == 0)
-            {
-                var instrument = instrumentProperty.objectReferenceValue as AnywhenInstrument;
-                if (instrument)
-                {
-                    //AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.trackTypeIndex = instrument.InstrumentType;
-                    EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
-                }
-            }
-
             var trackTypeIndexProperty = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackTypeIndex"), null);
             trackTypeIndexProperty.label = "Track type";
             //_parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
@@ -163,9 +149,13 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"), null));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackEnvelope"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope1"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope2"), didUpdateInstrument));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackLFO"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO1"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO2"), didUpdateInstrument));
+
+
             _parent.Add(Spacer());
 
             foreach (var filter in AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.TrackFilters)
@@ -194,7 +184,7 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(AnysongEditorWindow.CurrentSelection, filter); };
-                filterElement.Add(SynthFilterInspector.Draw(filter));
+                filterElement.Add(AudioProcessorInspector.Draw(filter));
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -210,7 +200,8 @@ namespace Anysong
                 foreach (AudioProcessorSettingsObject.FilterTypes filterType in Enum.GetValues(
                              typeof(AudioProcessorSettingsObject.FilterTypes)))
                 {
-                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(AnysongEditorWindow.CurrentSelection, filterType); });
+                    menu.AddItem(new GUIContent(filterType.ToString()), false,
+                        () => { AddFilter(AnysongEditorWindow.CurrentSelection, filterType); });
                 }
 
                 menu.ShowAsContext();
@@ -218,7 +209,8 @@ namespace Anysong
             _parent.Add(addFilterButton);
         }
 
-        private static void AddFilter(AnysongEditorWindow.AnySelection selection, AudioProcessorSettingsObject.FilterTypes filterType)
+        private static void AddFilter(AnysongEditorWindow.AnySelection selection,
+            AudioProcessorSettingsObject.FilterTypes filterType)
         {
             var filter = ScriptableObject.CreateInstance<AudioProcessorSettingsObject>();
             filter.filterType = filterType;
@@ -237,7 +229,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
 
             // Refresh the inspector
-            DrawTrack( null);
+            DrawTrack(null);
         }
 
         private static void RemoveFilter(AnysongEditorWindow.AnySelection selection,
@@ -254,7 +246,8 @@ namespace Anysong
                     // only nulls the reference if the reference is not null. To actually remove the slot, you need to call it again.
                     // But in Modern Unity versions, it might just remove it. 
                     // Let's check the size and call again if it just nulled it.
-                    if (i < trackFiltersProperty.arraySize && trackFiltersProperty.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                    if (i < trackFiltersProperty.arraySize &&
+                        trackFiltersProperty.GetArrayElementAtIndex(i).objectReferenceValue == null)
                     {
                         trackFiltersProperty.DeleteArrayElementAtIndex(i);
                     }
@@ -274,7 +267,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
 
             // Refresh the inspector
-            DrawTrack( null);
+            DrawTrack(null);
         }
 
         public static void DrawProgression()

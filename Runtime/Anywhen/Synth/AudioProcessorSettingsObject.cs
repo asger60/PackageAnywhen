@@ -305,13 +305,11 @@ namespace Anywhen.Synth
         public struct LFOSettings
         {
             [Range(0.01f, 10)] public float frequency;
-            [Range(0, 1)] public float amplitude;
             public bool unipolar;
 
             public struct Unmanaged
             {
                 public float frequency;
-                public float amplitude;
                 public bool unipolar;
             }
 
@@ -320,7 +318,6 @@ namespace Anywhen.Synth
                 return new Unmanaged
                 {
                     frequency = frequency,
-                    amplitude = amplitude,
                     unipolar = unipolar,
                 };
             }
@@ -328,18 +325,16 @@ namespace Anywhen.Synth
             public LFOSettings(float frequency, float amplitude) : this()
             {
                 this.frequency = frequency;
-                this.amplitude = amplitude;
             }
 
             public bool IsUnset()
             {
-                return frequency == 0 && amplitude == 0;
+                return frequency == 0 ;
             }
 
             public void Initialize()
             {
                 frequency = 1;
-                amplitude = 1;
                 unipolar = false;
             }
         }

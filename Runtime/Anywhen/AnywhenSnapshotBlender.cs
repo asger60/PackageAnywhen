@@ -125,7 +125,6 @@ namespace Anywhen
             {
                 string subPath = path.Substring("trackLFO.".Length);
                 if (subPath == "frequency") trackSettings.trackAudioLFO1.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "amplitude") trackSettings.trackAudioLFO1.amplitude = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
             else if (path == "intensityMappingCurve")
             {

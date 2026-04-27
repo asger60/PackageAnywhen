@@ -4,7 +4,6 @@ using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen.Composing
 {
@@ -15,14 +14,10 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
-        [FormerlySerializedAs("trackAudioEnvelope")] [FormerlySerializedAs("trackEnvelope")]
         public AudioProcessorSettingsObject.EnvelopeSettings trackAudioEnvelope1;
-
         public AudioProcessorSettingsObject.EnvelopeSettings trackAudioEnvelope2;
 
-        [FormerlySerializedAs("trackAudioLFO")] [FormerlySerializedAs("trackLFO")]
         public AudioProcessorSettingsObject.LFOSettings trackAudioLFO1;
-
         public AudioProcessorSettingsObject.LFOSettings trackAudioLFO2;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
@@ -43,32 +38,13 @@ namespace Anywhen.Composing
         [NonSerialized] public bool IsMuted = false;
 
         [NonSerialized] public bool IsSolo = false;
-
-/*
-        public enum AnyTrackTypes
-        {
-            None = 0,
-            Bass = 10,
-            Rhythm = 20,
-            Notes = 30,
-            NoteShort = 35,
-            NoteLong = 36,
-            [InspectorName("Rhythm/Hihat")] Hihat = 40,
-            [InspectorName("Rhythm/Kick")] Kick = 50,
-            [InspectorName("Rhythm/Snare")] Snare = 60,
-            [InspectorName("Rhythm/Clap")] Clap = 70,
-            [InspectorName("Rhythm/Tick")] Tick = 80,
-            [InspectorName("Rhythm/Tom")] Tom = 90,
-        }
-*/
-        //   public AnyTrackTypes trackType;
+        
         [AnywhenTrackType] public int trackTypeIndex;
 
 
         [SerializeField] private AudioProcessorSettingsObject[] trackFilters;
 
-
-
+        
         public AudioProcessorSettingsObject[] TrackFilters
         {
             get

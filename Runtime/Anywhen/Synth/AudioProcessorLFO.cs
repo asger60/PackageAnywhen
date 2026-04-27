@@ -59,7 +59,7 @@ namespace Anywhen.Synth
             if (_settings.unipolar)
                 return (sin + 1f) * 0.5f;
 
-            return sin * _settings.amplitude;
+            return sin;
         }
 
         public void SetGate(bool gate) { }
