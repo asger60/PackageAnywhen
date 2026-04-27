@@ -90,6 +90,23 @@ namespace Anywhen.Synth
             [Range(10, 24000)] public float frequency;
             [Range(1, 10000)] public float bandWidth;
             [Range(0.01f, 100)] public float q;
+            
+            public struct Unmanaged
+            {
+                public float frequency;
+                public float bandWidth;
+                public float q;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    frequency = frequency,
+                    bandWidth = bandWidth,
+                    q = q,
+                };
+            }
         }
 
         public BandPassSettings bandPassSettings;
@@ -98,6 +115,17 @@ namespace Anywhen.Synth
         public struct FormantSettings
         {
             [Range(1, 6)] public int vowel;
+            public struct Unmanaged
+            {
+                public int vowel;
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    vowel = vowel,
+                };
+            }
         }
 
         public FormantSettings formantSettings;
@@ -107,6 +135,20 @@ namespace Anywhen.Synth
         {
             [Range(1, 24)] public float bitDepth;
             [Range(1, 100)] public int downsampling;
+
+            public struct Unmanaged
+            {
+                public float bitDepth;
+                public int downsampling;
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    bitDepth = bitDepth,
+                    downsampling = downsampling,
+                };
+            }
         }
 
         public BitcrushSettings bitcrushSettings;
@@ -116,6 +158,20 @@ namespace Anywhen.Synth
         {
             [Range(0, 10)] public float drive;
             [Range(0, 1)] public float wet;
+
+            public struct Unmanaged
+            {
+                public float drive;
+                public float wet; 
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    drive = drive,
+                    wet = wet,
+                };
+            }
         }
 
         public SaturatorSettings saturatorSettings;
@@ -126,6 +182,22 @@ namespace Anywhen.Synth
             [Range(0, 1)] public float delayTime;
             [Range(0, 1)] public float feedback;
             [Range(0, 1)] public float wet;
+            
+            public struct Unmanaged
+            {
+                public float delayTime;
+                public float feedback;
+                public float wet;
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    delayTime = delayTime,
+                    feedback = feedback,
+                    wet = wet,
+                };
+            }
         }
 
         public DelaySettings delaySettings;
@@ -138,6 +210,27 @@ namespace Anywhen.Synth
             [Range(0, 1)] public float delay;
             [Range(0, 1)] public float feedback;
             [Range(0, 1)] public float wet;
+             
+            public struct Unmanaged
+            {
+                public float rate;
+                public float depth;
+                public float delay;
+                public float feedback;
+                public float wet;
+                
+            }
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    rate = rate,
+                    depth = depth,
+                    delay = delay,
+                    feedback = feedback,
+                    wet = wet,
+                };
+            }
         }
 
         public ChorusSettings chorusSettings;
@@ -210,12 +303,12 @@ namespace Anywhen.Synth
             public FilterTypes filterType;
             public LowPassSettings.Unmanaged lowPassSettings;
             public LadderSettings.Unmanaged ladderSettings;
-            public BandPassSettings bandPassSettings;
-            public FormantSettings formantSettings;
-            public BitcrushSettings bitcrushSettings;
-            public SaturatorSettings saturatorSettings;
-            public DelaySettings delaySettings;
-            public ChorusSettings chorusSettings;
+            public BandPassSettings.Unmanaged bandPassSettings;
+            public FormantSettings.Unmanaged formantSettings;
+            public BitcrushSettings.Unmanaged bitcrushSettings;
+            public SaturatorSettings.Unmanaged saturatorSettings;
+            public DelaySettings.Unmanaged delaySettings;
+            public ChorusSettings.Unmanaged chorusSettings;
             public EnvelopeSettings envelopeSettings;
             public LFOSettings lfoSettings;
         }
@@ -227,12 +320,12 @@ namespace Anywhen.Synth
                 filterType = filterType,
                 lowPassSettings = lowPassSettings.ToUnmanaged(),
                 ladderSettings = ladderSettings.ToUnmanaged(),
-                bandPassSettings = bandPassSettings,
-                formantSettings = formantSettings,
-                bitcrushSettings = bitcrushSettings,
-                saturatorSettings = saturatorSettings,
-                delaySettings = delaySettings,
-                chorusSettings = chorusSettings
+                bandPassSettings = bandPassSettings.ToUnmanaged(),
+                formantSettings = formantSettings.ToUnmanaged(),
+                bitcrushSettings = bitcrushSettings.ToUnmanaged(),
+                saturatorSettings = saturatorSettings.ToUnmanaged(),
+                delaySettings = delaySettings.ToUnmanaged(),
+                chorusSettings = chorusSettings.ToUnmanaged()
             };
         }
 
