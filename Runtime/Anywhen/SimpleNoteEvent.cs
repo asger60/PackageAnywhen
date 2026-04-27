@@ -1,14 +1,6 @@
 
 public struct SimpleNoteEvent
 {
-    //public enum EventTypes
-    //{
-    //    NoteOn,
-    //    NoteOff,
-    //    NoteDown,
-    //}
-
-    //public EventTypes state;
 
     public int note;
     public double drift;

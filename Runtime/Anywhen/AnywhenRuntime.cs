@@ -14,8 +14,6 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
-        public static List<GeneratorInstance> ActiveGenerators = new List<GeneratorInstance>();
-
         private static AnywhenMetronome _metronome;
 
         public static AnywhenMetronome Metronome
@@ -51,10 +49,7 @@ namespace Anywhen
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
         private static InstrumentDatabase _instrumentDatabase;
 
-        public static InstrumentDatabase InstrumentDatabase
-        {
-            get { return Instance._thisInstrumentDatabase; }
-        }
+        public static InstrumentDatabase InstrumentDatabase => Instance._thisInstrumentDatabase;
 
         private static AnywhenRuntime _instance;
 

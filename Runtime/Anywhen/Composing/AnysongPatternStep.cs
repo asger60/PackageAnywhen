@@ -35,6 +35,12 @@ namespace Anywhen.Composing
 
         public int rootNote;
 
+        public void SetRoot(int note)
+        {
+            rootNote = note;
+            Debug.Log("SetRoot " + note);
+        }
+
         public enum RepeatRates
         {
             ThirtyTwo,
@@ -58,6 +64,7 @@ namespace Anywhen.Composing
             expression = 0;
             rootNote = 0;
             repeatRate = RepeatRates.ThirtyTwo;
+            Debug.Log("Step " + rootNote + " done");
         }
 
 
@@ -80,7 +87,7 @@ namespace Anywhen.Composing
         {
             return new UnManaged
             {
-                noteOn = NoteOn,
+                noteOn = chordNotes.Count > 0,
                 rootNote = rootNote,
                 duration = duration,
                 offset = offset,
@@ -118,6 +125,7 @@ namespace Anywhen.Composing
             velocity = 1;
             chordNotes = new List<int>();
             mixWeight = Random.Range(0, 1f);
+            Debug.Log("Init");
         }
 
 

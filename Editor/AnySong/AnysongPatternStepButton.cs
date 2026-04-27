@@ -17,7 +17,8 @@ namespace Anysong
         bool _polyfonic;
         private int _gridMax, _gridMin;
 
-        public AnysongPatternStepButton(VisualElement parentElement, AnysongPatternStep patternStep, int stepIndex, int noteIndex, bool polyfonic,
+        public AnysongPatternStepButton(VisualElement parentElement, AnysongPatternStep patternStep, int stepIndex, int noteIndex,
+            bool polyfonic,
             int gridMin, int gridMax)
         {
             _button = new Button { name = "StepButton" };
@@ -93,6 +94,7 @@ namespace Anysong
                             {
                                 _patternStep.chordNotes.Clear();
                                 _patternStep.rootNote = _noteIndex;
+                                Debug.Log("NoteOn " + _noteIndex);
                                 _patternStep.chordNotes.Add(0);
                             }
                         }
@@ -101,6 +103,8 @@ namespace Anysong
                             _patternStep.rootNote = _noteIndex;
                             if (_polyfonic)
                             {
+                                Debug.Log("NoteOn " + _noteIndex);
+                                _patternStep.SetRoot(_noteIndex);
                                 _patternStep.chordNotes.Add(0);
                             }
                             else
@@ -124,11 +128,11 @@ namespace Anysong
                 case AnysongPatternView.EditModes.NoteWeights:
                     _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             AnysongEditorWindow.CurrentSong.Refresh();
         }
 
@@ -176,7 +180,7 @@ namespace Anysong
                     {
                         _button.AddToClassList("pattern-step-note-mono");
                     }
-                    
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

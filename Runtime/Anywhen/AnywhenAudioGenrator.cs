@@ -211,12 +211,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         {
             uint state = seed;
 
-            int NextInt(int min, int max)
-            {
-                if (min >= max) return min;
-                state = state * 1103515245 + 12345;
-                return min + (int)((state >> 16) % (uint)(max - min));
-            }
+
 
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
@@ -231,7 +226,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     if (thisStep.noteOn)
                     {
                         var track = _tracks[trackIndex];
-                        track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(NextInt(0, 5)), dspTime));
+                        track.HandlePlaybackEvent(new PlaybackEvent(new SimpleNoteEvent(thisStep.rootNote), dspTime));
                         _tracks[trackIndex] = track;
                         seed = state;
                     }
@@ -406,8 +401,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     var voice = _voices[i];
                     if (voice.IsIdle)
                     {
-                        voice.QueueNote(playbackEvent.SimpleNoteEvent, playbackEvent.ScheduledPlayTime,
-                            ref _sampleInstrument);
+                        voice.QueueNote(playbackEvent.SimpleNoteEvent, playbackEvent.ScheduledPlayTime, ref _sampleInstrument);
                         _voices[i] = voice;
                         return;
                     }

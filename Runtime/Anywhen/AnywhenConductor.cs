@@ -9,7 +9,6 @@ namespace Anywhen
         [SerializeField] AnywhenScaleObject anywhenScale;
         [SerializeField] AnywhenScaleObject _currentAnywhenScale;
 
-
         public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
 
         public AnywhenProgressionPatternObject initialProgressionPattern;
@@ -24,8 +23,7 @@ namespace Anywhen
         {
             if (anywhenScale == null)
             {
-                anywhenScale =
-                    Resources.Load<AnywhenScaleObject>("Scales/Minor");
+                anywhenScale = Resources.Load<AnywhenScaleObject>("Scales/Minor");
             }
 
 
@@ -62,7 +60,12 @@ namespace Anywhen
 
         public int GetScaledNote(int noteStep, int maxNote = -1)
         {
-            if (!_currentAnywhenScale) return 0;
+            if (!_currentAnywhenScale)
+            {
+                Debug.LogError("No scale set!");
+                return 0;
+            }
+
             if (_currentAnywhenScale.notes == null || _currentAnywhenScale.notes.Length == 0) return 0;
             int numNotes = _currentAnywhenScale.notes.Length;
             if (numNotes == 0) return 0;
@@ -122,6 +125,12 @@ namespace Anywhen
         public static AnywhenScaleObject GetDefaultScale()
         {
             return Resources.Load<AnywhenScaleObject>("Scales/Major");
+        }
+
+        public void SetDefaultScale()
+        {
+            Debug.Log("Setting default scale");
+            _currentAnywhenScale = GetDefaultScale();
         }
     }
 }

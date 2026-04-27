@@ -206,6 +206,8 @@ namespace Anysong
                     track.trackAudioLFO1.Initialize();
                 }
             }
+
+            AnywhenRuntime.Conductor.SetDefaultScale();
         }
 
         private static bool _isPLaying;
