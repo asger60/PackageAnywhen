@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace Anywhen.SettingsObjects
 {
-    [CustomPropertyDrawer(typeof(AudioProcessorSettingsObject.LFOSettings))]
+    [CustomPropertyDrawer(typeof(AudioProcessorSettings.LFOSettings))]
     public class LFOSettingsDrawer : PropertyDrawer
     {
         private const float PreviewHeight = 60f;

@@ -10,7 +10,7 @@ namespace Anywhen.Synth
         private NativeArray<float> _lastSamples;
         private int _downsamplingCounter;
         private float _filterMod;
-        AudioProcessorSettingsObject.BitcrushSettings.Unmanaged _settings;
+        AudioProcessorSettings.BitcrushSettings.Unmanaged _settings;
 
         public AudioProcessorBitcrush(int sampleRate)
         {
@@ -19,7 +19,7 @@ namespace Anywhen.Synth
             _downsamplingCounter = 0;
             _filterMod = 0;
             _lastSamples = new NativeArray<float>(2, Allocator.Persistent);
-            _settings = new AudioProcessorSettingsObject.BitcrushSettings().ToUnmanaged();
+            _settings = new AudioProcessorSettings.BitcrushSettings().ToUnmanaged();
         }
 
 
@@ -36,7 +36,7 @@ namespace Anywhen.Synth
 
 
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.bitcrushSettings;
             UpdateSettings();

@@ -5,16 +5,9 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public class AudioProcessorSettingsObject : SynthSettingsObjectBase
+    [Serializable]
+    public class AudioProcessorSettings
     {
-        public event Action OnSettingsChanged;
-
-        void OnValidate()
-        {
-            OnSettingsChanged?.Invoke();
-        }
-
-
         public enum FilterTypes
         {
             LowPassFilter,
@@ -52,7 +45,8 @@ namespace Anywhen.Synth
                     cutoffFrequency = cutoffFrequency,
                     resonance = resonance,
                     oversampling = oversampling,
-                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod, Allocator.Persistent),
+                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(
+                        cutoffMod ?? Array.Empty<SynthFilterBase.ModRouting>(), Allocator.Persistent)
                 };
             }
         }
@@ -329,7 +323,7 @@ namespace Anywhen.Synth
 
             public bool IsUnset()
             {
-                return frequency == 0 ;
+                return frequency == 0;
             }
 
             public void Initialize()

@@ -30,7 +30,7 @@ namespace Anywhen.Synth.Filter
 
         }
 
-        public AudioProcessorSettingsObject Settings { get; protected set; }
+        public AudioProcessorSettings Settings { get; protected set; }
         protected List<ModRouting> ModRoutings = new();
 
         public void AddModRouting(ModRouting modRouting)
@@ -44,7 +44,7 @@ namespace Anywhen.Synth.Filter
 
         public abstract void SetExpression(float data);
 
-        public abstract void SetSettings(AudioProcessorSettingsObject newSettings);
+        public abstract void SetSettings(AudioProcessorSettings newSettings);
 
 
         public abstract void HandleModifiers(float mod1);

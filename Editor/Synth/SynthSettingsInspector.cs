@@ -134,12 +134,12 @@ public class SynthSettingsInspector : Editor
 
     void CreateFilter(string propertyName, string settingsName)
     {
-        SerializedProperty filterList = serializedObject.FindProperty(propertyName);
-        var newFilter = _settingsObject.AddElement<AudioProcessorSettingsObject>(filterList, settingsName);
-        newFilter.Init();
-        serializedObject.ApplyModifiedProperties();
-        EditorUtility.SetDirty(_settingsObject);
-        _settingsObject.RebuildSynth();
+        //SerializedProperty filterList = serializedObject.FindProperty(propertyName);
+        //var newFilter = _settingsObject.AddElement<AudioProcessorSettings>(filterList, settingsName);
+        //newFilter.Init();
+        //serializedObject.ApplyModifiedProperties();
+        //EditorUtility.SetDirty(_settingsObject);
+        //_settingsObject.RebuildSynth();
     }
 
     public void RebuildSynth()

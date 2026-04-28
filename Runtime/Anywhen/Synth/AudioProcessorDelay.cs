@@ -18,7 +18,7 @@ namespace Anywhen.Synth
         private int _channelCounter;
         private bool _initialized;
 
-        private AudioProcessorSettingsObject.DelaySettings.Unmanaged _settings;
+        private AudioProcessorSettings.DelaySettings.Unmanaged _settings;
 
         public AudioProcessorDelay(int sampleRate)
         {
@@ -30,7 +30,7 @@ namespace Anywhen.Synth
             _initialized = false;
             _writePos0 = 0;
             _writePos1 = 0;
-            _settings = new AudioProcessorSettingsObject.DelaySettings().ToUnmanaged();
+            _settings = new AudioProcessorSettings.DelaySettings().ToUnmanaged();
             _delayBuffer0 = default;
             _delayBuffer1 = default;
         }
@@ -59,7 +59,7 @@ namespace Anywhen.Synth
 
         public void SetGate(bool gate) { }
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.delaySettings;
             UpdateSettings();

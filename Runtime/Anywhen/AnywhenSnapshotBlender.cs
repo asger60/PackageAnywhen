@@ -63,7 +63,7 @@ namespace Anywhen
                         if (!int.TryParse(fIndexStr, out int filterIndex)) continue;
 
                         var filters = track.TrackFilters;
-                        if (filterIndex < 0 || filterIndex >= filters.Length) continue;
+                        if (filterIndex < 0 || filterIndex >= filters.Count) continue;
 
                         var filterSettings = filters[filterIndex];
                         string filterPropertyPath = propertyPath.Substring(fCloseBracketIdx + 2); // skip "]."
@@ -134,7 +134,7 @@ namespace Anywhen
             }
         }
 
-        private static void ApplyLerpToFilter(AudioProcessorSettingsObject filter, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        private static void ApplyLerpToFilter(AudioProcessorSettings filter, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
         {
             if (path.StartsWith("lowPassSettings."))
             {

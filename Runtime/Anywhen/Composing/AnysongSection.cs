@@ -43,9 +43,10 @@ namespace Anywhen.Composing
 
         public AnysongSectionTrack GetTrack(int trackType)
         {
+            Debug.LogWarning("GetTrack() is not implemented yet");
             foreach (var track in tracks)
             {
-                if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
+              //  if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
             }
 
             return tracks[0];

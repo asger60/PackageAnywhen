@@ -1,7 +1,6 @@
 using System;
 using Anywhen.Synth;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,18 +10,18 @@ namespace Synth
     {
         private class FilterPreviewElement : VisualElement
         {
-            private AudioProcessorSettingsObject _settings;
+            private AudioProcessorSettings _settings;
             private const int Resolution = 50;
             private readonly float[] _response = new float[Resolution];
 
-            public FilterPreviewElement(AudioProcessorSettingsObject settings)
+            public FilterPreviewElement(AudioProcessorSettings settings)
             {
                 _settings = settings;
                 style.height = 100;
                 style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.1f);
                 style.marginTop = 5;
                 style.marginBottom = 5;
-                 generateVisualContent += OnGenerateVisualContent;
+                generateVisualContent += OnGenerateVisualContent;
             }
 
             public void Refresh()
@@ -35,13 +34,13 @@ namespace Synth
             {
                 switch (_settings.filterType)
                 {
-                    case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
-                    case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
+                    case AudioProcessorSettings.FilterTypes.LowPassFilter:
+                    case AudioProcessorSettings.FilterTypes.LadderFilter:
                     {
-                        float cutoff = _settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter
+                        float cutoff = _settings.filterType == AudioProcessorSettings.FilterTypes.LowPassFilter
                             ? _settings.lowPassSettings.cutoffFrequency
                             : _settings.ladderSettings.cutoffFrequency;
-                        float resonance = _settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter
+                        float resonance = _settings.filterType == AudioProcessorSettings.FilterTypes.LowPassFilter
                             ? _settings.lowPassSettings.resonance
                             : _settings.ladderSettings.resonance;
 
@@ -61,7 +60,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
+                    case AudioProcessorSettings.FilterTypes.BandPassFilter:
                     {
                         float center = _settings.bandPassSettings.frequency;
                         float width = _settings.bandPassSettings.bandWidth;
@@ -76,7 +75,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
+                    case AudioProcessorSettings.FilterTypes.FormantFilter:
                     {
                         int vowel = _settings.formantSettings.vowel;
                         for (int i = 0; i < Resolution; i++)
@@ -94,7 +93,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
+                    case AudioProcessorSettings.FilterTypes.BitcrushFilter:
                     {
                         float bitDepth = _settings.bitcrushSettings.bitDepth;
                         int downsampling = _settings.bitcrushSettings.downsampling;
@@ -117,7 +116,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
+                    case AudioProcessorSettings.FilterTypes.SaturatorFilter:
                     {
                         float drive = _settings.saturatorSettings.drive;
                         float wet = _settings.saturatorSettings.wet;
@@ -132,7 +131,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
+                    case AudioProcessorSettings.FilterTypes.DelayFilter:
                     {
                         float wet = _settings.delaySettings.wet;
 
@@ -143,7 +142,7 @@ namespace Synth
 
                         break;
                     }
-                    case AudioProcessorSettingsObject.FilterTypes.ChorusFilter:
+                    case AudioProcessorSettings.FilterTypes.ChorusFilter:
                     {
                         float depth = _settings.chorusSettings.depth;
                         float rate = _settings.chorusSettings.rate;
@@ -201,13 +200,13 @@ namespace Synth
                 painter.Stroke();
 
                 float cutoff = -1;
-                if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.LowPassFilter)
+                if (_settings.filterType == AudioProcessorSettings.FilterTypes.LowPassFilter)
                     cutoff = _settings.lowPassSettings.cutoffFrequency;
-                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.LadderFilter)
+                else if (_settings.filterType == AudioProcessorSettings.FilterTypes.LadderFilter)
                     cutoff = _settings.ladderSettings.cutoffFrequency;
-                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.BandPassFilter)
+                else if (_settings.filterType == AudioProcessorSettings.FilterTypes.BandPassFilter)
                     cutoff = _settings.bandPassSettings.frequency;
-                else if (_settings.filterType == AudioProcessorSettingsObject.FilterTypes.BitcrushFilter)
+                else if (_settings.filterType == AudioProcessorSettings.FilterTypes.BitcrushFilter)
                     cutoff = 20000.0f / _settings.bitcrushSettings.downsampling;
 
                 if (cutoff > 0)
@@ -224,17 +223,13 @@ namespace Synth
             }
         }
 
-        public static VisualElement Draw(AudioProcessorSettingsObject settings)
+        public static VisualElement Draw(AudioProcessorSettings settings, Action onChanged = null)
         {
             VisualElement element = new VisualElement();
-            var so = new SerializedObject(settings);
 
             var label = new Label(settings.filterType.ToString())
             {
-                style =
-                {
-                    unityFontStyleAndWeight = FontStyle.Bold
-                }
+                style = { unityFontStyleAndWeight = FontStyle.Bold }
             };
             element.Add(label);
 
@@ -242,109 +237,146 @@ namespace Synth
             element.Add(preview);
             preview.Refresh();
 
-           
-
-
             switch (settings.filterType)
             {
-                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.oversampling"), "Oversampling", 1, 4, true,
-                        preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
-                        preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("lowPassSettings.resonance"), "Resonance", 0, 1, false,
-                        preview));
-                    break;
-                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("bandPassSettings.frequency"), "Frequency", 1, 24000, false,
-                        preview));
+                case AudioProcessorSettings.FilterTypes.LowPassFilter:
+                    element.Add(CreateBoundSliderInt("Oversampling", 1, 4,
+                        () => settings.lowPassSettings.oversampling,
+                        v => settings.lowPassSettings.oversampling = v, preview, onChanged));
 
-                    var bwSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.bandWidth"), "Bandwidth", 1, 10000, false,
-                        preview, _ =>
+                    element.Add(CreateBoundSlider("CutOff", 1, 24000,
+                        () => settings.lowPassSettings.cutoffFrequency,
+                        v => settings.lowPassSettings.cutoffFrequency = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Resonance", 0, 1,
+                        () => settings.lowPassSettings.resonance,
+                        v => settings.lowPassSettings.resonance = v, preview, onChanged));
+                    break;
+
+                case AudioProcessorSettings.FilterTypes.BandPassFilter:
+                    element.Add(CreateBoundSlider("Frequency", 1, 24000,
+                        () => settings.bandPassSettings.frequency,
+                        v => settings.bandPassSettings.frequency = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Bandwidth", 1, 10000,
+                        () => settings.bandPassSettings.bandWidth,
+                        v =>
                         {
+                            settings.bandPassSettings.bandWidth = v;
                             settings.SyncBandPassFromBandwidth();
-                            so.Update();
-                        });
-                    var qSlider = CreateBoundSlider(so.FindProperty("bandPassSettings.q"), "Q", 0.01f, 100, false, preview, _ =>
-                    {
-                        settings.SyncBandPassFromQ();
-                        so.Update();
-                    });
+                        },
+                        preview, onChanged));
+                    element.Add(CreateBoundSlider("Q", 0.01f, 100,
+                        () => settings.bandPassSettings.q,
+                        v =>
+                        {
+                            settings.bandPassSettings.q = v;
+                            settings.SyncBandPassFromQ();
+                        },
+                        preview, onChanged));
+                    break;
 
-                    element.Add(bwSlider);
-                    element.Add(qSlider);
+                case AudioProcessorSettings.FilterTypes.FormantFilter:
+                    element.Add(CreateBoundSliderInt("Vowel", 1, 6,
+                        () => settings.formantSettings.vowel,
+                        v => settings.formantSettings.vowel = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("formantSettings.vowel"), "Vowel", 1, 6, true, preview));
+
+                case AudioProcessorSettings.FilterTypes.LadderFilter:
+                    element.Add(CreateBoundSliderInt("Oversampling", 1, 4,
+                        () => settings.ladderSettings.oversampling,
+                        v => settings.ladderSettings.oversampling = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("CutOff", 1, 24000,
+                        () => settings.ladderSettings.cutoffFrequency,
+                        v => settings.ladderSettings.cutoffFrequency = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Resonance", 0, 1,
+                        () => settings.ladderSettings.resonance,
+                        v => settings.ladderSettings.resonance = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.oversampling"), "Oversampling", 1, 4, true,
-                        preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.cutoffFrequency"), "CutOff", 1, 24000, false,
-                        preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("ladderSettings.resonance"), "Resonance", 0, 1, false,
-                        preview));
+
+                case AudioProcessorSettings.FilterTypes.BitcrushFilter:
+                    element.Add(CreateBoundSlider("Bit Depth", 1, 24,
+                        () => settings.bitcrushSettings.bitDepth,
+                        v => settings.bitcrushSettings.bitDepth = v, preview, onChanged));
+                    element.Add(CreateBoundSliderInt("Downsampling", 1, 100,
+                        () => settings.bitcrushSettings.downsampling,
+                        v => settings.bitcrushSettings.downsampling = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.bitDepth"), "Bit Depth", 1, 24, false,
-                        preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("bitcrushSettings.downsampling"), "Downsampling", 1, 100, true,
-                        preview));
+
+                case AudioProcessorSettings.FilterTypes.SaturatorFilter:
+                    element.Add(CreateBoundSlider("Drive", 0, 10,
+                        () => settings.saturatorSettings.drive,
+                        v => settings.saturatorSettings.drive = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        () => settings.saturatorSettings.wet,
+                        v => settings.saturatorSettings.wet = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.drive"), "Drive", 0, 10, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("saturatorSettings.wet"), "Wet", 0, 1, false, preview));
+
+                case AudioProcessorSettings.FilterTypes.DelayFilter:
+                    element.Add(CreateBoundSlider("Time", 0, 1,
+                        () => settings.delaySettings.delayTime,
+                        v => settings.delaySettings.delayTime = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Feedback", 0, 1,
+                        () => settings.delaySettings.feedback,
+                        v => settings.delaySettings.feedback = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        () => settings.delaySettings.wet,
+                        v => settings.delaySettings.wet = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.delayTime"), "Time", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.feedback"), "Feedback", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("delaySettings.wet"), "Wet", 0, 1, false, preview));
+
+                case AudioProcessorSettings.FilterTypes.ChorusFilter:
+                    element.Add(CreateBoundSlider("Rate", 0, 1,
+                        () => settings.chorusSettings.rate,
+                        v => settings.chorusSettings.rate = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Depth", 0, 1,
+                        () => settings.chorusSettings.depth,
+                        v => settings.chorusSettings.depth = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Delay", 0, 1,
+                        () => settings.chorusSettings.delay,
+                        v => settings.chorusSettings.delay = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Feedback", 0, 1,
+                        () => settings.chorusSettings.feedback,
+                        v => settings.chorusSettings.feedback = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        () => settings.chorusSettings.wet,
+                        v => settings.chorusSettings.wet = v, preview, onChanged));
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.ChorusFilter:
-                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.rate"), "Rate", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.depth"), "Depth", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.delay"), "Delay", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.feedback"), "Feedback", 0, 1, false, preview));
-                    element.Add(CreateBoundSlider(so.FindProperty("chorusSettings.wet"), "Wet", 0, 1, false, preview));
-                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-
             return element;
         }
 
-        private static VisualElement CreateBoundSlider(SerializedProperty property, string label, float start, float end,
-            bool isInt, FilterPreviewElement preview, Action<ChangeEvent<float>> onFloatChanged = null)
+        private static VisualElement CreateBoundSlider(string label, float start, float end,
+            Func<float> getter, Action<float> setter, FilterPreviewElement preview, Action onChanged)
         {
-            VisualElement slider;
-            if (isInt)
+            var s = new Slider(label, start, end);
+            s.labelElement.style.minWidth = 80;
+            s.showInputField = true;
+            s.value = getter();
+            s.RegisterValueChangedCallback(evt =>
             {
-                var s = new SliderInt(label, (int)start, (int)end);
-                s.labelElement.style.minWidth = 80;
-                s.BindProperty(property);
-                s.showInputField = true;
-                s.RegisterValueChangedCallback(_ => preview.Refresh());
-                slider = s;
-            }
-            else
-            {
-                var s = new Slider(label, start, end);
-                s.labelElement.style.minWidth = 80;
-                s.BindProperty(property);
-                s.showInputField = true;
-                s.RegisterValueChangedCallback(evt =>
-                {
-                    onFloatChanged?.Invoke(evt);
-                    preview.Refresh();
-                });
-                slider = s;
-            }
-
-            return slider;
+                setter(evt.newValue);
+                preview.Refresh();
+                onChanged?.Invoke(); // <---
+            });
+            return s;
         }
 
-       
+        private static VisualElement CreateBoundSliderInt(string label, int start, int end,
+            Func<int> getter, Action<int> setter, FilterPreviewElement preview, Action onChanged)
+        {
+            var s = new SliderInt(label, start, end);
+            s.labelElement.style.minWidth = 80;
+            s.showInputField = true;
+            s.value = getter();
+            s.RegisterValueChangedCallback(evt =>
+            {
+                setter(evt.newValue);
+                preview.Refresh();
+                onChanged?.Invoke();
+            });
+            return s;
+        }
     }
 }

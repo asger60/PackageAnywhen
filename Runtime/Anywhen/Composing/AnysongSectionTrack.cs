@@ -17,7 +17,7 @@ namespace Anywhen.Composing
         }
 
         public PatternProgressionType patternProgressionType;
-        public AnysongTrackSettings anysongTrackSettings;
+        //public AnysongTrackSettings anysongTrackSettings;
 
 
         public List<AnysongPattern> patterns;
@@ -45,7 +45,7 @@ namespace Anywhen.Composing
             return new Unmanaged
             {
                 patternProgressionType = patternProgressionType,
-                anysongTrackSettings = anysongTrackSettings.ToUnmanaged(),
+                //anysongTrackSettings = anysongTrackSettings.ToUnmanaged(),
                 patterns = new NativeArray<AnysongPattern.Unmanaged>(unmanagedPatterns, Allocator.Persistent),
                 currentPattern = _currentPattern.ToUnmanaged(),
                 currentPatternBar = _currentPatternBar,
@@ -55,7 +55,7 @@ namespace Anywhen.Composing
 
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
-            anysongTrackSettings = songSongTrackSettings;
+            //anysongTrackSettings = songSongTrackSettings;
             patterns = new List<AnysongPattern>(1);
             for (var i = 0; i < patterns.Count; i++)
             {
@@ -77,7 +77,7 @@ namespace Anywhen.Composing
                 clone.patterns[i] = patterns[i].Clone();
             }
 
-            clone.anysongTrackSettings = anysongTrackSettings;
+            //clone.anysongTrackSettings = anysongTrackSettings;
             clone.patternProgressionType = patternProgressionType;
 
 
@@ -202,7 +202,7 @@ namespace Anywhen.Composing
 
         public void SetTrack(AnysongTrackSettings songTrack)
         {
-            anysongTrackSettings = songTrack;
+            //anysongTrackSettings = songTrack;
         }
 
         public int GetPlayingPatternIndex()
@@ -212,7 +212,7 @@ namespace Anywhen.Composing
 
         public bool IsNull()
         {
-            return (patterns.Count == 0 && anysongTrackSettings == null);
+            return (patterns.Count == 0);
         }
     }
 }

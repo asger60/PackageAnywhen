@@ -22,7 +22,7 @@ namespace Anywhen.Synth
         private int _channelCounter;
         private float _filterMod;
         private bool _initialized;
-        private AudioProcessorSettingsObject.ChorusSettings.Unmanaged _settings;
+        private AudioProcessorSettings.ChorusSettings.Unmanaged _settings;
 
         public AudioProcessorChorus(int sampleRate)
         {
@@ -39,7 +39,7 @@ namespace Anywhen.Synth
             _writePos1 = 0;
             _lfoPhase0 = 0f;
             _lfoPhase1 = 0.25f; // Offset for stereo width
-            _settings = new AudioProcessorSettingsObject.ChorusSettings().ToUnmanaged();
+            _settings = new AudioProcessorSettings.ChorusSettings().ToUnmanaged();
             _delayBuffer0 = default;
             _delayBuffer1 = default;
         }
@@ -74,7 +74,7 @@ namespace Anywhen.Synth
 
         public void SetGate(bool gate) { }
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.chorusSettings;
             UpdateSettings();

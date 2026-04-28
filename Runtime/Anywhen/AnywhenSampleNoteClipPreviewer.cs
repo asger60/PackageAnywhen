@@ -182,7 +182,7 @@ namespace Anywhen
             }
         }
 
-        private System.Collections.IEnumerator ApplyEnvelope(AudioProcessorSettingsObject.EnvelopeSettings audioEnvelope,
+        private System.Collections.IEnumerator ApplyEnvelope(AudioProcessorSettings.EnvelopeSettings audioEnvelope,
             float targetVolume, float noteDuration, float clipLength)
         {
             // initialize envelope defaults if unset

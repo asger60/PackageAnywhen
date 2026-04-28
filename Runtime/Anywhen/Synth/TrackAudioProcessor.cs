@@ -4,7 +4,7 @@ namespace Anywhen.Synth
 {
     public struct TrackAudioProcessor
     {
-        private AudioProcessorSettingsObject.Unmanaged _settings;
+        private AudioProcessorSettings.Unmanaged _settings;
         
         private AudioProcessorLowPass _lowPass;
         private AudioProcessorSaturator _saturator;
@@ -14,7 +14,7 @@ namespace Anywhen.Synth
         private AudioProcessorChorus _chorus;
         private AudioProcessorDelay _delay;
 
-        public TrackAudioProcessor(int sampleRate, AudioProcessorSettingsObject.Unmanaged settings)
+        public TrackAudioProcessor(int sampleRate, AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings;
             _lowPass = default;
@@ -27,33 +27,33 @@ namespace Anywhen.Synth
 
             switch (_settings.filterType)
             {
-                case AudioProcessorSettingsObject.FilterTypes.LowPassFilter:
+                case AudioProcessorSettings.FilterTypes.LowPassFilter:
                     _lowPass = new AudioProcessorLowPass(sampleRate);
                     _lowPass.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.SaturatorFilter:
+                case AudioProcessorSettings.FilterTypes.SaturatorFilter:
                     _saturator = new AudioProcessorSaturator(sampleRate);
                     _saturator.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.BandPassFilter:
+                case AudioProcessorSettings.FilterTypes.BandPassFilter:
                     _bandPass = new AudioProcessorBandPass(sampleRate);
                     _bandPass.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.FormantFilter:
+                case AudioProcessorSettings.FilterTypes.FormantFilter:
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.LadderFilter:
+                case AudioProcessorSettings.FilterTypes.LadderFilter:
                     _ladder = new AudioProcessorLadder(sampleRate);
                     _ladder.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.BitcrushFilter:
+                case AudioProcessorSettings.FilterTypes.BitcrushFilter:
                     _bitcrush = new AudioProcessorBitcrush(sampleRate);
                     _bitcrush.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.DelayFilter:
+                case AudioProcessorSettings.FilterTypes.DelayFilter:
                     _delay = new AudioProcessorDelay(sampleRate);
                     _delay.SetSettings(_settings);
                     break;
-                case AudioProcessorSettingsObject.FilterTypes.ChorusFilter:
+                case AudioProcessorSettings.FilterTypes.ChorusFilter:
                     _chorus = new AudioProcessorChorus(sampleRate);
                     _chorus.SetSettings(_settings);
                     break;
@@ -66,13 +66,13 @@ namespace Anywhen.Synth
         {
             return _settings.filterType switch
             {
-                AudioProcessorSettingsObject.FilterTypes.LowPassFilter => _lowPass.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.SaturatorFilter => _saturator.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.BandPassFilter => _bandPass.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.LadderFilter => _ladder.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.ChorusFilter => _chorus.Process(sample, track),
-                AudioProcessorSettingsObject.FilterTypes.DelayFilter => _delay.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.LowPassFilter => _lowPass.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.SaturatorFilter => _saturator.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.BandPassFilter => _bandPass.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.LadderFilter => _ladder.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.ChorusFilter => _chorus.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.DelayFilter => _delay.Process(sample, track),
 
                 _ => sample
             };
@@ -87,6 +87,6 @@ namespace Anywhen.Synth
 
         public void SetGate(bool gate);
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings);
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings);
     }
 }

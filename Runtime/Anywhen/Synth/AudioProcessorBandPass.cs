@@ -14,7 +14,7 @@ namespace Anywhen.Synth
         private float _q ; // 1-10
         private float _frequencyMod ;
         private readonly int _sampleRate;
-        AudioProcessorSettingsObject.BandPassSettings.Unmanaged _settings;
+        AudioProcessorSettings.BandPassSettings.Unmanaged _settings;
         public AudioProcessorBandPass(int sampleRate) : this()
         {
             _sampleRate = sampleRate;
@@ -32,7 +32,7 @@ namespace Anywhen.Synth
             _q = q;
         }
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.bandPassSettings;
         }

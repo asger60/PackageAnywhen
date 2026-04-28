@@ -17,7 +17,7 @@
         private float _frequencyMod;
 
 
-        private AudioProcessorSettingsObject.LadderSettings.Unmanaged _settings;
+        private AudioProcessorSettings.LadderSettings.Unmanaged _settings;
         int _sampleRate;
 
         public AudioProcessorLadder(int sampleRate)
@@ -28,7 +28,7 @@
             _frequencyMod = 1;
             _cutoffMod = 1;
             _oversampling = 1;
-            _settings = new AudioProcessorSettingsObject.LadderSettings().ToUnmanaged();
+            _settings = new AudioProcessorSettings.LadderSettings().ToUnmanaged();
             _sampleRate = sampleRate;
         }
 
@@ -37,7 +37,7 @@
         {
         }
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.ladderSettings;
             UpdateSettings();

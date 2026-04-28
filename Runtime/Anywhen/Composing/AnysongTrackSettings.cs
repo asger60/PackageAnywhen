@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
@@ -14,11 +15,11 @@ namespace Anywhen.Composing
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
-        public AudioProcessorSettingsObject.EnvelopeSettings trackAudioEnvelope1;
-        public AudioProcessorSettingsObject.EnvelopeSettings trackAudioEnvelope2;
+        public AudioProcessorSettings.EnvelopeSettings trackAudioEnvelope1;
+        public AudioProcessorSettings.EnvelopeSettings trackAudioEnvelope2;
 
-        public AudioProcessorSettingsObject.LFOSettings trackAudioLFO1;
-        public AudioProcessorSettingsObject.LFOSettings trackAudioLFO2;
+        public AudioProcessorSettings.LFOSettings trackAudioLFO1;
+        public AudioProcessorSettings.LFOSettings trackAudioLFO2;
 
         [Range(0, 10)] [SerializeField] float trackPitch = 1;
 
@@ -42,14 +43,14 @@ namespace Anywhen.Composing
         [AnywhenTrackType] public int trackTypeIndex;
 
 
-        [SerializeField] private AudioProcessorSettingsObject[] trackFilters;
+        [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
         
-        public AudioProcessorSettingsObject[] TrackFilters
+        public List<AudioProcessorSettings> TrackFilters
         {
             get
             {
-                trackFilters ??= Array.Empty<AudioProcessorSettingsObject>();
+                trackFilters ??= new List<AudioProcessorSettings>();  
                 return trackFilters;
             }
         }
@@ -58,8 +59,8 @@ namespace Anywhen.Composing
         {
             volume = 1;
             intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
-            trackAudioEnvelope1 = new AudioProcessorSettingsObject.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
-            trackAudioLFO1 = new AudioProcessorSettingsObject.LFOSettings(2, 0.01f);
+            trackAudioEnvelope1 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
+            trackAudioLFO1 = new AudioProcessorSettings.LFOSettings(2, 0.01f);
         }
 
         public AnysongTrackSettings Clone()
@@ -81,11 +82,11 @@ namespace Anywhen.Composing
         {
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
-            public AudioProcessorSettingsObject.EnvelopeSettings TrackAudioEnvelope1;
-            public AudioProcessorSettingsObject.EnvelopeSettings TrackAudioEnvelope2;
+            public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope1;
+            public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             
-            public AudioProcessorSettingsObject.LFOSettings TrackAudioLFO1;
-            public AudioProcessorSettingsObject.LFOSettings TrackAudioLFO2;
+            public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
+            public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
             
 
             public float trackPitch;
@@ -94,17 +95,17 @@ namespace Anywhen.Composing
             public int trackTypeIndex;
             public bool isMuted;
             public bool isSolo;
-            public NativeArray<AudioProcessorSettingsObject.Unmanaged> trackFilters;
+            public NativeArray<AudioProcessorSettings.Unmanaged> trackFilters;
         }
 
         public Unmanaged ToUnmanaged()
         {
-            var filters = new NativeArray<AudioProcessorSettingsObject.Unmanaged>(TrackFilters.Length, Allocator.Persistent);
-            for (int i = 0; i < TrackFilters.Length; i++)
+            var filters = new NativeArray<AudioProcessorSettings.Unmanaged>(TrackFilters.Count, Allocator.Persistent);
+            for (int i = 0; i < TrackFilters.Count; i++)
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();
             }
-
+          
             return new Unmanaged
             {
                 instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
@@ -133,9 +134,21 @@ namespace Anywhen.Composing
             IsMuted = false;
         }
 
-        public void CheckForChanges()
+        public void RemoveAudioProcessor(AudioProcessorSettings settings)
         {
-            Debug.Log("CheckForChanges");
+            foreach (var filter in TrackFilters)
+            {
+                if (filter == settings)
+                {
+                    trackFilters.Remove(filter);
+                    break;
+                }
+            }
+        }
+
+        public void AddAudioProcessor(AudioProcessorSettings settings)
+        {
+            TrackFilters.Add(settings);
         }
     }
 }

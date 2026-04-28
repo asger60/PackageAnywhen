@@ -160,7 +160,7 @@ namespace Anysong
 
             _parent.Add(Spacer());
 
-            foreach (var filter in AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.TrackFilters)
+            foreach (var audioProcessorSettings in AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.TrackFilters)
             {
                 VisualElement filterElement = new VisualElement
                 {
@@ -185,8 +185,9 @@ namespace Anysong
                     text = "x"
                 };
 
-                deleteFilter.clicked += () => { RemoveFilter(AnysongEditorWindow.CurrentSelection, filter); };
-                filterElement.Add(AudioProcessorInspector.Draw(filter));
+                deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
+                filterElement.Add(AudioProcessorInspector.Draw(audioProcessorSettings,
+                    () => { AnysongEditorWindow.CurrentSong.OnSongSettingsChanged(); }));
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -199,11 +200,11 @@ namespace Anysong
             addFilterButton.clicked += () =>
             {
                 var menu = new GenericMenu();
-                foreach (AudioProcessorSettingsObject.FilterTypes filterType in Enum.GetValues(
-                             typeof(AudioProcessorSettingsObject.FilterTypes)))
+                foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(
+                             typeof(AudioProcessorSettings.FilterTypes)))
                 {
                     menu.AddItem(new GUIContent(filterType.ToString()), false,
-                        () => { AddFilter(AnysongEditorWindow.CurrentSelection, filterType); });
+                        () => { AddFilter(filterType); });
                 }
 
                 menu.ShowAsContext();
@@ -211,22 +212,13 @@ namespace Anysong
             _parent.Add(addFilterButton);
         }
 
-        private static void AddFilter(AnysongEditorWindow.AnySelection selection,
-            AudioProcessorSettingsObject.FilterTypes filterType)
+        private static void AddFilter(AudioProcessorSettings.FilterTypes filterType)
         {
-            var filter = ScriptableObject.CreateInstance<AudioProcessorSettingsObject>();
-            filter.filterType = filterType;
-            filter.Init();
-            filter.name = "Filter_" + filterType;
+            var newProcessor = new AudioProcessorSettings();
+            newProcessor.Init();
 
-            AssetDatabase.AddObjectToAsset(filter, AnysongEditorWindow.CurrentSong);
-
-            var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
-            trackFiltersProperty.InsertArrayElementAtIndex(trackFiltersProperty.arraySize);
-            var newElement = trackFiltersProperty.GetArrayElementAtIndex(trackFiltersProperty.arraySize - 1);
-            newElement.objectReferenceValue = filter;
-
-            trackFiltersProperty.serializedObject.ApplyModifiedProperties();
+            newProcessor.filterType = filterType;
+            AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.AddAudioProcessor(newProcessor);
             EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             AssetDatabase.SaveAssets();
 
@@ -234,36 +226,9 @@ namespace Anysong
             DrawTrack(null);
         }
 
-        private static void RemoveFilter(AnysongEditorWindow.AnySelection selection, AudioProcessorSettingsObject filter)
+        private static void RemoveFilter(AudioProcessorSettings filter)
         {
-            var trackFiltersProperty = selection.CurrentSongTrackProperty.FindPropertyRelative("trackFilters");
-            for (int i = 0; i < trackFiltersProperty.arraySize; i++)
-            {
-                var element = trackFiltersProperty.GetArrayElementAtIndex(i);
-                if (element.objectReferenceValue == filter)
-                {
-                    trackFiltersProperty.DeleteArrayElementAtIndex(i);
-                    // According to Unity documentation, DeleteArrayElementAtIndex(i) on a property pointing to an object reference 
-                    // only nulls the reference if the reference is not null. To actually remove the slot, you need to call it again.
-                    // But in Modern Unity versions, it might just remove it. 
-                    // Let's check the size and call again if it just nulled it.
-                    if (i < trackFiltersProperty.arraySize &&
-                        trackFiltersProperty.GetArrayElementAtIndex(i).objectReferenceValue == null)
-                    {
-                        trackFiltersProperty.DeleteArrayElementAtIndex(i);
-                    }
-
-                    break;
-                }
-            }
-
-            trackFiltersProperty.serializedObject.ApplyModifiedProperties();
-
-            if (filter != null)
-            {
-                Undo.DestroyObjectImmediate(filter);
-            }
-
+            AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.RemoveAudioProcessor(filter);
             EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             AssetDatabase.SaveAssets();
 

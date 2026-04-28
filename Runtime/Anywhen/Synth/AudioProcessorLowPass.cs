@@ -40,7 +40,7 @@ namespace Anywhen.Synth
         float _s, _v;
         private float _cutoff;
         private int _sampleRate;
-        AudioProcessorSettingsObject.LowPassSettings.Unmanaged _settings;
+        AudioProcessorSettings.LowPassSettings.Unmanaged _settings;
         private float _frequencyMod;
 
         public AudioProcessorLowPass(int sampleRate) : this()
@@ -55,7 +55,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public void SetSettings(AudioProcessorSettingsObject.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
             _settings = settings.lowPassSettings;
             _resonance = _settings.resonance;
