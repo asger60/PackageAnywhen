@@ -5,7 +5,7 @@ public struct SimpleNoteEvent : IEquatable<SimpleNoteEvent>
 {
     public int note;
     public double drift;
-    public double velocity;
+    public float velocity;
     public float duration;
     public float chance;
 

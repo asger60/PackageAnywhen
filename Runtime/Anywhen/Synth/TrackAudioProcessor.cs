@@ -6,7 +6,7 @@ namespace Anywhen.Synth
     public struct TrackAudioProcessor
     {
         private AudioProcessorSettings.Unmanaged _settings;
-        
+
         private AudioProcessorLowPass _lowPass;
         private AudioProcessorSaturator _saturator;
         private AudioProcessorBandPass _bandPass;
@@ -14,6 +14,7 @@ namespace Anywhen.Synth
         private AudioProcessorLadder _ladder;
         private AudioProcessorChorus _chorus;
         private AudioProcessorDelay _delay;
+        private AudioProcessorReverb _reverb;
 
         public TrackAudioProcessor(int sampleRate, AudioProcessorSettings.Unmanaged settings)
         {
@@ -25,7 +26,8 @@ namespace Anywhen.Synth
             _ladder = default;
             _chorus = default;
             _delay = default;
-
+            _reverb = default;
+            
             switch (_settings.filterType)
             {
                 case AudioProcessorSettings.FilterTypes.LowPassFilter:
@@ -58,6 +60,10 @@ namespace Anywhen.Synth
                     _chorus = new AudioProcessorChorus(sampleRate);
                     _chorus.SetSettings(_settings);
                     break;
+                case AudioProcessorSettings.FilterTypes.ReverbFilter:
+                    _reverb = new AudioProcessorReverb(sampleRate);
+                    _reverb.SetSettings(_settings);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -74,6 +80,7 @@ namespace Anywhen.Synth
                 AudioProcessorSettings.FilterTypes.LadderFilter => _ladder.Process(sample, track),
                 AudioProcessorSettings.FilterTypes.ChorusFilter => _chorus.Process(sample, track),
                 AudioProcessorSettings.FilterTypes.DelayFilter => _delay.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.ReverbFilter => _reverb.Process(sample, track),
 
                 _ => sample
             };
@@ -106,6 +113,9 @@ namespace Anywhen.Synth
                     break;
                 case AudioProcessorSettings.FilterTypes.ChorusFilter:
                     _chorus.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.ReverbFilter:
+                    _reverb.SetSettings(_settings);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

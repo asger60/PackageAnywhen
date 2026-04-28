@@ -552,6 +552,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     _voices[i] = voice;
                 }
 
+                clipAmplitude *= TrackEnvelope1Value;
+
                 if (_trackFilters.IsCreated)
                 {
                     for (int i = 0; i < _trackFilters.Length; i++)
@@ -562,7 +564,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     }
                 }
 
-                return clipAmplitude * TrackEnvelope1Value * _trackVolume;
+                return clipAmplitude * _trackVolume;
             }
 
             public float GetModSignal(NativeArray<SynthFilterBase.ModRouting> modRoutingSettings)
@@ -622,6 +624,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private bool _noteOn;
             private bool _noteQueued;
             private float _pitch;
+            private float _velocity;
 
             internal float Process(double dspTime)
             {
@@ -665,7 +668,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     }
                 }
 
-                return clipAmplitude;
+                return clipAmplitude * _velocity;
             }
 
             internal void QueueNote(PlaybackEvent playbackEvent, ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
@@ -677,6 +680,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _pitch = playbackSettings.clipPitch;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
                 _samplePosition = 0;
+                _velocity = playbackEvent.SimpleNoteEvent.velocity;
             }
 
             public bool IsIdle => !_noteQueued;

@@ -2,6 +2,7 @@ using System;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 namespace Anywhen.Synth
 {
@@ -17,7 +18,8 @@ namespace Anywhen.Synth
             BitcrushFilter,
             SaturatorFilter,
             DelayFilter,
-            ChorusFilter
+            ChorusFilter,
+            ReverbFilter
         }
 
         public FilterTypes filterType;
@@ -208,6 +210,35 @@ namespace Anywhen.Synth
         }
 
         public DelaySettings delaySettings;
+// Add to FilterTypes enum:
+// ReverbFilter
+
+        [Serializable]
+        public struct ReverbSettings
+        {
+            [Range(0f, 1f)] public float roomSize; // Controls comb filter feedback
+            [Range(0f, 1f)] public float damping; // High-frequency rolloff in comb filters
+            [Range(0f, 1f)] public float wet;
+
+            public struct Unmanaged
+            {
+                public float roomSize;
+                public float damping;
+                public float wet;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    roomSize = roomSize,
+                    damping = damping,
+                    wet = wet,
+                };
+            }
+        }
+
+        public ReverbSettings reverbSettings;
 
         [Serializable]
         public struct ChorusSettings
@@ -349,6 +380,7 @@ namespace Anywhen.Synth
             public ChorusSettings.Unmanaged chorusSettings;
             public EnvelopeSettings envelopeSettings;
             public LFOSettings lfoSettings;
+            public ReverbSettings.Unmanaged reverbSettings;
 
             public bool Equals(Unmanaged other)
             {
@@ -379,6 +411,7 @@ namespace Anywhen.Synth
                 hashCode.Add(chorusSettings);
                 hashCode.Add(envelopeSettings);
                 hashCode.Add(lfoSettings);
+                hashCode.Add(reverbSettings);
                 return hashCode.ToHashCode();
             }
         }
@@ -395,7 +428,10 @@ namespace Anywhen.Synth
                 bitcrushSettings = bitcrushSettings.ToUnmanaged(),
                 saturatorSettings = saturatorSettings.ToUnmanaged(),
                 delaySettings = delaySettings.ToUnmanaged(),
-                chorusSettings = chorusSettings.ToUnmanaged()
+                chorusSettings = chorusSettings.ToUnmanaged(),
+                envelopeSettings = envelopeSettings,
+                lfoSettings = lfoSettings,
+                reverbSettings = reverbSettings.ToUnmanaged()
             };
         }
 
@@ -430,6 +466,10 @@ namespace Anywhen.Synth
             chorusSettings.delay = 0.5f;
             chorusSettings.feedback = 0.3f;
             chorusSettings.wet = 0.5f;
+            
+            reverbSettings.roomSize = 0.5f;
+            reverbSettings.damping  = 0.5f;
+            reverbSettings.wet      = 0.4f;
         }
 
         public void SyncBandPassFromQ()

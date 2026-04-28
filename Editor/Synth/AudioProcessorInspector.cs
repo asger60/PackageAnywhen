@@ -1,5 +1,6 @@
 using System;
 using Anywhen.Synth;
+using Anywhen.Synth.Filter;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -158,6 +159,29 @@ namespace Synth
 
                         break;
                     }
+                    case AudioProcessorSettings.FilterTypes.ReverbFilter:
+                    {
+                        float roomSize = _settings.reverbSettings.roomSize;
+                        float damping = _settings.reverbSettings.damping;
+
+                        // Visualise as a decaying tail: flat pass-through → exponential rolloff,
+                        // with damping softening the high-frequency end.
+                        for (int i = 0; i < Resolution; i++)
+                        {
+                            float freq = LogScale(i / (float)Resolution, 20, 20000);
+                            float t = i / (float)Resolution;
+
+                            // Room size controls how long/flat the tail is before it drops
+                            float tail = Mathf.Pow(roomSize, 1f - t);
+
+                            // Damping rolls off highs — higher damping = steeper HF drop
+                            float hfRolloff = 1f - damping * Mathf.Pow(t, 0.5f);
+
+                            _response[i] = Mathf.Clamp01(tail * hfRolloff * 0.85f);
+                        }
+
+                        break;
+                    }
                 }
             }
 
@@ -250,6 +274,10 @@ namespace Synth
                     element.Add(CreateBoundSlider("Resonance", 0, 1,
                         () => settings.lowPassSettings.resonance,
                         v => settings.lowPassSettings.resonance = v, preview, onChanged));
+                    element.Add(CreateModRoutingUI("Cutoff Mod",
+                        () => settings.lowPassSettings.cutoffMod,
+                        v => settings.lowPassSettings.cutoffMod = v,   // struct copy — assign back
+                        preview, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BandPassFilter:
@@ -290,6 +318,10 @@ namespace Synth
                     element.Add(CreateBoundSlider("Resonance", 0, 1,
                         () => settings.ladderSettings.resonance,
                         v => settings.ladderSettings.resonance = v, preview, onChanged));
+                    element.Add(CreateModRoutingUI("Cutoff Mod",
+                        () => settings.ladderSettings.cutoffMod,
+                        v => settings.ladderSettings.cutoffMod = v,   // struct copy — assign back
+                        preview, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BitcrushFilter:
@@ -338,8 +370,19 @@ namespace Synth
                     element.Add(CreateBoundSlider("Wet", 0, 1,
                         () => settings.chorusSettings.wet,
                         v => settings.chorusSettings.wet = v, preview, onChanged));
-                    break;
 
+                    break;
+                case AudioProcessorSettings.FilterTypes.ReverbFilter:
+                    element.Add(CreateBoundSlider("Room Size", 0, 1,
+                        () => settings.reverbSettings.roomSize,
+                        v => settings.reverbSettings.roomSize = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Damping", 0, 1,
+                        () => settings.reverbSettings.damping,
+                        v => settings.reverbSettings.damping = v, preview, onChanged));
+                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        () => settings.reverbSettings.wet,
+                        v => settings.reverbSettings.wet = v, preview, onChanged));
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -377,6 +420,107 @@ namespace Synth
                 onChanged?.Invoke();
             });
             return s;
+        }
+
+        private static VisualElement CreateModRoutingUI(
+            string label,
+            Func<SynthFilterBase.ModRouting[]> getter,
+            Action<SynthFilterBase.ModRouting[]> setter,
+            FilterPreviewElement preview,
+            Action onChanged)
+        {
+            var root = new VisualElement();
+            root.style.marginTop = 4;
+
+            var header = new Label(label)
+            {
+                style = { unityFontStyleAndWeight = FontStyle.Bold, marginBottom = 2 }
+            };
+            root.Add(header);
+
+            // Container that we rebuild whenever the array changes
+            var listContainer = new VisualElement();
+            root.Add(listContainer);
+
+            void Rebuild()
+            {
+                listContainer.Clear();
+                var routes = getter() ?? Array.Empty<SynthFilterBase.ModRouting>();
+
+                for (int i = 0; i < routes.Length; i++)
+                {
+                    int idx = i; // capture for lambdas
+
+                    var row = new VisualElement();
+                    row.style.flexDirection = FlexDirection.Row;
+                    row.style.marginBottom = 2;
+
+                    // Source enum picker
+                    var sourceField = new EnumField(routes[idx].modSource);
+                    sourceField.style.minWidth = 100;
+                    sourceField.style.flexGrow = 1;
+                    sourceField.RegisterValueChangedCallback(evt =>
+                    {
+                        var arr = getter();
+                        arr[idx].modSource = (SynthFilterBase.ModRouting.ModSources)evt.newValue;
+                        setter(arr);
+                        preview.Refresh();
+                        onChanged?.Invoke();
+                    });
+
+                    // Amount slider  (-1 → +1)
+                    var amountSlider = new Slider("Amt", -1f, 1f);
+                    amountSlider.showInputField = true;
+                    amountSlider.style.flexGrow = 2;
+                    amountSlider.labelElement.style.minWidth = 28;
+                    amountSlider.value = routes[idx].modAmount;
+                    amountSlider.RegisterValueChangedCallback(evt =>
+                    {
+                        var arr = getter();
+                        arr[idx].modAmount = evt.newValue;
+                        setter(arr);
+                        preview.Refresh();
+                        onChanged?.Invoke();
+                    });
+
+                    // Remove button
+                    var removeBtn = new Button(() =>
+                    {
+                        var arr = getter();
+                        var list = new System.Collections.Generic.List<SynthFilterBase.ModRouting>(arr);
+                        list.RemoveAt(idx);
+                        setter(list.ToArray());
+                        Rebuild();
+                        preview.Refresh();
+                        onChanged?.Invoke();
+                    }) { text = "✕" };
+                    removeBtn.style.width = 20;
+                    removeBtn.style.paddingLeft = 0;
+                    removeBtn.style.paddingRight = 0;
+
+                    row.Add(sourceField);
+                    row.Add(amountSlider);
+                    row.Add(removeBtn);
+                    listContainer.Add(row);
+                }
+
+                // Add button
+                var addBtn = new Button(() =>
+                {
+                    var arr = getter() ?? Array.Empty<SynthFilterBase.ModRouting>();
+                    var list = new System.Collections.Generic.List<SynthFilterBase.ModRouting>(arr);
+                    list.Add(new SynthFilterBase.ModRouting()); // default source + 0 amount
+                    setter(list.ToArray());
+                    Rebuild();
+                    preview.Refresh();
+                    onChanged?.Invoke();
+                }) { text = "+ Add Mod" };
+                addBtn.style.marginTop = 2;
+                listContainer.Add(addBtn);
+            }
+
+            Rebuild();
+            return root;
         }
     }
 }
