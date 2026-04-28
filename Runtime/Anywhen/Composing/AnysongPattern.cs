@@ -22,6 +22,12 @@ namespace Anywhen.Composing
             public NativeArray<AnysongPatternStep.UnManaged> steps;
             public int patternLength;
             public int internalIndex;
+
+            public void Advance()
+            {
+                internalIndex++;
+                internalIndex = (int)Mathf.Repeat(internalIndex, patternLength);
+            }
         }
 
         public Unmanaged ToUnmanaged()

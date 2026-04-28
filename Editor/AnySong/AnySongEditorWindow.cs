@@ -220,6 +220,7 @@ namespace Anysong
             {
                 CurrentSong.Rebuild();
                 _currentPlayer.Load(CurrentSong);
+                _currentPlayer.SetPlay(true);
                 //AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
                 AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
@@ -229,6 +230,8 @@ namespace Anysong
             }
             else
             {
+                _currentPlayer.SetPlay(false);
+
                 //AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
                 AnywhenAudioMetronome.OnAudioTick -= OnTick16;
                 AnywhenAudioMetronome.OnBar -= OnBar;
@@ -355,6 +358,11 @@ namespace Anysong
             //                   CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
 
             AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, true);
+        }
+
+        public static int GetPlaybackStepIndexForCurrent()
+        {
+            return _currentPlayer.GetStepIndex(_currentSelection.CurrentTrackIndex);
         }
 
         static void OnBar()

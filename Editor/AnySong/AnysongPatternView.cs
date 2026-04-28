@@ -361,9 +361,8 @@ namespace Anysong
                 anysongStepView.SetHighLighted(false);
             }
 
-            var pattern = AnysongEditorWindow.CurrentSelection.CurrentPattern;
-
-            if (_stepViewCullumns.TryGetValue(pattern.InternalIndex, out var stepViews))
+            
+            if (_stepViewCullumns.TryGetValue(AnysongEditorWindow.GetPlaybackStepIndexForCurrent(), out var stepViews))
             {
                 foreach (var stepView in stepViews)
                 {

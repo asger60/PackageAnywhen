@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Anywhen.Synth
 {
@@ -76,6 +77,39 @@ namespace Anywhen.Synth
 
                 _ => sample
             };
+        }
+
+        public void UpdateSettings(AudioProcessorSettings.Unmanaged settings)
+        {
+            _settings = settings;
+            switch (_settings.filterType)
+            {
+                case AudioProcessorSettings.FilterTypes.LowPassFilter:
+                    _lowPass.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.SaturatorFilter:
+                    _saturator.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.BandPassFilter:
+                    _bandPass.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.FormantFilter:
+                    break;
+                case AudioProcessorSettings.FilterTypes.LadderFilter:
+                    _ladder.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.BitcrushFilter:
+                    _bitcrush.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.DelayFilter:
+                    _delay.SetSettings(_settings);
+                    break;
+                case AudioProcessorSettings.FilterTypes.ChorusFilter:
+                    _chorus.SetSettings(_settings);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 
