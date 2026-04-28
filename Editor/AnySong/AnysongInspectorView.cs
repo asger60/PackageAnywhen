@@ -187,10 +187,7 @@ namespace Anysong
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
                 filterElement.Add(AudioProcessorInspector.Draw(audioProcessorSettings,
-                    () =>
-                    {
-                        AnysongEditorWindow.CurrentSong.RefreshSettings();
-                    }));
+                    () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -260,6 +257,10 @@ namespace Anysong
                         .CurrentSectionTrackProperty
                         .FindPropertyRelative("patternProgressionType")
                         .enumValueIndex, AnysongEditorWindow.CurrentSelection));
+                    AnysongEditorWindow.CurrentSong.RefreshMidi(
+                        AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                        AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, 
+                        0);
                 }));
 
             progressionTypeHolder.Add(DrawProgressionType(progressionType, AnysongEditorWindow.CurrentSelection));

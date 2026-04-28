@@ -2,6 +2,7 @@ using Anysong;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 
@@ -58,6 +59,7 @@ public static class AnysongTransportView
         var tempoPopertyField = new PropertyField(tempoProperty);
         tempoPopertyField.BindProperty(tempoProperty);
         tempoPopertyField.style.width = 300;
+        tempoPopertyField.RegisterValueChangeCallback(evt => { AnysongEditorWindow.SetBPM(evt.changedProperty.intValue); });
         controlsElement.Add(tempoPopertyField);
 
 
@@ -110,7 +112,8 @@ public static class AnysongTransportView
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
             float newValue = evt.newValue;
-            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA,  AnysongEditorWindow.CurrentSong.snapshotB, _song, newValue);
+            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB,
+                _song, newValue);
         });
 
         snapShotControlElement.Add(_snapshotButtonA);

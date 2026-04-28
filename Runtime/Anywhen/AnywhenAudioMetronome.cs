@@ -1,5 +1,4 @@
 using System;
-using Anywhen;
 using Unity.Burst;
 using Unity.IntegerTime;
 using UnityEngine;
@@ -9,11 +8,21 @@ using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "AnywhenAudioMetronome", menuName = "Anywhen/AnywhenAudioMetronome", order = 3)]
 public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 {
+    public enum TickRate
+    {
+        None = 0,
+        Sub2 = 2,
+        Sub4 = 4,
+        Sub8 = 8,
+        Sub16 = 16,
+    }
+
     public delegate void MetronomeTickDelegate(MetronomeTickEvent tick);
 
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
-
+    private GeneratorInstance _generatorInstance;
     [SerializeField] private int bpm = 120;
+    public static int CurrentBPM;
     public int Bpm => bpm;
 
     public static event MetronomeTickDelegate OnAudioTick;
@@ -22,6 +31,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     {
         OnAudioTick?.Invoke(tick);
     }
+
+    public static float GetSub16Length => (60f / CurrentBPM) * 0.25f;
 
     public bool isFinite => false;
     public bool isRealtime => true;
@@ -33,15 +44,31 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static Action OnTickSub2 { get; set; }
     public static Action OnBar { get; set; }
 
+    
+
+    public void SetTempo(int newBPM)
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new SetBpmMsg(newBPM));
+        }
+    }
+    
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
     {
-        return Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, bpm);
+        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, bpm);
+        return _generatorInstance;
     }
 
-    public struct SetBpmMsg
+    public class SetBpmMsg
     {
         public int NewBpm;
+
+        public SetBpmMsg(int newBpm)
+        {
+            NewBpm = newBpm;
+        }
     }
 
     [BurstCompile(CompileSynchronously = true)]
@@ -58,6 +85,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         public static GeneratorInstance Allocate(ControlContext context, int sampleRate, int bpm)
         {
+            
             return context.AllocateGenerator(new Processor(sampleRate, bpm), new Control());
         }
 
@@ -83,11 +111,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             var availableData = pipe.GetAvailableData(context);
             foreach (var element in availableData)
             {
-                if (element.TryGetData(out SetBpmMsg bpmMsg))
+                if (element.TryGetData(out BPMState data))
                 {
-                    _bpm = bpmMsg.NewBpm;
-                    _sub16Length = (60.0 / _bpm) * 0.25;
+
+                    CurrentBPM = data.bpm;
+                    _bpm = data.bpm;
+                    _sub16Length = (60.0 / _bpm) * 0.25f;
                 }
+
             }
         }
 
@@ -119,28 +150,28 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         {
             MetronomeTickEvent e = new MetronomeTickEvent
             {
-                TickRate = (int)AnywhenMetronome.TickRate.Sub16,
+                TickRate = TickRate.Sub16,
                 Count = _sub16Count
             };
             pipe.SendData(context, e);
 
             if (_sub16Count % 2 == 0)
             {
-                e.TickRate = (int)AnywhenMetronome.TickRate.Sub8;
+                e.TickRate = TickRate.Sub8;
                 e.Count = _sub16Count / 2;
                 pipe.SendData(context, e);
             }
 
             if (_sub16Count % 4 == 0)
             {
-                e.TickRate = (int)AnywhenMetronome.TickRate.Sub4;
+                e.TickRate = TickRate.Sub4;
                 e.Count = _sub16Count / 4;
                 pipe.SendData(context, e);
             }
 
             if (_sub16Count % 8 == 0)
             {
-                e.TickRate = (int)AnywhenMetronome.TickRate.Sub2;
+                e.TickRate = TickRate.Sub2;
                 e.Count = _sub16Count / 8;
                 pipe.SendData(context, e);
             }
@@ -172,18 +203,18 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     {
                         TriggerTick(tick);
 
-                        switch ((AnywhenMetronome.TickRate)tick.TickRate)
+                        switch (tick.TickRate)
                         {
-                            case AnywhenMetronome.TickRate.Sub16:
+                            case TickRate.Sub16:
                                 OnTickSub16?.Invoke();
                                 break;
-                            case AnywhenMetronome.TickRate.Sub8:
+                            case TickRate.Sub8:
                                 OnTickSub8?.Invoke();
                                 break;
-                            case AnywhenMetronome.TickRate.Sub4:
+                            case TickRate.Sub4:
                                 OnTickSub4?.Invoke();
                                 break;
-                            case AnywhenMetronome.TickRate.Sub2:
+                            case TickRate.Sub2:
                                 OnTickSub2?.Invoke();
                                 //if (tick.Count == 0) OnBar?.Invoke();
                                 break;
@@ -197,7 +228,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             {
                 if (message.Is<SetBpmMsg>())
                 {
-                    pipe.SendData(context, message.Get<AnywhenAudioMetronome.SetBpmMsg>());
+                    var payload = message.Get<SetBpmMsg>();
+                    pipe.SendData(context, new BPMState { bpm = payload.NewBpm });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -205,10 +237,17 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             }
         }
     }
+
+    public struct BPMState
+    {
+        public int bpm;
+    }
+
+ 
 }
 
 public struct MetronomeTickEvent
 {
-    public int TickRate;
+    public AnywhenAudioMetronome.TickRate TickRate;
     public int Count;
 }

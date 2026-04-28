@@ -161,6 +161,10 @@ namespace Anysong
             Step
         }
 
+        public static void SetBPM(int bpm)
+        {
+            _currentMetronome.SetTempo(CurrentSong.tempo);
+        }
 
         public static void ShowModuleWindow(AnysongObject songObject)
         {
@@ -174,8 +178,6 @@ namespace Anysong
         {
             CurrentSong = songObject;
             _currentSelection = new AnySelection(songObject);
-            //_currentRuntimeSongPlayer.SetupTracks(CurrentSong.Tracks);
-            //  _currentRuntimeSongPlayer.LoadInstruments();
 
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
             AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
@@ -194,18 +196,7 @@ namespace Anysong
 
             window.Show(true);
 
-            foreach (var track in songObject.Tracks)
-            {
-                if (track.trackAudioEnvelope1.IsUnset())
-                {
-                    track.trackAudioEnvelope1.Initialize();
-                }
-
-                if (track.trackAudioLFO1.IsUnset())
-                {
-                    track.trackAudioLFO1.Initialize();
-                }
-            }
+  
 
             AnywhenRuntime.Conductor.SetDefaultScale();
         }
@@ -223,7 +214,7 @@ namespace Anysong
                 _currentPlayer.SetPlay(true);
                 //AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
                 AnysongSectionsView.RefreshSectionLocked();
-                AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
+                _currentMetronome.SetTempo(CurrentSong.tempo);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
                 //AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
@@ -367,7 +358,7 @@ namespace Anysong
 
         static void OnBar()
         {
-           // Debug.LogWarning("OnBar not implemented yet");
+            // Debug.LogWarning("OnBar not implemented yet");
             //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
 //
             //if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
@@ -618,7 +609,12 @@ namespace Anysong
 
                     break;
                 case InspectorModes.Step:
-                    AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, null);
+                    AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty,
+                        () =>
+                        {
+                            CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
+                                CurrentSelection.CurrentPatternIndex);
+                        });
                     break;
                 case InspectorModes.Progression:
                     AnysongInspectorView.DrawProgression();
@@ -745,7 +741,11 @@ namespace Anysong
         public static void SelectPatternStep(AnysongPatternStep patternStep, int stepIndex)
         {
             _currentSelection.SetStepIndex(stepIndex);
-            AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, null);
+            AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, () =>
+            {
+                CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
+                    CurrentSelection.CurrentPatternIndex);
+            });
             AnysongPatternView.Refresh();
         }
     }
