@@ -157,10 +157,12 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public DiscreteTime? length => null;
         private bool _isPlaying; // <-- add
 
+        private uint seed;
+
         Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices)
         {
             _stepIndices = stepIndices; // <-- assign
-
+            seed = 12345;
             _sampleRate = sampleRate;
             _setup = new GeneratorInstance.Setup();
             _selfHandle = default;
@@ -262,6 +264,15 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe,
             ChannelBuffer buffer, GeneratorInstance.Arguments args)
         {
+            uint state = seed;
+
+            int NextInt(int min, int max)
+            {
+                if (min >= max) return min;
+                state = state * 1103515245 + 12345;
+                return min + (int)((state >> 16) % (uint)(max - min));
+            }
+
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
             double dspTime = context.dspTime * invSampleRate;
@@ -286,7 +297,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     }
 
                     var thisStep = pattern.GetCurrentStep();
-                    if (thisStep.noteOn)
+                    if (thisStep.noteOn && (thisStep.chance * 100) > NextInt(0, 100))
                     {
                         var playbackTrack = _tracks[trackIndex];
                         playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisStep, dspTime));
@@ -327,6 +338,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _tracks[i] = track;
             }
 
+            seed = state;
             return buffer.frameCount;
         }
 
