@@ -682,8 +682,9 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public PlaybackEvent(AnysongPatternStep.UnManaged step, double scheduledPlayTime)
         {
             SimpleNoteEvent = new SimpleNoteEvent(step);
-            ScheduledPlayTime = scheduledPlayTime + SimpleNoteEvent.drift;
-            ScheduledEndTime = scheduledPlayTime + SimpleNoteEvent.duration + SimpleNoteEvent.drift;
+            ScheduledPlayTime = scheduledPlayTime + SimpleNoteEvent.drift * AnywhenAudioMetronome.GetSub16Length;
+            ScheduledEndTime = scheduledPlayTime + SimpleNoteEvent.duration +
+                               SimpleNoteEvent.drift * AnywhenAudioMetronome.GetSub16Length;
         }
 
         public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime)
