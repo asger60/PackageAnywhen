@@ -22,13 +22,14 @@ namespace Anywhen.Composing
 
 
         public string author = "Floppy Club";
-        public Action OnSongMidiChanged;
-        public Action OnSongSettingsChanged;
+        public event Action OnSongMidiChanged;
+        public event Action OnSongSettingsChanged;
+
+        public event Action OnSongEffectsChanged;
 
         private void OnValidate()
         {
-     
-            OnSongSettingsChanged?.Invoke();
+            RefreshSettings();
         }
 
 
@@ -106,9 +107,54 @@ namespace Anywhen.Composing
             }
         }
 
-        public void Refresh()
+        public void RefreshMidi()
         {
+            Debug.Log("RefreshMidi");
             OnSongMidiChanged?.Invoke();
         }
+
+        public void RefreshSettings()
+        {
+            Debug.Log("RefreshSettings");
+            OnSongSettingsChanged?.Invoke();
+        }
+        
+        public void RefreshEffects()
+        {
+            Debug.Log("RefreshEffects");
+            OnSongEffectsChanged?.Invoke();
+        }
+        
+
+        public void RemoveListeners()
+        {
+            if (OnSongMidiChanged != null)
+            {
+                foreach (var currentDelegate in OnSongMidiChanged.GetInvocationList())
+                {
+                    OnSongMidiChanged -= (Action)currentDelegate;
+                }
+            }
+
+            if (OnSongSettingsChanged != null)
+            {
+                foreach (var currentDelegate in OnSongSettingsChanged.GetInvocationList())
+                {
+                    OnSongSettingsChanged -= (Action)currentDelegate;
+                }
+            }
+            if (OnSongEffectsChanged != null)
+            {
+                foreach (var currentDelegate in OnSongEffectsChanged.GetInvocationList())
+                {
+                    OnSongEffectsChanged -= (Action)currentDelegate;
+                }
+            }
+            OnSongMidiChanged = null;
+            OnSongSettingsChanged = null;
+            OnSongEffectsChanged = null;
+        }
+
+        
     }
 }

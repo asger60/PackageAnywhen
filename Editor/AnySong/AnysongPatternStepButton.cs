@@ -133,7 +133,7 @@ namespace Anysong
                     throw new ArgumentOutOfRangeException();
             }
 
-            AnysongEditorWindow.CurrentSong.Refresh();
+            AnysongEditorWindow.CurrentSong.RefreshMidi();
         }
 
 

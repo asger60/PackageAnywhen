@@ -26,6 +26,10 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
     private void OnEnable()
     {
         _songChangedActions ??= new List<Action>();
+        if (song != null)
+        {
+            song.RemoveListeners();
+        }
     }
 
     public void SetSectionLock(bool state, int lockedSectionIndex)
@@ -178,15 +182,25 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
                         int capturedIndex = i;
                         var tracksRef = _tracks;
-                        Action listener = () =>
+                        Action settingsListener = () =>
                         {
                             if (!tracksRef.IsCreated) return;
                             var t = tracksRef[capturedIndex];
                             t.OnValuesChanged(song.Tracks[capturedIndex].ToUnmanaged());
                             tracksRef[capturedIndex] = t;
                         };
-                        song.OnSongSettingsChanged += listener;
-                        listeners.Add(listener);
+                        Action effectsListener = () =>
+                        {
+                            if (!tracksRef.IsCreated) return;
+                            var t = tracksRef[capturedIndex];
+                            t.OnTrackRebuild(song.Tracks[capturedIndex].ToUnmanaged());
+                            tracksRef[capturedIndex] = t;
+                        };
+                        
+                        song.OnSongSettingsChanged += settingsListener;
+                        song.OnSongEffectsChanged += effectsListener;
+
+                        listeners.Add(settingsListener);
                     }
                 }
             }
@@ -205,7 +219,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         public GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe,
             ChannelBuffer buffer, GeneratorInstance.Arguments args)
         {
-            
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
             double dspTime = context.dspTime * invSampleRate;
@@ -274,7 +287,6 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 }
 
 
-
                 if (generator._tracks.IsCreated)
                 {
                     for (int i = 0; i < generator._tracks.Length; i++)
@@ -322,59 +334,65 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private float TrackEnvelope1Value => _trackEnvelope1Value;
             private float TrackEnvelope2Value => _trackEnvelope2Value;
 
-            private bool _hasPendingUpdate;
+            private bool _hasPendingCompleteUpdate;
+            private bool _hasPendingParameterUpdate;
             private AnysongTrackSettings.Unmanaged _pendingSettings;
 
             public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
             {
                 _sampleRate = sampleRate;
+                _trackLFO1Value = 0;
+                _trackLFO2Value = 0;
+
+                CreateTrack(settings);
                 UpdateSettings(settings);
+                _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0);
+            }
+
+            public void OnTrackRebuild(AnysongTrackSettings.Unmanaged newSettings)
+            {
+                _pendingSettings = newSettings;
+                _hasPendingCompleteUpdate = true;
+                _hasPendingParameterUpdate = true;
             }
 
             public void OnValuesChanged(AnysongTrackSettings.Unmanaged newSettings)
             {
                 _pendingSettings = newSettings;
-                _hasPendingUpdate = true;
+                _hasPendingParameterUpdate = true;
             }
 
-            void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
+            void CreateTrack(AnysongTrackSettings.Unmanaged settings)
             {
                 if (_voices.IsCreated) _voices.Dispose();
                 if (_trackFilters.IsCreated) _trackFilters.Dispose();
-
                 _voices = new NativeArray<SampleVoice>(settings.voices, Allocator.Persistent);
-                _trackVolume = settings.volume;
-                _sampleInstrument = settings.instrument;
-
                 _trackEnvelope1 = new AudioProcessorEnvelope(_sampleRate);
-                _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1.ToUnmanaged());
-
                 _trackEnvelope2 = new AudioProcessorEnvelope(_sampleRate);
-                _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2.ToUnmanaged());
-
-                _trackEnvelope1Value = 1;
-                _trackEnvelope2Value = 1;
-
                 _trackLFO1 = new AudioProcessorLFO(_sampleRate);
-                _trackLFO1.SetSettings(settings.TrackAudioLFO1.ToUnmanaged());
                 _trackLFO2 = new AudioProcessorLFO(_sampleRate);
-                _trackLFO2.SetSettings(settings.TrackAudioLFO2.ToUnmanaged());
 
-                _trackLFO1Value = 0;
-                _trackLFO2Value = 0;
-
-                _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0);
                 _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
                 for (int i = 0; i < settings.trackFilters.Length; i++)
                 {
                     _trackFilters[i] = new TrackAudioProcessor(_sampleRate, settings.trackFilters[i]);
                 }
+            }
 
-                if (settings.trackFilters.IsCreated)
-                {
-                    settings.trackFilters.Dispose();
-                }
+            void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
+            {
+                _trackVolume = settings.volume;
+                _sampleInstrument = settings.instrument;
+
+                _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1.ToUnmanaged());
+                _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2.ToUnmanaged());
+
+                _trackEnvelope1Value = 1;
+                _trackEnvelope2Value = 1;
+
+                _trackLFO1.SetSettings(settings.TrackAudioLFO1.ToUnmanaged());
+                _trackLFO2.SetSettings(settings.TrackAudioLFO2.ToUnmanaged());
             }
 
             internal void HandlePlaybackEvent(PlaybackEvent playbackEvent)
@@ -414,11 +432,18 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             internal float Process(double dspTime)
             {
                 // Apply pending update on audio thread — safe to dispose here
-                if (_hasPendingUpdate)
+                if (_hasPendingCompleteUpdate)
+                {
+                    CreateTrack(_pendingSettings);
+                    _hasPendingCompleteUpdate = false;
+                }
+
+                if (_hasPendingParameterUpdate)
                 {
                     UpdateSettings(_pendingSettings);
-                    _hasPendingUpdate = false;
+                    _hasPendingParameterUpdate = false;
                 }
+
 
                 if (!_voices.IsCreated)
                     return 0;

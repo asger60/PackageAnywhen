@@ -187,7 +187,10 @@ namespace Anysong
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
                 filterElement.Add(AudioProcessorInspector.Draw(audioProcessorSettings,
-                    () => { AnysongEditorWindow.CurrentSong.OnSongSettingsChanged(); }));
+                    () =>
+                    {
+                        AnysongEditorWindow.CurrentSong.RefreshSettings();
+                    }));
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -203,8 +206,7 @@ namespace Anysong
                 foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(
                              typeof(AudioProcessorSettings.FilterTypes)))
                 {
-                    menu.AddItem(new GUIContent(filterType.ToString()), false,
-                        () => { AddFilter(filterType); });
+                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(filterType); });
                 }
 
                 menu.ShowAsContext();
@@ -221,7 +223,7 @@ namespace Anysong
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.AddAudioProcessor(newProcessor);
             EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             AssetDatabase.SaveAssets();
-
+            AnysongEditorWindow.CurrentSong.RefreshEffects();
             // Refresh the inspector
             DrawTrack(null);
         }

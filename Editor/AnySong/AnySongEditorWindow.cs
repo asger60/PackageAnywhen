@@ -278,7 +278,6 @@ namespace Anysong
 
         public void CreateGUI()
         {
-            CreatePlayer();
             rootVisualElement.Clear();
             if (!CurrentSong)
             {
@@ -286,6 +285,8 @@ namespace Anysong
                 return;
             }
 
+            CurrentSong.RemoveListeners();
+            CreatePlayer();
             if (uxmlAsset)
             {
                 uxmlAsset.CloneTree(rootVisualElement);
