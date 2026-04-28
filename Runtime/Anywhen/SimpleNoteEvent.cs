@@ -1,26 +1,47 @@
+using System;
+using Anywhen.Composing;
 
-public struct SimpleNoteEvent
+public struct SimpleNoteEvent : IEquatable<SimpleNoteEvent>
 {
-
     public int note;
     public double drift;
-    public int chordStrum;
-    public double expression1;
-    public double expression2;
     public double velocity;
     public float duration;
+    public float chance;
 
 
+    public SimpleNoteEvent(AnysongPatternStep.UnManaged step)
+    {
+        this.note = step.rootNote;
+        drift = step.offset;
+        velocity = step.velocity;
+        duration = step.duration;
+        chance = step.chance;
+        
+    }
+   
     public SimpleNoteEvent(int note)
     {
         this.note = note;
         drift = 0;
-        chordStrum = 0;
-        expression1 = 0;
-        expression2 = 0;
         velocity = 1;
         duration = 0.025f;
+        chance = 1;
     }
 
+    public bool Equals(SimpleNoteEvent other)
+    {
+        return note == other.note && drift.Equals(other.drift) && velocity.Equals(other.velocity) &&
+               duration.Equals(other.duration) && chance.Equals(other.chance);
+    }
 
+    public override bool Equals(object obj)
+    {
+        return obj is SimpleNoteEvent other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(note, drift, velocity, duration, chance);
+    }
 }

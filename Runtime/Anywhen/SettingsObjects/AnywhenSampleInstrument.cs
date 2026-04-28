@@ -158,14 +158,14 @@ namespace Anywhen.SettingsObjects
 
                         settings = matchingCount == 0
                             ? new AnywhenNoteClipPlaybackSettings()
-                            : new AnywhenNoteClipPlaybackSettings(selectedClip, pitch, volume);
+                            : new AnywhenNoteClipPlaybackSettings(selectedClip, pitch);
 
                         break;
 
 
                     case ClipSelectType.RandomVariations:
                         int index = NextInt(0, clips.Length);
-                        settings = new AnywhenNoteClipPlaybackSettings(clips[index], 1, volume);
+                        settings = new AnywhenNoteClipPlaybackSettings(clips[index], 1);
                         break;
 
 
@@ -186,7 +186,7 @@ namespace Anywhen.SettingsObjects
 
                         settings = count == 0
                             ? new AnywhenNoteClipPlaybackSettings()
-                            : new AnywhenNoteClipPlaybackSettings(resultClip, 1, volume);
+                            : new AnywhenNoteClipPlaybackSettings(resultClip, 1);
 
                         break;
 
@@ -227,14 +227,14 @@ namespace Anywhen.SettingsObjects
             public AnywhenNoteClip.Unmanaged NoteClipUnmanaged;
             public float clipPitch;
 
-            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip noteClip, float clipPitch, float clipVolume)
+            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip noteClip, float clipPitch)
             {
                 this.noteClip = noteClip;
                 this.NoteClipUnmanaged = noteClip.ToUnmanaged();
                 this.clipPitch = clipPitch;
             }
 
-            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip.Unmanaged noteClip, float clipPitch, float clipVolume)
+            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip.Unmanaged noteClip, float clipPitch)
             {
                 this.noteClip = null;
                 this.NoteClipUnmanaged = noteClip;
@@ -302,13 +302,13 @@ namespace Anywhen.SettingsObjects
                     }
 
                     if (resultClip == null) return new AnywhenNoteClipPlaybackSettings();
-                    return new AnywhenNoteClipPlaybackSettings(resultClip, p, volume);
+                    return new AnywhenNoteClipPlaybackSettings(resultClip, p);
 
 
                 case ClipSelectType.RandomVariations:
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(clips[_random.Next(0, clips.Count)], 1, volume);
+                        return new AnywhenNoteClipPlaybackSettings(clips[_random.Next(0, clips.Count)], 1);
                     }
 
 
@@ -326,8 +326,7 @@ namespace Anywhen.SettingsObjects
 
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1,
-                            volume);
+                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1);
                     }
 
                 default:

@@ -11,7 +11,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 {
     public delegate void MetronomeTickDelegate(MetronomeTickEvent tick);
 
-
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
 
     [SerializeField] private int bpm = 120;
@@ -30,7 +29,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static Action OnTick16 { get; set; }
     public static Action OnTickSub16 { get; set; }
     public static Action OnTickSub8 { get; set; }
-    public static Action OnTickSub4 { get; set; } // replaces your OnTick16
+    public static Action OnTickSub4 { get; set; }
     public static Action OnTickSub2 { get; set; }
     public static Action OnBar { get; set; }
 
@@ -80,6 +79,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
+            // Only handle blittable BPM updates here — no managed delegate calls allowed in Burst
             var availableData = pipe.GetAvailableData(context);
             foreach (var element in availableData)
             {
@@ -87,31 +87,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 {
                     _bpm = bpmMsg.NewBpm;
                     _sub16Length = (60.0 / _bpm) * 0.25;
-                }
-
-                if (element.TryGetData(out MetronomeTickEvent tick))
-                {
-                    TriggerTick(tick); // existing broadcast
-
-                    // Route to specific action based on tick rate
-                    switch ((AnywhenMetronome.TickRate)tick.TickRate)
-                    {
-                        case AnywhenMetronome.TickRate.Sub16:
-                            OnTickSub16?.Invoke();
-                            Debug.Log("Sub16");
-                            break;
-                        case AnywhenMetronome.TickRate.Sub8:
-                            OnTickSub8?.Invoke();
-                            break;
-                        case AnywhenMetronome.TickRate.Sub4:
-                            OnTickSub4?.Invoke();
-                            break;
-                        case AnywhenMetronome.TickRate.Sub2:
-                            OnTickSub2?.Invoke();
-                            // Count == 0 means start of bar (every 16 sub16 ticks = 1 bar in 4/4)
-                            if (tick.Count == 0) OnBar?.Invoke();
-                            break;
-                    }
                 }
             }
         }
@@ -189,12 +164,30 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
             public void Update(ControlContext context, ProcessorInstance.Pipe pipe)
             {
+                // Managed side — safe to call delegates and invoke Actions here
                 var availableData = pipe.GetAvailableData(context);
                 foreach (var element in availableData)
                 {
                     if (element.TryGetData(out MetronomeTickEvent tick))
                     {
                         TriggerTick(tick);
+
+                        switch ((AnywhenMetronome.TickRate)tick.TickRate)
+                        {
+                            case AnywhenMetronome.TickRate.Sub16:
+                                OnTickSub16?.Invoke();
+                                break;
+                            case AnywhenMetronome.TickRate.Sub8:
+                                OnTickSub8?.Invoke();
+                                break;
+                            case AnywhenMetronome.TickRate.Sub4:
+                                OnTickSub4?.Invoke();
+                                break;
+                            case AnywhenMetronome.TickRate.Sub2:
+                                OnTickSub2?.Invoke();
+                                if (tick.Count == 0) OnBar?.Invoke();
+                                break;
+                        }
                     }
                 }
             }
