@@ -254,7 +254,6 @@ namespace Anysong
                 AnysongEditorWindow.CurrentSelection.CurrentSectionTrackProperty.FindPropertyRelative("patternProgressionType"),
                 () =>
                 {
-                    Debug.Log("updated progression type");
                     progressionTypeHolder.Clear();
                     progressionTypeHolder.Add(DrawProgressionType((AnysongSectionTrack.PatternProgressionType)AnysongEditorWindow
                         .CurrentSelection

@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public struct AnysongSectionTrack
+    public class AnysongSectionTrack
     {
         public enum PatternProgressionType
         {
@@ -17,45 +17,72 @@ namespace Anywhen.Composing
         }
 
         public PatternProgressionType patternProgressionType;
-        //public AnysongTrackSettings anysongTrackSettings;
-
-
         public List<AnysongPattern> patterns;
-
         private AnysongPattern _currentPattern;
         private int _currentPatternBar;
         int _currentPatternIndex;
 
+
         public struct Unmanaged
         {
-            public PatternProgressionType patternProgressionType;
-            public AnysongTrackSettings.Unmanaged anysongTrackSettings;
-            public NativeArray<AnysongPattern.Unmanaged> patterns;
-            public AnysongPattern.Unmanaged currentPattern;
-            public int currentPatternBar;
-            public int currentPatternIndex;
+            public PatternProgressionType PatternProgressionType;
+            public AnysongTrackSettings.Unmanaged AnysongTrackSettings;
+            public NativeArray<AnysongPattern.Unmanaged> Patterns;
+            public AnysongPattern.Unmanaged CurrentPattern;
+            public int CurrentPatternBar;
+            public int CurrentPatternIndex;
+            public Unity.Mathematics.Random Random;
+
+
+            public void AdvancePlayingPattern()
+            {
+                CurrentPatternBar++;
+                CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
+                CurrentPattern = Patterns[CurrentPatternIndex];
+                CurrentPattern.SetStepIndex(0);
+            }
+
+            public AnysongPattern.Unmanaged GetCurrentPattern()
+            {
+                return CurrentPattern;
+            }
+
+            public void Sync(int index)
+            {
+                CurrentPattern.SetStepIndex(index);
+            }
+
+            public void Reset()
+            {
+                CurrentPatternBar = 0;
+                CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
+                CurrentPattern = Patterns[CurrentPatternIndex];
+                CurrentPattern.SetStepIndex(0);
+            }
         }
 
         public Unmanaged ToUnmanaged()
         {
             var unmanagedPatterns = new AnysongPattern.Unmanaged[patterns.Count];
             for (int i = 0; i < patterns.Count; i++)
+            {
                 unmanagedPatterns[i] = patterns[i].ToUnmanaged();
+            }
+
 
             return new Unmanaged
             {
-                patternProgressionType = patternProgressionType,
-                //anysongTrackSettings = anysongTrackSettings.ToUnmanaged(),
-                patterns = new NativeArray<AnysongPattern.Unmanaged>(unmanagedPatterns, Allocator.Persistent),
-                currentPattern = _currentPattern.ToUnmanaged(),
-                currentPatternBar = _currentPatternBar,
-                currentPatternIndex = _currentPatternIndex,
+                PatternProgressionType = patternProgressionType,
+                Patterns = new NativeArray<AnysongPattern.Unmanaged>(unmanagedPatterns, Allocator.Persistent),
+                CurrentPattern = _currentPattern.ToUnmanaged(),
+                CurrentPatternBar = _currentPatternBar,
+                CurrentPatternIndex = _currentPatternIndex,
+                Random = new Unity.Mathematics.Random((uint)UnityEngine.Random.Range(1, int.MaxValue)) // <-- seed here
             };
         }
 
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
-            //anysongTrackSettings = songSongTrackSettings;
             patterns = new List<AnysongPattern>(1);
             for (var i = 0; i < patterns.Count; i++)
             {
@@ -107,15 +134,16 @@ namespace Anywhen.Composing
 
         public void AdvancePlayingPattern()
         {
-            _currentPatternBar++;
-            _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
-            _currentPattern = GetPattern(_currentPatternIndex);
-            _currentPattern.SetStepIndex(0);
+            //_currentPatternBar++;
+            //_currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
+            //_currentPattern = GetPattern(_currentPatternIndex);
+            //_currentPattern.SetStepIndex(0);
         }
 
-        int GetProgressionPatternIndex(int patternBar)
+        static int GetProgressionPatternIndex(int patternBar, NativeArray<AnysongPattern.Unmanaged> patterns,
+            PatternProgressionType patternProgressionType, ref Unity.Mathematics.Random random)
         {
-            int patternIndex = (int)Mathf.Repeat(patternBar, patterns.Count);
+            int patternIndex = (int)Mathf.Repeat(patternBar, patterns.Length);
             switch (patternProgressionType)
             {
                 case PatternProgressionType.Sequence:
@@ -126,7 +154,7 @@ namespace Anywhen.Composing
                     float totalWeight = 0;
 
                     // First pass: calculate total weight
-                    for (var i = 0; i < patterns.Count; i++)
+                    for (var i = 0; i < patterns.Length; i++)
                     {
                         var anyPattern = patterns[i];
                         float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
@@ -142,11 +170,12 @@ namespace Anywhen.Composing
                     else
                     {
                         // Generate random number within total weight range
-                        float randomValue = Random.Range(0f, totalWeight);
+                        float randomValue = random.NextFloat(0f, totalWeight); // <-- replaces Random.Range
+
                         float currentWeight = 0;
 
                         // Second pass: find the selected pattern
-                        for (var i = 0; i < patterns.Count; i++)
+                        for (var i = 0; i < patterns.Length; i++)
                         {
                             var anyPattern = patterns[i];
                             float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
@@ -168,7 +197,7 @@ namespace Anywhen.Composing
 
                     break;
                 case PatternProgressionType.Random:
-                    patternIndex = Random.Range(0, patterns.Count);
+                    patternIndex = random.NextInt(0, patterns.Length);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -180,24 +209,24 @@ namespace Anywhen.Composing
 
         public void Reset()
         {
-            _currentPatternBar = 0;
-            if (patterns.Count > 0)
-            {
-                _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
-                _currentPattern = GetPattern(_currentPatternIndex);
-            }
-
-            foreach (var pattern in patterns)
-            {
-                pattern.Reset();
-            }
+            //_currentPatternBar = 0;
+            //if (patterns.Count > 0)
+            //{
+            //    _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
+            //    _currentPattern = GetPattern(_currentPatternIndex);
+            //}
+//
+            //foreach (var pattern in patterns)
+            //{
+            //    pattern.Reset();
+            //}
         }
 
         public void SyncToClock()
         {
-            _currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
-            _currentPattern = GetPattern(_currentPatternIndex);
-            _currentPattern.SyncToClock();
+            //_currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
+            //_currentPattern = GetPattern(_currentPatternIndex);
+            //_currentPattern.SyncToClock();
         }
 
         public void SetTrack(AnysongTrackSettings songTrack)

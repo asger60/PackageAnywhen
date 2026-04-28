@@ -225,7 +225,7 @@ namespace Anysong
                 AnysongSectionsView.RefreshSectionLocked();
                 AnywhenMetronome.Instance.SetTempo(CurrentSong.tempo);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
-                AnywhenAudioMetronome.OnBar += OnBar;
+                //AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
             }
             else
@@ -234,7 +234,7 @@ namespace Anysong
 
                 //AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
                 AnywhenAudioMetronome.OnAudioTick -= OnTick16;
-                AnywhenAudioMetronome.OnBar -= OnBar;
+                //AnywhenAudioMetronome.OnBar -= OnBar;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
@@ -367,7 +367,7 @@ namespace Anysong
 
         static void OnBar()
         {
-            Debug.LogWarning("OnBar not implemented yet");
+           // Debug.LogWarning("OnBar not implemented yet");
             //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
 //
             //if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
@@ -466,13 +466,11 @@ namespace Anysong
 
         static void CreatePattern(int trackIndex)
         {
-            Debug.LogWarning("create new pattern not implemented yet");
-
             var newPattern = new AnysongPattern();
             newPattern.Init();
             var thisTrack = _currentSelection.CurrentSection.tracks[trackIndex];
 
-            //thisTrack.patterns.Add(newPattern);
+            thisTrack.patterns.Add(newPattern);
             _currentSelection.SetStepIndex(0);
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             _currentSelection.SetTrackIndex(trackIndex);
@@ -485,9 +483,8 @@ namespace Anysong
 
         static void DeletePattern()
         {
-            Debug.LogWarning("remove pattern not implemented yet");
             var thisTrack = _currentSelection.CurrentSectionTrack;
-            //thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
+            thisTrack.patterns.Remove(thisTrack.patterns[_currentSelection.CurrentPatternIndex]);
 
             _currentSelection.SetPatternIndex(thisTrack.patterns.Count - 1);
             AnysongPatternView.Draw(_sequencesPanel);

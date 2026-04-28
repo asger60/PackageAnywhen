@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public struct AnysongPatternStep
+    public class AnysongPatternStep
     {
         public bool NoteOn => chordNotes.Count > 0;
 
@@ -64,7 +64,6 @@ namespace Anywhen.Composing
             expression = 0;
             rootNote = 0;
             repeatRate = RepeatRates.ThirtyTwo;
-            Debug.Log("Step " + rootNote + " done");
         }
 
 
@@ -125,7 +124,6 @@ namespace Anywhen.Composing
             velocity = 1;
             chordNotes = new List<int>();
             mixWeight = Random.Range(0, 1f);
-            Debug.Log("Init");
         }
 
 

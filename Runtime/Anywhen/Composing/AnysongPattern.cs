@@ -7,13 +7,12 @@ using Random = UnityEngine.Random;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public struct AnysongPattern
+    public class AnysongPattern
     {
         public List<float> triggerChances;
         public List<AnysongPatternStep> steps;
         [Range(0, 16)] public int patternLength;
         private int _internalIndex;
-        public int InternalIndex => _internalIndex;
 
 
         public struct Unmanaged
@@ -23,10 +22,25 @@ namespace Anywhen.Composing
             public int patternLength;
             public int internalIndex;
 
-            public void Advance()
+            public AnysongPatternStep.UnManaged GetCurrentStep()
+            {
+                return steps[internalIndex];
+            }
+
+            public void AdvancePlayingStep()
             {
                 internalIndex++;
                 internalIndex = (int)Mathf.Repeat(internalIndex, patternLength);
+            }
+
+            public void SetStepIndex(int i)
+            {
+                internalIndex = i;
+            }
+
+            public void SyncToMetronome(int currentIndex)
+            {
+                internalIndex = currentIndex;
             }
         }
 
@@ -49,14 +63,19 @@ namespace Anywhen.Composing
 
         public void Init()
         {
+            patternLength = 16;
             triggerChances = new List<float>(4);
+            for (var i = 0; i < 4; i++)
+            {
+                triggerChances.Add(0);
+            }
 
             steps = new List<AnysongPatternStep>(16);
             for (int i = 0; i < 16; i++)
             {
-                var newStep = new AnysongPatternStep();
+                var newStep = new AnysongPatternStep(0);
                 newStep.Init();
-                steps[i] = newStep;
+                steps.Add(newStep);
             }
         }
 

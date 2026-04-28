@@ -185,7 +185,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                                 break;
                             case AnywhenMetronome.TickRate.Sub2:
                                 OnTickSub2?.Invoke();
-                                if (tick.Count == 0) OnBar?.Invoke();
+                                //if (tick.Count == 0) OnBar?.Invoke();
                                 break;
                         }
                     }

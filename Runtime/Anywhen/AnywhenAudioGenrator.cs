@@ -178,13 +178,20 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
 
                 var sectionsRef = _anysongSections;
-                Action midiListener = () =>
+                Action<int, int, int> midiListener = (sectionIndex, trackIndex, patternIndex) =>
                 {
                     if (!sectionsRef.IsCreated) return;
-                    for (int i = 0; i < sectionsRef.Length && i < song.Sections.Count; i++)
-                    {
-                        sectionsRef[i] = song.Sections[i].ToUnmanaged();
-                    }
+
+                    var section = sectionsRef[sectionIndex];
+                    var track = section.tracks[trackIndex];
+                    var pattern = track.Patterns[patternIndex];
+                    var previousInternalIndex = track.Patterns[patternIndex].internalIndex;
+                    pattern = song.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex].ToUnmanaged();
+                    pattern.internalIndex = previousInternalIndex;
+                    track.Patterns[patternIndex] = pattern;
+
+                    section.tracks[trackIndex] = track;
+                    sectionsRef[sectionIndex] = section;
                 };
                 song.OnSongMidiChanged += midiListener;
 
@@ -234,6 +241,19 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 if (element.TryGetData(out PlaybackStateData data))
                 {
                     _isPlaying = data.IsPlaying;
+                    if (_isPlaying)
+                    {
+                        for (int trackIndex = 0; trackIndex < _anysongSections[0].tracks.Length; trackIndex++)
+                        {
+                            var section = _anysongSections[0];
+                            var track = section.tracks[trackIndex];
+                            track.Reset();
+                            var pattern = track.Patterns[track.CurrentPatternIndex];
+                            pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
+                            track.Patterns[track.CurrentPatternIndex] = pattern;
+                            section.tracks[trackIndex] = track;
+                        }
+                    }
                 }
             }
         }
@@ -254,26 +274,29 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 {
                     var section = _anysongSections[0];
                     var track = section.tracks[trackIndex];
-                    var pattern = track.patterns[0];
+                    if (currentSub16Count == 0)
+                        track.AdvancePlayingPattern();
 
-                    pattern.Advance();
+                    var pattern = track.Patterns[track.CurrentPatternIndex];
+
 
                     if (_stepIndices.IsCreated && trackIndex < _stepIndices.Length)
+                    {
                         _stepIndices[trackIndex] = pattern.internalIndex;
+                    }
 
-                    track.patterns[0] = pattern;
-                    section.tracks[trackIndex] = track;
-                    _anysongSections[0] = section;
-
-                    var thisStep = pattern.steps[currentSub16Count];
-
-
+                    var thisStep = pattern.GetCurrentStep();
                     if (thisStep.noteOn)
                     {
                         var playbackTrack = _tracks[trackIndex];
                         playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisStep, dspTime));
                         _tracks[trackIndex] = playbackTrack;
                     }
+
+                    pattern.AdvancePlayingStep();
+                    track.Patterns[track.CurrentPatternIndex] = pattern;
+                    section.tracks[trackIndex] = track;
+                    _anysongSections[0] = section;
                 }
 
                 _lastSub16Count = currentSub16Count;

@@ -22,7 +22,7 @@ namespace Anywhen.Composing
 
 
         public string author = "Floppy Club";
-        public event Action OnSongMidiChanged;
+        public event Action<int, int, int> OnSongMidiChanged;
         public event Action OnSongSettingsChanged;
 
         public event Action OnSongEffectsChanged;
@@ -107,10 +107,10 @@ namespace Anywhen.Composing
             }
         }
 
-        public void RefreshMidi()
+        public void RefreshMidi(int sectionIndex, int trackIndex, int patternIndex)
         {
             Debug.Log("RefreshMidi");
-            OnSongMidiChanged?.Invoke();
+            OnSongMidiChanged?.Invoke(sectionIndex, trackIndex, patternIndex);
         }
 
         public void RefreshSettings()
@@ -118,13 +118,13 @@ namespace Anywhen.Composing
             Debug.Log("RefreshSettings");
             OnSongSettingsChanged?.Invoke();
         }
-        
+
         public void RefreshEffects()
         {
             Debug.Log("RefreshEffects");
             OnSongEffectsChanged?.Invoke();
         }
-        
+
 
         public void RemoveListeners()
         {
@@ -132,7 +132,7 @@ namespace Anywhen.Composing
             {
                 foreach (var currentDelegate in OnSongMidiChanged.GetInvocationList())
                 {
-                    OnSongMidiChanged -= (Action)currentDelegate;
+                    OnSongMidiChanged -= (Action<int, int, int>)currentDelegate;
                 }
             }
 
@@ -143,6 +143,7 @@ namespace Anywhen.Composing
                     OnSongSettingsChanged -= (Action)currentDelegate;
                 }
             }
+
             if (OnSongEffectsChanged != null)
             {
                 foreach (var currentDelegate in OnSongEffectsChanged.GetInvocationList())
@@ -150,11 +151,10 @@ namespace Anywhen.Composing
                     OnSongEffectsChanged -= (Action)currentDelegate;
                 }
             }
+
             OnSongMidiChanged = null;
             OnSongSettingsChanged = null;
             OnSongEffectsChanged = null;
         }
-
-        
     }
 }
