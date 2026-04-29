@@ -14,7 +14,7 @@ public class AnysongPlayerControls
     private bool _isPreviewing;
     private Button _playButton, _editButton;
 
-    private AnywhenPlayer _anywhenPlayer;
+    //rivate AnywhenPlayer _anywhenPlayer;
     private AnysongObject _currentSong;
     private static Color _accentColor = new Color(0.3764705882f, 0.7803921569f, 0.3607843137f, 1);
     private VisualElement _tapeElement;
@@ -31,9 +31,9 @@ public class AnysongPlayerControls
 
     public bool IsPlaying => _isPlaying;
 
-    public void HandlePlayerLogic(VisualElement root, AnywhenPlayer anywhenPlayer)
+    public void HandlePlayerLogic(VisualElement root/*, AnywhenPlayer anywhenPlayer*/)
     {
-        _anywhenPlayer = anywhenPlayer;
+        //_anywhenPlayer = anywhenPlayer;
         _tapeSprite1 =
             AssetDatabase.LoadAssetAtPath<Sprite>(AnywhenMenuUtils.GetAssetPath("Editor/Sprites/Tape1.png"));
         _tapeSprite2 =
@@ -54,24 +54,24 @@ public class AnysongPlayerControls
             .ForEach(button => { sectionButtonsElement.Remove(button); });
 
         _sectionButtons.Clear();
-        if (anywhenPlayer.AnysongObject != null)
-        {
-            for (var i = 0; i < anywhenPlayer.AnysongObject.Sections.Count; i++)
-            {
-                var btn = new Button
-                {
-                    text = i.ToString()
-                };
-                btn.AddToClassList("section-button");
-                btn.clicked += () => { _anywhenPlayer.EditorSetSection(Int32.Parse(btn.text)); };
-                _sectionButtons.Add(btn);
-                sectionButtonsElement.Add(btn);
-            }
-        }
-        else
-        {
-            sectionButtonsElement.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-        }
+        //if (anywhenPlayer.AnysongObject != null)
+        //{
+        //    for (var i = 0; i < anywhenPlayer.AnysongObject.Sections.Count; i++)
+        //    {
+        //        var btn = new Button
+        //        {
+        //            text = i.ToString()
+        //        };
+        //        btn.AddToClassList("section-button");
+        //        btn.clicked += () => { _anywhenPlayer.EditorSetSection(Int32.Parse(btn.text)); };
+        //        _sectionButtons.Add(btn);
+        //        sectionButtonsElement.Add(btn);
+        //    }
+        //}
+        //else
+        //{
+        //    sectionButtonsElement.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+        //}
 
         if (_currentSong == null)
         {
@@ -99,11 +99,7 @@ public class AnysongPlayerControls
 
     void RefreshActiveSection()
     {
-        for (int i = 0; i < _sectionButtons.Count; i++)
-        {
-            _sectionButtons[i].style.backgroundColor =
-                new StyleColor((i == _anywhenPlayer.CurrentSectionIndex) ? Color.grey : Color.clear);
-        }
+        
     }
 
     public void SetSongObject(AnysongObject anysongObject)
@@ -111,7 +107,7 @@ public class AnysongPlayerControls
         _currentSong = anysongObject;
         _songNameLabel.text = anysongObject.name;
         _songAuthorLabel.text = "By: " + anysongObject.author;
-        _anywhenPlayer.EditorSetTempo(anysongObject.tempo);
+        //_anywhenPlayer.EditorSetTempo(anysongObject.tempo);
         _playButton.style.unityBackgroundImageTintColor = new StyleColor(new Color(1, 1, 1, 1));
         _tapeElement.style.unityBackgroundImageTintColor = Color.white;
         _editButton.style.unityBackgroundImageTintColor = Color.white;
@@ -119,14 +115,14 @@ public class AnysongPlayerControls
 
     private void OnTick16()
     {
-        var sprite = AnywhenMetronome.Instance.Sub16 % 2 == 0 ? _tapeSprite1 : _tapeSprite2;
-        _tapeElement.style.backgroundImage = new StyleBackground(sprite);
-        RefreshActiveSection();
+        //var sprite = AnywhenMetronome.Instance.Sub16 % 2 == 0 ? _tapeSprite1 : _tapeSprite2;
+        //_tapeElement.style.backgroundImage = new StyleBackground(sprite);
+        //RefreshActiveSection();
     }
 
     private void TogglePreview()
     {
-        if (_anywhenPlayer == null) return;
+        //if (_anywhenPlayer == null) return;
         if (_currentSong == null) return;
         _isPreviewing = !_isPreviewing;
         if (_isPreviewing)
@@ -141,27 +137,27 @@ public class AnysongPlayerControls
 
     public void Play()
     {
-        if (_anywhenPlayer == null) return;
-        if (_currentSong == null) return;
-        _anywhenPlayer.LoadInstruments();
-        _isPreviewing = true;
-        _isPlaying = true;
+        //f (_anywhenPlayer == null) return;
+        //f (_currentSong == null) return;
+        //anywhenPlayer.LoadInstruments();
+        //isPreviewing = true;
+        //isPlaying = true;
 
 
-        //AnysongPlayerBrain.SetSectionLock(-1);
-        _anywhenPlayer.EditorSetPreviewSong(_currentSong);
-        AnywhenRuntime.Metronome.SetTempo(_anywhenPlayer.GetTempo());
-        _playButton.style.backgroundColor = new StyleColor(_accentColor);
-        AnywhenRuntime.Metronome.OnTick16 += OnTick16;
-        AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
+        ///AnysongPlayerBrain.SetSectionLock(-1);
+        //anywhenPlayer.EditorSetPreviewSong(_currentSong);
+        //nywhenRuntime.Metronome.SetTempo(_anywhenPlayer.GetTempo());
+        //playButton.style.backgroundColor = new StyleColor(_accentColor);
+        //nywhenRuntime.Metronome.OnTick16 += OnTick16;
+        //nywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
     }
 
     public void Stop()
     {
-        _isPlaying = false;
-        _isPreviewing = false;
-        AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
-        _playButton.style.backgroundColor = new StyleColor(Color.clear);
-        AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
+        //_isPlaying = false;
+        //_isPreviewing = false;
+        //AnywhenRuntime.Metronome.OnTick16 -= OnTick16;
+        //_playButton.style.backgroundColor = new StyleColor(Color.clear);
+        //AnywhenRuntime.SetPreviewMode(_isPreviewing, _anywhenPlayer);
     }
 }

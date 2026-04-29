@@ -65,7 +65,7 @@ namespace Anywhen.Composing
                         {
                             var step = pattern.steps[i];
                             var patternStep = step;
-                            patternStep.mixWeight = Random.Range(0, 1f);
+                            //patternStep.mixWeight = Random.Range(0, 1f);
                             pattern.steps[i] = patternStep;
                         }
                     }

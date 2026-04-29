@@ -14,36 +14,15 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
-        private static AnywhenMetronome _metronome;
 
-        public static AnywhenMetronome Metronome
-        {
-            get
-            {
-                if (!_metronome)
-                    Instance?.GetAnyComponents();
-
-                return _metronome;
-            }
-        }
 
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
 
         private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
-        public static AnysongPlayerBrain AnysongPlayerBrain
-        {
-            get
-            {
-                if (!_anysongPlayerBrain)
-                    Instance.GetAnyComponents();
 
-                return _anysongPlayerBrain;
-            }
-        }
 
-        private static AnysongPlayerBrain _anysongPlayerBrain;
 
 
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
@@ -55,7 +34,6 @@ namespace Anywhen
 
         private static AnywhenRuntime Instance => _instance;
 
-        private static AnywhenPlayer _targetPlayer;
 
 
         private bool _isPreviewing;
@@ -104,24 +82,10 @@ namespace Anywhen
         {
             _instance = this;
             GetAnyComponents();
-            SetPreviewMode(false, null);
         }
 
 
-        public static void SetPreviewMode(bool state, AnywhenPlayerBase targetPlayer)
-        {
-            Instance._isPreviewing = state;
-            if (state)
-            {
-                Instance.GetAnyComponents();
-                targetPlayer.Play();
-                Metronome.Play();
-            }
-            else
-            {
-                targetPlayer?.Stop();
-            }
-        }
+
 
         public void Init()
         {
@@ -131,9 +95,7 @@ namespace Anywhen
 
         void GetAnyComponents()
         {
-            TryGetComponent(out _metronome);
             TryGetComponent(out _conductor);
-            TryGetComponent(out _anysongPlayerBrain);
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
         }
 

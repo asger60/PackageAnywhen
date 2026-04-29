@@ -8,7 +8,7 @@ namespace Anywhen
 {
     public static class AnywhenSnapshotBlender
     {
-        public static void ApplyBlend(AnysongObject song, float mixValue, List<AnywhenPlayerBase.PlayerTrack> playerTracks = null)
+        public static void ApplyBlend(AnysongObject song, float mixValue)
         {
             if (!song || song.snapshotA == null || song.snapshotB == null) return;
 
@@ -71,36 +71,14 @@ namespace Anywhen
                         ApplyLerpToFilter(filterSettings, filterPropertyPath, a, b, mixValue);
 
                         // Update the runtime filter if it exists
-                        if (playerTracks != null && trackIndex < playerTracks.Count)
-                        {
-                            var playerTrack = playerTracks[trackIndex];
-                            if (playerTrack.trackFilters != null && filterIndex < playerTrack.trackFilters.Count)
-                            {
-                                playerTrack.trackFilters[filterIndex].SetSettings(filterSettings);
-                            }
-                        }
+                       
                     }
                     else
                     {
                         ApplyLerpToTrack(track, propertyPath, a, b, mixValue);
 
                         // Update the runtime envelope/LFO if it exists
-                        if (playerTracks != null && trackIndex < playerTracks.Count)
-                        {
-                            var playerTrack = playerTracks[trackIndex];
-                            if (propertyPath.StartsWith("trackEnvelope."))
-                            {
-                               // playerTrack.trackEnvelope.UpdateSettings(track.trackAudioEnvelope);
-                            }
-                            else if (propertyPath.StartsWith("trackLFO."))
-                            {
-                             //   playerTrack.trackLFO.UpdateSettings(track.trackAudioLFO);
-                            }
-                            else if (propertyPath == "trackPitch")
-                            {
-                                playerTrack.trackPitch = track.TrackPitch;
-                            }
-                        }
+                    
                     }
                 }
             }

@@ -73,7 +73,7 @@ namespace Anywhen.Composing
             steps = new List<AnysongPatternStep>(16);
             for (int i = 0; i < 16; i++)
             {
-                var newStep = new AnysongPatternStep(0);
+                var newStep = new AnysongPatternStep();
                 newStep.Init();
                 steps.Add(newStep);
             }
@@ -159,12 +159,13 @@ namespace Anywhen.Composing
 
         public void RandomizeMelody()
         {
+            Debug.LogWarning("RandomizeMelody not implemented yet");
             List<int> notes = new List<int>();
             foreach (var patternStep in steps)
             {
                 if (patternStep.NoteOn)
                 {
-                    notes.Add(patternStep.rootNote);
+                   // notes.Add(patternStep.rootNote);
                 }
             }
 
@@ -182,12 +183,13 @@ namespace Anywhen.Composing
 
         public void RandomizeRhythm()
         {
+            Debug.LogWarning("RandomizeRhythm not implemented yet");
             List<int> notes = new List<int>();
             foreach (var patternStep in steps)
             {
                 if (patternStep.NoteOn)
                 {
-                    notes.Add(patternStep.rootNote);
+                    //notes.Add(patternStep.rootNote);
                     //patternStep.noteOn = false;
                 }
             }
@@ -199,7 +201,7 @@ namespace Anywhen.Composing
                 if (!thisStep.NoteOn)
                 {
                     //thisStep.noteOn = true;
-                    thisStep.rootNote = notes[0];
+                    //thisStep.rootNote = notes[0];
                     notes.RemoveAt(0);
                 }
             }
@@ -213,10 +215,7 @@ namespace Anywhen.Composing
             }
         }
 
-        public void SyncToClock()
-        {
-            _internalIndex = (int)Mathf.Repeat(AnywhenMetronome.Instance.Sub16, patternLength);
-        }
+
 
         public bool IsNull()
         {

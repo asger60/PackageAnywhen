@@ -98,18 +98,18 @@ namespace Anysong
                         AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
 
                         break;
-                    case AnysongPatternView.EditModes.NoteVelocity:
-                        _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                        break;
-                    case AnysongPatternView.EditModes.NoteLength:
-                        _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                        break;
-                    case AnysongPatternView.EditModes.NoteChance:
-                        _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                        break;
-                    case AnysongPatternView.EditModes.NoteWeights:
-                        _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                        break;
+                    //case AnysongPatternView.EditModes.NoteVelocity:
+                    //    _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    //    break;
+                    //case AnysongPatternView.EditModes.NoteLength:
+                    //    _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    //    break;
+                    //case AnysongPatternView.EditModes.NoteChance:
+                    //    _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    //    break;
+                    //case AnysongPatternView.EditModes.NoteWeights:
+                    //    _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                    //    break;
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -150,31 +150,31 @@ namespace Anysong
 
                     break;
                 case AnysongPatternView.EditModes.NoteVelocity:
-                    if (_patternStep.NoteOn && _patternStep.velocity > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    {
-                        _button.AddToClassList("pattern-step-note-mono");
-                    }
+                    //if (_patternStep.NoteOn && _patternStep.velocity > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    //{
+                    //    _button.AddToClassList("pattern-step-note-mono");
+                    //}
 
                     break;
                 case AnysongPatternView.EditModes.NoteLength:
-                    if (_patternStep.NoteOn && _patternStep.duration > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    {
-                        _button.AddToClassList("pattern-step-note-mono");
-                    }
+                    //if (_patternStep.NoteOn && _patternStep.duration > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    //{
+                    //    _button.AddToClassList("pattern-step-note-mono");
+                    //}
 
                     break;
                 case AnysongPatternView.EditModes.NoteChance:
-                    if (_patternStep.NoteOn && _patternStep.chance > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    {
-                        _button.AddToClassList("pattern-step-note-mono");
-                    }
+                    //if (_patternStep.NoteOn && _patternStep.chance > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    //{
+                    //    _button.AddToClassList("pattern-step-note-mono");
+                    //}
 
                     break;
                 case AnysongPatternView.EditModes.NoteWeights:
-                    if (_patternStep.NoteOn && _patternStep.mixWeight > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    {
-                        _button.AddToClassList("pattern-step-note-mono");
-                    }
+                    //if (_patternStep.NoteOn && _patternStep.mixWeight > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
+                    //{
+                    //    _button.AddToClassList("pattern-step-note-mono");
+                    //}
 
                     break;
                 default:

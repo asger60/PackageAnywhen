@@ -191,13 +191,13 @@ namespace Anysong
 
             if (evt.keyCode == KeyCode.UpArrow)
             {
-                if (!_currentSelectedPatternStep.IsNull()) _currentSelectedPatternStep.rootNote++;
+                if (!_currentSelectedPatternStep.IsNull()) _currentSelectedPatternStep.ShiftUp();
                 Refresh();
             }
 
             if (evt.keyCode == KeyCode.DownArrow)
             {
-                if (!_currentSelectedPatternStep.IsNull()) _currentSelectedPatternStep.rootNote--;
+                if (!_currentSelectedPatternStep.IsNull()) _currentSelectedPatternStep.ShiftDown();
                 Refresh();
             }
 

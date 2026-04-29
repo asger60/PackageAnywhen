@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
     public class AnysongBrowser : EditorWindow
     {
         private Button _previewButton;
-        private static AnywhenPlayer _anywhenPlayer;
+        //private static AnywhenPlayer _anywhenPlayer;
         private AnysongPackObject[] _packObjects;
         private AnysongPackObject _currentPack;
 
@@ -28,10 +28,10 @@ using UnityEngine.UIElements;
         private int _currentPackIndex;
         private bool _didLoad;
 
-        public static void ShowBrowserWindow(AnywhenPlayer thisPlayer, Action<bool> onWindowClosed)
+        public static void ShowBrowserWindow(/*AnywhenPlayer thisPlayer, */Action<bool> onWindowClosed)
         {
             
-            _anywhenPlayer = thisPlayer;
+            //_anywhenPlayer = thisPlayer;
             AnysongBrowser window = (AnysongBrowser)GetWindow(typeof(AnysongBrowser));
             window.Show(true);
             window.titleContent = new GUIContent("Anysong browser");
@@ -43,7 +43,7 @@ using UnityEngine.UIElements;
 
         private void OnDestroy()
         {
-            _anywhenPlayer?.EditorSetPreviewSong(_anywhenPlayer.AnysongObject);
+            //_anywhenPlayer?.EditorSetPreviewSong(_anywhenPlayer.AnysongObject);
             _onClose?.Invoke(_didLoad);
         }
 
@@ -54,7 +54,7 @@ using UnityEngine.UIElements;
             VisualTreeAsset uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
             VisualElement ui = uiAsset.Instantiate();
 
-            _currentPackIndex = _anywhenPlayer ? _anywhenPlayer.currentSongPackIndex : 0;
+            //_currentPackIndex = _anywhenPlayer ? _anywhenPlayer.currentSongPackIndex : 0;
             _packObjects = Resources.LoadAll<AnysongPackObject>("/");
             _currentPack = _packObjects[_currentPackIndex];
 
@@ -63,7 +63,7 @@ using UnityEngine.UIElements;
             rootVisualElement.Add(ui);
 
             _anysongPlayerControls = new AnysongPlayerControls();
-            _anysongPlayerControls.HandlePlayerLogic(rootVisualElement, _anywhenPlayer);
+            _anysongPlayerControls.HandlePlayerLogic(rootVisualElement/*, _anywhenPlayer*/);
 
 
             _packImageElement = ui.Q<VisualElement>("PackImage666");
@@ -103,11 +103,11 @@ using UnityEngine.UIElements;
         private void LoadSongButtonOnClicked()
         {
             
-            _anywhenPlayer.EditorSetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
-            EditorUtility.SetDirty(_anywhenPlayer);
-            _anysongPlayerControls.Stop();
-            _didLoad = true;
-            Close();
+            //_anywhenPlayer.EditorSetSongAndPackObject(_currentPreviewSong, _currentPackIndex);
+            //EditorUtility.SetDirty(_anywhenPlayer);
+            //_anysongPlayerControls.Stop();
+            //_didLoad = true;
+            //Close();
         }
 
 

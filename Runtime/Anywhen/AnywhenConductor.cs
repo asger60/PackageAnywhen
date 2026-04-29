@@ -34,7 +34,7 @@ namespace Anywhen
                 _currentProgressionPattern = initialProgressionPattern;
 
 
-            AnywhenMetronome.Instance.OnNextBar += OnNextBar;
+            //AnywhenMetronome.Instance.OnNextBar += OnNextBar;
         }
 
         private void OnNextBar()
