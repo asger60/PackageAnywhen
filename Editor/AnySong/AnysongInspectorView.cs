@@ -469,6 +469,8 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("duration"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("chance"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("mixWeight"), didUpdate));
+            
 
 
             var s = CreatePropertyFieldWithCallback(note.FindPropertyRelative("repeatRate"), didUpdate);

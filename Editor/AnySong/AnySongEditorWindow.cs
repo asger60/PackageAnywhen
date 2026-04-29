@@ -17,19 +17,7 @@ namespace Anysong
 
         static AnywhenAudioGenerator _currentPlayer;
         static AnywhenAudioMetronome _currentMetronome;
-        //private static AnywhenPlayerBase _currentRuntimeSongPlayer;
 
-        //private static AnywhenPlayerBase CurrentRuntimeSongPlayer
-        //{
-        //    get
-        //    {
-        //        if (!_currentRuntimeSongPlayer)
-        //        {
-        //        }
-//
-        //        return _currentRuntimeSongPlayer;
-        //    }
-        //}
 
         private GameObject _playerObject;
 
@@ -176,10 +164,7 @@ namespace Anysong
             Step
         }
 
-        public static void SetBPM(int bpm)
-        {
-            _currentMetronome.SetTempo(CurrentSong.tempo);
-        }
+        
 
         public static void ShowModuleWindow(AnysongObject songObject)
         {
@@ -276,13 +261,15 @@ namespace Anysong
             AnysongInspectorView.Clear();
         }
 
-        static void SetTestIntensity(float value)
+        public static void SetTestIntensity(float value)
         {
-            Debug.LogWarning("set intensity not implemented yet");
-            //if (!CurrentRuntimeSongPlayer) return;
-            //CurrentRuntimeSongPlayer.SetIntensity(value);
+            _currentPlayer.SetIntensity(value);
         }
 
+        public static void SetBPM(int bpm)
+        {
+            _currentMetronome.SetTempo(CurrentSong.tempo);
+        }
 
         public void CreateGUI()
         {
@@ -351,8 +338,6 @@ namespace Anysong
                 AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
             });
 
-            _transportPanel.Q<Slider>("TestIntensitySlider")
-                .RegisterValueChangedCallback(evt => { SetTestIntensity(evt.newValue); });
         }
 
         private static void OnTick16(MetronomeTickEvent tick)

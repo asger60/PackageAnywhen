@@ -58,6 +58,15 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    public void SetIntensity(float value)
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerIntensityMsg(value));
+        }
+    }
+
+
     public void Load(AnysongObject currentSong)
     {
         song = currentSong;
@@ -116,6 +125,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    public class TriggerIntensityMsg
+    {
+        public float intensity;
+
+        public TriggerIntensityMsg(float intensity)
+        {
+            this.intensity = intensity;
+        }
+    }
+
     public class TriggerNoteClipMsg
     {
         private readonly SimpleNoteEvent _noteEvent;
@@ -154,7 +173,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public bool isFinite => false;
         public bool isRealtime => true;
         public DiscreteTime? length => null;
-        private bool _isPlaying; // <-- add
+        private bool _isPlaying;
+        private float _intensity;
 
         private uint seed;
         int _currentSectionIndex;
@@ -170,6 +190,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _anysongSections = default;
             _isPlaying = false;
             _currentSectionIndex = 0;
+            _intensity = 1;
 
             if (song != null)
             {
@@ -258,6 +279,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         }
                     }
                 }
+
+                if (element.TryGetData(out IntensityData intensityData))
+                {
+                    _intensity = intensityData.Intensity;
+                }
             }
         }
 
@@ -314,16 +340,19 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _stepIndices[trackIndex] = pattern.internalIndex;
                     }
 
-                    foreach (var thisStep in pattern.GetCurrentStep().StepNotes)
+
+                    foreach (var thisNote in pattern.GetCurrentStep().StepNotes)
                     {
-                        if ((thisStep.chance * 100) > NextInt(0, 100))
+                        bool chancePass = thisNote.chance * 100 > NextInt(0, 100);
+                        bool intensityPass = thisNote.mixWeight > (1 - _intensity);
+
+                        if (chancePass && intensityPass)
                         {
                             var playbackTrack = _tracks[trackIndex];
-                            playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisStep, dspTime));
+                            playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisNote, dspTime));
                             _tracks[trackIndex] = playbackTrack;
                         }
                     }
-                    // var thisStep = pattern.GetCurrentStep();
 
 
                     pattern.AdvancePlayingStep();
@@ -401,6 +430,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var payload = message.Get<TriggerPlaybackMsg>();
                     pipe.SendData(context, new PlaybackStateData { IsPlaying = payload.isPlaying });
+                    return ProcessorInstance.Response.Handled;
+                }
+
+                if (message.Is<TriggerIntensityMsg>())
+                {
+                    var payload = message.Get<TriggerIntensityMsg>();
+                    pipe.SendData(context, new IntensityData { Intensity = payload.intensity });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -774,5 +810,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public struct PlaybackStateData
     {
         public bool IsPlaying;
+    }
+
+    public struct IntensityData
+    {
+        public float Intensity;
     }
 }

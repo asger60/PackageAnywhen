@@ -56,11 +56,11 @@ public static class AnysongTransportView
         var tempoProperty = _song.FindProperty("tempo");
 
         var volumeProperty = _song.FindProperty("songVolume");
-        var tempoPopertyField = new PropertyField(tempoProperty);
-        tempoPopertyField.BindProperty(tempoProperty);
-        tempoPopertyField.style.width = 300;
-        tempoPopertyField.RegisterValueChangeCallback(evt => { AnysongEditorWindow.SetBPM(evt.changedProperty.intValue); });
-        controlsElement.Add(tempoPopertyField);
+        var tempoPropertyField = new PropertyField(tempoProperty);
+        tempoPropertyField.BindProperty(tempoProperty);
+        tempoPropertyField.style.width = 300;
+        tempoPropertyField.RegisterValueChangeCallback(evt => { AnysongEditorWindow.SetBPM(evt.changedProperty.intValue); });
+        controlsElement.Add(tempoPropertyField);
 
 
         var songVolumeField = new PropertyField(volumeProperty);
@@ -80,6 +80,10 @@ public static class AnysongTransportView
 
         controlsElement.Add(Spacer());
         controlsElement.Add(intensitySlider);
+        intensitySlider.RegisterValueChangedCallback(evt =>
+        {
+            AnysongEditorWindow.SetTestIntensity(evt.newValue);
+        });
 
         VisualElement snapShotControlElement = new VisualElement
         {
