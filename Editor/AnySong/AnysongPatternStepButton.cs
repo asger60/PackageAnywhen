@@ -1,4 +1,5 @@
 using System;
+using Anywhen;
 using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,15 +12,19 @@ namespace Anysong
         AnysongPatternStep _patternStep;
         public AnysongPatternStep PatternStep => _patternStep;
         public int PatternStepIndex => _stepIndex;
-
+        public AnysongPatternNote _patternNote;
         int _noteIndex;
         private int _stepIndex;
         bool _polyfonic;
         private int _gridMax, _gridMin;
 
-        public AnysongPatternStepButton(VisualElement parentElement, AnysongPatternStep patternStep, int stepIndex, int noteIndex,
+        public AnysongPatternStepButton(
+            VisualElement parentElement,
+            AnysongPatternStep patternStep,
+            int stepIndex, int noteIndex,
             bool polyfonic,
-            int gridMin, int gridMax)
+            int gridMin,
+            int gridMax)
         {
             _button = new Button { name = "StepButton" };
             _polyfonic = polyfonic;
@@ -64,7 +69,7 @@ namespace Anysong
 
         private void OnPointerDownEvent(PointerDownEvent evt)
         {
-            AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex);
+            AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
             AnysongPatternView.SelectStep(_patternStep);
             AnysongPatternView.SetStepIndex(_stepIndex);
             if (evt.button != 0)
@@ -75,45 +80,27 @@ namespace Anysong
             switch (AnysongPatternView.CurrentEditMode)
             {
                 case AnysongPatternView.EditModes.NotePitch:
-                    if (_patternStep.chordNotes.Contains((_patternStep.rootNote * -1) + _noteIndex))
+                    var currentNote = _patternStep.GetNote(_noteIndex);
+                    if (!currentNote.IsNull())
                     {
-                        if (_polyfonic)
-                            _patternStep.chordNotes.Remove(_noteIndex - _patternStep.rootNote);
-                        else
-                            _patternStep.chordNotes.Clear();
+                        _patternStep.RemoveNote(currentNote);
+                        break;
+                    }
+
+                    if (_patternStep.NoteOn)
+                    {
+                        if (!_polyfonic)
+                        {
+                            _patternStep.ClearNotes();
+                        }
+
+                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
                     }
                     else
                     {
-                        if (_patternStep.NoteOn)
-                        {
-                            if (_polyfonic)
-                            {
-                                _patternStep.chordNotes.Add((_patternStep.rootNote * -1) + _noteIndex);
-                            }
-                            else
-                            {
-                                _patternStep.chordNotes.Clear();
-                                _patternStep.rootNote = _noteIndex;
-                                Debug.Log("NoteOn " + _noteIndex);
-                                _patternStep.chordNotes.Add(0);
-                            }
-                        }
-                        else
-                        {
-                            _patternStep.rootNote = _noteIndex;
-                            if (_polyfonic)
-                            {
-                                Debug.Log("NoteOn " + _noteIndex);
-                                _patternStep.SetRoot(_noteIndex);
-                                _patternStep.chordNotes.Add(0);
-                            }
-                            else
-                            {
-                                _patternStep.chordNotes.Clear();
-                                _patternStep.chordNotes.Add(0);
-                            }
-                        }
+                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
                     }
+
 
                     break;
                 case AnysongPatternView.EditModes.NoteVelocity:
@@ -143,16 +130,16 @@ namespace Anysong
         {
             _button.RemoveFromClassList("pattern-step-note-mono");
             _button.RemoveFromClassList("pattern-step-note-poly");
-
+            var thisNote = _patternStep.GetNote(_noteIndex);
             switch (AnysongPatternView.CurrentEditMode)
             {
                 case AnysongPatternView.EditModes.NotePitch:
-                    if (_patternStep.NoteOn)
+                    if (!thisNote.IsNull())
                     {
-                        if (_patternStep.chordNotes.Contains((_patternStep.rootNote * -1) + _noteIndex))
-                        {
-                            _button.AddToClassList(_patternStep.IsChord ? "pattern-step-note-poly" : "pattern-step-note-mono");
-                        }
+                        //if (_patternStep.chordNotes.Contains((_patternStep.rootNote * -1) + _noteIndex))
+                        //{
+                        _button.AddToClassList(thisNote.velocity > 50 ? "pattern-step-note-mono" : "pattern-step-note-poly");
+                        //}
                     }
 
                     break;

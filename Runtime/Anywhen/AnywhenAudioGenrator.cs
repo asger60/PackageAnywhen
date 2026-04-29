@@ -158,6 +158,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
         private bool _isPlaying; // <-- add
 
         private uint seed;
+        int _currentSectionIndex;
 
         Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices)
         {
@@ -169,6 +170,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             _lastSub16Count = -1;
             _anysongSections = default;
             _isPlaying = false;
+            _currentSectionIndex = 0;
 
             if (song != null)
             {
@@ -185,14 +187,14 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     if (!sectionsRef.IsCreated) return;
 
                     var section = sectionsRef[sectionIndex];
-                    var track = section.tracks[trackIndex];
+                    var track = section.Tracks[trackIndex];
                     var pattern = track.Patterns[patternIndex];
                     var previousInternalIndex = track.Patterns[patternIndex].internalIndex;
                     pattern = song.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex].ToUnmanaged();
                     pattern.internalIndex = previousInternalIndex;
                     track.Patterns[patternIndex] = pattern;
 
-                    section.tracks[trackIndex] = track;
+                    section.Tracks[trackIndex] = track;
                     sectionsRef[sectionIndex] = section;
                 };
                 song.OnSongMidiChanged += midiListener;
@@ -245,15 +247,15 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     _isPlaying = data.IsPlaying;
                     if (_isPlaying)
                     {
-                        for (int trackIndex = 0; trackIndex < _anysongSections[0].tracks.Length; trackIndex++)
+                        for (int trackIndex = 0; trackIndex < _anysongSections[0].Tracks.Length; trackIndex++)
                         {
                             var section = _anysongSections[0];
-                            var track = section.tracks[trackIndex];
+                            var track = section.Tracks[trackIndex];
                             track.Reset();
                             var pattern = track.Patterns[track.CurrentPatternIndex];
                             pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
                             track.Patterns[track.CurrentPatternIndex] = pattern;
-                            section.tracks[trackIndex] = track;
+                            section.Tracks[trackIndex] = track;
                         }
                     }
                 }
@@ -281,12 +283,29 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
             if (_isPlaying && currentSub16Count != _lastSub16Count)
             {
-                for (int trackIndex = 0; trackIndex < _anysongSections[0].tracks.Length; trackIndex++)
+                if (currentSub16Count == 0)
                 {
-                    var section = _anysongSections[0];
-                    var track = section.tracks[trackIndex];
+                    int prevIndex = _currentSectionIndex;
+                    var section = _anysongSections[prevIndex];  
+
+                    section.AdvancePlayingSection();
+                    if (section.IsComplete())
+                    {
+                        section.Reset();
+                        _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
+                    }
+
+                    _anysongSections[prevIndex] = section;  
+                }
+
+                for (int trackIndex = 0; trackIndex < _anysongSections[_currentSectionIndex].Tracks.Length; trackIndex++)
+                {
+                    var section = _anysongSections[_currentSectionIndex];
+                    var track = section.Tracks[trackIndex];
                     if (currentSub16Count == 0)
+                    {
                         track.AdvancePlayingPattern();
+                    }
 
                     var pattern = track.Patterns[track.CurrentPatternIndex];
 
@@ -296,18 +315,22 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                         _stepIndices[trackIndex] = pattern.internalIndex;
                     }
 
-                    var thisStep = pattern.GetCurrentStep();
-                    if (thisStep.noteOn && (thisStep.chance * 100) > NextInt(0, 100))
+                    foreach (var thisStep in pattern.GetCurrentStep().StepNotes)
                     {
-                        var playbackTrack = _tracks[trackIndex];
-                        playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisStep, dspTime));
-                        _tracks[trackIndex] = playbackTrack;
+                        if ((thisStep.chance * 100) > NextInt(0, 100))
+                        {
+                            var playbackTrack = _tracks[trackIndex];
+                            playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisStep, dspTime));
+                            _tracks[trackIndex] = playbackTrack;
+                        }
                     }
+                   // var thisStep = pattern.GetCurrentStep();
+                    
 
                     pattern.AdvancePlayingStep();
                     track.Patterns[track.CurrentPatternIndex] = pattern;
-                    section.tracks[trackIndex] = track;
-                    _anysongSections[0] = section;
+                    section.Tracks[trackIndex] = track;
+                    _anysongSections[_currentSectionIndex] = section;
                 }
 
                 _lastSub16Count = currentSub16Count;
@@ -675,12 +698,12 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             {
                 _noteQueued = true;
                 _scheduledStartTime = playbackEvent.ScheduledPlayTime;
-                var playbackSettings = sampleInstrument.GetNoteClipSettings(playbackEvent.SimpleNoteEvent.note);
+                var playbackSettings = sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
                 _clipData = playbackSettings.NoteClipUnmanaged;
                 _pitch = playbackSettings.clipPitch;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
                 _samplePosition = 0;
-                _velocity = playbackEvent.SimpleNoteEvent.velocity;
+                _velocity = playbackEvent.Note.velocity;
             }
 
             public bool IsIdle => !_noteQueued;
@@ -691,28 +714,28 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
     public struct PlaybackEvent : IEquatable<PlaybackEvent>
     {
-        public SimpleNoteEvent SimpleNoteEvent;
+        public AnysongPatternNote Note;
         public readonly double ScheduledPlayTime;
         public readonly double ScheduledEndTime;
 
-        public PlaybackEvent(AnysongPatternStep.UnManaged step, double scheduledPlayTime)
+        public PlaybackEvent(AnysongPatternNote note, double scheduledPlayTime)
         {
-            SimpleNoteEvent = new SimpleNoteEvent(step);
-            ScheduledPlayTime = scheduledPlayTime + SimpleNoteEvent.drift * AnywhenAudioMetronome.GetSub16Length;
-            ScheduledEndTime = scheduledPlayTime + SimpleNoteEvent.duration +
-                               SimpleNoteEvent.drift * AnywhenAudioMetronome.GetSub16Length;
+            Note = note;
+            ScheduledPlayTime = scheduledPlayTime + Note.drift * AnywhenAudioMetronome.Sub16Length;
+            ScheduledEndTime = scheduledPlayTime + Note.duration +
+                               Note.drift * AnywhenAudioMetronome.Sub16Length;
         }
 
         public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime)
         {
-            SimpleNoteEvent = simpleNoteEvent;
+            Note = new AnysongPatternNote(simpleNoteEvent.note);
             ScheduledPlayTime = scheduledPlayTime + simpleNoteEvent.drift;
-            ScheduledEndTime = ScheduledPlayTime + SimpleNoteEvent.duration + simpleNoteEvent.drift;
+            ScheduledEndTime = ScheduledPlayTime + Note.duration + simpleNoteEvent.drift;
         }
 
         public bool Equals(PlaybackEvent other)
         {
-            return SimpleNoteEvent.Equals(other.SimpleNoteEvent) && ScheduledPlayTime.Equals(other.ScheduledPlayTime) &&
+            return Note.Equals(other.Note) && ScheduledPlayTime.Equals(other.ScheduledPlayTime) &&
                    ScheduledEndTime.Equals(other.ScheduledEndTime);
         }
 
@@ -723,7 +746,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SimpleNoteEvent, ScheduledPlayTime, ScheduledEndTime);
+            return HashCode.Combine(Note, ScheduledPlayTime, ScheduledEndTime);
         }
     }
 

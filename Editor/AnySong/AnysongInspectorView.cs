@@ -453,58 +453,59 @@ namespace Anysong
         }
 
 
-        public static void DrawStep(SerializedProperty step, Action didUpdate)
+        public static void DrawNote(SerializedProperty note, Action didUpdate)
         {
             _parent.Clear();
             Draw(_parent);
-            var boxNotes = new Box();
-            boxNotes.Add(new Label("Note stuff"));
-            var notesBox = new Box()
-            {
-                style = { flexDirection = FlexDirection.Row }
-            };
+            //var boxNotes = new Box();
+            //boxNotes.Add(new Label("Note stuff"));
+            //var notesBox = new Box()
+            //{
+            //    style = { flexDirection = FlexDirection.Row }
+            //};
 
-            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), AnysongPatternView.Refresh));
-
-
-            var strumControl = new VisualElement();
-            strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
-            strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
-            strumControl.style.display =
-                new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
-                    ? DisplayStyle.Flex
-                    : DisplayStyle.None);
-
-            boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), () =>
-            {
-                strumControl.style.display =
-                    new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
-                        ? DisplayStyle.Flex
-                        : DisplayStyle.None);
-                didUpdate?.Invoke();
-            }));
+            //boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), AnysongPatternView.Refresh));
 
 
-            boxNotes.Add(strumControl);
+            //var strumControl = new VisualElement();
+            //strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
+            //strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
+            //strumControl.style.display =
+            //    new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
+            //        ? DisplayStyle.Flex
+            //        : DisplayStyle.None);
+//
+            //boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), () =>
+            //{
+            //    strumControl.style.display =
+            //        new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
+            //            ? DisplayStyle.Flex
+            //            : DisplayStyle.None);
+            //    didUpdate?.Invoke();
+            //}));
 
-            boxNotes.Add(notesBox);
+
+            //boxNotes.Add(strumControl);
+
+            //boxNotes.Add(notesBox);
 
 
-            _parent.Add(boxNotes);
+            //_parent.Add(boxNotes);
 
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("offset"), didUpdate));
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("duration"), didUpdate));
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("velocity"), didUpdate));
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chance"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("noteIndex"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("drift"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("duration"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("velocity"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("chance"), didUpdate));
 
 
-            var s = CreatePropertyFieldWithCallback(step.FindPropertyRelative("repeatRate"), didUpdate);
+            var s = CreatePropertyFieldWithCallback(note.FindPropertyRelative("repeatRate"), didUpdate);
 
-            _parent.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("stepRepeats"),
+            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("stepRepeats"),
                 () =>
                 {
                     didUpdate?.Invoke();
-                    s.visible = step.FindPropertyRelative("stepRepeats").intValue > 0;
+                    s.visible = note.FindPropertyRelative("stepRepeats").intValue > 0;
                 }));
 
 

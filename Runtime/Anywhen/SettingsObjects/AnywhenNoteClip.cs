@@ -58,7 +58,7 @@ namespace Anywhen.SettingsObjects
 
         public Unmanaged ToUnmanaged()
         {
-            if (_cachedUnmanaged.HasValue && _cachedUnmanaged.Value.clipSamples.IsCreated)
+            if (_cachedUnmanaged is { clipSamples: { IsCreated: true } })
             {
                 return _cachedUnmanaged.Value;
             }
@@ -83,9 +83,6 @@ namespace Anywhen.SettingsObjects
             }
         }
         
-        //public AnywhenSampleInstrument.EnvelopeSettings envelopeSettings;
-        //public AnywhenSampleInstrument.LoopSettings loopSettings;
-
 
 #if UNITY_EDITOR
         [MenuItem("Assets/Anywhen/Set Note Index from Filename")]

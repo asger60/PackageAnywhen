@@ -63,13 +63,17 @@ namespace Anywhen.Composing
 
         public Unmanaged ToUnmanaged()
         {
+            if (patterns.Count == 0 || patterns == null)
+                patterns = new List<AnysongPattern>(1);
             var unmanagedPatterns = new AnysongPattern.Unmanaged[patterns.Count];
             for (int i = 0; i < patterns.Count; i++)
             {
                 unmanagedPatterns[i] = patterns[i].ToUnmanaged();
             }
 
-
+            if (_currentPattern == null)
+                _currentPattern = patterns[0];
+            
             return new Unmanaged
             {
                 PatternProgressionType = patternProgressionType,
@@ -77,18 +81,17 @@ namespace Anywhen.Composing
                 CurrentPattern = _currentPattern.ToUnmanaged(),
                 CurrentPatternBar = _currentPatternBar,
                 CurrentPatternIndex = _currentPatternIndex,
-                Random = new Unity.Mathematics.Random((uint)UnityEngine.Random.Range(1, int.MaxValue)) // <-- seed here
+                Random = new Unity.Mathematics.Random((uint)Random.Range(1, int.MaxValue))
             };
         }
 
         public void Init(AnysongTrackSettings songSongTrackSettings)
         {
             patterns = new List<AnysongPattern>(1);
-            for (var i = 0; i < patterns.Count; i++)
-            {
-                patterns[i] = new AnysongPattern();
-                patterns[i].Init();
-            }
+
+            var pattern = new AnysongPattern();
+            pattern.Init();
+            patterns.Add(pattern);
         }
 
 
@@ -224,6 +227,7 @@ namespace Anywhen.Composing
 
         public void SyncToClock()
         {
+            Debug.LogWarning("SyncToClock not implemented for AnysongSectionTrack");
             //_currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
             //_currentPattern = GetPattern(_currentPatternIndex);
             //_currentPattern.SyncToClock();
@@ -231,6 +235,7 @@ namespace Anywhen.Composing
 
         public void SetTrack(AnysongTrackSettings songTrack)
         {
+            Debug.LogWarning("SetTrack not implemented for AnysongSectionTrack");
             //anysongTrackSettings = songTrack;
         }
 

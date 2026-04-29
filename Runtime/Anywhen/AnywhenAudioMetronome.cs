@@ -32,7 +32,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         OnAudioTick?.Invoke(tick);
     }
 
-    public static float GetSub16Length => (60f / CurrentBPM) * 0.25f;
+    public static float Sub16Length => (60f / CurrentBPM) * 0.25f;
 
     public bool isFinite => false;
     public bool isRealtime => true;

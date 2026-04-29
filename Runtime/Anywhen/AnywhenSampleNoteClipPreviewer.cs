@@ -26,54 +26,30 @@ namespace Anywhen
             _isInitialized = true;
         }
 
-        public void SetInstrument(AnywhenSampleInstrument instrument)
-        {
-            Init();
-            _instrument = instrument;
-            _volume = instrument?.volume ?? 1f;
-        }
-
-        public void PlayClip(AnywhenSampleInstrument instrument)
-        {
-            Init();
-            SetInstrument(instrument);
-            NoteEvent n = new NoteEvent(0, 1);
-            NoteOn(n);
-        }
 
         public void PlayNoteClip(AnywhenNoteClip noteClip)
         {
+            Debug.Log("PlayNoteClip");
             Init();
             _currentClip = noteClip;
             NoteEvent n = new NoteEvent(0, 1);
             PlaySampleDirectly(_currentClip, n);
         }
-
-        public void PlayNoteClip(AnywhenNoteClip noteClip, NoteEvent noteEvent)
-        {
-            Init();
-            _currentClip = noteClip;
-            PlaySampleDirectly(_currentClip, noteEvent);
-        }
+        
 
         public void StopClip()
         {
             StopScheduled(1);
         }
 
-        private void NoteOn(NoteEvent note)
-        {
-            if (_instrument == null) return;
-
-          //  _currentClip = _instrument.GetNoteClip(note.notes[0]).noteClip;
-            if (_currentClip == null) return;
-
-            PlaySampleDirectly(_currentClip, note);
-        }
 
         private void PlaySampleDirectly(AnywhenNoteClip noteClip, NoteEvent noteEvent)
         {
-            if (noteClip == null || noteClip.clipSamples == null || noteClip.clipSamples.Length == 0) return;
+            if (!noteClip || noteClip.clipSamples == null || noteClip.clipSamples.Length == 0)
+            {
+                Debug.LogError("Note clip has no samples!");
+                return;
+            }
 
             // Create a temporary AudioClip from the samples
             AudioClip tempClip = AudioClip.Create(
@@ -90,27 +66,12 @@ namespace Anywhen
             // Play the clip
             _audioSource.clip = tempClip;
             // Cancel any ongoing fades/envelopes
-            if (_fadeCoroutine != null)
-            {
-                StopCoroutine(_fadeCoroutine);
-                _fadeCoroutine = null;
-            }
 
-            if (_envelopeCoroutine != null)
-            {
-                StopCoroutine(_envelopeCoroutine);
-                _envelopeCoroutine = null;
-            }
-
-            float targetVolume = Mathf.Max(0f, _volume * noteEvent.velocity);
             // start from zero and apply envelope
-            _audioSource.volume = 0f;
+            _audioSource.volume = 1;
             _audioSource.Play();
 
-            // Calculate when the clip will end
-            _scheduledEndTime = Time.time + tempClip.length;
 
-            // Apply ADSR envelope and duration-based release
         }
 
         private void StopScheduled(float fadeOutTime)

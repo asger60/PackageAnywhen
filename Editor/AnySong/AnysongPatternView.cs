@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
@@ -317,15 +318,15 @@ namespace Anysong
                 {
                     for (int stepIndex = 0; stepIndex < 16; stepIndex++)
                     {
-                        if (currentSectionTrack.patterns[patternIndex].IsNull() ||
-                            currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
-                        var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
+                        //if (currentSectionTrack.patterns[patternIndex].IsNull() ||
+                        //    currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
 
+                        var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
                         var stepButton = new AnysongPatternStepButton(rowElement, thisStep, stepIndex, noteStartIndex + rowIndex,
                             _polyfonic,
                             noteStartIndex, noteStartIndex + rowCount);
+                        
                         _stepViewToStep.Add(stepButton, thisStep);
-
                         if (!_stepViewCullumns.TryGetValue(stepIndex, out var stepViews))
                         {
                             stepViews = new List<AnysongPatternStepButton>();
@@ -334,6 +335,10 @@ namespace Anysong
 
                         stepViews.Add(stepButton);
                         _allStepButtons.Add(stepButton);
+
+                        foreach (var thisNote in thisStep.stepNotes)
+                        {
+                        }
                     }
                 }
 
@@ -361,7 +366,7 @@ namespace Anysong
                 anysongStepView.SetHighLighted(false);
             }
 
-            
+
             if (_stepViewCullumns.TryGetValue(AnysongEditorWindow.GetPlaybackStepIndexForCurrent(), out var stepViews))
             {
                 foreach (var stepView in stepViews)

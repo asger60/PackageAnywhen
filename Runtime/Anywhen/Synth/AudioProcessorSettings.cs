@@ -2,7 +2,6 @@ using System;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 namespace Anywhen.Synth
 {

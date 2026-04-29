@@ -6,19 +6,34 @@ using UnityEngine;
 namespace Anywhen.Composing
 {
     [Serializable]
-    public class AnysongSection 
+    public class AnysongSection
     {
         public AnywhenProgressionPatternObject.ProgressionStep[] progressionSteps;
         public List<AnysongSectionTrack> tracks;
         public int sectionLength;
 
 
-
         public struct Unmanaged
         {
-            public int sectionLength;
-            public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> progressionSteps;
-            public NativeArray<AnysongSectionTrack.Unmanaged> tracks;
+            public int SectionLength;
+            public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> ProgressionSteps;
+            public NativeArray<AnysongSectionTrack.Unmanaged> Tracks;
+            int _currentBar;
+
+            public void AdvancePlayingSection()
+            {
+                _currentBar++;
+            }
+
+            public bool IsComplete()
+            {
+                return _currentBar >= SectionLength;
+            }
+
+            public void Reset()
+            {
+                _currentBar = 0;
+            }
         }
 
         public Unmanaged ToUnmanaged()
@@ -33,11 +48,11 @@ namespace Anywhen.Composing
 
             return new Unmanaged
             {
-                sectionLength = sectionLength,
-                progressionSteps =
+                SectionLength = sectionLength,
+                ProgressionSteps =
                     new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(unmanagedPatterns,
                         Allocator.Persistent),
-                tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
+                Tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
             };
         }
 
@@ -46,7 +61,7 @@ namespace Anywhen.Composing
             Debug.LogWarning("GetTrack() is not implemented yet");
             foreach (var track in tracks)
             {
-              //  if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
+                //  if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
             }
 
             return tracks[0];

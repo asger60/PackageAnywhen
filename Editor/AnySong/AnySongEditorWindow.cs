@@ -72,6 +72,9 @@ namespace Anysong
             private int _currentStepIndex;
             public int CurrentStepIndex => _currentStepIndex;
             private int _currentPatternIndex;
+
+            private int _currentNoteIndex;
+            public int CurrentNoteIndex => _currentNoteIndex;
             public int CurrentPatternIndex => _currentPatternIndex;
             private int _currentTrackIndex;
             public int CurrentTrackIndex => _currentTrackIndex;
@@ -85,6 +88,7 @@ namespace Anysong
             public SerializedProperty CurrentSongTrackProperty;
             public SerializedProperty CurrentSectionTrackProperty;
             public SerializedProperty CurrentStepProperty;
+            public SerializedProperty CurrentNoteProperty;
             public SerializedProperty CurrentPatternProperty;
 
             private readonly AnysongObject _anysongObject;
@@ -115,6 +119,12 @@ namespace Anysong
                 Refresh();
             }
 
+            public void SetNoteIndex(int newNoteIndex)
+            {
+                _currentNoteIndex = newNoteIndex;
+                Refresh();
+            }
+
             public void SetTrackIndex(int newTrackIndex)
             {
                 _currentTrackIndex = newTrackIndex;
@@ -138,11 +148,14 @@ namespace Anysong
                 var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(_currentTrackIndex);
                 var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(_currentPatternIndex);
                 var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(_currentStepIndex);
+                
 
                 CurrentPatternProperty = pattern;
                 CurrentStepProperty = step;
                 CurrentSongTrackProperty = _song.FindProperty("Tracks").GetArrayElementAtIndex(_currentTrackIndex);
 
+                CurrentNoteProperty = step.FindPropertyRelative("stepNotes").GetArrayElementAtIndex(_currentNoteIndex);
+                
                 CurrentSectionProperty = section;
                 CurrentSectionTrackProperty = track;
             }
@@ -196,7 +209,6 @@ namespace Anysong
 
             window.Show(true);
 
-  
 
             AnywhenRuntime.Conductor.SetDefaultScale();
         }
@@ -609,7 +621,7 @@ namespace Anysong
 
                     break;
                 case InspectorModes.Step:
-                    AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty,
+                    AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty,
                         () =>
                         {
                             CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
@@ -738,10 +750,13 @@ namespace Anysong
         }
 
 
-        public static void SelectPatternStep(AnysongPatternStep patternStep, int stepIndex)
+        public static void SelectPatternStep(AnysongPatternStep patternStep, int stepIndex, int noteIndex)
         {
+            if (!patternStep.NoteOn) return;
+            
             _currentSelection.SetStepIndex(stepIndex);
-            AnysongInspectorView.DrawStep(_currentSelection.CurrentStepProperty, () =>
+            _currentSelection.SetNoteIndex(patternStep.GetArrayIndex(noteIndex));
+            AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty, () =>
             {
                 CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
                     CurrentSelection.CurrentPatternIndex);

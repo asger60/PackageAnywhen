@@ -10,7 +10,46 @@ namespace Anywhen.Composing
     [Serializable]
     public class AnysongPatternStep
     {
-        public bool NoteOn => chordNotes.Count > 0;
+        public List<AnysongPatternNote> stepNotes;
+
+        public void ClearNotes()
+        {
+            stepNotes ??= new List<AnysongPatternNote>();
+
+            stepNotes.Clear();
+        }
+
+        public void AddNote(AnysongPatternNote note)
+        {
+            stepNotes ??= new List<AnysongPatternNote>();
+            stepNotes.Add(note);
+        }
+
+        public void RemoveNote(AnysongPatternNote note)
+        {
+            stepNotes ??= new List<AnysongPatternNote>();
+
+            for (var i = 0; i < stepNotes.Count; i++)
+            {
+                var n = stepNotes[i];
+                if (!n.Equals(note)) continue;
+                stepNotes.RemoveAt(i);
+                return;
+            }
+        }
+        
+        public int GetArrayIndex(int noteIndex)
+        {
+            for (int i = 0; i < stepNotes.Count; i++)
+            {
+                if (stepNotes[i].noteIndex == noteIndex)
+                    return i;
+            }
+            
+            return 0;
+        }
+
+        public bool NoteOn => stepNotes?.Count > 0;
 
         [Range(0.01f, 1f)] public float duration;
         [Range(-1f, 1f)] public float offset;
@@ -35,11 +74,6 @@ namespace Anywhen.Composing
 
         public int rootNote;
 
-        public void SetRoot(int note)
-        {
-            rootNote = note;
-            Debug.Log("SetRoot " + note);
-        }
 
         public enum RepeatRates
         {
@@ -52,7 +86,7 @@ namespace Anywhen.Composing
 
         public AnysongPatternStep(int i)
         {
-            duration = 0.1f;
+            duration = AnywhenAudioMetronome.Sub16Length;
             offset = 0;
             velocity = 1;
             mixWeight = 1;
@@ -75,6 +109,7 @@ namespace Anywhen.Composing
             public float velocity;
             public float mixWeight;
             public NativeArray<int> chordNotes;
+            public NativeArray<AnysongPatternNote> StepNotes;
             public float strumAmount;
             public float strumRandom;
             public int stepRepeats;
@@ -93,6 +128,7 @@ namespace Anywhen.Composing
                 velocity = velocity,
                 mixWeight = mixWeight,
                 chordNotes = new NativeArray<int>(chordNotes.ToArray(), Allocator.Persistent),
+                StepNotes = new NativeArray<AnysongPatternNote>(stepNotes.ToArray(), Allocator.Persistent),
                 strumAmount = strumAmount,
                 strumRandom = strumRandom,
                 stepRepeats = stepRepeats,
@@ -119,9 +155,19 @@ namespace Anywhen.Composing
 
         public void Init()
         {
-            duration = (float)AnywhenMetronome.Instance.GetLength();
+            duration = (float)AnywhenAudioMetronome.Sub16Length;
             expression = 1;
             velocity = 1;
+            chordNotes = new List<int>();
+            mixWeight = Random.Range(0, 1f);
+        }
+
+        public void Init(int root)
+        {
+            duration = (float)AnywhenAudioMetronome.Sub16Length;
+            expression = 1;
+            velocity = 1;
+            rootNote = root;
             chordNotes = new List<int>();
             mixWeight = Random.Range(0, 1f);
         }
@@ -201,6 +247,19 @@ namespace Anywhen.Composing
         public bool IsNull()
         {
             return (chordNotes.Count == 0 && duration == 0 && offset == 0 && velocity == 0 && mixWeight == 0);
+        }
+
+        public AnysongPatternNote GetNote(int noteIndex)
+        {
+            stepNotes ??= new List<AnysongPatternNote>();
+            
+            foreach (var stepNote in stepNotes)
+            {
+                if (stepNote.noteIndex == noteIndex)
+                    return stepNote;
+            }
+
+            return new AnysongPatternNote();
         }
     }
 }
