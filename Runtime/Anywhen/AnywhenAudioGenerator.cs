@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -14,7 +13,7 @@ using UnityEngine.Audio;
 
 
 [CreateAssetMenu(fileName = "AnywhenAudioPlayer", menuName = "Anywhen/Create AnywhenAudioPlayer asset", order = 2)]
-public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
+public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 {
     [SerializeField] AnysongObject song;
 
@@ -286,7 +285,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 if (currentSub16Count == 0)
                 {
                     int prevIndex = _currentSectionIndex;
-                    var section = _anysongSections[prevIndex];  
+                    var section = _anysongSections[prevIndex];
 
                     section.AdvancePlayingSection();
                     if (section.IsComplete())
@@ -295,7 +294,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
                     }
 
-                    _anysongSections[prevIndex] = section;  
+                    _anysongSections[prevIndex] = section;
                 }
 
                 for (int trackIndex = 0; trackIndex < _anysongSections[_currentSectionIndex].Tracks.Length; trackIndex++)
@@ -324,8 +323,8 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                             _tracks[trackIndex] = playbackTrack;
                         }
                     }
-                   // var thisStep = pattern.GetCurrentStep();
-                    
+                    // var thisStep = pattern.GetCurrentStep();
+
 
                     pattern.AdvancePlayingStep();
                     track.Patterns[track.CurrentPatternIndex] = pattern;
@@ -433,6 +432,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private bool _hasPendingCompleteUpdate;
             private bool _hasPendingParameterUpdate;
             private AnysongTrackSettings.Unmanaged _pendingSettings;
+            AnysongTrackSettings.Unmanaged _settings;
 
             public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
             {
@@ -440,7 +440,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _trackLFO1Value = 0;
                 _trackLFO2Value = 0;
 
-                CreateTrack(settings);
+                CreateTrack(settings, sampleRate);
                 UpdateSettings(settings);
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0);
             }
@@ -458,11 +458,18 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 _hasPendingParameterUpdate = true;
             }
 
-            void CreateTrack(AnysongTrackSettings.Unmanaged settings)
+            void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
             {
                 if (_voices.IsCreated) _voices.Dispose();
                 if (_trackFilters.IsCreated) _trackFilters.Dispose();
                 _voices = new NativeArray<SampleVoice>(settings.voices, Allocator.Persistent);
+                for (int i = 0; i < _voices.Length; i++)
+                {
+                    var voice = _voices[i];
+                    voice.Init(sampleRate);
+                    _voices[i] = voice; // <-- write back
+                }
+
                 _trackEnvelope1 = new AudioProcessorEnvelope(_sampleRate);
                 _trackEnvelope2 = new AudioProcessorEnvelope(_sampleRate);
                 _trackLFO1 = new AudioProcessorLFO(_sampleRate);
@@ -478,6 +485,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
             void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
             {
+                _settings = settings;
                 _trackVolume = settings.volume;
                 _sampleInstrument = settings.instrument;
 
@@ -510,7 +518,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     var voice = _voices[i];
                     if (voice.IsIdle)
                     {
-                        voice.QueueNote(playbackEvent, ref _sampleInstrument);
+                        voice.QueueNote(playbackEvent, _settings.TrackAudioEnvelope1.ToUnmanaged(), ref _sampleInstrument);
                         _voices[i] = voice;
                         return;
                     }
@@ -527,7 +535,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 if (voiceToSteal != -1)
                 {
                     var voice = _voices[voiceToSteal];
-                    voice.QueueNote(playbackEvent, ref _sampleInstrument);
+                    voice.QueueNote(playbackEvent, _settings.TrackAudioEnvelope1.ToUnmanaged(), ref _sampleInstrument);
                     _voices[voiceToSteal] = voice;
                 }
             }
@@ -537,7 +545,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 // Apply pending update on audio thread — safe to dispose here
                 if (_hasPendingCompleteUpdate)
                 {
-                    CreateTrack(_pendingSettings);
+                    CreateTrack(_pendingSettings, _sampleRate);
                     _hasPendingCompleteUpdate = false;
                 }
 
@@ -571,11 +579,11 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                 for (int i = 0; i < _voices.Length; i++)
                 {
                     var voice = _voices[i];
-                    clipAmplitude += voice.Process(dspTime);
+                    clipAmplitude += voice.Process(dspTime, this);
                     _voices[i] = voice;
                 }
 
-                clipAmplitude *= TrackEnvelope1Value;
+                //clipAmplitude *= TrackEnvelope1Value;
 
                 if (_trackFilters.IsCreated)
                 {
@@ -640,7 +648,7 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
 
         private struct SampleVoice
         {
-            private double _scheduledStartTime;
+            private double _scheduledStartTime, _scheduledEndTime;
             private AnywhenNoteClip.Unmanaged _clipData;
             private int _sampleCount;
             private double _samplePosition;
@@ -648,8 +656,14 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
             private bool _noteQueued;
             private float _pitch;
             private float _velocity;
+            AudioProcessorEnvelope _voiceEnvelope;
 
-            internal float Process(double dspTime)
+            public void Init(int sampleRate)
+            {
+                _voiceEnvelope = new AudioProcessorEnvelope(sampleRate);
+            }
+
+            internal float Process(double dspTime, in Track track)
             {
                 float clipAmplitude = 0;
                 if (_noteQueued && dspTime >= _scheduledStartTime)
@@ -691,16 +705,23 @@ public class AnywhenAudioGenrator : ScriptableObject, IAudioGenerator
                     }
                 }
 
-                return clipAmplitude * _velocity;
+                _voiceEnvelope.SetGate(dspTime >= _scheduledStartTime && dspTime <= _scheduledEndTime);
+
+                return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, track);
             }
 
-            internal void QueueNote(PlaybackEvent playbackEvent, ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
+            internal void QueueNote(PlaybackEvent playbackEvent,
+                AudioProcessorSettings.EnvelopeSettings.Unmanaged envelopeSettings,
+                ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
             {
+                _voiceEnvelope.SetSettings(envelopeSettings);
+                _voiceEnvelope.Reset();
                 _noteQueued = true;
                 _scheduledStartTime = playbackEvent.ScheduledPlayTime;
-                var playbackSettings = sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
-                _clipData = playbackSettings.NoteClipUnmanaged;
-                _pitch = playbackSettings.clipPitch;
+                _scheduledEndTime = playbackEvent.ScheduledEndTime;
+                var clipSettings = sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
+                _clipData = clipSettings.NoteClipUnmanaged;
+                _pitch = clipSettings.clipPitch;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
                 _samplePosition = 0;
                 _velocity = playbackEvent.Note.velocity;

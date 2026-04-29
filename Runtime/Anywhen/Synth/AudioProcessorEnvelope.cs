@@ -31,10 +31,10 @@ namespace Anywhen.Synth
 
 
         private AudioProcessorSettings.EnvelopeSettings.Unmanaged _settings;
-        int _sampleRate;
+        private readonly int _sampleRate;
 
         public bool IsActive => _state != EnvState.env_idle;
-
+        private bool _currentGate;
 
 
         public AudioProcessorEnvelope(int sampleRate) : this()
@@ -42,25 +42,6 @@ namespace Anywhen.Synth
             _sampleRate = sampleRate;
         }
 
-        public void NoteOn()
-        {
-            //Reset();
-            SetAttackRate(_settings.attack * _sampleRate);
-            SetDecayRate(_settings.decay * _sampleRate);
-            SetSustainLevel(_settings.sustain);
-            SetReleaseRate(_settings.release * _sampleRate);
-            SetTargetRatioA(0.3f);
-            SetTargetRatioDr(0.3f);
-            _state = EnvState.env_attack;
-        }
-
-        public void NoteOff()
-        {
-            SetReleaseRate(_settings.release * _sampleRate);
-            SetTargetRatioA(0.3f);
-            SetTargetRatioDr(0.3f);
-            _state = EnvState.env_release;
-        }
 
         private void SetAttackRate(float rate)
         {
@@ -113,6 +94,7 @@ namespace Anywhen.Synth
         {
             _state = EnvState.env_idle;
             _output = 0.0f;
+            _currentGate = false;
         }
 
         private float CalcCoef(float rate, float targetRatio)
@@ -125,8 +107,6 @@ namespace Anywhen.Synth
         public void DoUpdate()
         {
         }
-
-        private bool _currentGate;
 
 
         public void SetGate(bool gate)
@@ -144,21 +124,45 @@ namespace Anywhen.Synth
             _currentGate = gate;
         }
 
+        public void NoteOn()
+        {
+            SetTargetRatioA(0.3f);
+            SetTargetRatioDr(0.3f);
+            SetAttackRate(_settings.attack * _sampleRate);
+            SetDecayRate(_settings.decay * _sampleRate);
+            SetSustainLevel(_settings.sustain);
+            SetReleaseRate(_settings.release * _sampleRate);
+
+            _state = EnvState.env_attack;
+        }
+
+        public void NoteOff()
+        {
+            SetTargetRatioA(0.3f);
+            SetTargetRatioDr(0.3f);
+            SetAttackRate(_settings.attack * _sampleRate);
+            SetDecayRate(_settings.decay * _sampleRate);
+            SetSustainLevel(_settings.sustain);
+            SetReleaseRate(_settings.release * _sampleRate);
+
+            _state = EnvState.env_release;
+        }
+
         public void SetSettings(AudioProcessorSettings.EnvelopeSettings.Unmanaged settings)
         {
             _settings = settings;
         }
-        
+
         public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
         }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             return HandleEnvelope();
         }
 
-        public float HandleEnvelope(bool unipolar = false)
+        public float HandleEnvelope()
         {
             switch (_state)
             {
@@ -212,7 +216,5 @@ namespace Anywhen.Synth
         {
             return HashCode.Combine((int)_state, _output, _settings);
         }
-
-
     }
 }

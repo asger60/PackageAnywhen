@@ -69,7 +69,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             return _settings.filterType switch
             {
@@ -127,7 +127,7 @@ namespace Anywhen.Synth
     {
         public void DoUpdate();
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track);
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track);
 
         public void SetGate(bool gate);
 

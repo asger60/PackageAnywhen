@@ -107,7 +107,7 @@ namespace Anywhen.Synth
 
         public void DoUpdate() { }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             UpdateSettings();
             if (!_initialized) return sample;

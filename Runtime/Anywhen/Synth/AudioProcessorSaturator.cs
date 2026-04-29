@@ -36,7 +36,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             UpdateSettings();
             // Simple soft clipping saturation using tanh-like shaping

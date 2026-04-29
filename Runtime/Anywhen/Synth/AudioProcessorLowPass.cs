@@ -66,7 +66,7 @@ namespace Anywhen.Synth
             RecalculateS();
         }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 

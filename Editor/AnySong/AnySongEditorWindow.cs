@@ -15,7 +15,7 @@ namespace Anysong
         private bool _currentPatternIsBase;
         private Event _currentEvent;
 
-        static AnywhenAudioGenrator _currentPlayer;
+        static AnywhenAudioGenerator _currentPlayer;
         static AnywhenAudioMetronome _currentMetronome;
         //private static AnywhenPlayerBase _currentRuntimeSongPlayer;
 
@@ -46,7 +46,7 @@ namespace Anysong
             metronomeSource.Play();
 
             var songSource = _playerObject.AddComponent<AudioSource>();
-            _currentPlayer = CreateInstance<AnywhenAudioGenrator>();
+            _currentPlayer = CreateInstance<AnywhenAudioGenerator>();
             _currentPlayer.SetSong(CurrentSong);
             songSource.generator = _currentPlayer;
             songSource.Play();
@@ -148,14 +148,16 @@ namespace Anysong
                 var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(_currentTrackIndex);
                 var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(_currentPatternIndex);
                 var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(_currentStepIndex);
-                
+                if (step != null && step.FindPropertyRelative("stepNotes").isArray && step.FindPropertyRelative("stepNotes").arraySize > 0)
+                {
+                    _currentNoteIndex = Mathf.Clamp(_currentNoteIndex, 0, step.FindPropertyRelative("stepNotes").arraySize - 1);
+                    CurrentNoteProperty = step.FindPropertyRelative("stepNotes").GetArrayElementAtIndex(_currentNoteIndex);
+                }
 
                 CurrentPatternProperty = pattern;
                 CurrentStepProperty = step;
                 CurrentSongTrackProperty = _song.FindProperty("Tracks").GetArrayElementAtIndex(_currentTrackIndex);
 
-                CurrentNoteProperty = step.FindPropertyRelative("stepNotes").GetArrayElementAtIndex(_currentNoteIndex);
-                
                 CurrentSectionProperty = section;
                 CurrentSectionTrackProperty = track;
             }
@@ -753,7 +755,7 @@ namespace Anysong
         public static void SelectPatternStep(AnysongPatternStep patternStep, int stepIndex, int noteIndex)
         {
             if (!patternStep.NoteOn) return;
-            
+
             _currentSelection.SetStepIndex(stepIndex);
             _currentSelection.SetNoteIndex(patternStep.GetArrayIndex(noteIndex));
             AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty, () =>

@@ -114,6 +114,7 @@ public static class AnysongTransportView
             float newValue = evt.newValue;
             AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB,
                 _song, newValue);
+            
         });
 
         snapShotControlElement.Add(_snapshotButtonA);

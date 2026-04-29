@@ -186,8 +186,14 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
-                filterElement.Add(AudioProcessorInspector.Draw(audioProcessorSettings,
-                    () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+                var filterVisualElement = AudioProcessorInspector.Draw(audioProcessorSettings,
+                    () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }); 
+                filterElement.Add(filterVisualElement);
+                AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
+                filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
+                {
+                    AnywhenSnapshotEditor.OnBlendApplied -= filterVisualElement.Refresh;
+                });
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -457,40 +463,6 @@ namespace Anysong
         {
             _parent.Clear();
             Draw(_parent);
-            //var boxNotes = new Box();
-            //boxNotes.Add(new Label("Note stuff"));
-            //var notesBox = new Box()
-            //{
-            //    style = { flexDirection = FlexDirection.Row }
-            //};
-
-            //boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("rootNote"), AnysongPatternView.Refresh));
-
-
-            //var strumControl = new VisualElement();
-            //strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumAmount"), didUpdate));
-            //strumControl.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("strumRandom"), didUpdate));
-            //strumControl.style.display =
-            //    new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
-            //        ? DisplayStyle.Flex
-            //        : DisplayStyle.None);
-//
-            //boxNotes.Add(CreatePropertyFieldWithCallback(step.FindPropertyRelative("chordNotes"), () =>
-            //{
-            //    strumControl.style.display =
-            //        new StyleEnum<DisplayStyle>(step.FindPropertyRelative("chordNotes").arraySize > 0
-            //            ? DisplayStyle.Flex
-            //            : DisplayStyle.None);
-            //    didUpdate?.Invoke();
-            //}));
-
-
-            //boxNotes.Add(strumControl);
-
-            //boxNotes.Add(notesBox);
-
-
-            //_parent.Add(boxNotes);
 
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("noteIndex"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("drift"), didUpdate));

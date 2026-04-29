@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using UnityEditor;
@@ -247,9 +248,9 @@ namespace Synth
             }
         }
 
-        public static VisualElement Draw(AudioProcessorSettings settings, Action onChanged = null)
+        public static FilterVisualElement Draw(AudioProcessorSettings settings, Action onChanged = null)
         {
-            VisualElement element = new VisualElement();
+            var element = new FilterVisualElement();
 
             var label = new Label(settings.filterType.ToString())
             {
@@ -261,136 +262,155 @@ namespace Synth
             element.Add(preview);
             preview.Refresh();
 
+            void AddSlider(string lbl, float start, float end, Func<float> getter, Action<float> setter)
+            {
+                var (el, refresher) = CreateBoundSlider(lbl, start, end, getter, setter, preview, onChanged);
+                element.Add(el);
+                element.AddRefresher(refresher);
+            }
+
+            void AddSliderInt(string lbl, int start, int end, Func<int> getter, Action<int> setter)
+            {
+                var (el, refresher) = CreateBoundSliderInt(lbl, start, end, getter, setter, preview, onChanged);
+                element.Add(el);
+                element.AddRefresher(refresher);
+            }
+
             switch (settings.filterType)
             {
                 case AudioProcessorSettings.FilterTypes.LowPassFilter:
-                    element.Add(CreateBoundSliderInt("Oversampling", 1, 4,
+                    AddSliderInt("Oversampling", 1, 4,
                         () => settings.lowPassSettings.oversampling,
-                        v => settings.lowPassSettings.oversampling = v, preview, onChanged));
-
-                    element.Add(CreateBoundSlider("CutOff", 1, 24000,
+                        v => settings.lowPassSettings.oversampling = v);
+                    AddSlider("CutOff", 1, 24000,
                         () => settings.lowPassSettings.cutoffFrequency,
-                        v => settings.lowPassSettings.cutoffFrequency = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Resonance", 0, 1,
+                        v => settings.lowPassSettings.cutoffFrequency = v);
+                    AddSlider("Resonance", 0, 1,
                         () => settings.lowPassSettings.resonance,
-                        v => settings.lowPassSettings.resonance = v, preview, onChanged));
+                        v => settings.lowPassSettings.resonance = v);
                     element.Add(CreateModRoutingUI("Cutoff Mod",
                         () => settings.lowPassSettings.cutoffMod,
-                        v => settings.lowPassSettings.cutoffMod = v,   // struct copy — assign back
+                        v => settings.lowPassSettings.cutoffMod = v,
                         preview, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BandPassFilter:
-                    element.Add(CreateBoundSlider("Frequency", 1, 24000,
+                    AddSlider("Frequency", 1, 24000,
                         () => settings.bandPassSettings.frequency,
-                        v => settings.bandPassSettings.frequency = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Bandwidth", 1, 10000,
+                        v => settings.bandPassSettings.frequency = v);
+                    AddSlider("Bandwidth", 1, 10000,
                         () => settings.bandPassSettings.bandWidth,
                         v =>
                         {
                             settings.bandPassSettings.bandWidth = v;
                             settings.SyncBandPassFromBandwidth();
-                        },
-                        preview, onChanged));
-                    element.Add(CreateBoundSlider("Q", 0.01f, 100,
+                        });
+                    AddSlider("Q", 0.01f, 100,
                         () => settings.bandPassSettings.q,
                         v =>
                         {
                             settings.bandPassSettings.q = v;
                             settings.SyncBandPassFromQ();
-                        },
-                        preview, onChanged));
+                        });
                     break;
 
                 case AudioProcessorSettings.FilterTypes.FormantFilter:
-                    element.Add(CreateBoundSliderInt("Vowel", 1, 6,
+                    AddSliderInt("Vowel", 1, 6,
                         () => settings.formantSettings.vowel,
-                        v => settings.formantSettings.vowel = v, preview, onChanged));
+                        v => settings.formantSettings.vowel = v);
                     break;
 
                 case AudioProcessorSettings.FilterTypes.LadderFilter:
-                    element.Add(CreateBoundSliderInt("Oversampling", 1, 4,
+                    AddSliderInt("Oversampling", 1, 4,
                         () => settings.ladderSettings.oversampling,
-                        v => settings.ladderSettings.oversampling = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("CutOff", 1, 24000,
+                        v => settings.ladderSettings.oversampling = v);
+                    AddSlider("CutOff", 1, 24000,
                         () => settings.ladderSettings.cutoffFrequency,
-                        v => settings.ladderSettings.cutoffFrequency = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Resonance", 0, 1,
+                        v => settings.ladderSettings.cutoffFrequency = v);
+                    AddSlider("Resonance", 0, 1,
                         () => settings.ladderSettings.resonance,
-                        v => settings.ladderSettings.resonance = v, preview, onChanged));
+                        v => settings.ladderSettings.resonance = v);
                     element.Add(CreateModRoutingUI("Cutoff Mod",
                         () => settings.ladderSettings.cutoffMod,
-                        v => settings.ladderSettings.cutoffMod = v,   // struct copy — assign back
+                        v => settings.ladderSettings.cutoffMod = v,
                         preview, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BitcrushFilter:
-                    element.Add(CreateBoundSlider("Bit Depth", 1, 24,
+                    AddSlider("Bit Depth", 1, 24,
                         () => settings.bitcrushSettings.bitDepth,
-                        v => settings.bitcrushSettings.bitDepth = v, preview, onChanged));
-                    element.Add(CreateBoundSliderInt("Downsampling", 1, 100,
+                        v => settings.bitcrushSettings.bitDepth = v);
+                    AddSliderInt("Downsampling", 1, 100,
                         () => settings.bitcrushSettings.downsampling,
-                        v => settings.bitcrushSettings.downsampling = v, preview, onChanged));
+                        v => settings.bitcrushSettings.downsampling = v);
                     break;
 
                 case AudioProcessorSettings.FilterTypes.SaturatorFilter:
-                    element.Add(CreateBoundSlider("Drive", 0, 10,
+                    AddSlider("Drive", 0, 10,
                         () => settings.saturatorSettings.drive,
-                        v => settings.saturatorSettings.drive = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        v => settings.saturatorSettings.drive = v);
+                    AddSlider("Wet", 0, 1,
                         () => settings.saturatorSettings.wet,
-                        v => settings.saturatorSettings.wet = v, preview, onChanged));
+                        v => settings.saturatorSettings.wet = v);
                     break;
 
                 case AudioProcessorSettings.FilterTypes.DelayFilter:
-                    element.Add(CreateBoundSlider("Time", 0, 1,
+                    AddSlider("Time", 0, 1,
                         () => settings.delaySettings.delayTime,
-                        v => settings.delaySettings.delayTime = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Feedback", 0, 1,
+                        v => settings.delaySettings.delayTime = v);
+                    AddSlider("Feedback", 0, 1,
                         () => settings.delaySettings.feedback,
-                        v => settings.delaySettings.feedback = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        v => settings.delaySettings.feedback = v);
+                    AddSlider("Wet", 0, 1,
                         () => settings.delaySettings.wet,
-                        v => settings.delaySettings.wet = v, preview, onChanged));
+                        v => settings.delaySettings.wet = v);
                     break;
 
                 case AudioProcessorSettings.FilterTypes.ChorusFilter:
-                    element.Add(CreateBoundSlider("Rate", 0, 1,
+                    AddSlider("Rate", 0, 1,
                         () => settings.chorusSettings.rate,
-                        v => settings.chorusSettings.rate = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Depth", 0, 1,
+                        v => settings.chorusSettings.rate = v);
+                    AddSlider("Depth", 0, 1,
                         () => settings.chorusSettings.depth,
-                        v => settings.chorusSettings.depth = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Delay", 0, 1,
+                        v => settings.chorusSettings.depth = v);
+                    AddSlider("Delay", 0, 1,
                         () => settings.chorusSettings.delay,
-                        v => settings.chorusSettings.delay = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Feedback", 0, 1,
+                        v => settings.chorusSettings.delay = v);
+                    AddSlider("Feedback", 0, 1,
                         () => settings.chorusSettings.feedback,
-                        v => settings.chorusSettings.feedback = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        v => settings.chorusSettings.feedback = v);
+                    AddSlider("Wet", 0, 1,
                         () => settings.chorusSettings.wet,
-                        v => settings.chorusSettings.wet = v, preview, onChanged));
+                        v => settings.chorusSettings.wet = v);
+                    break;
 
-                    break;
                 case AudioProcessorSettings.FilterTypes.ReverbFilter:
-                    element.Add(CreateBoundSlider("Room Size", 0, 1,
+                    AddSlider("Room Size", 0, 1,
                         () => settings.reverbSettings.roomSize,
-                        v => settings.reverbSettings.roomSize = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Damping", 0, 1,
+                        v => settings.reverbSettings.roomSize = v);
+                    AddSlider("Damping", 0, 1,
                         () => settings.reverbSettings.damping,
-                        v => settings.reverbSettings.damping = v, preview, onChanged));
-                    element.Add(CreateBoundSlider("Wet", 0, 1,
+                        v => settings.reverbSettings.damping = v);
+                    AddSlider("Wet", 0, 1,
                         () => settings.reverbSettings.wet,
-                        v => settings.reverbSettings.wet = v, preview, onChanged));
+                        v => settings.reverbSettings.wet = v);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+            element.AddRefresher(() => preview.Refresh());
             return element;
         }
+        public class FilterVisualElement : VisualElement
+        {
+            private readonly List<Action> _refreshers = new();
+            public void AddRefresher(Action r) => _refreshers.Add(r);
+            public void Refresh() { foreach (var r in _refreshers) r(); }
+        }
 
-        private static VisualElement CreateBoundSlider(string label, float start, float end,
+        private static (VisualElement, Action) CreateBoundSlider(string label, float start, float end,
             Func<float> getter, Action<float> setter, FilterPreviewElement preview, Action onChanged)
         {
             var s = new Slider(label, start, end);
@@ -401,12 +421,12 @@ namespace Synth
             {
                 setter(evt.newValue);
                 preview.Refresh();
-                onChanged?.Invoke(); // <---
+                onChanged?.Invoke();
             });
-            return s;
+            return (s, () => s.SetValueWithoutNotify(getter()));
         }
 
-        private static VisualElement CreateBoundSliderInt(string label, int start, int end,
+        private static (VisualElement, Action) CreateBoundSliderInt(string label, int start, int end,
             Func<int> getter, Action<int> setter, FilterPreviewElement preview, Action onChanged)
         {
             var s = new SliderInt(label, start, end);
@@ -419,7 +439,7 @@ namespace Synth
                 preview.Refresh();
                 onChanged?.Invoke();
             });
-            return s;
+            return (s, () => s.SetValueWithoutNotify(getter()));
         }
 
         private static VisualElement CreateModRoutingUI(

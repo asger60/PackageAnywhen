@@ -69,60 +69,66 @@ namespace Anysong
 
         private void OnPointerDownEvent(PointerDownEvent evt)
         {
-            AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
-            AnysongPatternView.SelectStep(_patternStep);
-            AnysongPatternView.SetStepIndex(_stepIndex);
-            if (evt.button != 0)
+            if (evt.button == 0)
             {
-                return;
-            }
-
-            switch (AnysongPatternView.CurrentEditMode)
-            {
-                case AnysongPatternView.EditModes.NotePitch:
-                    var currentNote = _patternStep.GetNote(_noteIndex);
-                    if (!currentNote.IsNull())
-                    {
-                        _patternStep.RemoveNote(currentNote);
-                        break;
-                    }
-
-                    if (_patternStep.NoteOn)
-                    {
-                        if (!_polyfonic)
+                switch (AnysongPatternView.CurrentEditMode)
+                {
+                    case AnysongPatternView.EditModes.NotePitch:
+                        var currentNote = _patternStep.GetNote(_noteIndex);
+                        if (!currentNote.IsNull())
                         {
-                            _patternStep.ClearNotes();
+                            _patternStep.RemoveNote(currentNote);
+                            break;
                         }
 
-                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
-                    }
-                    else
-                    {
-                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
-                    }
+                        if (_patternStep.NoteOn)
+                        {
+                            if (!_polyfonic)
+                            {
+                                _patternStep.ClearNotes();
+                            }
 
+                            _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
+                        }
+                        else
+                        {
+                            _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
+                        }
 
-                    break;
-                case AnysongPatternView.EditModes.NoteVelocity:
-                    _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    break;
-                case AnysongPatternView.EditModes.NoteLength:
-                    _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    break;
-                case AnysongPatternView.EditModes.NoteChance:
-                    _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    break;
-                case AnysongPatternView.EditModes.NoteWeights:
-                    _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    break;
+                        AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
 
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        break;
+                    case AnysongPatternView.EditModes.NoteVelocity:
+                        _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                        break;
+                    case AnysongPatternView.EditModes.NoteLength:
+                        _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                        break;
+                    case AnysongPatternView.EditModes.NoteChance:
+                        _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                        break;
+                    case AnysongPatternView.EditModes.NoteWeights:
+                        _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
             AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                 AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
                 AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+
+
+            if (evt.button == 1)
+            {
+                AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
+                AnysongPatternView.SelectStep(_patternStep);
+                AnysongPatternView.SetStepIndex(_stepIndex);
+            }
+
+            Refresh();
         }
 
 

@@ -55,7 +55,7 @@
         {
         }
 
-        public float Process(float sample, AnywhenAudioGenrator.Processor.Track track)
+        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
         {
             _frequencyMod = 1f;
             if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
