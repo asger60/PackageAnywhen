@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Unity.Collections;
 using UnityEditor;
@@ -162,6 +163,17 @@ namespace Anywhen
 
             Debug.LogError("No instruments loaded in InstrumentDatabase!");
             return default;
+        }
+
+        public static void LoadAllInstruments(AnysongObject currentSong)
+        {
+            foreach (var songTrack in currentSong.Tracks)
+            {
+                if (songTrack.audioSourceType == AnysongTrackSettings.AudioSourceType.Sample)
+                {
+                    LoadInstrumentNotes(songTrack.instrument as AnywhenSampleInstrument);
+                }
+            }
         }
     }
 }

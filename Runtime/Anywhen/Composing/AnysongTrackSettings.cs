@@ -31,26 +31,41 @@ namespace Anywhen.Composing
 
         public SynthFilterBase.ModRouting[] pitchMods;
 
-        public AnimationCurve intensityMappingCurve = new(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
+        public enum AudioSourceType
+        {
+            Sample,
+            Synth
+        }
 
+        public AudioSourceType audioSourceType;
+
+        public enum SynthOscillatorTypes
+        {
+            Sine,
+            Saw,
+            Square,
+        }
+        
+        public SynthOscillatorTypes synthOscillatorType;
+        
         //public bool monophonic;
         [Range(1, 16)] public int voices = 1;
 
         [NonSerialized] public bool IsMuted = false;
 
         [NonSerialized] public bool IsSolo = false;
-        
+
         [AnywhenTrackType] public int trackTypeIndex;
 
 
         [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
-        
+
         public List<AudioProcessorSettings> TrackFilters
         {
             get
             {
-                trackFilters ??= new List<AudioProcessorSettings>();  
+                trackFilters ??= new List<AudioProcessorSettings>();
                 return trackFilters;
             }
         }
@@ -58,7 +73,6 @@ namespace Anywhen.Composing
         public void Init()
         {
             volume = 1;
-            intensityMappingCurve = new AnimationCurve(new[] { new Keyframe(0, 1), new Keyframe(1, 1) });
             trackAudioEnvelope1 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
             trackAudioLFO1 = new AudioProcessorSettings.LFOSettings(2, 0.01f);
         }
@@ -69,7 +83,6 @@ namespace Anywhen.Composing
             {
                 instrument = instrument,
                 volume = volume,
-                intensityMappingCurve = intensityMappingCurve,
                 trackAudioEnvelope1 = trackAudioEnvelope1,
                 trackAudioLFO1 = trackAudioLFO1,
                 //trackType = trackType,
@@ -82,15 +95,19 @@ namespace Anywhen.Composing
         {
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
+            
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope1;
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
-            
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
-            
+            public AudioSourceType audioSourceType;
+
+            public SynthOscillatorTypes synthOscillatorType;
 
             public float trackPitch;
+
             public int voices;
+
             //public AnyTrackTypes trackType;
             public int trackTypeIndex;
             public bool isMuted;
@@ -105,7 +122,7 @@ namespace Anywhen.Composing
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();
             }
-          
+
             return new Unmanaged
             {
                 instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
@@ -119,7 +136,9 @@ namespace Anywhen.Composing
                 trackTypeIndex = trackTypeIndex,
                 isMuted = IsMuted,
                 isSolo = IsSolo,
-                trackFilters = filters
+                trackFilters = filters,
+                audioSourceType = audioSourceType,
+                synthOscillatorType = synthOscillatorType
             };
         }
 

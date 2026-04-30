@@ -86,8 +86,6 @@ namespace Anywhen.Synth
 
         public void ResetPhase()
         {
-            //_freqPhPSmpTarget = 0;
-            //_freqPhPSmpCurrent = 0;
             _phase = 0u;
         }
 
@@ -114,7 +112,7 @@ namespace Anywhen.Synth
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Saw:
                             return SawPolyBLEP() * _settings.amplitude;
                         case SynthSettingsObjectOscillator.SimpleOscillatorTypes.Square:
-                            return squarePolyBLEP(0.5f) * _settings.amplitude;
+                            return SquarePolyBLEP(0.5f) * _settings.amplitude;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -193,7 +191,6 @@ namespace Anywhen.Synth
         private float Sin()
         {
             float ph01 = _phase / PhaseMax;
-            //return (float)SinT(ph01 * 6.28318530717959f, 10) * _amp;
             return Mathf.Sin(ph01 * 6.28318530717959f) * _amp;
         }
 
@@ -287,7 +284,7 @@ namespace Anywhen.Synth
         }
 
         // FIXME: DC offset when pulseWidth != 0.5, should be fixable by a simple offset
-        public float squarePolyBLEP(float pulseWidth)
+        public float SquarePolyBLEP(float pulseWidth)
         {
             float ph01 = _phase / PhaseMax;
 
@@ -375,7 +372,6 @@ namespace Anywhen.Synth
 
         public void SetInactive()
         {
-            //_freqPhPSmpCurrent = 0;
             _isActive = false;
         }
     }

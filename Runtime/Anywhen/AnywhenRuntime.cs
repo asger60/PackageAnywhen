@@ -14,26 +14,22 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
-
-
         private static AnywhenConductor _conductor;
         public static AnywhenConductor Conductor => _conductor;
 
         private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
 
-
-
-
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
         private static InstrumentDatabase _instrumentDatabase;
+         AnywhenAudioMetronome _metronome;
+        public static AnywhenAudioMetronome Metronome => _instance._metronome;
 
         public static InstrumentDatabase InstrumentDatabase => Instance._thisInstrumentDatabase;
 
         private static AnywhenRuntime _instance;
 
         private static AnywhenRuntime Instance => _instance;
-
 
 
         private bool _isPreviewing;
@@ -67,24 +63,11 @@ namespace Anywhen
 #endif
 
 
-        public static AnywhenSampleNoteClipPreviewer ClipSampleNoteClipPreviewer
-        {
-            get
-            {
-                if (_sampleNoteClipPreviewer == null)
-                    Instance.GetAnyComponents();
-                return _sampleNoteClipPreviewer;
-            }
-        }
-
-
         private void Awake()
         {
             _instance = this;
             GetAnyComponents();
         }
-
-
 
 
         public void Init()
@@ -97,6 +80,10 @@ namespace Anywhen
         {
             TryGetComponent(out _conductor);
             _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
+            AudioSource a = GetComponent<AudioSource>();
+            a.Play();
+            _metronome = a.generator as AnywhenAudioMetronome;
+            Debug.Log(_metronome);
         }
 
         public enum DebugMessageType
@@ -164,6 +151,11 @@ namespace Anywhen
             }
 
             return previewer;
+        }
+
+        public static void SetTempo(int newTempo)
+        {
+            _instance._metronome.SetTempo(newTempo);
         }
     }
 }

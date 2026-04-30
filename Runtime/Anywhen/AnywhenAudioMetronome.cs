@@ -1,4 +1,5 @@
 using System;
+using Anywhen;
 using Unity.Burst;
 using Unity.IntegerTime;
 using UnityEngine;
@@ -44,7 +45,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static Action OnTickSub2 { get; set; }
     public static Action OnBar { get; set; }
 
-    
+
+    private void Awake()
+    {
+        if (AnywhenRuntime.Metronome)
+        {
+            DestroyImmediate(this);
+        }
+    }
 
     public void SetTempo(int newBPM)
     {
@@ -52,8 +60,12 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new SetBpmMsg(newBPM));
         }
+        else
+        {
+            Debug.Log("No generator instance");
+        }
     }
-    
+
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
     {
@@ -85,7 +97,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         public static GeneratorInstance Allocate(ControlContext context, int sampleRate, int bpm)
         {
-            
             return context.AllocateGenerator(new Processor(sampleRate, bpm), new Control());
         }
 
@@ -107,18 +118,16 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
-            // Only handle blittable BPM updates here — no managed delegate calls allowed in Burst
             var availableData = pipe.GetAvailableData(context);
             foreach (var element in availableData)
             {
                 if (element.TryGetData(out BPMState data))
                 {
-
+                    Debug.Log("BPM changed to " + data.bpm);
                     CurrentBPM = data.bpm;
                     _bpm = data.bpm;
                     _sub16Length = (60.0 / _bpm) * 0.25f;
                 }
-
             }
         }
 
@@ -135,7 +144,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             while (_nextTime16 < endDspTime)
             {
                 EmitTicks(ctx, pipe);
-
                 _sub16Count++;
                 if (_sub16Count >= 16) _sub16Count = 0;
                 _nextTime16 += _sub16Length;
@@ -242,8 +250,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     {
         public int bpm;
     }
-
- 
 }
 
 public struct MetronomeTickEvent

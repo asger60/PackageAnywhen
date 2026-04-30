@@ -26,12 +26,10 @@ namespace Anysong
             Debug.Log("Create player");
             _playerObject = new GameObject("AnywhenComposerPlayer")
             {
-                // hideFlags = HideFlags.HideAndDontSave
+                 hideFlags = HideFlags.HideAndDontSave
             };
-            var metronomeSource = _playerObject.AddComponent<AudioSource>();
-            _currentMetronome = CreateInstance<AnywhenAudioMetronome>();
-            metronomeSource.generator = _currentMetronome;
-            metronomeSource.Play();
+
+            _currentMetronome = AnywhenRuntime.Metronome;
 
             var songSource = _playerObject.AddComponent<AudioSource>();
             _currentPlayer = CreateInstance<AnywhenAudioGenerator>();
@@ -164,7 +162,6 @@ namespace Anysong
             Step
         }
 
-        
 
         public static void ShowModuleWindow(AnysongObject songObject)
         {
@@ -211,20 +208,17 @@ namespace Anysong
                 CurrentSong.Rebuild();
                 _currentPlayer.Load(CurrentSong);
                 _currentPlayer.SetPlay(true);
-                //AnywhenRuntime.SetPreviewMode(true, CurrentRuntimeSongPlayer);
+
+                InstrumentDatabase.LoadAllInstruments(CurrentSong);
                 AnysongSectionsView.RefreshSectionLocked();
                 _currentMetronome.SetTempo(CurrentSong.tempo);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
-                //AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
             }
             else
             {
                 _currentPlayer.SetPlay(false);
-
-                //AnywhenRuntime.SetPreviewMode(false, CurrentRuntimeSongPlayer);
                 AnywhenAudioMetronome.OnAudioTick -= OnTick16;
-                //AnywhenAudioMetronome.OnBar -= OnBar;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
@@ -337,7 +331,6 @@ namespace Anysong
                 ToggleIsPlaying();
                 AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
             });
-
         }
 
         private static void OnTick16(MetronomeTickEvent tick)
@@ -600,11 +593,7 @@ namespace Anysong
 
                     break;
                 case InspectorModes.Track:
-                    AnysongInspectorView.DrawTrack(() =>
-                    {
-                        Debug.Log("AnysongTracksView not completely implemented");
-                        //CurrentRuntimeSongPlayer.UpdateTrackInstrument(_currentSelection.CurrentSongTrackSettings);
-                    });
+                    AnysongInspectorView.DrawTrack();
 
                     break;
                 case InspectorModes.Step:
@@ -637,10 +626,7 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-            {
-                CopyPattern(_currentSelection.CurrentPattern);
-            });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 

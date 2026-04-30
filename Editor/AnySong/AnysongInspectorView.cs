@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
-using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Synth;
 using UnityEditor;
@@ -25,7 +24,7 @@ namespace Anysong
             _parent = parent;
         }
 
-        static VisualElement Spacer()
+        static VisualElement Spacer(float height = 10)
         {
             var spacer = new VisualElement()
             {
@@ -119,46 +118,81 @@ namespace Anysong
             _parent.Add(utilsBox);
         }
 
+        private static VisualElement _synthSettingsElement;
+        private static VisualElement _sampleSettingsElement;
 
-        public static void DrawTrack(Action didUpdateInstrument)
+        public static void DrawTrack()
         {
             _parent.Clear();
-            Draw(_parent);
+            //Draw(_parent);
+            _parent.Add(SectionHeader("Track settings"));
+
             var selection = AnysongEditorWindow.CurrentSelection.CurrentSongTrackProperty;
-            var instrumentProperty = selection.FindPropertyRelative("instrument");
-
-
-            _parent.Add(CreatePropertyFieldWithCallback(instrumentProperty, didUpdateInstrument));
-
-
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("intensityMappingCurve"), null));
-
-
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"), null));
-
-
             var trackTypeIndexProperty = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackTypeIndex"), null);
             trackTypeIndexProperty.label = "Track type";
-            //_parent.Add(CreatePropertyFieldWithCallback(trackTypeProperty, null));
             _parent.Add(trackTypeIndexProperty);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volumeMods"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSourceType"), () =>
+            {
+                RefreshSourceSelection();
+                AnysongEditorWindow.CurrentSong.RefrestTrack();
+            }));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"), null));
+            _sampleSettingsElement = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("instrument"),
+                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); });
+            _synthSettingsElement = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("synthOscillatorType"),
+                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); });
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"), null));
+            _parent.Add(_sampleSettingsElement);
+            _parent.Add(_synthSettingsElement);
+
+            RefreshSourceSelection();
+
+            void RefreshSourceSelection()
+            {
+                bool isSampleTrack = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.audioSourceType ==
+                                     AnysongTrackSettings.AudioSourceType.Sample;
+
+                _sampleSettingsElement.style.display = isSampleTrack ? DisplayStyle.Flex : DisplayStyle.None;
+                _synthSettingsElement.style.display = isSampleTrack ? DisplayStyle.None : DisplayStyle.Flex;
+            }
+
+
+            _parent.Add(SectionHeader("Instrument settings"));
+
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+
+            _parent.Add(Spacer(20));
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volumeMods"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+
+
+            _parent.Add(SectionHeader("Modulation"));
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope1"),
-                didUpdateInstrument));
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope2"),
-                didUpdateInstrument));
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO1"), didUpdateInstrument));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO2"), didUpdateInstrument));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO1"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO2"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
 
 
-            _parent.Add(Spacer());
+            _parent.Add(SectionHeader("Effects"));
+
 
             foreach (var audioProcessorSettings in AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.TrackFilters)
             {
@@ -166,10 +200,7 @@ namespace Anysong
                 {
                     style =
                     {
-                        marginTop = 10,
-                        paddingTop = 10,
-                        borderTopWidth = 1,
-                        borderTopColor = Color.gray
+                        paddingTop = 3
                     }
                 };
                 Button deleteFilter = new Button
@@ -186,8 +217,8 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
-                var filterVisualElement = AudioProcessorInspector.Draw(audioProcessorSettings,
-                    () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }); 
+                var filterVisualElement =
+                    AudioProcessorInspector.Draw(audioProcessorSettings, () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
                 filterElement.Add(filterVisualElement);
                 AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
                 filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
@@ -206,10 +237,13 @@ namespace Anysong
             addFilterButton.clicked += () =>
             {
                 var menu = new GenericMenu();
-                foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(
-                             typeof(AudioProcessorSettings.FilterTypes)))
+                foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(typeof(AudioProcessorSettings.FilterTypes)))
                 {
-                    menu.AddItem(new GUIContent(filterType.ToString()), false, () => { AddFilter(filterType); });
+                    menu.AddItem(new GUIContent(filterType.ToString()), false, () =>
+                    {
+                        AddFilter(filterType);
+                        AnysongEditorWindow.CurrentSong.RefreshEffects();
+                    });
                 }
 
                 menu.ShowAsContext();
@@ -228,7 +262,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
             AnysongEditorWindow.CurrentSong.RefreshEffects();
             // Refresh the inspector
-            DrawTrack(null);
+            DrawTrack();
         }
 
         private static void RemoveFilter(AudioProcessorSettings filter)
@@ -238,7 +272,7 @@ namespace Anysong
             AssetDatabase.SaveAssets();
 
             // Refresh the inspector
-            DrawTrack(null);
+            DrawTrack();
         }
 
         public static void DrawProgression()
@@ -265,7 +299,7 @@ namespace Anysong
                         .enumValueIndex, AnysongEditorWindow.CurrentSelection));
                     AnysongEditorWindow.CurrentSong.RefreshMidi(
                         AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
-                        AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, 
+                        AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
                         0);
                 }));
 
@@ -470,7 +504,6 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("velocity"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("chance"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("mixWeight"), didUpdate));
-            
 
 
             var s = CreatePropertyFieldWithCallback(note.FindPropertyRelative("repeatRate"), didUpdate);
@@ -514,12 +547,33 @@ namespace Anysong
             return utilsBox;
         }
 
+        static VisualElement SectionHeader(string text)
+        {
+            var visualElement = new VisualElement();
+            visualElement.Add(Spacer(20));
+
+            var label = new Label(text)
+            {
+                style = { unityFontStyleAndWeight = FontStyle.Bold }
+            };
+            visualElement.Add(label);
+            return visualElement;
+        }
 
         static PropertyField CreatePropertyFieldWithCallback(SerializedProperty property, Action didUpdate)
         {
             var propertyField = new PropertyField(property);
             propertyField.BindProperty(property);
-            propertyField.RegisterValueChangeCallback((ev) => { didUpdate?.Invoke(); });
+            var isFirstCallback = true;
+            propertyField.RegisterValueChangeCallback((ev) =>
+            {
+                if (isFirstCallback)
+                {
+                    isFirstCallback = false;
+                    return;
+                }
+                didUpdate?.Invoke();
+            });
             return propertyField;
         }
     }

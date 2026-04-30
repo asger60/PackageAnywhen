@@ -26,6 +26,7 @@ namespace Anywhen.Composing
         public event Action OnSongSettingsChanged;
 
         public event Action OnSongEffectsChanged;
+        public event Action OnSongTracksChanged;
 
         private void OnValidate()
         {
@@ -125,6 +126,12 @@ namespace Anywhen.Composing
             OnSongEffectsChanged?.Invoke();
         }
 
+        public void RefrestTrack()
+        {
+            Debug.Log("RefrestTrack");
+            OnSongTracksChanged?.Invoke();
+        }
+
 
         public void RemoveListeners()
         {
@@ -152,9 +159,18 @@ namespace Anywhen.Composing
                 }
             }
 
+            if (OnSongTracksChanged != null)
+            {
+                foreach (var currentDelegate in OnSongTracksChanged.GetInvocationList())
+                {
+                    OnSongTracksChanged -= (Action)currentDelegate;
+                }
+            }
+
             OnSongMidiChanged = null;
             OnSongSettingsChanged = null;
             OnSongEffectsChanged = null;
+            OnSongTracksChanged = null;
         }
     }
 }

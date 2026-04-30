@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -17,8 +16,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 {
     [SerializeField] AnysongObject song;
 
-    private List<Action> _songChangedActions;
-
     private bool _sectionLockState;
     int _currentLockSectionIndex;
     private bool _isPlaying;
@@ -26,7 +23,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private void OnEnable()
     {
-        _songChangedActions ??= new List<Action>();
         if (song != null)
         {
             song.RemoveListeners();
@@ -66,6 +62,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    public void SetSnapshot(float testSnapshot)
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerSnapshotMsg(testSnapshot));
+        }
+    }
+
 
     public void Load(AnysongObject currentSong)
     {
@@ -79,11 +83,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
                 }
             }
-        }
-
-        foreach (var action in _songChangedActions)
-        {
-            action?.Invoke();
         }
 
         Debug.Log("Loading song");
@@ -111,7 +110,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         _sharedStepIndices = new NativeArray<int>(trackCount, Allocator.Persistent);
         _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices);
-        return _generatorInstance; // <-- still return it as before
+        return _generatorInstance;
     }
 
 
@@ -132,6 +131,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public TriggerIntensityMsg(float intensity)
         {
             this.intensity = intensity;
+        }
+    }
+
+    public class TriggerSnapshotMsg
+    {
+        public float snapshotValue;
+
+        public TriggerSnapshotMsg(float snapshotValue)
+        {
+            this.snapshotValue = snapshotValue;
         }
     }
 
@@ -176,6 +185,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private bool _isPlaying;
         private float _intensity;
 
+        private float _currentSnapshotValue;
+
+        //private AnysongObject _currentSong;
         private uint seed;
         int _currentSectionIndex;
 
@@ -191,7 +203,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _isPlaying = false;
             _currentSectionIndex = 0;
             _intensity = 1;
-
+            _currentSnapshotValue = 0;
+            //_currentSong = song;
             if (song != null)
             {
                 _anysongSections = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
@@ -242,12 +255,21 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         {
                             if (!tracksRef.IsCreated) return;
                             var t = tracksRef[capturedIndex];
-                            t.OnTrackRebuild(song.Tracks[capturedIndex].ToUnmanaged());
+                            t.OnEffectsRebuild(song.Tracks[capturedIndex].ToUnmanaged());
+                            tracksRef[capturedIndex] = t;
+                        };
+
+                        Action tracksListener = () =>
+                        {
+                            if (!tracksRef.IsCreated) return;
+                            var t = tracksRef[capturedIndex];
+                            t.OnTracksRebuild(song.Tracks[capturedIndex].ToUnmanaged());
                             tracksRef[capturedIndex] = t;
                         };
 
                         song.OnSongSettingsChanged += settingsListener;
                         song.OnSongEffectsChanged += effectsListener;
+                        song.OnSongTracksChanged += tracksListener;
                     }
                 }
             }
@@ -284,12 +306,20 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     _intensity = intensityData.Intensity;
                 }
+
+                if (element.TryGetData(out SnapshotData snapshotData))
+                {
+                    _currentSnapshotValue = snapshotData.SnapshotValue;
+                    Debug.Log($"Snapshot value: {_currentSnapshotValue}");
+                    //AnywhenSnapshotBlender.ApplyBlend(_currentSong, _currentSnapshotValue);
+                    //_currentSong.RefreshSettings();
+                }
             }
         }
 
 
-        public GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe,
-            ChannelBuffer buffer, GeneratorInstance.Arguments args)
+        public GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe, ChannelBuffer buffer,
+            GeneratorInstance.Arguments args)
         {
             uint state = seed;
 
@@ -440,6 +470,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
+                if (message.Is<TriggerSnapshotMsg>())
+                {
+                    var payload = message.Get<TriggerSnapshotMsg>();
+                    pipe.SendData(context, new SnapshotData { SnapshotValue = payload.snapshotValue });
+                    return ProcessorInstance.Response.Handled;
+                }
+
                 return ProcessorInstance.Response.Unhandled;
             }
         }
@@ -450,6 +487,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             int _sampleRate;
             private NativeArray<SampleVoice> _voices;
             private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
+            public AnywhenSampleInstrument.Unmanaged SampleInstrument => _sampleInstrument;
             private float _trackVolume;
             private AudioProcessorEnvelope _trackEnvelope1, _trackEnvelope2;
             AudioProcessorLFO _trackLFO1, _trackLFO2;
@@ -464,8 +502,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             private float TrackLFO2Value => _trackLFO2Value;
             private float TrackEnvelope1Value => _trackEnvelope1Value;
             private float TrackEnvelope2Value => _trackEnvelope2Value;
+            public AudioProcessorSettings.EnvelopeSettings.Unmanaged EnvelopeSettings => _settings.TrackAudioEnvelope1.ToUnmanaged();
 
-            private bool _hasPendingCompleteUpdate;
+            private bool _hasPendingTracksUpdate;
+            private bool _hasPendingEffectsUpdate;
             private bool _hasPendingParameterUpdate;
             private AnysongTrackSettings.Unmanaged _pendingSettings;
             AnysongTrackSettings.Unmanaged _settings;
@@ -481,10 +521,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 _nextEvent = new PlaybackEvent(new SimpleNoteEvent(), 0);
             }
 
-            public void OnTrackRebuild(AnysongTrackSettings.Unmanaged newSettings)
+            public void OnTracksRebuild(AnysongTrackSettings.Unmanaged newSettings)
             {
                 _pendingSettings = newSettings;
-                _hasPendingCompleteUpdate = true;
+                _hasPendingTracksUpdate = true;
+            }
+
+            public void OnEffectsRebuild(AnysongTrackSettings.Unmanaged newSettings)
+            {
+                _pendingSettings = newSettings;
+                _hasPendingEffectsUpdate = true;
                 _hasPendingParameterUpdate = true;
             }
 
@@ -503,7 +549,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var voice = _voices[i];
                     voice.Init(sampleRate);
-                    _voices[i] = voice; // <-- write back
+                    _voices[i] = voice;
                 }
 
                 _trackEnvelope1 = new AudioProcessorEnvelope(_sampleRate);
@@ -511,6 +557,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 _trackLFO1 = new AudioProcessorLFO(_sampleRate);
                 _trackLFO2 = new AudioProcessorLFO(_sampleRate);
 
+                _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
+
+                for (int i = 0; i < settings.trackFilters.Length; i++)
+                {
+                    _trackFilters[i] = new TrackAudioProcessor(_sampleRate, settings.trackFilters[i]);
+                }
+            }
+
+            private void CreateEffects(AnysongTrackSettings.Unmanaged settings)
+            {
                 _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
                 for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -540,6 +596,17 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     filter.UpdateSettings(settings.trackFilters[i]);
                     _trackFilters[i] = filter;
                 }
+
+                if (_voices.IsCreated)
+                {
+                    for (int i = 0; i < _voices.Length; i++)
+                    {
+                        var voice = _voices[i];
+                        voice.UpdateVoiceSettings(_sampleInstrument, settings.TrackAudioEnvelope1.ToUnmanaged(), settings.audioSourceType,
+                            settings.synthOscillatorType);
+                        _voices[i] = voice;
+                    }
+                }
             }
 
             internal void HandlePlaybackEvent(PlaybackEvent playbackEvent)
@@ -554,7 +621,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     var voice = _voices[i];
                     if (voice.IsIdle)
                     {
-                        voice.QueueNote(playbackEvent, _settings.TrackAudioEnvelope1.ToUnmanaged(), ref _sampleInstrument);
+                        voice.QueueNote(playbackEvent);
                         _voices[i] = voice;
                         return;
                     }
@@ -571,18 +638,23 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (voiceToSteal != -1)
                 {
                     var voice = _voices[voiceToSteal];
-                    voice.QueueNote(playbackEvent, _settings.TrackAudioEnvelope1.ToUnmanaged(), ref _sampleInstrument);
+                    voice.QueueNote(playbackEvent);
                     _voices[voiceToSteal] = voice;
                 }
             }
 
             internal float Process(double dspTime)
             {
-                // Apply pending update on audio thread — safe to dispose here
-                if (_hasPendingCompleteUpdate)
+                if (_hasPendingTracksUpdate)
                 {
                     CreateTrack(_pendingSettings, _sampleRate);
-                    _hasPendingCompleteUpdate = false;
+                    _hasPendingTracksUpdate = false;
+                }
+
+                if (_hasPendingEffectsUpdate)
+                {
+                    CreateEffects(_pendingSettings);
+                    _hasPendingEffectsUpdate = false;
                 }
 
                 if (_hasPendingParameterUpdate)
@@ -693,10 +765,26 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             private float _pitch;
             private float _velocity;
             AudioProcessorEnvelope _voiceEnvelope;
+            private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
+            private AudioProcessorSettings.EnvelopeSettings.Unmanaged _envelopeSettings;
+            private AnysongTrackSettings.AudioSourceType _audioSourceType;
+            private AnysongTrackSettings.SynthOscillatorTypes _oscillatorType;
 
             public void Init(int sampleRate)
             {
                 _voiceEnvelope = new AudioProcessorEnvelope(sampleRate);
+            }
+
+            public void UpdateVoiceSettings(
+                AnywhenSampleInstrument.Unmanaged sampleInstrument,
+                AudioProcessorSettings.EnvelopeSettings.Unmanaged envelopeSettings,
+                AnysongTrackSettings.AudioSourceType audioSourceType,
+                AnysongTrackSettings.SynthOscillatorTypes oscillatorType)
+            {
+                _sampleInstrument = sampleInstrument;
+                _envelopeSettings = envelopeSettings;
+                _audioSourceType = audioSourceType;
+                _oscillatorType = oscillatorType;
             }
 
             internal float Process(double dspTime, in Track track)
@@ -704,40 +792,63 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 float clipAmplitude = 0;
                 if (_noteQueued && dspTime >= _scheduledStartTime)
                 {
-                    int channels = _clipData.channels;
-                    int frameCount = channels > 0 ? _sampleCount / channels : 0;
-
-                    if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
+                    switch (_audioSourceType)
                     {
-                        int index = (int)_samplePosition;
-                        float t = (float)(_samplePosition - index);
+                        case AnysongTrackSettings.AudioSourceType.Sample:
+                            int channels = _clipData.channels;
+                            int frameCount = channels > 0 ? _sampleCount / channels : 0;
 
-                        float frameAmplitude = 0;
-                        bool canInterpolate = index < frameCount - 1;
-
-                        for (int c = 0; c < channels; c++)
-                        {
-                            float s0 = _clipData.clipSamples[index * channels + c];
-                            if (canInterpolate)
+                            if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
                             {
-                                float s1 = _clipData.clipSamples[(index + 1) * channels + c];
-                                frameAmplitude += s0 + t * (s1 - s0);
+                                int index = (int)_samplePosition;
+                                float t = (float)(_samplePosition - index);
+
+                                float frameAmplitude = 0;
+                                bool canInterpolate = index < frameCount - 1;
+
+                                for (int c = 0; c < channels; c++)
+                                {
+                                    float s0 = _clipData.clipSamples[index * channels + c];
+                                    if (canInterpolate)
+                                    {
+                                        float s1 = _clipData.clipSamples[(index + 1) * channels + c];
+                                        frameAmplitude += s0 + t * (s1 - s0);
+                                    }
+                                    else
+                                    {
+                                        frameAmplitude += s0;
+                                    }
+                                }
+
+                                if (channels > 1)
+                                    frameAmplitude /= channels;
+
+                                clipAmplitude = frameAmplitude;
+                                _samplePosition += _pitch;
                             }
                             else
                             {
-                                frameAmplitude += s0;
+                                _noteQueued = false;
                             }
-                        }
 
-                        if (channels > 1)
-                            frameAmplitude /= channels;
+                            break;
+                        case AnysongTrackSettings.AudioSourceType.Synth:
+                            switch (_oscillatorType)
+                            {
+                                case AnysongTrackSettings.SynthOscillatorTypes.Sine:
 
-                        clipAmplitude = frameAmplitude;
-                        _samplePosition += _pitch;
-                    }
-                    else
-                    {
-                        _noteQueued = false;
+                                    break;
+                                case AnysongTrackSettings.SynthOscillatorTypes.Saw:
+                                    break;
+                                case AnysongTrackSettings.SynthOscillatorTypes.Square:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
 
@@ -746,16 +857,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, track);
             }
 
-            internal void QueueNote(PlaybackEvent playbackEvent,
-                AudioProcessorSettings.EnvelopeSettings.Unmanaged envelopeSettings,
-                ref AnywhenSampleInstrument.Unmanaged sampleInstrument)
+            internal void QueueNote(PlaybackEvent playbackEvent)
             {
-                _voiceEnvelope.SetSettings(envelopeSettings);
+                _voiceEnvelope.SetSettings(_envelopeSettings);
                 _voiceEnvelope.Reset();
                 _noteQueued = true;
                 _scheduledStartTime = playbackEvent.ScheduledPlayTime;
                 _scheduledEndTime = playbackEvent.ScheduledEndTime;
-                var clipSettings = sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
+                var clipSettings = _sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
                 _clipData = clipSettings.NoteClipUnmanaged;
                 _pitch = clipSettings.clipPitch;
                 _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
@@ -815,5 +924,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public struct IntensityData
     {
         public float Intensity;
+    }
+
+    public struct SnapshotData
+    {
+        public float SnapshotValue;
     }
 }

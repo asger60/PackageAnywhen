@@ -80,10 +80,7 @@ public static class AnysongTransportView
 
         controlsElement.Add(Spacer());
         controlsElement.Add(intensitySlider);
-        intensitySlider.RegisterValueChangedCallback(evt =>
-        {
-            AnysongEditorWindow.SetTestIntensity(evt.newValue);
-        });
+        intensitySlider.RegisterValueChangedCallback(evt => { AnysongEditorWindow.SetTestIntensity(evt.newValue); });
 
         VisualElement snapShotControlElement = new VisualElement
         {
@@ -116,9 +113,7 @@ public static class AnysongTransportView
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
             float newValue = evt.newValue;
-            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB,
-                _song, newValue);
-            
+            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB, _song, newValue);
         });
 
         snapShotControlElement.Add(_snapshotButtonA);

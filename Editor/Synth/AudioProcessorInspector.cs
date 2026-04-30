@@ -252,10 +252,8 @@ namespace Synth
         {
             var element = new FilterVisualElement();
 
-            var label = new Label(settings.filterType.ToString())
-            {
-                style = { unityFontStyleAndWeight = FontStyle.Bold }
-            };
+            var label = new Label(settings.filterType.ToString());
+            
             element.Add(label);
 
             var preview = new FilterPreviewElement(settings);
@@ -400,14 +398,27 @@ namespace Synth
                     throw new ArgumentOutOfRangeException();
             }
 
-            element.AddRefresher(() => preview.Refresh());
+            element.AddRefresher(preview.Refresh);
+            var spacer = new VisualElement
+            {
+                style =
+                {
+                    height = 5
+                }
+            };
+            element.Add(spacer);
             return element;
         }
+
         public class FilterVisualElement : VisualElement
         {
             private readonly List<Action> _refreshers = new();
             public void AddRefresher(Action r) => _refreshers.Add(r);
-            public void Refresh() { foreach (var r in _refreshers) r(); }
+
+            public void Refresh()
+            {
+                foreach (var r in _refreshers) r();
+            }
         }
 
         private static (VisualElement, Action) CreateBoundSlider(string label, float start, float end,
