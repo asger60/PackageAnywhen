@@ -3,9 +3,7 @@
     <engine:VisualElement name="Container" style="flex-grow: 1; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px;">
         <engine:VisualElement name="Transport" style="flex-grow: 1; height: 40px; max-height: 40px; justify-content: flex-start; flex-direction: row; min-height: 40px;">
             <engine:Button text="Play" style="width: 100px;"/>
-            <engine:Slider label="test" value="42" high-value="100" name="TestSlider"/>
             <engine:Slider label="Tempo" value="42" high-value="200" low-value="50"/>
-            <engine:Slider label="Volume" value="42" high-value="100"/>
             <engine:Slider label="Intensity" value="42" high-value="100" show-input-field="true"/>
             <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
                 <engine:Button text="Button"/>
@@ -49,4 +47,5 @@
             </engine:ScrollView>
         </engine:VisualElement>
     </engine:VisualElement>
+    <engine:VisualElement style="flex-grow: 1; position: absolute; top: 10px; right: 10px; width: 71px; height: 35px; background-image: url(&quot;project://database/Assets/PackageAnywhen/Editor/Sprites/AnywhenLogoSmall.png?fileID=2800000&amp;guid=41c828c49963c41d8afcb0ba18069e33&amp;type=3#AnywhenLogoSmall&quot;); -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: rgba(0, 0, 0, 0.57);"/>
 </engine:UXML>

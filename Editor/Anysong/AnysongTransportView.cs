@@ -55,7 +55,6 @@ public static class AnysongTransportView
         _song = new SerializedObject(currentSong);
         var tempoProperty = _song.FindProperty("tempo");
 
-        var volumeProperty = _song.FindProperty("songVolume");
         var tempoPropertyField = new PropertyField(tempoProperty);
         tempoPropertyField.BindProperty(tempoProperty);
         tempoPropertyField.style.width = 300;
@@ -63,10 +62,6 @@ public static class AnysongTransportView
         controlsElement.Add(tempoPropertyField);
 
 
-        var songVolumeField = new PropertyField(volumeProperty);
-        songVolumeField.BindProperty(volumeProperty);
-        songVolumeField.style.width = 300;
-        controlsElement.Add(songVolumeField);
 
         var intensitySlider = new Slider(0, 1)
         {

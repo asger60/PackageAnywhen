@@ -283,7 +283,8 @@ namespace Anysong
                         width = new StyleLength(new Length(100, LengthUnit.Percent)),
                         alignItems = Align.Center,
                         flexDirection = FlexDirection.Row,
-                        height = 45,
+                        height = 40,
+                        marginBottom = 5
                     }
                 };
                 string text = "";
