@@ -345,7 +345,7 @@ namespace Anysong
 
         public static int GetPlaybackStepIndexForCurrent()
         {
-            return _currentPlayer.GetStepIndex(_currentSelection.CurrentTrackIndex);
+            return _currentPlayer.GetPlaybackStepIndex(_currentSelection.CurrentTrackIndex);
         }
 
         static void OnBar()
