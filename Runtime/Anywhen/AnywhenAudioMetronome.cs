@@ -31,6 +31,10 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     internal static void TriggerTick(MetronomeTickEvent tick)
     {
         OnAudioTick?.Invoke(tick);
+        if (tick.Count == 0)
+        {
+            OnBar?.Invoke();
+        }
     }
 
     public static float Sub16Length => (60f / CurrentBPM) * 0.25f;
@@ -43,7 +47,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static Action OnTickSub8 { get; set; }
     public static Action OnTickSub4 { get; set; }
     public static Action OnTickSub2 { get; set; }
-    public static Action OnBar { get; set; }
+    public static event Action OnBar;
 
 
     private void Awake()

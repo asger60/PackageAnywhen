@@ -26,7 +26,7 @@ namespace Anysong
             Debug.Log("Create player");
             _playerObject = new GameObject("AnywhenComposerPlayer")
             {
-                 hideFlags = HideFlags.HideAndDontSave
+                hideFlags = HideFlags.HideAndDontSave
             };
 
             _currentMetronome = AnywhenRuntime.Metronome;
@@ -205,6 +205,7 @@ namespace Anysong
 
             if (_isPLaying)
             {
+                OnBar();
                 CurrentSong.Rebuild();
                 _currentPlayer.Load(CurrentSong);
                 _currentPlayer.SetPlay(true);
@@ -213,7 +214,7 @@ namespace Anysong
                 AnysongSectionsView.RefreshSectionLocked();
                 _currentMetronome.SetTempo(CurrentSong.tempo);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
-                OnBar();
+                AnywhenAudioMetronome.OnBar += OnBar;
             }
             else
             {
@@ -222,6 +223,7 @@ namespace Anysong
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
+                AnywhenAudioMetronome.OnBar -= OnBar;
             }
         }
 
@@ -234,15 +236,6 @@ namespace Anysong
                 _playerObject = null;
             }
 
-            //if (_currentRuntimeSongPlayer)
-            //{
-            //    CurrentRuntimeSongPlayer.Stop();
-            //    DestroyImmediate(CurrentRuntimeSongPlayer.gameObject);
-            //    _currentRuntimeSongPlayer = null;
-            //}
-
-            //AnywhenRuntime.Metronome.a -= OnTick16;
-            //AnywhenRuntime.Metronome.OnNextBar -= OnBar;
 
             CurrentSong = null;
             _currentSelection = null;
@@ -350,24 +343,23 @@ namespace Anysong
 
         static void OnBar()
         {
-            // Debug.LogWarning("OnBar not implemented yet");
-            //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.GetPlayingSectionIndex());
-//
-            //if (CurrentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex)
-            //{
-            //    for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-            //    {
-            //        AnysongProgressionsView.SetIsPatternPlaying(i,
-            //            CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(i));
-            //    }
-            //}
-            //else
-            //{
-            //    for (var i = 0; i < CurrentSong.Tracks.Count; i++)
-            //    {
-            //        AnysongProgressionsView.SetIsPatternPlaying(i, -1);
-            //    }
-            //}
+            Debug.Log("OnBar");
+            AnysongSectionsView.SetPlayingSectionIndex(_currentPlayer.GetPlayingSectionIndex());
+
+            if (CurrentSelection.CurrentSectionIndex == _currentPlayer.GetPlayingSectionIndex())
+            {
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    AnysongProgressionsView.SetIsPatternPlaying(i, _currentPlayer.GetPlayingPatternIndexForTrackIndex(i));
+                }
+            }
+            else
+            {
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    AnysongProgressionsView.SetIsPatternPlaying(i, -1);
+                }
+            }
         }
 
 

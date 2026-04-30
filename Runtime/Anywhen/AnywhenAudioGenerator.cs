@@ -32,6 +32,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnDisable()
     {
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
+        if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
+        if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
     }
 
     public void SetSectionLock(bool state, int lockedSectionIndex)
@@ -120,6 +122,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+
     public enum LoadOptions
     {
         Default,
@@ -154,7 +157,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 break;
             case LoadOptions.OnlyMidiSettings:
                 SwapMidi(currentSong);
-                
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(options), options, null);
@@ -167,6 +170,24 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public bool SectionLockState => _sectionLockState;
 
     private NativeArray<int> _sharedStepIndices;
+    private NativeArray<int> _sharedPatternIndices;
+    private NativeArray<int> _sharedSectionIndices;
+
+    public int GetPlayingSectionIndex()
+    {
+        if (!_sharedSectionIndices.IsCreated)
+            return 0;
+
+        return _sharedSectionIndices[0];
+    }
+
+    public int GetPlayingPatternIndexForTrackIndex(int trackIndex)
+    {
+        if (!_sharedPatternIndices.IsCreated || trackIndex >= _sharedPatternIndices.Length)
+            return 0;
+
+        return _sharedPatternIndices[trackIndex];
+    }
 
     public int GetPlaybackStepIndex(int trackIndex)
     {
@@ -183,7 +204,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         int trackCount = song != null ? song.Tracks.Count : 0;
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         _sharedStepIndices = new NativeArray<int>(trackCount, Allocator.Persistent);
-        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices);
+        if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
+        _sharedPatternIndices = new NativeArray<int>(trackCount, Allocator.Persistent);
+        if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
+        _sharedSectionIndices = new NativeArray<int>(1, Allocator.Persistent);
+
+        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices, _sharedPatternIndices, _sharedSectionIndices);
         return _generatorInstance;
     }
 
@@ -253,10 +279,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private GeneratorInstance _selfHandle;
         private int _lastSub16Count;
         private NativeArray<int> _stepIndices;
+        private NativeArray<int> _patternIndices;
+        private NativeArray<int> _sectionIndices;
 
-        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong, NativeArray<int> stepIndices)
+        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong, NativeArray<int> stepIndices, NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
         {
-            var processor = new Processor(sampleRate, initialSong, stepIndices);
+            var processor = new Processor(sampleRate, initialSong, stepIndices, patternIndices, sectionIndices);
             var handle = context.AllocateGenerator(processor, new Control());
             processor._selfHandle = handle;
             return handle;
@@ -272,9 +300,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private uint _seed;
         int _currentSectionIndex;
 
-        Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices)
+        Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices, NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
         {
             _stepIndices = stepIndices;
+            _patternIndices = patternIndices;
+            _sectionIndices = sectionIndices;
             _seed = 12345;
             _setup = new GeneratorInstance.Setup();
             _selfHandle = default;
@@ -428,7 +458,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
                             track.Patterns[track.CurrentPatternIndex] = pattern;
                             section.Tracks[trackIndex] = track;
-                            
                         }
 
                         _anysongSections[sectionIndex] = section;
@@ -468,6 +497,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     {
                         section.Reset();
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
+                        _sectionIndices[0] = _currentSectionIndex;
                     }
 
                     _anysongSections[prevIndex] = section;
@@ -480,6 +510,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     if (currentSub16Count == 0)
                     {
                         track.AdvancePlayingPattern();
+                        _patternIndices[trackIndex] = track.CurrentPatternIndex;
                     }
 
                     var pattern = track.Patterns[track.CurrentPatternIndex];
