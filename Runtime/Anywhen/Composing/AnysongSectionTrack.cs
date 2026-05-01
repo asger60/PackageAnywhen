@@ -56,6 +56,7 @@ namespace Anywhen.Composing
             {
                 CurrentPatternBar = 0;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
+                Debug.Log(CurrentPatternIndex);
                 CurrentPattern = Patterns[CurrentPatternIndex];
                 CurrentPattern.SetStepIndex(0);
             }
@@ -73,7 +74,7 @@ namespace Anywhen.Composing
 
             if (_currentPattern == null)
                 _currentPattern = patterns[0];
-            
+
             return new Unmanaged
             {
                 PatternProgressionType = patternProgressionType,

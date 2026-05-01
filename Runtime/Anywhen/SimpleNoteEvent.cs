@@ -9,16 +9,7 @@ public struct SimpleNoteEvent : IEquatable<SimpleNoteEvent>
     public float duration;
     public float chance;
 
-
-    public SimpleNoteEvent(AnysongPatternStep.UnManaged step)
-    {
-        this.note = step.rootNote;
-        drift = step.offset;
-        velocity = step.velocity;
-        duration = step.duration;
-        chance = step.chance;
-        
-    }
+    
    
     public SimpleNoteEvent(int note)
     {

@@ -50,10 +50,7 @@ namespace Anywhen.Composing
         
         //public bool monophonic;
         [Range(1, 16)] public int voices = 1;
-
-        [NonSerialized] public bool IsMuted = false;
-
-        [NonSerialized] public bool IsSolo = false;
+        
 
         [AnywhenTrackType] public int trackTypeIndex;
 
@@ -110,8 +107,7 @@ namespace Anywhen.Composing
 
             //public AnyTrackTypes trackType;
             public int trackTypeIndex;
-            public bool isMuted;
-            public bool isSolo;
+
             public NativeArray<AudioProcessorSettings.Unmanaged> trackFilters;
         }
 
@@ -134,8 +130,6 @@ namespace Anywhen.Composing
                 trackPitch = trackPitch,
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
-                isMuted = IsMuted,
-                isSolo = IsSolo,
                 trackFilters = filters,
                 audioSourceType = audioSourceType,
                 synthOscillatorType = synthOscillatorType
@@ -147,11 +141,7 @@ namespace Anywhen.Composing
         {
         }
 
-        public void UnMute()
-        {
-            IsSolo = false;
-            IsMuted = false;
-        }
+
 
         public void RemoveAudioProcessor(AudioProcessorSettings settings)
         {

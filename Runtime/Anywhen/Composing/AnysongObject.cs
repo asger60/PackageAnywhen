@@ -91,13 +91,6 @@ namespace Anywhen.Composing
             }
         }
 
-        public void UnMuteAll()
-        {
-            foreach (var track in Tracks)
-            {
-                track.UnMute();
-            }
-        }
 
 
         public void SyncToClock()

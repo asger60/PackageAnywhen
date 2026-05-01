@@ -87,14 +87,15 @@ namespace Anywhen.Composing
             };
             for (var i = 0; i < 16; i++)
             {
-                clone.steps[i] = steps[i].Clone();
+                clone.steps.Add(steps[i].Clone());
             }
 
             clone.triggerChances = new List<float>(4);
             for (var i = 0; i < 4; i++)
             {
-                clone.triggerChances[i] = triggerChances[i];
+                clone.triggerChances.Add(triggerChances[i]);
             }
+            clone.patternLength = patternLength;
 
             return clone;
         }
@@ -165,7 +166,7 @@ namespace Anywhen.Composing
             {
                 if (patternStep.NoteOn)
                 {
-                   // notes.Add(patternStep.rootNote);
+                    // notes.Add(patternStep.rootNote);
                 }
             }
 
@@ -214,7 +215,6 @@ namespace Anywhen.Composing
                 step.Init();
             }
         }
-
 
 
         public bool IsNull()

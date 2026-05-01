@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
@@ -122,6 +123,20 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    public void SetMutedTracks(List<int> mutedTracks)
+    {
+        NativeArray<int> mutedTrackIndices = new NativeArray<int>(mutedTracks.Count, Allocator.Persistent);
+        for (int i = 0; i < mutedTracks.Count; i++)
+        {
+            mutedTrackIndices[i] = mutedTracks[i];
+        }
+
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackStateMsg(mutedTrackIndices));
+        }
+    }
+
 
     public enum LoadOptions
     {
@@ -209,10 +224,22 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
         _sharedSectionIndices = new NativeArray<int>(1, Allocator.Persistent);
 
-        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices, _sharedPatternIndices, _sharedSectionIndices);
+        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices, _sharedPatternIndices,
+            _sharedSectionIndices);
         return _generatorInstance;
     }
 
+
+    public class TriggerTrackStateMsg
+    {
+        public NativeArray<int> MutedTracks;
+
+
+        public TriggerTrackStateMsg(NativeArray<int> mutedTracks)
+        {
+            MutedTracks = mutedTracks;
+        }
+    }
 
     public class TriggerPlaybackMsg
     {
@@ -282,7 +309,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private NativeArray<int> _patternIndices;
         private NativeArray<int> _sectionIndices;
 
-        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong, NativeArray<int> stepIndices, NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
+        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong, NativeArray<int> stepIndices,
+            NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
         {
             var processor = new Processor(sampleRate, initialSong, stepIndices, patternIndices, sectionIndices);
             var handle = context.AllocateGenerator(processor, new Control());
@@ -463,6 +491,25 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _anysongSections[sectionIndex] = section;
                     }
                 }
+
+                if (element.TryGetData(out TrackStateData newTrackStateData))
+                {
+                    for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
+                    {
+                        bool isMuted = false;
+                        for (int i = 0; i < newTrackStateData.MutedTracks.Length; i++)
+                        {
+                            if (newTrackStateData.MutedTracks[i] == trackIndex)
+                            {
+                                isMuted = true;
+                            }
+                        }
+
+                        var thisTrack = _tracks[trackIndex];
+                        thisTrack.IsMute = isMuted;
+                        _tracks[trackIndex] = thisTrack;
+                    }
+                }
             }
         }
 
@@ -621,6 +668,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
+                if (message.Is<TriggerTrackStateMsg>())
+                {
+                    var payload = message.Get<TriggerTrackStateMsg>();
+                    pipe.SendData(context, new TrackStateData { MutedTracks = payload.MutedTracks });
+                    return ProcessorInstance.Response.Handled;
+                }
+
                 if (message.Is<TriggerSoundsReloadMsg>())
                 {
                     var payload = message.Get<TriggerSoundsReloadMsg>();
@@ -632,7 +686,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var payload = message.Get<TriggerMidiReloadMsg>();
                     pipe.SendData(context, new SwapMidiData { SectionData = payload.SectionData });
-                    Debug.Log($"Reload midi: {payload.SectionData.Length}");
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -670,9 +723,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             AnysongTrackSettings.Unmanaged _settings;
             private int _trackTypeIndex;
             public int TrackTypeIndex => _trackTypeIndex;
+            public bool IsMute;
 
             public Track(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
             {
+                IsMute = false;
                 _sampleRate = sampleRate;
                 _trackLFO1Value = 0;
                 _trackLFO2Value = 0;
@@ -821,6 +876,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
             internal float Process(double dspTime)
             {
+                if (IsMute) return 0;
+
                 if (_hasPendingTracksUpdate)
                 {
                     CreateTrack(_pendingSettings, _sampleRate);
@@ -1110,5 +1167,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public struct SwapMidiData
     {
         public NativeArray<AnysongSection.Unmanaged> SectionData;
+    }
+
+    public struct TrackStateData
+    {
+        public NativeArray<int> MutedTracks;
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
 namespace Anywhen.Composing
@@ -54,24 +53,13 @@ namespace Anywhen.Composing
 
         public struct UnManaged
         {
-            public int rootNote;
-            public float duration;
-            public float offset;
-            public float velocity;
-
             public NativeArray<AnysongPatternNote> StepNotes;
-
-            public float chance;
-
-            public bool noteOn { get; set; }
         }
 
         public UnManaged ToUnmanaged()
         {
             return new UnManaged
             {
-                noteOn = stepNotes.Count > 0,
-
                 StepNotes = new NativeArray<AnysongPatternNote>(stepNotes.ToArray(), Allocator.Persistent),
             };
         }
@@ -86,11 +74,12 @@ namespace Anywhen.Composing
         public AnysongPatternStep Clone()
         {
             var clone = (AnysongPatternStep)MemberwiseClone();
+            stepNotes ??= new List<AnysongPatternNote>();
             clone.stepNotes = new List<AnysongPatternNote>(stepNotes.Count);
-            
+            Debug.Log("creating copy " + stepNotes.Count);
             for (var i = 0; i < stepNotes.Count; i++)
             {
-                clone.stepNotes[i] = stepNotes[i];
+                clone.stepNotes.Add(stepNotes[i]);
             }
 
 

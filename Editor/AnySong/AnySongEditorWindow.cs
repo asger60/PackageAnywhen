@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using UnityEditor;
@@ -329,11 +330,11 @@ namespace Anysong
         private static void OnTick16(MetronomeTickEvent tick)
         {
             if (_currentSelection == null) return;
-            //bool doHighLight = _currentSelection.CurrentSectionIndex == CurrentRuntimeSongPlayer.CurrentSectionIndex &&
-            //                   _currentSelection.CurrentPatternIndex ==
-            //                   CurrentRuntimeSongPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
+            bool doShowCursor = _currentSelection.CurrentSectionIndex == _currentPlayer.GetPlayingSectionIndex() &&
+                                _currentSelection.CurrentPatternIndex ==
+                                _currentPlayer.GetPlayingPatternIndexForTrackIndex(_currentSelection.CurrentTrackIndex);
 
-            AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, true);
+            AnysongPatternView.HilightStepIndex(_currentSelection.CurrentTrackIndex, doShowCursor);
         }
 
         public static int GetPlaybackStepIndexForCurrent()
@@ -343,7 +344,6 @@ namespace Anysong
 
         static void OnBar()
         {
-            Debug.Log("OnBar");
             AnysongSectionsView.SetPlayingSectionIndex(_currentPlayer.GetPlayingSectionIndex());
 
             if (CurrentSelection.CurrentSectionIndex == _currentPlayer.GetPlayingSectionIndex())
@@ -553,6 +553,64 @@ namespace Anysong
 
         public static bool IsSectionLocked => _currentPlayer.SectionLockState;
 
+        private static List<int> _muteTracks = new List<int>();
+        public static List<int> MuteTracks => _muteTracks;
+        private static int _soloTrackIndex;
+
+        public static void MuteTrack(bool state, int trackIndex)
+        {
+            _muteTracks ??= new List<int>();
+
+            if (state)
+            {
+                if (!_muteTracks.Contains(trackIndex))
+                {
+                    _muteTracks.Add(trackIndex);
+                }
+            }
+            else
+            {
+                if (_muteTracks.Contains(trackIndex))
+                {
+                    _muteTracks.Remove(trackIndex);
+                }
+            }
+
+            _currentPlayer.SetMutedTracks(MuteTracks);
+        }
+
+        public static void SoloTrack(bool state, int trackIndex)
+        {
+            if (state)
+            {
+                _soloTrackIndex = trackIndex;
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    MuteTrack(i != trackIndex, i);
+                }
+            }
+            else
+            {
+                _soloTrackIndex = -1;
+                for (var i = 0; i < CurrentSong.Tracks.Count; i++)
+                {
+                    MuteTrack(false, i);
+                }
+            }
+
+            _currentPlayer.SetMutedTracks(MuteTracks);
+        }
+
+        public static bool IsTrackSolo(int trackIndex)
+        {
+            return trackIndex == _soloTrackIndex;
+        }
+
+        public static bool IsTrackMuted(int trackIndex)
+        {
+            return _muteTracks.Contains(trackIndex);
+        }
+
         void SetSelectionFromTooltip(string tooltip, AnySelection targetSelection = null)
         {
             var str = tooltip.Split("-");
@@ -573,6 +631,7 @@ namespace Anysong
                     _inspectorPanel.Q<Button>("CopyButton").RegisterCallback((ClickEvent ev) => { CopySection(); });
                     _inspectorPanel.Q<Button>("PasteButton").RegisterCallback((ClickEvent ev) => { PasteSection(); });
                     break;
+
                 case InspectorModes.Pattern:
                     AnysongInspectorView.DrawPattern(_currentSelection.CurrentPatternProperty, AnysongPatternView.Refresh);
                     _inspectorPanel.Q<Button>("DeleteButton").RegisterCallback((ClickEvent ev) => { DeletePattern(); });
@@ -581,9 +640,8 @@ namespace Anysong
 
                     _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
                     _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-
-
                     break;
+
                 case InspectorModes.Track:
                     AnysongInspectorView.DrawTrack();
 

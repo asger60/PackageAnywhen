@@ -70,10 +70,11 @@ public static class AnysongTracksView
             };
             soloButton.AddToClassList("track-mix-button");
 
+            var trackIndex = i;
             soloButton.RegisterCallback<ClickEvent>((evt) =>
             {
                 if (evt.currentTarget is not Button btn) return;
-                SoloTrackAtIndex();
+                SoloTrackAtIndex(trackIndex);
             });
 
             soundControlElement.Add(muteButton);
@@ -123,8 +124,8 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("SoloButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.CurrentSong.Tracks[index].IsSolo;
-            //btn.style.backgroundColor = state ? AnysongEditorWindow.ColorHilight2 : StyleKeyword.Null;
+            var state = AnysongEditorWindow.IsTrackSolo(index);
+
             if (state)
                 btn.AddToClassList("track-mix-button-solo");
             else
@@ -138,7 +139,7 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("MuteButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.CurrentSong.Tracks[index].IsMuted;
+            var state = AnysongEditorWindow.IsTrackMuted(index);
             if (state)
                 btn.AddToClassList("track-mix-button-muted");
             else
@@ -151,36 +152,15 @@ public static class AnysongTracksView
 
     static void MuteTrackAtIndex(string indexString)
     {
-        var track = AnysongEditorWindow.CurrentSong.Tracks[Int32.Parse(indexString)];
-        track.IsMuted = !track.IsMuted;
+        int trackIndex = Int32.Parse(indexString);
+
+        AnysongEditorWindow.MuteTrack(!AnysongEditorWindow.IsTrackMuted(trackIndex), trackIndex);
         UpdateMuteButtons();
     }
 
-    static void SoloTrackAtIndex()
+    static void SoloTrackAtIndex(int trackIndex)
     {
-        bool unSolo = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsSolo;
-
-        for (var i = 0; i < AnysongEditorWindow.CurrentSong.Tracks.Count; i++)
-        {
-            var sectionTrack = AnysongEditorWindow.CurrentSong.Tracks[i];
-            sectionTrack.IsSolo = false;
-            if (i == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex && !unSolo)
-            {
-                sectionTrack.IsSolo = true;
-            }
-
-            if (unSolo)
-            {
-                sectionTrack.IsMuted = false;
-            }
-            else
-            {
-                sectionTrack.IsMuted = i != AnysongEditorWindow.CurrentSelection.CurrentTrackIndex;
-            }
-
-            AnysongEditorWindow.CurrentSong.Tracks[i] = sectionTrack;
-        }
-
+        AnysongEditorWindow.SoloTrack(!AnysongEditorWindow.IsTrackSolo(trackIndex), trackIndex);
         UpdateSoloButtons();
         UpdateMuteButtons();
     }
