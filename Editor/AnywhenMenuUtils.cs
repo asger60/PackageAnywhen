@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 public class AnywhenMenuUtils : MonoBehaviour
 {
-    
     public static void AddAnywhen()
     {
         Debug.Log("Adding Anywhen to active scene");
@@ -56,28 +55,28 @@ public class AnywhenMenuUtils : MonoBehaviour
             Selection.activeObject = instantiatePrefab;
         }
     }
-    
+
     [MenuItem("GameObject/Anywhen/Create AnywhenPlayer Trigger")]
     public static void CreateAnywhenPlayerTrigger()
     {
         Debug.Log("Creating AnywhenPlayer trigger");
         var path = GetAssetPath("Prefabs/AnywhenPlayerTrigger.prefab");
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-        
+
         if (prefab)
         {
             var instantiatePrefab = PrefabUtility.InstantiatePrefab(prefab);
             Selection.activeObject = instantiatePrefab;
         }
     }
-    
+
     [MenuItem("GameObject/Anywhen/Create AnywhenIntensity Trigger")]
     public static void CreateAnywhenIntensityTrigger()
     {
         Debug.Log("Creating AnywhenIntensity trigger");
         var path = GetAssetPath("Prefabs/AnywhenIntensityTrigger.prefab");
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-        
+
         if (prefab)
         {
             var instantiatePrefab = PrefabUtility.InstantiatePrefab(prefab);

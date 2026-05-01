@@ -1,5 +1,4 @@
 using System;
-using Anywhen.Composing;
 
 public struct SimpleNoteEvent : IEquatable<SimpleNoteEvent>
 {
