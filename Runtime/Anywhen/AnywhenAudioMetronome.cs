@@ -70,6 +70,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         }
     }
 
+    public void Restart()
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new RestartMsg());
+        }
+    }
+
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
         ProcessorInstance.CreationParameters creationParameters)
     {
@@ -86,6 +94,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             NewBpm = newBpm;
         }
     }
+
+    public class RestartMsg { }
 
     [BurstCompile(CompileSynchronously = true)]
     private struct Processor : GeneratorInstance.IRealtime
@@ -131,6 +141,12 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     CurrentBPM = data.bpm;
                     _bpm = data.bpm;
                     _sub16Length = (60.0 / _bpm) * 0.25f;
+                }
+
+                if (element.TryGetData(out RestartState _))
+                {
+                    _nextTime16 = -1;
+                    _sub16Count = 0;
                 }
             }
         }
@@ -245,6 +261,12 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
+                if (message.Is<RestartMsg>())
+                {
+                    pipe.SendData(context, new RestartState());
+                    return ProcessorInstance.Response.Handled;
+                }
+
                 return ProcessorInstance.Response.Unhandled;
             }
         }
@@ -254,6 +276,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     {
         public int bpm;
     }
+
+    public struct RestartState { }
 }
 
 public struct MetronomeTickEvent

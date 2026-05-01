@@ -199,8 +199,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public int GetPlayingPatternIndexForTrackIndex(int trackIndex)
     {
         if (!_sharedPatternIndices.IsCreated || trackIndex >= _sharedPatternIndices.Length)
+        {
+            Debug.Log("returning 0");
             return 0;
-
+        }
+        
         return _sharedPatternIndices[trackIndex];
     }
 
@@ -361,8 +364,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
                     track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
-                    
-                    
+
+
                     var pattern = track.Patterns[patternIndex];
                     var previousInternalIndex = track.Patterns[patternIndex].internalIndex;
                     pattern = song.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex].ToUnmanaged();
@@ -448,7 +451,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                                 track.Patterns[track.CurrentPatternIndex] = pattern;
                                 section.Tracks[trackIndex] = track;
                                 _patternIndices[trackIndex] = track.CurrentPatternIndex;
-
                             }
                         }
                     }

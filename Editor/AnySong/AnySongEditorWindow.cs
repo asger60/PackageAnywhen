@@ -206,13 +206,13 @@ namespace Anysong
 
             if (_isPLaying)
             {
-                
                 _currentPlayer.Load(CurrentSong);
                 _currentPlayer.SetPlay(true);
 
                 InstrumentDatabase.LoadAllInstruments(CurrentSong);
                 AnysongSectionsView.RefreshSectionLocked();
                 _currentMetronome.SetTempo(CurrentSong.tempo);
+                _currentMetronome.Restart();
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
                 AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
