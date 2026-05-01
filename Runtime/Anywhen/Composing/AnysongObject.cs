@@ -33,14 +33,7 @@ namespace Anywhen.Composing
             RefreshSettings();
         }
 
-
-        public void Rebuild()
-        {
-            foreach (var section in Sections)
-            {
-                section.SetupTracks(Tracks);
-            }
-        }
+        
 
         [ContextMenu("ClearPatterns")]
         void ClearPatterns()
@@ -74,32 +67,9 @@ namespace Anywhen.Composing
             }
         }
 
-        [ContextMenu("Reset")]
-        public void Reset()
-        {
-            Sections.Clear();
-            foreach (var track in Tracks)
-            {
-                var newSection = new AnysongSection();
-                newSection.Init(Tracks);
-                Sections.Add(newSection);
-            }
-
-            foreach (var section in Sections)
-            {
-                section.Reset();
-            }
-        }
 
 
 
-        public void SyncToClock()
-        {
-            foreach (var section in Sections)
-            {
-                section.SyncToClock();
-            }
-        }
 
         public void RefreshMidi(int sectionIndex, int trackIndex, int patternIndex)
         {

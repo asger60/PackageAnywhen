@@ -267,7 +267,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         public TriggerSoundsReloadMsg(NativeArray<AnysongTrackSettings.Unmanaged> trackSettings)
         {
-            this.TrackSettings = trackSettings;
+            TrackSettings = trackSettings;
         }
     }
 
@@ -277,7 +277,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         public TriggerMidiReloadMsg(NativeArray<AnysongSection.Unmanaged> sectionData)
         {
-            this.SectionData = sectionData;
+            SectionData = sectionData;
         }
     }
 
@@ -360,6 +360,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
+                    track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
+                    
+                    
                     var pattern = track.Patterns[patternIndex];
                     var previousInternalIndex = track.Patterns[patternIndex].internalIndex;
                     pattern = song.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex].ToUnmanaged();
@@ -428,15 +431,25 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     _isPlaying = data.IsPlaying;
                     if (_isPlaying)
                     {
-                        for (int trackIndex = 0; trackIndex < _anysongSections[0].Tracks.Length; trackIndex++)
+                        _currentSectionIndex = 0;
+                        _sectionIndices[0] = 0;
+                        for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
                         {
-                            var section = _anysongSections[0];
-                            var track = section.Tracks[trackIndex];
-                            track.Reset();
-                            var pattern = track.Patterns[track.CurrentPatternIndex];
-                            pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
-                            track.Patterns[track.CurrentPatternIndex] = pattern;
-                            section.Tracks[trackIndex] = track;
+                            for (int trackIndex = 0; trackIndex < _anysongSections[sectionIndex].Tracks.Length; trackIndex++)
+                            {
+                                var section = _anysongSections[sectionIndex];
+                                section.Reset();
+                                _anysongSections[sectionIndex] = section;
+
+                                var track = section.Tracks[trackIndex];
+                                track.Reset();
+                                var pattern = track.Patterns[track.CurrentPatternIndex];
+                                pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
+                                track.Patterns[track.CurrentPatternIndex] = pattern;
+                                section.Tracks[trackIndex] = track;
+                                _patternIndices[trackIndex] = track.CurrentPatternIndex;
+
+                            }
                         }
                     }
                 }

@@ -26,7 +26,6 @@ namespace Anywhen.Composing
         public struct Unmanaged
         {
             public PatternProgressionType PatternProgressionType;
-            public AnysongTrackSettings.Unmanaged AnysongTrackSettings;
             public NativeArray<AnysongPattern.Unmanaged> Patterns;
             public AnysongPattern.Unmanaged CurrentPattern;
             public int CurrentPatternBar;
@@ -56,9 +55,75 @@ namespace Anywhen.Composing
             {
                 CurrentPatternBar = 0;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
-                Debug.Log(CurrentPatternIndex);
                 CurrentPattern = Patterns[CurrentPatternIndex];
                 CurrentPattern.SetStepIndex(0);
+            }
+
+
+            static int GetProgressionPatternIndex(int patternBar, NativeArray<AnysongPattern.Unmanaged> patterns,
+                PatternProgressionType patternProgressionType, ref Unity.Mathematics.Random random)
+            {
+                int patternIndex = (int)Mathf.Repeat(patternBar, patterns.Length);
+                switch (patternProgressionType)
+                {
+                    case PatternProgressionType.Sequence:
+
+                        break;
+                    case PatternProgressionType.WeightedRandom:
+                        bool didFindPattern = false;
+                        float totalWeight = 0;
+
+                        // First pass: calculate total weight
+                        for (var i = 0; i < patterns.Length; i++)
+                        {
+                            var anyPattern = patterns[i];
+                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
+                            totalWeight += thisTriggerChance;
+                        }
+
+                        // If total weight is 0, fallback to first pattern
+                        if (totalWeight <= 0)
+                        {
+                            patternIndex = 0;
+                            didFindPattern = true;
+                        }
+                        else
+                        {
+                            // Generate random number within total weight range
+                            float randomValue = random.NextFloat(0f, totalWeight);
+
+                            float currentWeight = 0;
+
+                            // Second pass: find the selected pattern
+                            for (var i = 0; i < patterns.Length; i++)
+                            {
+                                var anyPattern = patterns[i];
+                                float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
+                                currentWeight += thisTriggerChance;
+
+                                if (randomValue <= currentWeight)
+                                {
+                                    patternIndex = i;
+                                    didFindPattern = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!didFindPattern)
+                        {
+                            patternIndex = 0;
+                        }
+
+                        break;
+                    case PatternProgressionType.Random:
+                        patternIndex = random.NextInt(0, patterns.Length);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                return patternIndex;
             }
         }
 
@@ -72,8 +137,7 @@ namespace Anywhen.Composing
                 unmanagedPatterns[i] = patterns[i].ToUnmanaged();
             }
 
-            if (_currentPattern == null)
-                _currentPattern = patterns[0];
+            _currentPattern ??= patterns[0];
 
             return new Unmanaged
             {
@@ -111,139 +175,9 @@ namespace Anywhen.Composing
             //clone.anysongTrackSettings = anysongTrackSettings;
             clone.patternProgressionType = patternProgressionType;
 
-
             return clone;
         }
 
-        public AnysongPattern GetPattern(int index)
-        {
-            if (index >= patterns.Count)
-                return patterns[0];
-
-            return patterns[index];
-        }
-
-        public AnysongPattern GetPlayingPattern()
-        {
-            if (patterns.Count == 0)
-            {
-                patterns = new List<AnysongPattern>(1);
-                patterns[0] = new AnysongPattern();
-                patterns[0].Init();
-            }
-
-            return _currentPattern;
-        }
-
-
-        public void AdvancePlayingPattern()
-        {
-            //_currentPatternBar++;
-            //_currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
-            //_currentPattern = GetPattern(_currentPatternIndex);
-            //_currentPattern.SetStepIndex(0);
-        }
-
-        static int GetProgressionPatternIndex(int patternBar, NativeArray<AnysongPattern.Unmanaged> patterns,
-            PatternProgressionType patternProgressionType, ref Unity.Mathematics.Random random)
-        {
-            int patternIndex = (int)Mathf.Repeat(patternBar, patterns.Length);
-            switch (patternProgressionType)
-            {
-                case PatternProgressionType.Sequence:
-
-                    break;
-                case PatternProgressionType.WeightedRandom:
-                    bool didFindPattern = false;
-                    float totalWeight = 0;
-
-                    // First pass: calculate total weight
-                    for (var i = 0; i < patterns.Length; i++)
-                    {
-                        var anyPattern = patterns[i];
-                        float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
-                        totalWeight += thisTriggerChance;
-                    }
-
-                    // If total weight is 0, fallback to first pattern
-                    if (totalWeight <= 0)
-                    {
-                        patternIndex = 0;
-                        didFindPattern = true;
-                    }
-                    else
-                    {
-                        // Generate random number within total weight range
-                        float randomValue = random.NextFloat(0f, totalWeight); // <-- replaces Random.Range
-
-                        float currentWeight = 0;
-
-                        // Second pass: find the selected pattern
-                        for (var i = 0; i < patterns.Length; i++)
-                        {
-                            var anyPattern = patterns[i];
-                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
-                            currentWeight += thisTriggerChance;
-
-                            if (randomValue <= currentWeight)
-                            {
-                                patternIndex = i;
-                                didFindPattern = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!didFindPattern)
-                    {
-                        patternIndex = 0;
-                    }
-
-                    break;
-                case PatternProgressionType.Random:
-                    patternIndex = random.NextInt(0, patterns.Length);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return patternIndex;
-        }
-
-
-        public void Reset()
-        {
-            //_currentPatternBar = 0;
-            //if (patterns.Count > 0)
-            //{
-            //    _currentPatternIndex = GetProgressionPatternIndex(_currentPatternBar);
-            //    _currentPattern = GetPattern(_currentPatternIndex);
-            //}
-//
-            //foreach (var pattern in patterns)
-            //{
-            //    pattern.Reset();
-            //}
-        }
-
-        public void SyncToClock()
-        {
-            Debug.LogWarning("SyncToClock not implemented for AnysongSectionTrack");
-            //_currentPatternIndex = GetProgressionPatternIndex(AnywhenMetronome.Instance.CurrentBar);
-            //_currentPattern = GetPattern(_currentPatternIndex);
-            //_currentPattern.SyncToClock();
-        }
-
-        public void SetTrack(AnysongTrackSettings songTrack)
-        {
-            Debug.LogWarning("SetTrack not implemented for AnysongSectionTrack");
-            //anysongTrackSettings = songTrack;
-        }
-
-        public int GetPlayingPatternIndex()
-        {
-            return _currentPatternIndex;
-        }
 
         public bool IsNull()
         {

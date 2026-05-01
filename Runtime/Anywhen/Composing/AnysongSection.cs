@@ -55,17 +55,7 @@ namespace Anywhen.Composing
                 Tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
             };
         }
-
-        public AnysongSectionTrack GetTrack(int trackType)
-        {
-            Debug.LogWarning("GetTrack() is not implemented yet");
-            foreach (var track in tracks)
-            {
-                //  if (track.anysongTrackSettings.trackTypeIndex == trackType) return track;
-            }
-
-            return tracks[0];
-        }
+        
 
         public void Init(List<AnysongTrackSettings> songTracks)
         {
@@ -89,15 +79,7 @@ namespace Anywhen.Composing
                 tracks.Add(newTrack);
             }
         }
-
-        public void SetupTracks(List<AnysongTrackSettings> songTracks)
-        {
-            for (var i = 0; i < tracks.Count; i++)
-            {
-                var track = tracks[i];
-                track.SetTrack(songTracks[i]);
-            }
-        }
+        
 
         public void AddSongTrack(AnysongTrackSettings songTrackSettings)
         {
@@ -151,22 +133,7 @@ namespace Anywhen.Composing
             return clone;
         }
 
-
-        public void Reset()
-        {
-            foreach (var track in tracks)
-            {
-                track.Reset();
-            }
-        }
-
-        public void SyncToClock()
-        {
-            foreach (var sectionTrack in tracks)
-            {
-                sectionTrack.SyncToClock();
-            }
-        }
+        
 
         public bool IsNull()
         {

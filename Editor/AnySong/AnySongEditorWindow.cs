@@ -206,8 +206,7 @@ namespace Anysong
 
             if (_isPLaying)
             {
-                OnBar();
-                CurrentSong.Rebuild();
+                
                 _currentPlayer.Load(CurrentSong);
                 _currentPlayer.SetPlay(true);
 
@@ -216,6 +215,7 @@ namespace Anysong
                 _currentMetronome.SetTempo(CurrentSong.tempo);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
                 AnywhenAudioMetronome.OnBar += OnBar;
+                OnBar();
             }
             else
             {

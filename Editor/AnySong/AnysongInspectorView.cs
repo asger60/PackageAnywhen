@@ -52,7 +52,12 @@ namespace Anysong
             _parent.Add(Spacer());
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), didUpdate));
+            _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), () =>
+            {
+                AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+                didUpdate.Invoke();
+            }));
             _parent.Add(Spacer());
 
 
@@ -395,8 +400,7 @@ namespace Anysong
 
                             patternButton.clicked += () =>
                             {
-                                pattern.triggerChances[columnIndex] =
-                                    pattern.triggerChances[columnIndex] > 0 ? 0 : GetCollumnMaxValue(selection, columnIndex);
+                                pattern.triggerChances[columnIndex] = pattern.triggerChances[columnIndex] > 0 ? 0 : GetCollumnMaxValue(selection, columnIndex);
                                 AdjustPatternWeights(selection, columnIndex);
                             };
 
@@ -413,9 +417,10 @@ namespace Anysong
                             };
 
 
-                            chanceSlider.RegisterValueChangedCallback(evt => { AdjustPatternWeights(selection, columnIndex); });
-
-
+                            chanceSlider.RegisterValueChangedCallback(evt =>
+                            {
+                                AdjustPatternWeights(selection, columnIndex);
+                            });
                             chanceSlider.BindProperty(property);
 
                             patternRow.Add(patternButton);
@@ -490,6 +495,10 @@ namespace Anysong
                     anysongPattern.triggerChances[columnIndex] = normalizedWeight;
                 }
             }
+            AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+            
+            AnysongEditorWindow.CurrentSong.RefreshSettings();
         }
 
 
@@ -572,6 +581,7 @@ namespace Anysong
                     isFirstCallback = false;
                     return;
                 }
+
                 didUpdate?.Invoke();
             });
             return propertyField;
