@@ -18,7 +18,7 @@ namespace Anysong
             if (GUILayout.Button("Edit song"))
             {
                 //AnysongEditorWindow.ShowModuleWindow(target as AnysongObject);
-                AnysongEditorWindowNew.LoadSong(target as AnysongObject);
+                AnysongEditorWindow.LoadSong(target as AnysongObject);
             }
 
             //GUILayout.FlexibleSpace();
