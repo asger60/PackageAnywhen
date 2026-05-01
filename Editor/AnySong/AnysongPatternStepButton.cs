@@ -95,7 +95,7 @@ namespace Anysong
                             _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
                         }
 
-                        AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
+                        AnysongEditorWindowNew.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
 
                         break;
                     //case AnysongPatternView.EditModes.NoteVelocity:
@@ -116,14 +116,14 @@ namespace Anysong
                 }
             }
 
-            AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
-                AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
-                AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+            AnysongEditorWindowNew.CurrentSong.RefreshMidi(AnysongEditorWindowNew.CurrentSelection.CurrentSectionIndex,
+                AnysongEditorWindowNew.CurrentSelection.CurrentTrackIndex,
+                AnysongEditorWindowNew.CurrentSelection.CurrentPatternIndex);
 
 
             if (evt.button == 1)
             {
-                AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
+                AnysongEditorWindowNew.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
                 AnysongPatternView.SelectStep(_patternStep);
                 AnysongPatternView.SetStepIndex(_stepIndex);
             }

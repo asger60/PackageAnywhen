@@ -86,7 +86,7 @@ namespace Anysong
                 parent.Add(spacer);
             }
 
-            parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+            parent.Add(AnysongEditorWindowNew.CreateAddRemoveButtons());
             RefreshSectionLocked();
         }
 
@@ -94,7 +94,7 @@ namespace Anysong
         {
             _parent.Query<Button>("SectionLockButton").ForEach(button =>
             {
-                if (AnysongEditorWindow.IsSectionLocked)
+                if (AnysongEditorWindowNew.IsSectionLocked)
                     button.AddToClassList("triggered");
                 else
                     button.RemoveFromClassList("triggered");

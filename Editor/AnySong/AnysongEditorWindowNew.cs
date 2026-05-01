@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Anysong
 {
-    public class AnysongEditorWindow : EditorWindow
+    public class AnysongEditorWindowNew : EditorWindow
     {
         public static AnysongObject CurrentSong { get; private set; }
         private bool _currentPatternIsBase;
@@ -166,10 +166,10 @@ namespace Anysong
 
         public static void ShowModuleWindow(AnysongObject songObject)
         {
-            AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
-            window.Show(true);
-            window.titleContent = new GUIContent("Anysong window - " + songObject.name);
-            window.minSize = new Vector2(1450, 850);
+            AnysongEditorWindowNew windowNew = (AnysongEditorWindowNew)GetWindow(typeof(AnysongEditorWindowNew));
+            windowNew.Show(true);
+            windowNew.titleContent = new GUIContent("Anysong window - " + songObject.name);
+            windowNew.minSize = new Vector2(1450, 850);
         }
 
         public static void LoadSong(AnysongObject songObject)
@@ -178,21 +178,21 @@ namespace Anysong
             _currentSelection = new AnySelection(songObject);
 
             EditorPrefs.SetString("AnyLoadedSong", AssetDatabase.GetAssetPath(songObject));
-            AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+            AnysongEditorWindowNew windowNew = (AnysongEditorWindowNew)GetWindow(typeof(AnysongEditorWindowNew));
             AnywhenRuntime.Log("Loaded: " + AssetDatabase.GetAssetPath(songObject));
 
             // Set the default UXML template if not already set
             string basePath = "Assets/PackageAnywhen/Editor/";
-            if (!window.uxmlAsset)
-                window.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(basePath + "uxml/AnysongEditorWindow.uxml");
+            if (!windowNew.uxmlAsset)
+                windowNew.uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(basePath + "uxml/AnysongEditorWindow.uxml");
 
-            if (!window.styleAsset)
-                window.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>(basePath + "USS/AnywhenEditorStyles.uss");
+            if (!windowNew.styleAsset)
+                windowNew.styleAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>(basePath + "USS/AnywhenEditorStyles.uss");
 
             _currentSelection = new AnySelection(songObject);
 
 
-            window.Show(true);
+            windowNew.Show(true);
 
 
             AnywhenRuntime.Conductor.SetDefaultScale();
@@ -700,9 +700,9 @@ namespace Anysong
         }
 
 
-        public static AnysongEditorWindow Create(Object asset)
+        public static AnysongEditorWindowNew Create(Object asset)
         {
-            var window = CreateWindow<AnysongEditorWindow>($"{asset.name} | {asset.GetType().Name}");
+            var window = CreateWindow<AnysongEditorWindowNew>($"{asset.name} | {asset.GetType().Name}");
             return window;
         }
 
@@ -717,7 +717,7 @@ namespace Anysong
 
         static void CopyPattern(AnysongPattern pattern)
         {
-            AnysongEditorWindow window = (AnysongEditorWindow)GetWindow(typeof(AnysongEditorWindow));
+            AnysongEditorWindowNew windowNew = (AnysongEditorWindowNew)GetWindow(typeof(AnysongEditorWindowNew));
             _patternCopy = pattern.Clone();
         }
 

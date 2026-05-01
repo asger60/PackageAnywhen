@@ -100,7 +100,7 @@ public static class AnysongTracksView
             };
             button.AddToClassList("track-edit-button");
 
-            if (i == AnysongEditorWindow.CurrentSelection.CurrentTrackIndex)
+            if (i == AnysongEditorWindowNew.CurrentSelection.CurrentTrackIndex)
                 button.AddToClassList("editing");
 
             trackElement.Add(button);
@@ -109,7 +109,7 @@ public static class AnysongTracksView
         }
 
 
-        parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
+        parent.Add(AnysongEditorWindowNew.CreateAddRemoveButtons());
     }
 
 
@@ -124,7 +124,7 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("SoloButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.IsTrackSolo(index);
+            var state = AnysongEditorWindowNew.IsTrackSolo(index);
 
             if (state)
                 btn.AddToClassList("track-mix-button-solo");
@@ -139,7 +139,7 @@ public static class AnysongTracksView
         int index = 0;
         _parent.Query<Button>("MuteButton").ForEach((btn) =>
         {
-            var state = AnysongEditorWindow.IsTrackMuted(index);
+            var state = AnysongEditorWindowNew.IsTrackMuted(index);
             if (state)
                 btn.AddToClassList("track-mix-button-muted");
             else
@@ -154,13 +154,13 @@ public static class AnysongTracksView
     {
         int trackIndex = Int32.Parse(indexString);
 
-        AnysongEditorWindow.MuteTrack(!AnysongEditorWindow.IsTrackMuted(trackIndex), trackIndex);
+        AnysongEditorWindowNew.MuteTrack(!AnysongEditorWindowNew.IsTrackMuted(trackIndex), trackIndex);
         UpdateMuteButtons();
     }
 
     static void SoloTrackAtIndex(int trackIndex)
     {
-        AnysongEditorWindow.SoloTrack(!AnysongEditorWindow.IsTrackSolo(trackIndex), trackIndex);
+        AnysongEditorWindowNew.SoloTrack(!AnysongEditorWindowNew.IsTrackSolo(trackIndex), trackIndex);
         UpdateSoloButtons();
         UpdateMuteButtons();
     }

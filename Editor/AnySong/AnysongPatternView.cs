@@ -72,9 +72,9 @@ namespace Anysong
             _parent = parent;
             _parent.Clear();
 
-            var currentSelectionCurrentSection = AnysongEditorWindow.CurrentSelection.CurrentSection;
+            var currentSelectionCurrentSection = AnysongEditorWindowNew.CurrentSelection.CurrentSection;
             if (currentSelectionCurrentSection.IsNull()) return;
-            if (AnysongEditorWindow.CurrentSelection.CurrentSectionTrack.IsNull())
+            if (AnysongEditorWindowNew.CurrentSelection.CurrentSectionTrack.IsNull())
             {
                 foreach (var t in currentSelectionCurrentSection.tracks)
                 {
@@ -94,19 +94,19 @@ namespace Anysong
             else
             {
                 var trackElement = new VisualElement();
-                var track = AnysongEditorWindow.CurrentSelection.CurrentSectionTrack;
+                var track = AnysongEditorWindowNew.CurrentSelection.CurrentSectionTrack;
                 trackElement.Add(DrawPatternSteps(track, false));
                 _parent.Add(trackElement);
             }
 
             _currentPatternNoteIndex = 0;
             _isPercussionTrack =
-                AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
+                AnysongEditorWindowNew.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
                     sampleInstrument
                 && sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
             if (_isPercussionTrack)
                 SetPolyfonic(true);
-            _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.voices == 1;
+            _isMonoVoice = AnysongEditorWindowNew.CurrentSelection.CurrentSongTrackSettings.voices == 1;
 
 
             AddCallbacks();
@@ -233,23 +233,23 @@ namespace Anysong
 
         static void MoveStep(AnysongPatternStep copy, int stepIndex)
         {
-            _preMovePatternStepCopy = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
-            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy;
-            _currentSelectedPatternStep = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
+            _preMovePatternStepCopy = AnysongEditorWindowNew.CurrentSelection.CurrentPattern.steps[stepIndex];
+            AnysongEditorWindowNew.CurrentSelection.CurrentPattern.steps[stepIndex] = copy;
+            _currentSelectedPatternStep = AnysongEditorWindowNew.CurrentSelection.CurrentPattern.steps[stepIndex];
             Refresh();
         }
 
 
         static void PasteStep(AnysongPatternStep copy, int stepIndex)
         {
-            AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex] = copy.Clone();
-            _currentSelectedPatternStep = AnysongEditorWindow.CurrentSelection.CurrentPattern.steps[stepIndex];
+            AnysongEditorWindowNew.CurrentSelection.CurrentPattern.steps[stepIndex] = copy.Clone();
+            _currentSelectedPatternStep = AnysongEditorWindowNew.CurrentSelection.CurrentPattern.steps[stepIndex];
             Refresh();
         }
 
         private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, bool compact)
         {
-            int patternIndex = AnysongEditorWindow.CurrentSelection.CurrentPatternIndex;
+            int patternIndex = AnysongEditorWindowNew.CurrentSelection.CurrentPatternIndex;
 
             if (patternIndex > currentSectionTrack.patterns.Count - 1) patternIndex = 0;
             var stepButtonsHolder = new VisualElement
@@ -263,7 +263,7 @@ namespace Anysong
             int rowCount = 1;
             if (!compact) rowCount = 15;
             int noteStartIndex = _currentPatternNoteIndex;
-            if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
+            if (AnysongEditorWindowNew.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
                 sampleInstrument)
             {
                 if (sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion)
@@ -288,7 +288,7 @@ namespace Anysong
                     }
                 };
                 string text = "";
-                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
+                if (AnysongEditorWindowNew.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
                     {
                         clipSelectType: AnywhenSampleInstrument.ClipSelectType.Percussion
                     })
@@ -367,7 +367,7 @@ namespace Anysong
             }
 
 
-            if (_stepViewCullumns.TryGetValue(AnysongEditorWindow.GetPlaybackStepIndexForCurrent(), out var stepViews))
+            if (_stepViewCullumns.TryGetValue(AnysongEditorWindowNew.GetPlaybackStepIndexForCurrent(), out var stepViews))
             {
                 foreach (var stepView in stepViews)
                 {
@@ -392,7 +392,7 @@ namespace Anysong
             }
 
             _parent.Clear();
-            var track = AnysongEditorWindow.CurrentSelection.CurrentSectionTrack;
+            var track = AnysongEditorWindowNew.CurrentSelection.CurrentSectionTrack;
             _parent.Add(DrawPatternSteps(track, false));
             AddCallbacks();
         }
