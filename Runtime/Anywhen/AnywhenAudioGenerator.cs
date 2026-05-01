@@ -82,6 +82,29 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song?.RemoveListeners();
     }
 
+    public void SwapTrackInstrument(AnywhenSampleInstrument newInstrment, int trackTypeIndex)
+    {
+        NativeArray<AnysongTrackSettings.Unmanaged> trackSettings =
+            new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
+
+        for (int i = 0; i < song.Tracks.Count; i++)
+        {
+            trackSettings[i] = song.Tracks[i].ToUnmanaged();
+            var trackSettingsUnmanaged = trackSettings[i];
+            if (trackSettingsUnmanaged.trackTypeIndex == trackTypeIndex)
+            {
+                trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
+            }
+
+            trackSettings[i] = trackSettingsUnmanaged;
+        }
+
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerSoundsReloadMsg(trackSettings));
+        }
+    }
+
     private void SwapSounds(AnysongObject sourceSong)
     {
         if (!sourceSong)
@@ -203,7 +226,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             Debug.Log("returning 0");
             return 0;
         }
-        
+
         return _sharedPatternIndices[trackIndex];
     }
 
