@@ -76,6 +76,16 @@ namespace Anywhen
         }
 
 
+        public static void Play()
+        {
+            _instance._metronome.Play();
+        }
+
+        public static void Stop()
+        {
+            _instance._metronome.Stop();
+        }
+
         void GetAnyComponents()
         {
             TryGetComponent(out _conductor);

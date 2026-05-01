@@ -21,6 +21,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public delegate void MetronomeTickDelegate(MetronomeTickEvent tick);
 
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
+    internal static readonly SharedStatic<double> SharedNextTime16 = SharedStatic<double>.GetOrCreate<AnywhenAudioMetronome, SharedNextTime16Key>();
+    private struct SharedNextTime16Key {}
     private GeneratorInstance _generatorInstance;
     [SerializeField] private int bpm = 120;
     public static int CurrentBPM;
@@ -50,6 +52,22 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static event Action OnBar;
 
 
+    public void Stop()
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new StopMsg());
+        }
+    }
+
+    public void Play()
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance, new PlayMsg());
+        }
+    }
+
     private void Awake()
     {
         if (AnywhenRuntime.Metronome)
@@ -58,11 +76,11 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         }
     }
 
-    public void SetTempo(int newBPM)
+    public void SetTempo(int newTempo)
     {
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new SetBpmMsg(newBPM));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new SetBpmMsg(newTempo));
         }
         else
         {
@@ -76,6 +94,12 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new RestartMsg());
         }
+    }
+
+    public static float GetTimeToNext16()
+    {
+        double timeToNext = SharedNextTime16.Data - AudioSettings.dspTime;
+        return timeToNext > 0 ? (float)timeToNext : 0f;
     }
 
     public GeneratorInstance CreateInstance(ControlContext context, AudioFormat? nestedFormat,
@@ -95,7 +119,17 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class RestartMsg { }
+    public class RestartMsg
+    {
+    }
+
+    public class StopMsg
+    {
+    }
+
+    public class PlayMsg
+    {
+    }
 
     [BurstCompile(CompileSynchronously = true)]
     private struct Processor : GeneratorInstance.IRealtime
@@ -106,6 +140,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         private double _sub16Length;
         private double _nextTime16;
         private int _sub16Count;
+        private bool _isPlaying;
 
         private GeneratorInstance.Setup _setup;
 
@@ -128,6 +163,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             _sub16Length = (60.0 / _bpm) * 0.25;
             _nextTime16 = -1;
             _sub16Count = 0;
+            _isPlaying = true;
         }
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
@@ -148,12 +184,27 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     _nextTime16 = -1;
                     _sub16Count = 0;
                 }
+
+                if (element.TryGetData(out PlayState playState))
+                {
+                    _isPlaying = playState.isPlaying;
+                    if (_isPlaying)
+                    {
+                        _nextTime16 = -1;
+                        _sub16Count = 0;
+                    }
+                }
             }
         }
 
         public GeneratorInstance.Result Process(in RealtimeContext ctx, ProcessorInstance.Pipe pipe, ChannelBuffer buffer,
             GeneratorInstance.Arguments args)
         {
+            if (!_isPlaying)
+            {
+                return buffer.frameCount;
+            }
+
             if (_nextTime16 < 0)
             {
                 _nextTime16 = (double)ctx.dspTime * _invSampleRate;
@@ -169,6 +220,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 _nextTime16 += _sub16Length;
 
                 SharedSub16Count.Data = _sub16Count;
+                SharedNextTime16.Data = _nextTime16;
             }
 
             return buffer.frameCount;
@@ -267,6 +319,18 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
+                if (message.Is<StopMsg>())
+                {
+                    pipe.SendData(context, new PlayState { isPlaying = false });
+                    return ProcessorInstance.Response.Handled;
+                }
+
+                if (message.Is<PlayMsg>())
+                {
+                    pipe.SendData(context, new PlayState { isPlaying = true });
+                    return ProcessorInstance.Response.Handled;
+                }
+
                 return ProcessorInstance.Response.Unhandled;
             }
         }
@@ -277,7 +341,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         public int bpm;
     }
 
-    public struct RestartState { }
+    public struct RestartState
+    {
+    }
+
+    public struct PlayState
+    {
+        public bool isPlaying;
+    }
 }
 
 public struct MetronomeTickEvent
