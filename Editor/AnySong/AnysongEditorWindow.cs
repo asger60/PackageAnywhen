@@ -247,6 +247,9 @@ namespace Anysong
             AnysongTracksView.Clear();
             AnysongTransportView.Clear();
             AnysongInspectorView.Clear();
+            AnywhenAudioMetronome.OnBar -= OnBar;
+            AnywhenAudioMetronome.OnAudioTick -= OnTick16;
+
         }
 
         public static void SetTestIntensity(float value)

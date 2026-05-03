@@ -71,42 +71,37 @@ namespace Anysong
         {
             if (evt.button == 0)
             {
-                switch (AnysongPatternView.CurrentEditMode)
+                var currentNote = _patternStep.GetNote(_noteIndex);
+                if (!currentNote.IsNull())
                 {
-                    case AnysongPatternView.EditModes.NotePitch:
-                        var currentNote = _patternStep.GetNote(_noteIndex);
-                        if (!currentNote.IsNull())
-                        {
-                            _patternStep.RemoveNote(currentNote);
-                            break;
-                        }
-
-                        if (_patternStep.NoteOn)
-                        {
-                            if (!_polyfonic)
-                            {
-                                _patternStep.ClearNotes();
-                            }
-
-                            _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
-                        }
-                        else
-                        {
-                            _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
-                        }
-
-                        AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
-
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    _patternStep.RemoveNote(currentNote);
+                    AnysongPatternView.Refresh();   
+                    Debug.Log("Remove Note");
                 }
-            }
+                else
+                {
+                    if (_patternStep.NoteOn)
+                    {
+                        if (!_polyfonic)
+                        {
+                            _patternStep.ClearNotes();
+                        }
 
-            AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
-                AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
-                AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
+                    }
+                    else
+                    {
+                        _patternStep.AddNote(new AnysongPatternNote(_noteIndex));
+                    }
+
+                    AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
+                }
+
+                AnysongEditorWindow.CurrentSong.RefreshMidi(
+                    AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+            }
 
 
             if (evt.button == 1)
@@ -126,6 +121,7 @@ namespace Anysong
             _button.RemoveFromClassList("pattern-step-note-poly");
             var thisNote = _patternStep.GetNote(_noteIndex);
             if (thisNote.IsNull() || !_patternStep.NoteOn) return;
+            
             switch (AnysongPatternView.CurrentEditMode)
             {
                 case AnysongPatternView.EditModes.NotePitch:

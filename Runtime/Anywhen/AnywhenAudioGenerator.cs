@@ -384,14 +384,43 @@ public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
+
+                    // Preserve internal indices of all patterns in the track
+                    var internalIndices = new int[track.Patterns.Length];
+                    for (int i = 0; i < track.Patterns.Length; i++)
+                    {
+                        internalIndices[i] = track.Patterns[i].internalIndex;
+                    }
+
+                    // Properly dispose the old NativeArray to avoid memory leaks
+                    if (track.Patterns.IsCreated)
+                    {
+                        for (int i = 0; i < track.Patterns.Length; i++)
+                        {
+                            if (track.Patterns[i].triggerChances.IsCreated) track.Patterns[i].triggerChances.Dispose();
+                            if (track.Patterns[i].steps.IsCreated) track.Patterns[i].steps.Dispose();
+                        }
+
+                        track.Patterns.Dispose();
+                    }
+
+                    // Create new patterns from the song data
                     track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
 
+                    // Restore internal indices for all patterns
+                    for (int i = 0; i < track.Patterns.Length; i++)
+                    {
+                        var p = track.Patterns[i];
+                        if (i < internalIndices.Length)
+                        {
+                            p.internalIndex = internalIndices[i];
+                        }
 
-                    var pattern = track.Patterns[patternIndex];
-                    var previousInternalIndex = track.Patterns[patternIndex].internalIndex;
-                    pattern = song.Sections[sectionIndex].tracks[trackIndex].patterns[patternIndex].ToUnmanaged();
-                    pattern.internalIndex = previousInternalIndex;
-                    track.Patterns[patternIndex] = pattern;
+                        track.Patterns[i] = p;
+                    }
+
+                    // Update the CurrentPattern reference in the track
+                    track.CurrentPattern = track.Patterns[track.CurrentPatternIndex];
 
                     section.Tracks[trackIndex] = track;
                     sectionsRef[sectionIndex] = section;
