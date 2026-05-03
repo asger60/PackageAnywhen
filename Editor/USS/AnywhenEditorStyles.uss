@@ -78,12 +78,12 @@
 }
 
 .pattern-step-note-mono {
-    background-color: rgb(93, 156, 168);
+    background-color: var(--color-note-mono);
     color: rgb(0, 0, 0);
 }
 
 .pattern-step-note-poly {
-    background-color: rgb(195, 146, 78);
+    background-color: var(--color-note-poly);
     color: rgb(0, 0, 0);
 }
 
@@ -169,7 +169,7 @@ Button:hover {
     border-bottom-left-radius: 2px;
     height: 20px;
     background-color: rgb(0, 0, 0);
-    color: rgb(102, 177, 229);
+    color: var(--color-accent);
     -unity-font-style: bold;
 }
 
@@ -188,4 +188,29 @@ Button:hover {
 
 #Slider {
     background-color: rgb(255, 255, 255);
+}
+
+.pattern-steps-holder {
+    align-items: center;
+}
+
+.pattern-track-element {
+    height: 45px;
+}
+
+.pattern-step-row {
+    width: 100%;
+    align-items: center;
+    flex-direction: row;
+    height: 40px;
+    margin-bottom: 5px;
+}
+
+.pattern-row-label {
+    align-content: center;
+    align-self: flex-end;
+    height: 15px;
+    width: 9px;
+    font-size: 9px;
+    rotate: -90deg;
 }

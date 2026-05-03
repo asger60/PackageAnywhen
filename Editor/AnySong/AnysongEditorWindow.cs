@@ -650,6 +650,7 @@ namespace Anysong
                     AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty,
                         () =>
                         {
+                            AnysongPatternView.Refresh();
                             CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
                                 CurrentSelection.CurrentPatternIndex);
                         });
@@ -781,6 +782,8 @@ namespace Anysong
             _currentSelection.SetNoteIndex(patternStep.GetArrayIndex(noteIndex));
             AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty, () =>
             {
+                AnysongPatternView.Refresh();
+
                 CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
                     CurrentSelection.CurrentPatternIndex);
             });

@@ -78,13 +78,8 @@ namespace Anysong
             {
                 foreach (var t in currentSelectionCurrentSection.tracks)
                 {
-                    var trackElement = new VisualElement
-                    {
-                        style =
-                        {
-                            height = 45,
-                        }
-                    };
+                    var trackElement = new VisualElement();
+                    trackElement.AddToClassList("pattern-track-element");
 
                     var track = t;
                     trackElement.Add(DrawPatternSteps(track, true));
@@ -249,17 +244,15 @@ namespace Anysong
 
         private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, bool compact)
         {
+            Debug.Log("drawPatternSteps");
             int patternIndex = AnysongEditorWindow.CurrentSelection.CurrentPatternIndex;
 
             if (patternIndex > currentSectionTrack.patterns.Count - 1) patternIndex = 0;
             var stepButtonsHolder = new VisualElement
             {
-                name = "StepButtonsHolder",
-                style =
-                {
-                    alignItems = Align.Center,
-                }
+                name = "StepButtonsHolder"
             };
+            stepButtonsHolder.AddToClassList("pattern-steps-holder");
             int rowCount = 1;
             if (!compact) rowCount = 15;
             int noteStartIndex = _currentPatternNoteIndex;
@@ -277,16 +270,9 @@ namespace Anysong
             {
                 VisualElement rowElement = new VisualElement()
                 {
-                    name = "StepButtonsRow",
-                    style =
-                    {
-                        width = new StyleLength(new Length(100, LengthUnit.Percent)),
-                        alignItems = Align.Center,
-                        flexDirection = FlexDirection.Row,
-                        height = 40,
-                        marginBottom = 5
-                    }
+                    name = "StepButtonsRow"
                 };
+                rowElement.AddToClassList("pattern-step-row");
                 string text = "";
                 if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
                     {
@@ -302,30 +288,18 @@ namespace Anysong
 
                 Label rowLabel = new Label
                 {
-                    text = text,
-                    style =
-                    {
-                        alignContent = Align.Center,
-                        alignSelf = Align.FlexEnd,
-                        height = 15,
-                        width = 9,
-                        fontSize = 9,
-                        rotate = new StyleRotate(new Rotate(-90))
-                    }
+                    text = text
                 };
+                rowLabel.AddToClassList("pattern-row-label");
                 rowElement.Add(rowLabel);
                 if (currentSectionTrack.patterns.Count > 0)
                 {
                     for (int stepIndex = 0; stepIndex < 16; stepIndex++)
                     {
-                        //if (currentSectionTrack.patterns[patternIndex].IsNull() ||
-                        //    currentSectionTrack.patterns[patternIndex].steps.Count == 0) continue;
-
                         var thisStep = currentSectionTrack.patterns[patternIndex].steps[stepIndex];
                         var stepButton = new AnysongPatternStepButton(rowElement, thisStep, stepIndex, noteStartIndex + rowIndex,
-                            _polyfonic,
-                            noteStartIndex, noteStartIndex + rowCount);
-                        
+                            _polyfonic, noteStartIndex, noteStartIndex + rowCount);
+
                         _stepViewToStep.Add(stepButton, thisStep);
                         if (!_stepViewCullumns.TryGetValue(stepIndex, out var stepViews))
                         {
@@ -335,10 +309,6 @@ namespace Anysong
 
                         stepViews.Add(stepButton);
                         _allStepButtons.Add(stepButton);
-
-                        foreach (var thisNote in thisStep.stepNotes)
-                        {
-                        }
                     }
                 }
 

@@ -98,18 +98,6 @@ namespace Anysong
                         AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
 
                         break;
-                    //case AnysongPatternView.EditModes.NoteVelocity:
-                    //    _patternStep.velocity = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    //    break;
-                    //case AnysongPatternView.EditModes.NoteLength:
-                    //    _patternStep.duration = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    //    break;
-                    //case AnysongPatternView.EditModes.NoteChance:
-                    //    _patternStep.chance = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    //    break;
-                    //case AnysongPatternView.EditModes.NoteWeights:
-                    //    _patternStep.mixWeight = Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex + 1);
-                    //    break;
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -137,44 +125,30 @@ namespace Anysong
             _button.RemoveFromClassList("pattern-step-note-mono");
             _button.RemoveFromClassList("pattern-step-note-poly");
             var thisNote = _patternStep.GetNote(_noteIndex);
+            if (thisNote.IsNull() || !_patternStep.NoteOn) return;
             switch (AnysongPatternView.CurrentEditMode)
             {
                 case AnysongPatternView.EditModes.NotePitch:
-                    if (!thisNote.IsNull())
-                    {
-                        //if (_patternStep.chordNotes.Contains((_patternStep.rootNote * -1) + _noteIndex))
-                        //{
-                        _button.AddToClassList(thisNote.velocity > 50 ? "pattern-step-note-mono" : "pattern-step-note-poly");
-                        //}
-                    }
+                    _button.style.backgroundColor = AnywhenColors.NoteVelocity;
+
 
                     break;
                 case AnysongPatternView.EditModes.NoteVelocity:
-                    //if (_patternStep.NoteOn && _patternStep.velocity > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    //{
-                    //    _button.AddToClassList("pattern-step-note-mono");
-                    //}
-
+                    _button.style.backgroundColor = AnywhenColors.GetNoteColor(AnywhenColors.NoteVelocity, thisNote.velocity);
                     break;
                 case AnysongPatternView.EditModes.NoteLength:
-                    //if (_patternStep.NoteOn && _patternStep.duration > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    //{
-                    //    _button.AddToClassList("pattern-step-note-mono");
-                    //}
+                    _button.style.backgroundColor =
+                        AnywhenColors.GetNoteColor(AnywhenColors.NoteLength, thisNote.duration / 0.5f);
+
 
                     break;
                 case AnysongPatternView.EditModes.NoteChance:
-                    //if (_patternStep.NoteOn && _patternStep.chance > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    //{
-                    //    _button.AddToClassList("pattern-step-note-mono");
-                    //}
+                    _button.style.backgroundColor = AnywhenColors.GetNoteColor(AnywhenColors.NoteChance, thisNote.chance);
+
 
                     break;
                 case AnysongPatternView.EditModes.NoteWeights:
-                    //if (_patternStep.NoteOn && _patternStep.mixWeight > Mathf.InverseLerp(_gridMin, _gridMax, _noteIndex))
-                    //{
-                    //    _button.AddToClassList("pattern-step-note-mono");
-                    //}
+                    _button.style.backgroundColor = AnywhenColors.GetNoteColor(AnywhenColors.NoteWeight, thisNote.mixWeight);
 
                     break;
                 default:

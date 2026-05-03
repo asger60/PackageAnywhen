@@ -1,13 +1,21 @@
+:root {
+    --color-note-mono: rgb(93, 156, 168);
+    --color-note-poly: rgb(195, 146, 78);
+    --color-accent: rgb(102, 177, 229);
+    --color-bg-dark: rgb(31, 31, 31);
+    --color-border: rgb(149, 149, 149);
+}
+
 .textbody {
     font-size: 12px;
     color: rgb(226, 226, 226);
 }
 
 .border {
-    border-left-color: rgb(149, 149, 149);
-    border-right-color: rgb(149, 149, 149);
-    border-top-color: rgb(149, 149, 149);
-    border-bottom-color: rgb(149, 149, 149);
+    border-left-color: var(--color-border);
+    border-right-color: var(--color-border);
+    border-top-color: var(--color-border);
+    border-bottom-color: var(--color-border);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -71,10 +79,10 @@
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-left-color: rgb(149, 149, 149);
-    border-right-color: rgb(149, 149, 149);
-    border-top-color: rgb(149, 149, 149);
-    border-bottom-color: rgb(149, 149, 149);
+    border-left-color: var(--color-border);
+    border-right-color: var(--color-border);
+    border-top-color: var(--color-border);
+    border-bottom-color: var(--color-border);
     background-color: rgba(0, 0, 0, 0);
     flex-grow: 1;
 }
