@@ -10,7 +10,7 @@ namespace Synth
 {
     public class AudioProcessorInspector : Editor
     {
-        private class FilterPreviewElement : VisualElement
+        public class FilterPreviewElement : VisualElement
         {
             private AudioProcessorSettings _settings;
             private const int Resolution = 50;
@@ -289,7 +289,7 @@ namespace Synth
                     element.Add(CreateModRoutingUI("Cutoff Mod",
                         () => settings.lowPassSettings.cutoffMod,
                         v => settings.lowPassSettings.cutoffMod = v,
-                        preview, onChanged));
+                        preview, onChanged, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BandPassFilter:
@@ -331,7 +331,7 @@ namespace Synth
                     element.Add(CreateModRoutingUI("Cutoff Mod",
                         () => settings.ladderSettings.cutoffMod,
                         v => settings.ladderSettings.cutoffMod = v,
-                        preview, onChanged));
+                        preview, onChanged, onChanged));
                     break;
 
                 case AudioProcessorSettings.FilterTypes.BitcrushFilter:
@@ -453,12 +453,13 @@ namespace Synth
             return (s, () => s.SetValueWithoutNotify(getter()));
         }
 
-        private static VisualElement CreateModRoutingUI(
+        public static VisualElement CreateModRoutingUI(
             string label,
             Func<SynthFilterBase.ModRouting[]> getter,
             Action<SynthFilterBase.ModRouting[]> setter,
             FilterPreviewElement preview,
-            Action onChanged)
+            Action onParameterChanged,
+            Action onArrayChanged)
         {
             var root = new VisualElement();
             root.style.marginTop = 4;
@@ -495,8 +496,8 @@ namespace Synth
                         var arr = getter();
                         arr[idx].modSource = (SynthFilterBase.ModRouting.ModSources)evt.newValue;
                         setter(arr);
-                        preview.Refresh();
-                        onChanged?.Invoke();
+                        preview?.Refresh();
+                        onParameterChanged?.Invoke();
                     });
 
                     // Amount slider  (-1 → +1)
@@ -510,8 +511,8 @@ namespace Synth
                         var arr = getter();
                         arr[idx].modAmount = evt.newValue;
                         setter(arr);
-                        preview.Refresh();
-                        onChanged?.Invoke();
+                        preview?.Refresh();
+                        onParameterChanged?.Invoke();
                     });
 
                     // Remove button
@@ -522,8 +523,8 @@ namespace Synth
                         list.RemoveAt(idx);
                         setter(list.ToArray());
                         Rebuild();
-                        preview.Refresh();
-                        onChanged?.Invoke();
+                        preview?.Refresh();
+                        onArrayChanged?.Invoke();
                     }) { text = "✕" };
                     removeBtn.style.width = 20;
                     removeBtn.style.paddingLeft = 0;
@@ -543,8 +544,8 @@ namespace Synth
                     list.Add(new SynthFilterBase.ModRouting()); // default source + 0 amount
                     setter(list.ToArray());
                     Rebuild();
-                    preview.Refresh();
-                    onChanged?.Invoke();
+                    preview?.Refresh();
+                    onArrayChanged?.Invoke();
                 }) { text = "+ Add Mod" };
                 addBtn.style.marginTop = 2;
                 listContainer.Add(addBtn);

@@ -36,6 +36,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     private int _trackTypeIndex;
     public int TrackTypeIndex => _trackTypeIndex;
     public bool IsMute;
+    private NativeArray<SynthFilterBase.ModRouting> _amplitudeMod;
+
 
     public AnysongTrack(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
     {
@@ -47,6 +49,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         CreateTrack(settings, sampleRate);
         UpdateSettings(settings);
         _nextEvent = new AnywhenAudioGenerator.PlaybackEvent(new SimpleNoteEvent(), 0);
+        _amplitudeMod = settings.amplitudeMod;
     }
 
     public void SwapInstrument(AnywhenSampleInstrument.Unmanaged newInstrument)
@@ -57,9 +60,13 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             for (int i = 0; i < _voices.Length; i++)
             {
                 var voice = _voices[i];
-                voice.UpdateVoiceSettings(_sampleInstrument, _settings.TrackAudioEnvelope1.ToUnmanaged(),
+                voice.UpdateVoiceSettings(
+                    _sampleInstrument,
+                    _settings.TrackAudioEnvelope1.ToUnmanaged(),
                     _settings.audioSourceType,
-                    _settings.synthOscillatorType);
+                    _settings.synthOscillatorType,
+                    _settings.pitchMod,
+                    _settings.trackPitch);
                 _voices[i] = voice;
             }
         }
@@ -107,6 +114,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         {
             _trackFilters[i] = new TrackAudioProcessor(_sampleRate, settings.trackFilters[i]);
         }
+
+        _amplitudeMod = settings.amplitudeMod;
     }
 
     private void CreateEffects(AnysongTrackSettings.Unmanaged settings)
@@ -147,10 +156,12 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             {
                 var voice = _voices[i];
                 voice.UpdateVoiceSettings(_sampleInstrument, settings.TrackAudioEnvelope1.ToUnmanaged(), settings.audioSourceType,
-                    settings.synthOscillatorType);
+                    settings.synthOscillatorType, _settings.pitchMod, _settings.trackPitch);
                 _voices[i] = voice;
             }
         }
+
+        _amplitudeMod = settings.amplitudeMod;
     }
 
     internal void HandlePlaybackEvent(AnywhenAudioGenerator.PlaybackEvent playbackEvent)
@@ -237,7 +248,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _voices[i] = voice;
         }
 
-        //clipAmplitude *= TrackEnvelope1Value;
+        clipAmplitude *= 1 + GetModSignal(_amplitudeMod);
 
         if (_trackFilters.IsCreated)
         {

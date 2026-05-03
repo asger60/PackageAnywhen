@@ -55,7 +55,8 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), () =>
             {
                 AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
-                    AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+                    AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
                 didUpdate.Invoke();
             }));
             _parent.Add(Spacer());
@@ -173,14 +174,23 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"),
                 () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volumeMods"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+
+            var (el_volume, ref_volume) = CreateModRoutingUIBound("Volume Modulation",
+                () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods,
+                v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods = v,
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
+                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+            _parent.Add(el_volume);
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),
                 () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("pitchMods"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            var (el_pitch, ref_pitch) = CreateModRoutingUIBound("Pitch Modulation",
+                () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.pitchMods,
+                v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.pitchMods = v,
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+            _parent.Add(el_pitch);
 
 
             _parent.Add(SectionHeader("Modulation"));
@@ -223,7 +233,8 @@ namespace Anysong
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
                 var filterVisualElement =
-                    AudioProcessorInspector.Draw(audioProcessorSettings, () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+                    AudioProcessorInspector.Draw(audioProcessorSettings,
+                        () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
                 filterElement.Add(filterVisualElement);
                 AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
                 filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
@@ -242,7 +253,8 @@ namespace Anysong
             addFilterButton.clicked += () =>
             {
                 var menu = new GenericMenu();
-                foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(typeof(AudioProcessorSettings.FilterTypes)))
+                foreach (AudioProcessorSettings.FilterTypes filterType in Enum.GetValues(
+                             typeof(AudioProcessorSettings.FilterTypes)))
                 {
                     menu.AddItem(new GUIContent(filterType.ToString()), false, () =>
                     {
@@ -400,7 +412,9 @@ namespace Anysong
 
                             patternButton.clicked += () =>
                             {
-                                pattern.triggerChances[columnIndex] = pattern.triggerChances[columnIndex] > 0 ? 0 : GetCollumnMaxValue(selection, columnIndex);
+                                pattern.triggerChances[columnIndex] = pattern.triggerChances[columnIndex] > 0
+                                    ? 0
+                                    : GetCollumnMaxValue(selection, columnIndex);
                                 AdjustPatternWeights(selection, columnIndex);
                             };
 
@@ -417,10 +431,7 @@ namespace Anysong
                             };
 
 
-                            chanceSlider.RegisterValueChangedCallback(evt =>
-                            {
-                                AdjustPatternWeights(selection, columnIndex);
-                            });
+                            chanceSlider.RegisterValueChangedCallback(evt => { AdjustPatternWeights(selection, columnIndex); });
                             chanceSlider.BindProperty(property);
 
                             patternRow.Add(patternButton);
@@ -495,9 +506,10 @@ namespace Anysong
                     anysongPattern.triggerChances[columnIndex] = normalizedWeight;
                 }
             }
+
             AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                 AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
-            
+
             AnysongEditorWindow.CurrentSong.RefreshSettings();
         }
 
@@ -585,6 +597,17 @@ namespace Anysong
                 didUpdate?.Invoke();
             });
             return propertyField;
+        }
+
+        private static (VisualElement, Action) CreateModRoutingUIBound(
+            string label,
+            Func<Anywhen.Synth.Filter.SynthFilterBase.ModRouting[]> getter,
+            Action<Anywhen.Synth.Filter.SynthFilterBase.ModRouting[]> setter,
+            Action onParameterChanged,
+            Action onArrayChanged)
+        {
+            var ui = AudioProcessorInspector.CreateModRoutingUI(label, getter, setter, null, onParameterChanged, onArrayChanged);
+            return (ui, () => { });
         }
     }
 }

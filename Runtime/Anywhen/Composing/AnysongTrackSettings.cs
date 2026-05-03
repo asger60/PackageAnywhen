@@ -45,16 +45,10 @@ namespace Anywhen.Composing
             Saw,
             Square,
         }
-        
+
         public SynthOscillatorTypes synthOscillatorType;
-        
-        //public bool monophonic;
         [Range(1, 16)] public int voices = 1;
-        
-
         [AnywhenTrackType] public int trackTypeIndex;
-
-
         [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
 
@@ -82,7 +76,6 @@ namespace Anywhen.Composing
                 volume = volume,
                 trackAudioEnvelope1 = trackAudioEnvelope1,
                 trackAudioLFO1 = trackAudioLFO1,
-                //trackType = trackType,
                 TrackPitch = TrackPitch,
             };
             return clone;
@@ -92,12 +85,15 @@ namespace Anywhen.Composing
         {
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
-            
+
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope1;
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
             public AudioSourceType audioSourceType;
+            public NativeArray<SynthFilterBase.ModRouting> amplitudeMod;
+            public NativeArray<SynthFilterBase.ModRouting> pitchMod;
+
 
             public SynthOscillatorTypes synthOscillatorType;
 
@@ -132,7 +128,9 @@ namespace Anywhen.Composing
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
                 audioSourceType = audioSourceType,
-                synthOscillatorType = synthOscillatorType
+                synthOscillatorType = synthOscillatorType,
+                amplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
+                pitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent)
             };
         }
 
@@ -140,7 +138,6 @@ namespace Anywhen.Composing
         public void Reset()
         {
         }
-
 
 
         public void RemoveAudioProcessor(AudioProcessorSettings settings)

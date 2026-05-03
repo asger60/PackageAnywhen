@@ -73,7 +73,6 @@ namespace Anywhen.Synth
             if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
             {
                 float mod = anysongTrack.GetModSignal(_settings.cutoffMod); // (-1, 1)
-                // Map to exponential multiplier: -1 → 0.5x, 0 → 1x, +1 → 2x (±1 octave)
                 _frequencyMod = (float)System.Math.Pow(2.0, mod);
                 RecalculateS();
             }

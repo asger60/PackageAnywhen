@@ -54,23 +54,7 @@ namespace Anywhen
 
         public List<LoadedInstrument> LoadedInstruments = new List<LoadedInstrument>();
 
-        //public AnywhenInstrument GetInstrumentOfType(AnysongTrackSettings.AnyTrackTypes type)
-        //{
-        //    instruments = ShuffleArray(instruments);
-//
-        //    for (var i = 0; i < instruments.Length; i++)
-        //    {
-        //        var instrument = instruments[i];
-        //        if (instrument.InstrumentType == type)
-        //        {
-        //            return instrument;
-        //        }
-        //    }
-//
-        //    print("returning null");
-//
-        //    return null;
-        //}
+
 
         static T[] ShuffleArray<T>(T[] array)
         {
@@ -83,6 +67,7 @@ namespace Anywhen
 
         public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)
         {
+            if (!instrument) return;
             //if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
             var newLoadInstrument = new LoadedInstrument
             {
