@@ -157,7 +157,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
+        public float Process(float sample, AnysongTrack anysongTrack)
         {
             return HandleEnvelope();
         }

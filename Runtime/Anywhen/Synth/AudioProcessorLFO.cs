@@ -47,7 +47,7 @@ namespace Anywhen.Synth
 
         public void DoUpdate() { }
 
-        public float Process(float current, AnywhenAudioGenerator.Processor.Track track)
+        public float Process(float current, AnysongTrack anysongTrack)
         {
             // FIX 2: removed "_phase = current" — that was clobbering the
             //         phase accumulator with the audio input every single sample.

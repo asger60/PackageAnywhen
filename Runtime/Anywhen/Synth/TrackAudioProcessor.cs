@@ -68,18 +68,18 @@ namespace Anywhen.Synth
             }
         }
 
-        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
+        public float Process(float sample, AnysongTrack anysongTrack)
         {
             return _settings.filterType switch
             {
-                AudioProcessorSettings.FilterTypes.LowPassFilter => _lowPass.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.SaturatorFilter => _saturator.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.BandPassFilter => _bandPass.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.LadderFilter => _ladder.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.ChorusFilter => _chorus.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.DelayFilter => _delay.Process(sample, track),
-                AudioProcessorSettings.FilterTypes.ReverbFilter => _reverb.Process(sample, track),
+                AudioProcessorSettings.FilterTypes.LowPassFilter => _lowPass.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.SaturatorFilter => _saturator.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.BandPassFilter => _bandPass.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.LadderFilter => _ladder.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.ChorusFilter => _chorus.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.DelayFilter => _delay.Process(sample, anysongTrack),
+                AudioProcessorSettings.FilterTypes.ReverbFilter => _reverb.Process(sample, anysongTrack),
 
                 _ => sample
             };
@@ -126,7 +126,7 @@ namespace Anywhen.Synth
     {
         public void DoUpdate();
 
-        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track);
+        public float Process(float sample, AnysongTrack anysongTrack);
 
         public void SetGate(bool gate);
 

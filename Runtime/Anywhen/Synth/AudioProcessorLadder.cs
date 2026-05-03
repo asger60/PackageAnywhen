@@ -55,12 +55,12 @@
         {
         }
 
-        public float Process(float sample, AnywhenAudioGenerator.Processor.Track track)
+        public float Process(float sample, AnysongTrack anysongTrack)
         {
             _frequencyMod = 1f;
             if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
             {
-                float mod = track.GetModSignal(_settings.cutoffMod);
+                float mod = anysongTrack.GetModSignal(_settings.cutoffMod);
                 _frequencyMod = (float)System.Math.Pow(2.0, mod);
             }
 
