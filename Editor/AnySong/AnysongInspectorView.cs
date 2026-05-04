@@ -138,32 +138,19 @@ namespace Anysong
             trackTypeIndexProperty.label = "Track type";
             _parent.Add(trackTypeIndexProperty);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSourceType"), () =>
+            
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
             {
-                RefreshSourceSelection();
-                AnysongEditorWindow.CurrentSong.RefrestTrack();
+                AnysongEditorWindow.CurrentSong.RefreshSettings();
             }));
-
-            _sampleSettingsElement = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("instrument"),
-                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); });
-            _synthSettingsElement = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("synthOscillatorType"),
-                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); });
+            
+            
 
             _parent.Add(_sampleSettingsElement);
             _parent.Add(_synthSettingsElement);
 
-            RefreshSourceSelection();
 
-            void RefreshSourceSelection()
-            {
-                bool isSampleTrack = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.audioSourceType ==
-                                     AnysongTrackSettings.AudioSourceType.Sample;
-
-                _sampleSettingsElement.style.display = isSampleTrack ? DisplayStyle.Flex : DisplayStyle.None;
-                _synthSettingsElement.style.display = isSampleTrack ? DisplayStyle.None : DisplayStyle.Flex;
-            }
-
-
+            
             _parent.Add(SectionHeader("Instrument settings"));
 
 

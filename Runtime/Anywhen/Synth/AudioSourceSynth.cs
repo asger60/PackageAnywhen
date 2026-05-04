@@ -15,12 +15,17 @@
         {
         }
 
-        public void SetSettings(AudioSourceSettings.Unmanaged settings)
+        public void QueueNote(int noteIndex)
         {
-            _settings = settings.synthSourceSettings.ToUnmanaged();
+            
         }
 
-        public float Process(float sample)
+        public void SetSettings(AudioSourceSettings.Unmanaged settings)
+        {
+            _settings = settings.synthSourceSettings;
+        }
+
+        public float Process(float sample, float pitchMultiplier = 1)
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 

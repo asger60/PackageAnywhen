@@ -63,10 +63,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
                 var voice = _voices[i];
                 voice.UpdateVoiceSettings(
                     _settings.audioSources,
-                    _sampleInstrument,
                     _settings.TrackAudioEnvelope1.ToUnmanaged(),
-                    _settings.audioSourceType,
-                    _settings.synthOscillatorType,
                     _settings.pitchMod,
                     _settings.trackPitch);
                 _voices[i] = voice;
@@ -103,6 +100,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         {
             var voice = _voices[i];
             voice.Init(sampleRate);
+            voice.RecreateVoice(settings.audioSources);
             _voices[i] = voice;
         }
 
@@ -162,12 +160,9 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             {
                 var voice = _voices[i];
                 voice.UpdateVoiceSettings(
-                    _settings.audioSources, 
-                    _sampleInstrument, 
+                    settings.audioSources,
                     settings.TrackAudioEnvelope1.ToUnmanaged(),
-                    settings.audioSourceType,
-                    settings.synthOscillatorType, 
-                    _settings.pitchMod, 
+                    _settings.pitchMod,
                     _settings.trackPitch);
                 _voices[i] = voice;
             }

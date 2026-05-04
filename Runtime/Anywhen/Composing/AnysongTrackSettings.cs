@@ -94,12 +94,10 @@ namespace Anywhen.Composing
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
-            public AudioSourceType audioSourceType;
             public NativeArray<SynthFilterBase.ModRouting> amplitudeMod;
             public NativeArray<SynthFilterBase.ModRouting> pitchMod;
 
 
-            public SynthOscillatorTypes synthOscillatorType;
 
             public float trackPitch;
 
@@ -136,8 +134,6 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                audioSourceType = audioSourceType,
-                synthOscillatorType = synthOscillatorType,
                 amplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
                 pitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
                 audioSources = new NativeArray<AudioSourceSettings.Unmanaged>(sources, Allocator.Persistent),

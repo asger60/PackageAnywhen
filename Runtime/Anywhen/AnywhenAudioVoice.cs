@@ -4,27 +4,25 @@ using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
+using UnityEngine;
 
 
 public struct AnywhenAudioVoice
 {
     private double _scheduledStartTime, _scheduledEndTime;
-    private AnywhenNoteClip.Unmanaged _clipData;
-    private int _sampleCount;
-    private double _samplePosition;
     private bool _noteOn;
     private bool _noteQueued;
-    private float _clipPitch;
     private float _velocity;
     AudioProcessorEnvelope _voiceEnvelope;
-    private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
+
     private AudioProcessorSettings.EnvelopeSettings.Unmanaged _envelopeSettings;
     private NativeArray<SynthFilterBase.ModRouting> _pitchMod;
     public bool IsIdle => !_noteQueued;
     public double ScheduledStartTime => _scheduledStartTime;
     private float _trackPitch;
-    public NativeArray<TrackAudioSource> _audioSources;
+    private NativeArray<TrackAudioSource> _audioSources;
     int _sampleRate;
+    NativeArray<AudioSourceSettings.Unmanaged> _audioSourceSettings;
 
     public void Init(int sampleRate)
     {
@@ -36,24 +34,29 @@ public struct AnywhenAudioVoice
 
     public void UpdateVoiceSettings(
         NativeArray<AudioSourceSettings.Unmanaged> audioSourceSettings,
-        AnywhenSampleInstrument.Unmanaged sampleInstrument,
         AudioProcessorSettings.EnvelopeSettings.Unmanaged envelopeSettings,
-        AnysongTrackSettings.AudioSourceType audioSourceType,
-        AnysongTrackSettings.SynthOscillatorTypes oscillatorType,
         NativeArray<SynthFilterBase.ModRouting> pitchMod,
         float trackPitch)
     {
+        _envelopeSettings = envelopeSettings;
+        _pitchMod = pitchMod;
+        _trackPitch = trackPitch;
+        for (int i = 0; i < _audioSources.Length; i++)
+        {
+            _audioSources[i].UpdateSettings(audioSourceSettings[i]);
+        }
+        Debug.Log("Updated voice with: " + _audioSources.Length);
+    }
+
+    public void RecreateVoice(NativeArray<AudioSourceSettings.Unmanaged> audioSourceSettings)
+    {
         if (_audioSources.IsCreated) _audioSources.Dispose();
+        _audioSourceSettings = audioSourceSettings;
         _audioSources = new NativeArray<TrackAudioSource>(audioSourceSettings.Length, Allocator.Persistent);
         for (int i = 0; i < _audioSources.Length; i++)
         {
             _audioSources[i] = new TrackAudioSource(_sampleRate, audioSourceSettings[i]);
         }
-
-        _sampleInstrument = sampleInstrument;
-        _envelopeSettings = envelopeSettings;
-        _pitchMod = pitchMod;
-        _trackPitch = trackPitch;
     }
 
     internal float Process(double dspTime, in AnysongTrack anysongTrack)
@@ -61,53 +64,22 @@ public struct AnywhenAudioVoice
         float clipAmplitude = 0;
         if (_noteQueued && dspTime >= _scheduledStartTime)
         {
+            float pitchModSignal = anysongTrack.GetModSignal(_pitchMod);
+            float pitchMultiplier = _trackPitch * (float)Math.Pow(2.0, pitchModSignal);
+
             if (_audioSources.IsCreated)
             {
+                bool anyPlaying = false;
                 for (int i = 0; i < _audioSources.Length; i++)
                 {
                     var audioSource = _audioSources[i];
-                    clipAmplitude = audioSource.Process(clipAmplitude);
+                    clipAmplitude += audioSource.Process(clipAmplitude, pitchMultiplier);
+                    anyPlaying |= audioSource.IsSamplePlaying;
                     _audioSources[i] = audioSource;
                 }
-            }
 
-
-            int channels = _clipData.channels;
-            int frameCount = channels > 0 ? _sampleCount / channels : 0;
-
-            if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
-            {
-                int index = (int)_samplePosition;
-                float t = (float)(_samplePosition - index);
-
-                float frameAmplitude = 0;
-                bool canInterpolate = index < frameCount - 1;
-
-                for (int c = 0; c < channels; c++)
-                {
-                    float s0 = _clipData.clipSamples[index * channels + c];
-                    if (canInterpolate)
-                    {
-                        float s1 = _clipData.clipSamples[(index + 1) * channels + c];
-                        frameAmplitude += s0 + t * (s1 - s0);
-                    }
-                    else
-                    {
-                        frameAmplitude += s0;
-                    }
-                }
-
-                if (channels > 1)
-                    frameAmplitude /= channels;
-
-                clipAmplitude = frameAmplitude;
-                float pitchModSignal = anysongTrack.GetModSignal(_pitchMod);
-                float pitchMultiplier = (float)Math.Pow(2.0, pitchModSignal);
-                _samplePosition += _clipPitch * _trackPitch * pitchMultiplier;
-            }
-            else
-            {
-                _noteQueued = false;
+                if (!anyPlaying)
+                    _noteQueued = false;
             }
         }
 
@@ -123,11 +95,18 @@ public struct AnywhenAudioVoice
         _noteQueued = true;
         _scheduledStartTime = playbackEvent.ScheduledPlayTime;
         _scheduledEndTime = playbackEvent.ScheduledEndTime;
-        var clipSettings = _sampleInstrument.GetNoteClipSettings(playbackEvent.Note.noteIndex);
-        _clipData = clipSettings.NoteClipUnmanaged;
-        _clipPitch = clipSettings.clipPitch;
-        _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
-        _samplePosition = 0;
+
+        if (_audioSources.IsCreated)
+        {
+            for (int i = 0; i < _audioSources.Length; i++)
+            {
+                var audioSource = _audioSources[i];
+                audioSource.UpdateSettings(_audioSourceSettings[i]);
+                audioSource.QueueNote(playbackEvent.Note.noteIndex);
+                _audioSources[i] = audioSource;
+            }
+        }
+
         _velocity = playbackEvent.Note.velocity;
     }
 }

@@ -200,7 +200,7 @@ namespace Anywhen.SettingsObjects
         }
 
 
-        public  Unmanaged ToUnmanaged()
+        public Unmanaged ToUnmanaged()
         {
             lock (_random)
             {
@@ -421,5 +421,3 @@ namespace Anywhen.SettingsObjects
 #endif
     }
 }
-
-
