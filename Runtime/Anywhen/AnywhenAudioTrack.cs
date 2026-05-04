@@ -22,6 +22,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     private AnywhenAudioGenerator.PlaybackEvent _nextEvent;
     private NativeArray<TrackAudioProcessor> _trackFilters;
+
     private float TrackLFO1Value => _trackLFO1Value;
     private float TrackLFO2Value => _trackLFO2Value;
     private float TrackEnvelope1Value => _trackEnvelope1Value;
@@ -61,6 +62,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             {
                 var voice = _voices[i];
                 voice.UpdateVoiceSettings(
+                    _settings.audioSources,
                     _sampleInstrument,
                     _settings.TrackAudioEnvelope1.ToUnmanaged(),
                     _settings.audioSourceType,
@@ -95,6 +97,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     {
         if (_voices.IsCreated) _voices.Dispose();
         if (_trackFilters.IsCreated) _trackFilters.Dispose();
+
         _voices = new NativeArray<AnywhenAudioVoice>(settings.voices, Allocator.Persistent);
         for (int i = 0; i < _voices.Length; i++)
         {
@@ -115,11 +118,13 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _trackFilters[i] = new TrackAudioProcessor(_sampleRate, settings.trackFilters[i]);
         }
 
+
         _amplitudeMod = settings.amplitudeMod;
     }
 
     private void CreateEffects(AnysongTrackSettings.Unmanaged settings)
     {
+        if (_trackFilters.IsCreated) _trackFilters.Dispose();
         _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
         for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -127,6 +132,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _trackFilters[i] = new TrackAudioProcessor(_sampleRate, settings.trackFilters[i]);
         }
     }
+
 
     void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
     {
@@ -155,8 +161,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             for (int i = 0; i < _voices.Length; i++)
             {
                 var voice = _voices[i];
-                voice.UpdateVoiceSettings(_sampleInstrument, settings.TrackAudioEnvelope1.ToUnmanaged(), settings.audioSourceType,
-                    settings.synthOscillatorType, _settings.pitchMod, _settings.trackPitch);
+                voice.UpdateVoiceSettings(
+                    _settings.audioSources, 
+                    _sampleInstrument, 
+                    settings.TrackAudioEnvelope1.ToUnmanaged(),
+                    settings.audioSourceType,
+                    settings.synthOscillatorType, 
+                    _settings.pitchMod, 
+                    _settings.trackPitch);
                 _voices[i] = voice;
             }
         }
@@ -224,6 +236,9 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         if (!_voices.IsCreated)
             return 0;
 
+        float clipAmplitude = 0;
+
+
         _trackLFO1Value = _trackLFO1.Process((float)dspTime, this);
         _trackLFO2Value = _trackLFO2.Process((float)dspTime, this);
         _trackEnvelope1Value = _trackEnvelope1.Process((float)dspTime, this);
@@ -240,7 +255,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _trackEnvelope2.SetGate(false);
         }
 
-        float clipAmplitude = 0;
+
         for (int i = 0; i < _voices.Length; i++)
         {
             var voice = _voices[i];

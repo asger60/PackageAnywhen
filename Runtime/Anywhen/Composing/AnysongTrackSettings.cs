@@ -11,6 +11,9 @@ namespace Anywhen.Composing
     [Serializable]
     public class AnysongTrackSettings
     {
+        
+        public AudioSourceSettings[] audioSources;
+        
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
@@ -83,6 +86,7 @@ namespace Anywhen.Composing
 
         public struct Unmanaged
         {
+            public NativeArray<AudioSourceSettings.Unmanaged> audioSources;
             public float volume;
             public AnywhenSampleInstrument.Unmanaged instrument;
 
@@ -114,6 +118,11 @@ namespace Anywhen.Composing
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();
             }
+            var sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Length, Allocator.Persistent);
+            for (int i = 0; i < audioSources.Length; i++)
+            {
+                sources[i] = audioSources[i].ToUnmanaged();
+            }
 
             return new Unmanaged
             {
@@ -130,7 +139,8 @@ namespace Anywhen.Composing
                 audioSourceType = audioSourceType,
                 synthOscillatorType = synthOscillatorType,
                 amplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
-                pitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent)
+                pitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
+                audioSources = new NativeArray<AudioSourceSettings.Unmanaged>(sources, Allocator.Persistent),
             };
         }
 
