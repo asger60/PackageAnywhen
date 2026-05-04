@@ -37,7 +37,7 @@ namespace Anywhen.Synth
             return _settings.audioSourceType switch
             {
                 AudioSourceSettings.AudioSourceTypes.Sample => _sampleSource.Process(sample, pitchMultiplier),
-                AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample),
+                AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample, pitchMultiplier),
                 _ => sample
             };
         }
@@ -71,6 +71,7 @@ namespace Anywhen.Synth
                     _sampleSource.QueueNote(noteNoteIndex);
                     break;
                 case AudioSourceSettings.AudioSourceTypes.Synth:
+                    _synthSource.QueueNote(noteNoteIndex);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -80,7 +81,6 @@ namespace Anywhen.Synth
 
     public interface IAudioSource
     {
-        public void DoUpdate();
 
         public float Process(float sample, float pitchMultiplier);
 

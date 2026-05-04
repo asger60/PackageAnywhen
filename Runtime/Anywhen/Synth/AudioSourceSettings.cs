@@ -1,6 +1,5 @@
 using System;
 using Anywhen.SettingsObjects;
-using Unity.GraphToolkit.Editor;
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -21,8 +20,8 @@ namespace Anywhen.Synth
         public struct SampleSourceSettings
         {
             public AnywhenSampleInstrument sampleInstrument;
-            public float sourceVolume;
-            
+            [Range(0, 1)] public float sourceVolume;
+
             public struct Unmanaged
             {
                 public AnywhenSampleInstrument.Unmanaged SampleInstrument;
@@ -45,14 +44,29 @@ namespace Anywhen.Synth
         [Serializable]
         public struct SynthSourceSettings
         {
+            [Range(0, 1)] public float sourceVolume;
+
+            public enum SynthType
+            {
+                Sine,
+                Saw,
+                Square,
+            }
+
+            public SynthType synthType;
+
             public struct Unmanaged
             {
+                [Range(0, 1)] public float SourceVolume;
+                public SynthType SynthType;
             }
 
             public Unmanaged ToUnmanaged()
             {
                 return new Unmanaged
                 {
+                    SourceVolume = sourceVolume,
+                    SynthType = synthType,
                 };
             }
         }

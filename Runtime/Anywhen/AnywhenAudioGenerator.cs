@@ -11,7 +11,7 @@ using UnityEngine.Audio;
 
 
 [CreateAssetMenu(fileName = "AnywhenAudioPlayer", menuName = "Anywhen/Create AnywhenAudioPlayer asset", order = 2)]
-public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
+public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 {
     [SerializeField] AnysongObject song;
 
@@ -248,7 +248,8 @@ public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
         _sharedSectionIndices = new NativeArray<int>(1, Allocator.Persistent);
 
-        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices, _sharedPatternIndices,
+        _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices,
+            _sharedPatternIndices,
             _sharedSectionIndices);
         return _generatorInstance;
     }
@@ -321,7 +322,7 @@ public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
 
     [BurstCompile(CompileSynchronously = true)]
-    public partial struct Processor : GeneratorInstance.IRealtime
+    public struct Processor : GeneratorInstance.IRealtime
     {
         NativeArray<AnysongTrack> _tracks;
         NativeArray<AnysongSection.Unmanaged> _anysongSections;
@@ -333,7 +334,8 @@ public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private NativeArray<int> _patternIndices;
         private NativeArray<int> _sectionIndices;
 
-        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong, NativeArray<int> stepIndices,
+        public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong,
+            NativeArray<int> stepIndices,
             NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
         {
             var processor = new Processor(sampleRate, initialSong, stepIndices, patternIndices, sectionIndices);
@@ -352,7 +354,8 @@ public partial class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private uint _seed;
         int _currentSectionIndex;
 
-        Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices, NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
+        Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices, NativeArray<int> patternIndices,
+            NativeArray<int> sectionIndices)
         {
             _stepIndices = stepIndices;
             _patternIndices = patternIndices;

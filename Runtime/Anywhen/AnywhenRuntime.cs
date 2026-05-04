@@ -93,7 +93,6 @@ namespace Anywhen
             AudioSource a = GetComponent<AudioSource>();
             a.Play();
             _metronome = a.generator as AnywhenAudioMetronome;
-            Debug.Log(_metronome);
         }
 
         public enum DebugMessageType

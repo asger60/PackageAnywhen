@@ -37,21 +37,15 @@ namespace Anywhen.Synth
             _samplePosition = 0;
             _isPlaying = true;
             _volume = _settings.SourceVolume;
-            Debug.Log("Queued note with clip pitch: " + _clipPitch + " and vol " + _volume);
         }
 
         public void SetSettings(AudioSourceSettings.Unmanaged settings)
         {
             _settings = settings.sampleSourceSettings;
             _volume = _settings.SourceVolume;
-            Debug.Log("Set sample source volume to " + _volume);
         }
 
-        public float Process(float sample)
-        {
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
-            return Process(sample, 1f);
-        }
+
 
         public float Process(float sample, float pitchMultiplier)
         {

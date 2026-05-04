@@ -38,6 +38,7 @@ public struct AnywhenAudioVoice
         NativeArray<SynthFilterBase.ModRouting> pitchMod,
         float trackPitch)
     {
+        _audioSourceSettings = audioSourceSettings;
         _envelopeSettings = envelopeSettings;
         _pitchMod = pitchMod;
         _trackPitch = trackPitch;
@@ -45,7 +46,6 @@ public struct AnywhenAudioVoice
         {
             _audioSources[i].UpdateSettings(audioSourceSettings[i]);
         }
-        Debug.Log("Updated voice with: " + _audioSources.Length);
     }
 
     public void RecreateVoice(NativeArray<AudioSourceSettings.Unmanaged> audioSourceSettings)

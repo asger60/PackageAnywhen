@@ -138,6 +138,7 @@ namespace Anysong
             trackTypeIndexProperty.label = "Track type";
             _parent.Add(trackTypeIndexProperty);
 
+            AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
             
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
             {

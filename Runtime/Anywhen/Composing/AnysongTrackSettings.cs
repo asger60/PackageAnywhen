@@ -11,9 +11,25 @@ namespace Anywhen.Composing
     [Serializable]
     public class AnysongTrackSettings
     {
-        
-        public AudioSourceSettings[] audioSources;
-        
+        [SerializeField] List<AudioSourceSettings> audioSources;
+
+        public List<AudioSourceSettings> AudioSources
+        {
+            get
+            {
+                if (audioSources == null || audioSources.Count == 0)
+                {
+                    AudioSourceSettings newSettings = new AudioSourceSettings();
+                    newSettings.audioSourceType = AudioSourceSettings.AudioSourceTypes.Sample;
+                    newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
+                    newSettings.sampleSourceSettings.sourceVolume = 1;
+                    audioSources = new List<AudioSourceSettings> { newSettings };
+                }
+
+                return audioSources;
+            }
+        }
+
         [Range(0, 1f)] public float volume;
         public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
@@ -52,8 +68,8 @@ namespace Anywhen.Composing
         public SynthOscillatorTypes synthOscillatorType;
         [Range(1, 16)] public int voices = 1;
         [AnywhenTrackType] public int trackTypeIndex;
-        [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
+        [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
         public List<AudioProcessorSettings> TrackFilters
         {
@@ -98,7 +114,6 @@ namespace Anywhen.Composing
             public NativeArray<SynthFilterBase.ModRouting> pitchMod;
 
 
-
             public float trackPitch;
 
             public int voices;
@@ -116,8 +131,9 @@ namespace Anywhen.Composing
             {
                 filters[i] = TrackFilters[i].ToUnmanaged();
             }
-            var sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Length, Allocator.Persistent);
-            for (int i = 0; i < audioSources.Length; i++)
+
+            var sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Count, Allocator.Persistent);
+            for (int i = 0; i < audioSources.Count; i++)
             {
                 sources[i] = audioSources[i].ToUnmanaged();
             }
@@ -161,6 +177,23 @@ namespace Anywhen.Composing
         public void AddAudioProcessor(AudioProcessorSettings settings)
         {
             TrackFilters.Add(settings);
+        }
+
+        public void AddAudioSource(AudioSourceSettings settings)
+        {
+            AudioSources.Add(settings);
+        }
+
+        public void UpgradeToSources()
+        {
+            if (audioSources == null || audioSources.Count == 0)
+            {
+                AudioSourceSettings newSettings = new AudioSourceSettings();
+                newSettings.audioSourceType = AudioSourceSettings.AudioSourceTypes.Sample;
+                newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
+                newSettings.sampleSourceSettings.sourceVolume = 1;
+                audioSources = new List<AudioSourceSettings> { newSettings };
+            }
         }
     }
 }
