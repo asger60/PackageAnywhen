@@ -39,8 +39,10 @@ namespace Anysong
             _parent.Clear();
             Draw(_parent);
             _parent.Add(Spacer());
-            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"), null));
-            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"),
+                AnysongEditorWindow.CurrentSong.RefrestSections));
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"),
+                AnysongEditorWindow.CurrentSong.RefrestSections));
             _parent.Add(CreateUtilsBox());
         }
 
@@ -139,11 +141,9 @@ namespace Anysong
             _parent.Add(trackTypeIndexProperty);
 
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
-            
-            var audioSourcesField = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
-            {
-                AnysongEditorWindow.CurrentSong.RefreshSettings();
-            });
+
+            var audioSourcesField = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"),
+                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
             audioSourcesField.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 var foldout = audioSourcesField.Q<Foldout>();
@@ -151,14 +151,12 @@ namespace Anysong
                     foldout.value = true;
             });
             _parent.Add(audioSourcesField);
-            
-            
+
 
             _parent.Add(_sampleSettingsElement);
             _parent.Add(_synthSettingsElement);
 
 
-            
             _parent.Add(SectionHeader("Instrument settings"));
 
 
@@ -174,7 +172,11 @@ namespace Anysong
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods,
                 v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods = v,
                 () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
-                () => { AnysongEditorWindow.CurrentSong.RefrestTrack(); AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+                () =>
+                {
+                    AnysongEditorWindow.CurrentSong.RefrestTrack();
+                    AnysongEditorWindow.CurrentSong.RefreshSettings();
+                });
             _parent.Add(el_volume);
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),

@@ -439,6 +439,24 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 };
                 song.OnSongMidiChanged += midiListener;
 
+
+                Action sectionsChangedListener = () =>
+                {
+                    for (int i = 0; i < sectionsRef.Length; i++)
+                    {
+                        var section = sectionsRef[i];
+                        if (section.ProgressionSteps.IsCreated) section.ProgressionSteps.Dispose();
+
+                        var updated = song.Sections[i].ToUnmanaged();
+                        section.ProgressionSteps = updated.ProgressionSteps;
+                        section.SectionLength = updated.SectionLength;
+                        sectionsRef[i] = section;
+                    }
+                };
+
+                song.OnSongSectionsChanged += sectionsChangedListener;
+
+
                 _tracks = new NativeArray<AnysongTrack>(song.Tracks.Count, Allocator.Persistent);
 
                 for (int i = 0; i < _tracks.Length; i++)
@@ -491,7 +509,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             {
                 if (element.TryGetData(out PlaybackStateData data))
                 {
-                    
                     if (data.IsPlaying)
                     {
                         _currentSectionBar = 0;
