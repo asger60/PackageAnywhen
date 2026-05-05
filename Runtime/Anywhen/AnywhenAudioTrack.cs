@@ -10,8 +10,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 {
     int _sampleRate;
     private NativeArray<AnywhenAudioVoice> _voices;
-    private AnywhenSampleInstrument.Unmanaged _sampleInstrument;
-    public AnywhenSampleInstrument.Unmanaged SampleInstrument => _sampleInstrument;
     private float _trackVolume;
     private AudioProcessorEnvelope _trackEnvelope1, _trackEnvelope2;
     AudioProcessorLFO _trackLFO1, _trackLFO2;
@@ -53,9 +51,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         _amplitudeMod = settings.amplitudeMod;
     }
 
-    public void SwapInstrument(AnywhenSampleInstrument.Unmanaged newInstrument)
+    public void SwapInstrument(AnysongTrackSettings.Unmanaged newInstrument)
     {
-        _sampleInstrument = newInstrument;
+        CreateTrack(newInstrument, _sampleRate);
+        
         if (_voices.IsCreated)
         {
             for (int i = 0; i < _voices.Length; i++)
@@ -304,7 +303,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public bool Equals(AnysongTrack other)
     {
-        return _voices.Equals(other._voices) && _sampleInstrument.Equals(other._sampleInstrument) &&
+        return _voices.Equals(other._voices) && 
                _trackVolume.Equals(other._trackVolume) && _trackEnvelope1.Equals(other._trackEnvelope1) &&
                _nextEvent.Equals(other._nextEvent);
     }
@@ -316,6 +315,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_voices, _sampleInstrument, _trackVolume, _trackEnvelope1, _nextEvent);
+        return HashCode.Combine(_voices, _trackVolume, _trackEnvelope1, _nextEvent);
     }
 }

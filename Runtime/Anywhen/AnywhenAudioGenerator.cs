@@ -164,7 +164,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public enum LoadOptions
     {
         Default,
-        OnlyTrackSounds,
+        OnlyTrackSettings,
         OnlyMidiSettings
     }
 
@@ -184,7 +184,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         if (audioSource.audioSourceType == AudioSourceSettings.AudioSourceTypes.Sample)
                         {
                             var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
-
                             if (sampleInstrument && !InstrumentDatabase.IsLoaded(sampleInstrument))
                             {
                                 InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
@@ -194,7 +193,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 }
 
                 break;
-            case LoadOptions.OnlyTrackSounds:
+            case LoadOptions.OnlyTrackSettings:
                 SwapSounds(currentSong);
 
                 break;
@@ -552,8 +551,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             var thisTrack = _tracks[trackIndex];
                             if (trackSettings.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                Debug.LogWarning("swaping track instrument not yet implemented");
-                                //thisTrack.SwapInstrument(trackSettings.instrument);
+                                thisTrack.SwapInstrument(trackSettings);
                             }
 
                             _tracks[trackIndex] = thisTrack;

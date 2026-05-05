@@ -57,7 +57,7 @@ namespace Anywhen
         private void OnSoundPressed(int index)
         {
             Debug.Log($"Button 1 pressed: {index}");
-            _currentPlayer.Load(sounds[index], AnywhenAudioGenerator.LoadOptions.OnlyTrackSounds);
+            _currentPlayer.Load(sounds[index], AnywhenAudioGenerator.LoadOptions.OnlyTrackSettings);
         }
 
         void OnMidiButtonPressed(int index)
