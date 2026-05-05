@@ -85,9 +85,11 @@ public static class AnysongTracksView
 
             var instrumentName = "no instrument selected";
             var thisTrack = currentSong.Tracks[i];
-            if (thisTrack.AudioSources.Count > 0)
+            if (thisTrack.AudioSources != null && thisTrack.AudioSources.Count > 0)
             {
-                var trackInstrument = thisTrack.AudioSources[0].sampleSourceSettings.sampleInstrument.name;
+                var trackInstrument = thisTrack.AudioSources[0].sampleSourceSettings.IsNull()
+                    ? ""
+                    : thisTrack.AudioSources[0].sampleSourceSettings.sampleInstrument.name;
                 instrumentName = trackInstrument;
             }
 

@@ -419,5 +419,9 @@ namespace Anywhen.SettingsObjects
         }
 
 #endif
+        public bool IsNull()
+        {
+            return clipDatas == null || clipDatas.Length == 0;
+        }
     }
 }

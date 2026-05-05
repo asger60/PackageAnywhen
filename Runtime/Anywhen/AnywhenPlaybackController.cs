@@ -14,6 +14,7 @@ namespace Anywhen
         [SerializeField] [Range(0, 1f)] private float testIntensity;
         [SerializeField] [Range(0, 1f)] private float testSnapshot;
 
+        [AnywhenTrackType] [SerializeField] private int overrideTrackTypeIndex;
 
         void Start()
         {
@@ -57,7 +58,7 @@ namespace Anywhen
         private void OnSoundPressed(int index)
         {
             Debug.Log($"Button 1 pressed: {index}");
-            _currentPlayer.Load(sounds[index], AnywhenAudioGenerator.LoadOptions.OnlyTrackSettings);
+            _currentPlayer.OverrideTrackSettings(sounds[index], overrideTrackTypeIndex);
         }
 
         void OnMidiButtonPressed(int index)

@@ -81,9 +81,18 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song?.RemoveListeners();
     }
 
-    public void SwapTrackInstrument(AnywhenSampleInstrument newInstrment, int trackTypeIndex)
+    public void OverrideTrackSettings(AnysongObject sourceSong, int trackTypeIndex)
     {
-        Debug.LogWarning("Swapping track instrument, not yet proper implemented");
+        var newSettings = sourceSong.Tracks[0];
+        for (int i = 0; i < sourceSong.Tracks.Count; i++)
+        {
+            if (sourceSong.Tracks[i].trackTypeIndex == trackTypeIndex)
+            {
+                newSettings = sourceSong.Tracks[i];
+                break;
+            }
+        }
+
         NativeArray<AnysongTrackSettings.Unmanaged> trackSettings =
             new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
 
@@ -93,7 +102,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             var trackSettingsUnmanaged = trackSettings[i];
             if (trackSettingsUnmanaged.trackTypeIndex == trackTypeIndex)
             {
-                //  trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
+                trackSettingsUnmanaged = newSettings.ToUnmanaged();
             }
 
             trackSettings[i] = trackSettingsUnmanaged;

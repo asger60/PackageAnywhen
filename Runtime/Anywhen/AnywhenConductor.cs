@@ -69,7 +69,7 @@ namespace Anywhen
             if (_currentAnywhenScale.IsNull() || _currentAnywhenScale.notes.Length == 0) return 0;
             int numNotes = _currentAnywhenScale.notes.Length;
             if (numNotes == 0) return 0;
-            noteStep += _rootNote;
+
 
             int octave = Mathf.FloorToInt((float)noteStep / numNotes);
             int noteIndex = noteStep % numNotes;
@@ -85,7 +85,7 @@ namespace Anywhen
                 returnNote -= 12;
             }
 
-            return returnNote;
+            return returnNote + _rootNote;
         }
 
         public int[] GetScaledNotes(int[] notes)

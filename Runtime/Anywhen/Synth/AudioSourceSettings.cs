@@ -31,11 +31,20 @@ namespace Anywhen.Synth
 
             public Unmanaged ToUnmanaged()
             {
+                
+
                 return new Unmanaged
                 {
-                    SampleInstrument = sampleInstrument.ToUnmanaged(),
+                    SampleInstrument = !sampleInstrument ? default : sampleInstrument.ToUnmanaged(),
                     SourceVolume = sourceVolume,
                 };
+            }
+
+            public bool IsNull()
+            {
+                if(sampleInstrument == null)
+                    return true;
+                return sampleInstrument.IsNull();
             }
         }
 
@@ -61,11 +70,10 @@ namespace Anywhen.Synth
             public struct Unmanaged
             {
                 public SynthType SynthType;
-                
+
                 [Range(0, 1)] public float SourceVolume;
                 [Range(-24, 24)] public int NoteOffset;
                 public float Detune;
-
             }
 
             public Unmanaged ToUnmanaged()
