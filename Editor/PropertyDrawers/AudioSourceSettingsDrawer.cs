@@ -24,6 +24,10 @@ namespace Anywhen.SettingsObjects
             {
                 height += (EditorGUIUtility.singleLineHeight + Spacing) * 4; // synthType + sourceVolume + noteOffset + detune
             }
+            else if (type == AudioSourceSettings.AudioSourceTypes.Noise)
+            {
+                height += (EditorGUIUtility.singleLineHeight + Spacing) * 2; // noiseType + sourceVolume
+            }
 
             return height;
         }
@@ -71,6 +75,17 @@ namespace Anywhen.SettingsObjects
 
                 lineRect = new Rect(position.x, yPos, position.width, EditorGUIUtility.singleLineHeight);
                 EditorGUI.PropertyField(lineRect, synthSettings.FindPropertyRelative("detune"), new GUIContent("Detune"));
+            }
+            else if (type == AudioSourceSettings.AudioSourceTypes.Noise)
+            {
+                var noiseSettings = property.FindPropertyRelative("noiseSourceSettings");
+
+                lineRect = new Rect(position.x, yPos, position.width, EditorGUIUtility.singleLineHeight);
+                EditorGUI.PropertyField(lineRect, noiseSettings.FindPropertyRelative("noiseType"), new GUIContent("Noise Type"));
+                yPos += EditorGUIUtility.singleLineHeight + Spacing;
+
+                lineRect = new Rect(position.x, yPos, position.width, EditorGUIUtility.singleLineHeight);
+                EditorGUI.PropertyField(lineRect, noiseSettings.FindPropertyRelative("sourceVolume"), new GUIContent("Volume"));
             }
 
             EditorGUI.indentLevel--;

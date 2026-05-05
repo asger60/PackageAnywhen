@@ -11,6 +11,7 @@ namespace Anywhen.Synth
         {
             Sample,
             Synth,
+            Noise,
         }
 
 
@@ -81,6 +82,38 @@ namespace Anywhen.Synth
 
         public SynthSourceSettings synthSourceSettings;
 
+        [Serializable]
+        public struct NoiseSourceSettings
+        {
+            [Range(0, 1)] public float sourceVolume;
+
+            public enum NoiseType
+            {
+                White,
+                Pink,
+                Brown,
+            }
+
+            public NoiseType noiseType;
+
+            public struct Unmanaged
+            {
+                public NoiseType NoiseType;
+                [Range(0, 1)] public float SourceVolume;
+            }
+
+            public Unmanaged ToUnmanaged()
+            {
+                return new Unmanaged
+                {
+                    SourceVolume = sourceVolume,
+                    NoiseType = noiseType,
+                };
+            }
+        }
+
+        public NoiseSourceSettings noiseSourceSettings;
+
         public void Init()
         {
         }
@@ -91,6 +124,7 @@ namespace Anywhen.Synth
             public AudioSourceTypes audioSourceType;
             public SampleSourceSettings.Unmanaged sampleSourceSettings;
             public SynthSourceSettings.Unmanaged synthSourceSettings;
+            public NoiseSourceSettings.Unmanaged noiseSourceSettings;
         }
 
         public Unmanaged ToUnmanaged()
@@ -100,6 +134,7 @@ namespace Anywhen.Synth
                 audioSourceType = audioSourceType,
                 sampleSourceSettings = sampleSourceSettings.ToUnmanaged(),
                 synthSourceSettings = synthSourceSettings.ToUnmanaged(),
+                noiseSourceSettings = noiseSourceSettings.ToUnmanaged(),
             };
         }
     }

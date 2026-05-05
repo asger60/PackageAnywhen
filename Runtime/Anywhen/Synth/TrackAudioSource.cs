@@ -8,6 +8,7 @@ namespace Anywhen.Synth
 
         private AudioSourceSample _sampleSource;
         private AudioSourceSynth _synthSource;
+        private AudioSourceNoise _noiseSource;
 
 
         public TrackAudioSource(int sampleRate, AudioSourceSettings.Unmanaged settings)
@@ -15,6 +16,7 @@ namespace Anywhen.Synth
             _settings = settings;
             _sampleSource = default;
             _synthSource = default;
+            _noiseSource = default;
             
             switch (_settings.audioSourceType)
             {
@@ -25,6 +27,10 @@ namespace Anywhen.Synth
                 case AudioSourceSettings.AudioSourceTypes.Synth:
                     _synthSource = new AudioSourceSynth(sampleRate);
                     _synthSource.SetSettings(_settings);
+                    break;
+                case AudioSourceSettings.AudioSourceTypes.Noise:
+                    _noiseSource = new AudioSourceNoise(sampleRate);
+                    _noiseSource.SetSettings(_settings);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -38,6 +44,7 @@ namespace Anywhen.Synth
             {
                 AudioSourceSettings.AudioSourceTypes.Sample => _sampleSource.Process(sample, pitchMultiplier),
                 AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample, pitchMultiplier),
+                AudioSourceSettings.AudioSourceTypes.Noise => _noiseSource.Process(sample, pitchMultiplier),
                 _ => sample
             };
         }
@@ -57,6 +64,9 @@ namespace Anywhen.Synth
                 case AudioSourceSettings.AudioSourceTypes.Synth:
                     _synthSource.SetSettings(_settings);
                     break;
+                case AudioSourceSettings.AudioSourceTypes.Noise:
+                    _noiseSource.SetSettings(_settings);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -72,6 +82,9 @@ namespace Anywhen.Synth
                     break;
                 case AudioSourceSettings.AudioSourceTypes.Synth:
                     _synthSource.QueueNote(noteNoteIndex);
+                    break;
+                case AudioSourceSettings.AudioSourceTypes.Noise:
+                    _noiseSource.QueueNote(noteNoteIndex);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

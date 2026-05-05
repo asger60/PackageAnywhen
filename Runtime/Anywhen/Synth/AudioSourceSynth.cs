@@ -72,7 +72,7 @@ namespace Anywhen.Synth
 
             _phase += (uint)(_phaseIncrement * pitchMultiplier);
 
-            return output * _volume;
+            return output * _volume * 0.5f; // -6dB offset to match sample volume
         }
 
         private float PolyBlep(float t, float dt)
