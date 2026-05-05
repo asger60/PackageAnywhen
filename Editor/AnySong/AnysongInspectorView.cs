@@ -140,10 +140,17 @@ namespace Anysong
 
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
             
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
+            var audioSourcesField = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
             {
                 AnysongEditorWindow.CurrentSong.RefreshSettings();
-            }));
+            });
+            audioSourcesField.RegisterCallback<GeometryChangedEvent>(evt =>
+            {
+                var foldout = audioSourcesField.Q<Foldout>();
+                if (foldout != null)
+                    foldout.value = true;
+            });
+            _parent.Add(audioSourcesField);
             
             
 

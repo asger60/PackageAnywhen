@@ -45,6 +45,8 @@ namespace Anywhen.Synth
         public struct SynthSourceSettings
         {
             [Range(0, 1)] public float sourceVolume;
+            [Range(-24, 24)] public int noteOffset;
+            public float detune;
 
             public enum SynthType
             {
@@ -57,8 +59,12 @@ namespace Anywhen.Synth
 
             public struct Unmanaged
             {
-                [Range(0, 1)] public float SourceVolume;
                 public SynthType SynthType;
+                
+                [Range(0, 1)] public float SourceVolume;
+                [Range(-24, 24)] public int NoteOffset;
+                public float Detune;
+
             }
 
             public Unmanaged ToUnmanaged()
@@ -67,6 +73,8 @@ namespace Anywhen.Synth
                 {
                     SourceVolume = sourceVolume,
                     SynthType = synthType,
+                    NoteOffset = noteOffset,
+                    Detune = detune,
                 };
             }
         }

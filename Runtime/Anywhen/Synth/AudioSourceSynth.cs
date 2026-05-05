@@ -25,9 +25,9 @@ namespace Anywhen.Synth
         public void QueueNote(int noteIndex)
         {
             noteIndex = AnywhenRuntime.Conductor.GetScaledNote(noteIndex);
-            noteIndex += 36;
-            float freqHz = Midi2Freq(noteIndex);
-            float freqPpsmp = freqHz / _sampleRate;
+            noteIndex += 30 + _settings.NoteOffset;
+            double freqHz = Midi2Freq(noteIndex) * Mathf.Pow(2f, _settings.Detune / 12f);
+            double freqPpsmp = freqHz / _sampleRate;
             _phaseIncrement = (uint)(freqPpsmp * PhaseMax);
             _phase = 0;
             _gate = true;
@@ -36,7 +36,7 @@ namespace Anywhen.Synth
 
         private static float Midi2Freq(int note)
         {
-            return 440 * Mathf.Pow(2, (note - 69) / 12f);
+            return 440 * Mathf.Pow(2, (note - 49.5f) / 12f);
         }
 
         public void SetSettings(AudioSourceSettings.Unmanaged settings)

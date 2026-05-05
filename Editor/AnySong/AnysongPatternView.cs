@@ -244,7 +244,6 @@ namespace Anysong
 
         private static VisualElement DrawPatternSteps(AnysongSectionTrack currentSectionTrack, bool compact)
         {
-            Debug.Log("drawPatternSteps");
             int patternIndex = AnysongEditorWindow.CurrentSelection.CurrentPatternIndex;
 
             if (patternIndex > currentSectionTrack.patterns.Count - 1) patternIndex = 0;

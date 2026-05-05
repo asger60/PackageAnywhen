@@ -83,9 +83,14 @@ public static class AnysongTracksView
 
             trackElement.Add(soundControlElement);
 
-
+            var instrumentName = "no instrument selected";
             var thisTrack = currentSong.Tracks[i];
-            var instrumentName = thisTrack.instrument ? thisTrack.instrument.name : "no instrument selected";
+            if (thisTrack.AudioSources.Count > 0)
+            {
+                var trackInstrument = thisTrack.AudioSources[0].sampleSourceSettings.sampleInstrument.name;
+                instrumentName = trackInstrument;
+            }
+
 
             var button = new Button
             {

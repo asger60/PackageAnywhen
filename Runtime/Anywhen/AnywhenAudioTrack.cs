@@ -136,7 +136,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     {
         _settings = settings;
         _trackVolume = settings.volume;
-        _sampleInstrument = settings.instrument;
 
         _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1.ToUnmanaged());
         _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2.ToUnmanaged());

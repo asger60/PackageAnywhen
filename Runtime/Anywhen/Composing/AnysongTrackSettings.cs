@@ -56,16 +56,8 @@ namespace Anywhen.Composing
             Synth
         }
 
-        public AudioSourceType audioSourceType;
 
-        public enum SynthOscillatorTypes
-        {
-            Sine,
-            Saw,
-            Square,
-        }
 
-        public SynthOscillatorTypes synthOscillatorType;
         [Range(1, 16)] public int voices = 1;
         [AnywhenTrackType] public int trackTypeIndex;
 
@@ -104,8 +96,6 @@ namespace Anywhen.Composing
         {
             public NativeArray<AudioSourceSettings.Unmanaged> audioSources;
             public float volume;
-            public AnywhenSampleInstrument.Unmanaged instrument;
-
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope1;
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
@@ -140,7 +130,6 @@ namespace Anywhen.Composing
 
             return new Unmanaged
             {
-                instrument = ((AnywhenSampleInstrument)instrument).ToUnmanaged(),
                 volume = volume,
                 TrackAudioEnvelope1 = trackAudioEnvelope1,
                 TrackAudioEnvelope2 = trackAudioEnvelope2,

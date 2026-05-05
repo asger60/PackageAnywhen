@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Anywhen;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.IntegerTime;
@@ -82,6 +83,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SwapTrackInstrument(AnywhenSampleInstrument newInstrment, int trackTypeIndex)
     {
+        Debug.LogWarning("Swapping track instrument, not yet proper implemented");
         NativeArray<AnysongTrackSettings.Unmanaged> trackSettings =
             new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
 
@@ -91,7 +93,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             var trackSettingsUnmanaged = trackSettings[i];
             if (trackSettingsUnmanaged.trackTypeIndex == trackTypeIndex)
             {
-                trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
+              //  trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
             }
 
             trackSettings[i] = trackSettingsUnmanaged;
@@ -177,11 +179,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 song = currentSong;
                 foreach (var track in song.Tracks)
                 {
-                    if (track.instrument is AnywhenSampleInstrument sampleInstrument)
+                    foreach (var audioSource in track.AudioSources)
                     {
-                        if (!InstrumentDatabase.IsLoaded(sampleInstrument))
+                        if (audioSource.audioSourceType == AudioSourceSettings.AudioSourceTypes.Sample)
                         {
-                            InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
+                            var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
+
+                            if (sampleInstrument && !InstrumentDatabase.IsLoaded(sampleInstrument))
+                            {
+                                InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
+                            }
                         }
                     }
                 }
@@ -435,40 +442,38 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 for (int i = 0; i < _tracks.Length; i++)
                 {
                     var trackSettings = song.Tracks[i];
-                    if (trackSettings.instrument is AnywhenSampleInstrument)
+
+                    var unmanagedSettings = trackSettings.ToUnmanaged();
+                    _tracks[i] = new AnysongTrack(sampleRate, unmanagedSettings);
+
+                    int capturedIndex = i;
+                    var tracksRef = _tracks;
+                    Action settingsListener = () =>
                     {
-                        var unmanagedSettings = trackSettings.ToUnmanaged();
-                        _tracks[i] = new AnysongTrack(sampleRate, unmanagedSettings);
+                        if (!tracksRef.IsCreated) return;
+                        var t = tracksRef[capturedIndex];
+                        t.OnValuesChanged(song.Tracks[capturedIndex].ToUnmanaged());
+                        tracksRef[capturedIndex] = t;
+                    };
+                    Action effectsListener = () =>
+                    {
+                        if (!tracksRef.IsCreated) return;
+                        var t = tracksRef[capturedIndex];
+                        t.OnEffectsRebuild(song.Tracks[capturedIndex].ToUnmanaged());
+                        tracksRef[capturedIndex] = t;
+                    };
 
-                        int capturedIndex = i;
-                        var tracksRef = _tracks;
-                        Action settingsListener = () =>
-                        {
-                            if (!tracksRef.IsCreated) return;
-                            var t = tracksRef[capturedIndex];
-                            t.OnValuesChanged(song.Tracks[capturedIndex].ToUnmanaged());
-                            tracksRef[capturedIndex] = t;
-                        };
-                        Action effectsListener = () =>
-                        {
-                            if (!tracksRef.IsCreated) return;
-                            var t = tracksRef[capturedIndex];
-                            t.OnEffectsRebuild(song.Tracks[capturedIndex].ToUnmanaged());
-                            tracksRef[capturedIndex] = t;
-                        };
+                    Action tracksListener = () =>
+                    {
+                        if (!tracksRef.IsCreated) return;
+                        var t = tracksRef[capturedIndex];
+                        t.OnTracksRebuild(song.Tracks[capturedIndex].ToUnmanaged());
+                        tracksRef[capturedIndex] = t;
+                    };
 
-                        Action tracksListener = () =>
-                        {
-                            if (!tracksRef.IsCreated) return;
-                            var t = tracksRef[capturedIndex];
-                            t.OnTracksRebuild(song.Tracks[capturedIndex].ToUnmanaged());
-                            tracksRef[capturedIndex] = t;
-                        };
-
-                        song.OnSongSettingsChanged += settingsListener;
-                        song.OnSongEffectsChanged += effectsListener;
-                        song.OnSongTracksChanged += tracksListener;
-                    }
+                    song.OnSongSettingsChanged += settingsListener;
+                    song.OnSongEffectsChanged += effectsListener;
+                    song.OnSongTracksChanged += tracksListener;
                 }
             }
             else
@@ -523,7 +528,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             var thisTrack = _tracks[trackIndex];
                             if (trackSettings.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                thisTrack.SwapInstrument(trackSettings.instrument);
+                                Debug.LogWarning("swaping track instrument not yet implemented");
+                                //thisTrack.SwapInstrument(trackSettings.instrument);
                             }
 
                             _tracks[trackIndex] = thisTrack;

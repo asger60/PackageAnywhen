@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
+using Anywhen.Synth;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
@@ -53,7 +54,6 @@ namespace Anywhen
         }
 
         public List<LoadedInstrument> LoadedInstruments = new List<LoadedInstrument>();
-
 
 
         static T[] ShuffleArray<T>(T[] array)
@@ -154,9 +154,16 @@ namespace Anywhen
         {
             foreach (var songTrack in currentSong.Tracks)
             {
-                if (songTrack.audioSourceType == AnysongTrackSettings.AudioSourceType.Sample)
+                foreach (var audioSource in songTrack.AudioSources)
                 {
-                    LoadInstrumentNotes(songTrack.instrument as AnywhenSampleInstrument);
+                    if (audioSource.audioSourceType == AudioSourceSettings.AudioSourceTypes.Sample)
+                    {
+                        var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
+                        if (sampleInstrument && !IsLoaded(sampleInstrument))
+                        {
+                            LoadInstrumentNotes(sampleInstrument);
+                        }
+                    }
                 }
             }
         }
