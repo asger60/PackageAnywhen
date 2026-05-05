@@ -75,31 +75,26 @@ namespace Anywhen.Composing
 
         public void RefreshMidi(int sectionIndex, int trackIndex, int patternIndex)
         {
-            Debug.Log("RefreshMidi");
             OnSongMidiChanged?.Invoke(sectionIndex, trackIndex, patternIndex);
         }
 
         public void RefreshSettings()
         {
-            Debug.Log("RefreshSettings");
             OnSongSettingsChanged?.Invoke();
         }
 
         public void RefreshEffects()
         {
-            Debug.Log("RefreshEffects");
             OnSongEffectsChanged?.Invoke();
         }
 
         public void RefrestTrack()
         {
-            Debug.Log("RefrestTrack");
             OnSongTracksChanged?.Invoke();
         }
         
         public void RefrestSections()
         {
-            Debug.Log("RefrestSections");
             OnSongSectionsChanged?.Invoke();
         }
 

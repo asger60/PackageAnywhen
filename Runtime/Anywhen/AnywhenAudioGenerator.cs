@@ -100,7 +100,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             trackSettings[i] = trackSettingsList[i].ToUnmanaged();
         }
 
-        Debug.Log("Overriding track settings " + trackSettingsList.Count);
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
