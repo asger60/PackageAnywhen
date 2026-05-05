@@ -37,11 +37,6 @@ namespace Anywhen.Composing
             {
                 internalIndex = i;
             }
-
-            public void SyncToMetronome(int currentIndex)
-            {
-                internalIndex = currentIndex;
-            }
         }
 
         public Unmanaged ToUnmanaged()
@@ -95,6 +90,7 @@ namespace Anywhen.Composing
             {
                 clone.triggerChances.Add(triggerChances[i]);
             }
+
             clone.patternLength = patternLength;
 
             return clone;

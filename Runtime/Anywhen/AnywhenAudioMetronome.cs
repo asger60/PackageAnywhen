@@ -181,8 +181,9 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
                 if (element.TryGetData(out RestartState _))
                 {
+                    SharedSub16Count.Data = -1;
                     _nextTime16 = -1;
-                    _sub16Count = 0;
+                    _sub16Count = -1;
                 }
 
                 if (element.TryGetData(out PlayState playState))
@@ -190,8 +191,9 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                     _isPlaying = playState.isPlaying;
                     if (_isPlaying)
                     {
+                        SharedSub16Count.Data = -1;
                         _nextTime16 = -1;
-                        _sub16Count = 0;
+                        _sub16Count = -1;
                     }
                 }
             }

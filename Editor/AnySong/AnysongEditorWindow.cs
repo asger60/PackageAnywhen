@@ -206,13 +206,13 @@ namespace Anysong
 
             if (_isPLaying)
             {
-                _currentPlayer.Load(CurrentSong);
-                _currentPlayer.SetPlay(true);
-
                 InstrumentDatabase.LoadAllInstruments(CurrentSong);
                 AnysongSectionsView.RefreshSectionLocked();
                 _currentMetronome.SetTempo(CurrentSong.tempo);
                 _currentMetronome.Restart();
+                _currentMetronome.Play();
+                _currentPlayer.Load(CurrentSong);
+                _currentPlayer.SetPlay(true);
                 AnywhenAudioMetronome.OnAudioTick += OnTick16;
                 AnywhenAudioMetronome.OnBar += OnBar;
                 OnBar();
@@ -220,6 +220,7 @@ namespace Anysong
             else
             {
                 _currentPlayer.SetPlay(false);
+                _currentMetronome.Stop();
                 AnywhenAudioMetronome.OnAudioTick -= OnTick16;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
@@ -249,7 +250,6 @@ namespace Anysong
             AnysongInspectorView.Clear();
             AnywhenAudioMetronome.OnBar -= OnBar;
             AnywhenAudioMetronome.OnAudioTick -= OnTick16;
-
         }
 
         public static void SetTestIntensity(float value)

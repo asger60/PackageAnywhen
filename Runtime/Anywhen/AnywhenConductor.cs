@@ -7,7 +7,7 @@ namespace Anywhen
     {
         [SerializeField] int _rootNote = 0;
         [SerializeField] AnywhenScaleObject anywhenScale;
-        [SerializeField] AnywhenScaleObject _currentAnywhenScale;
+        AnywhenScaleObject.Unmanaged _currentAnywhenScale;
 
         public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
 
@@ -29,7 +29,7 @@ namespace Anywhen
 
             _scaleOverridden = false;
             if (anywhenScale != null)
-                _currentAnywhenScale = anywhenScale;
+                _currentAnywhenScale = anywhenScale.ToUnmanaged();
             if (initialProgressionPattern != null)
                 _currentProgressionPattern = initialProgressionPattern;
 
@@ -52,7 +52,7 @@ namespace Anywhen
 
                 if (!_scaleOverridden)
                 {
-                    _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale;
+                    _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale.ToUnmanaged();
                 }
             }
         }
@@ -60,15 +60,16 @@ namespace Anywhen
 
         public int GetScaledNote(int noteStep, int maxNote = -1)
         {
-            if (!_currentAnywhenScale)
+            if (_currentAnywhenScale.IsNull())
             {
                 Debug.LogError("No scale set!");
                 return 0;
             }
 
-            if (_currentAnywhenScale.notes == null || _currentAnywhenScale.notes.Length == 0) return 0;
+            if (_currentAnywhenScale.IsNull() || _currentAnywhenScale.notes.Length == 0) return 0;
             int numNotes = _currentAnywhenScale.notes.Length;
             if (numNotes == 0) return 0;
+            noteStep += _rootNote;
 
             int octave = Mathf.FloorToInt((float)noteStep / numNotes);
             int noteIndex = noteStep % numNotes;
@@ -100,7 +101,7 @@ namespace Anywhen
 
         public void OverrideScale(AnywhenScaleObject newAnywhenScale)
         {
-            _currentAnywhenScale = newAnywhenScale;
+            _currentAnywhenScale = newAnywhenScale.ToUnmanaged();
             _scaleOverridden = true;
         }
 
@@ -116,10 +117,10 @@ namespace Anywhen
             _rootOverridden = true;
         }
 
-        public void SetScaleProgression(AnywhenProgressionPatternObject.ProgressionStep step)
+        public void SetScaleProgression(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged step)
         {
-            _currentAnywhenScale = step.anywhenScale;
-            _rootNote = step.rootNote;
+            _currentAnywhenScale = step.AnywhenScale;
+            _rootNote = step.RootNote;
         }
 
         public static AnywhenScaleObject GetDefaultScale()
@@ -130,7 +131,7 @@ namespace Anywhen
         public void SetDefaultScale()
         {
             Debug.Log("Setting default scale");
-            _currentAnywhenScale = GetDefaultScale();
+            _currentAnywhenScale = GetDefaultScale().ToUnmanaged();
         }
     }
 }

@@ -38,9 +38,13 @@ namespace Anywhen.Composing
 
         public Unmanaged ToUnmanaged()
         {
-            var unmanagedPatterns = new AnywhenProgressionPatternObject.ProgressionStep.Unmanaged[progressionSteps.Length];
+            var unmanagedProgression =
+                new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(progressionSteps.Length, Allocator.Persistent);
+            
             for (int i = 0; i < progressionSteps.Length; i++)
-                unmanagedPatterns[i] = progressionSteps[i].ToUnmanaged();
+            {
+                unmanagedProgression[i] = progressionSteps[i].ToUnmanaged();
+            }
 
             var unmanagedTracks = new AnysongSectionTrack.Unmanaged[tracks.Count];
             for (int i = 0; i < tracks.Count; i++)
@@ -49,13 +53,11 @@ namespace Anywhen.Composing
             return new Unmanaged
             {
                 SectionLength = sectionLength,
-                ProgressionSteps =
-                    new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(unmanagedPatterns,
-                        Allocator.Persistent),
+                ProgressionSteps = unmanagedProgression,
                 Tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
             };
         }
-        
+
 
         public void Init(List<AnysongTrackSettings> songTracks)
         {
@@ -79,7 +81,7 @@ namespace Anywhen.Composing
                 tracks.Add(newTrack);
             }
         }
-        
+
 
         public void AddSongTrack(AnysongTrackSettings songTrackSettings)
         {
@@ -133,7 +135,6 @@ namespace Anywhen.Composing
             return clone;
         }
 
-        
 
         public bool IsNull()
         {

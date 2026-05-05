@@ -40,7 +40,7 @@ namespace Anysong
             Draw(_parent);
             _parent.Add(Spacer());
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"), null));
-            //_parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("patternSteps"), null));
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"), null));
             _parent.Add(CreateUtilsBox());
         }
 

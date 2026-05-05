@@ -93,7 +93,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             var trackSettingsUnmanaged = trackSettings[i];
             if (trackSettingsUnmanaged.trackTypeIndex == trackTypeIndex)
             {
-              //  trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
+                //  trackSettingsUnmanaged.instrument = newInstrment.ToUnmanaged();
             }
 
             trackSettings[i] = trackSettingsUnmanaged;
@@ -360,6 +360,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private float _currentSnapshotValue;
         private uint _seed;
         int _currentSectionIndex;
+        private int _currentSectionBar;
 
         Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices, NativeArray<int> patternIndices,
             NativeArray<int> sectionIndices)
@@ -377,6 +378,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _intensity = 1;
             _currentSnapshotValue = 0;
             _sampleRate = sampleRate;
+            _currentSectionBar = 0;
 
             if (song != null)
             {
@@ -489,11 +491,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             {
                 if (element.TryGetData(out PlaybackStateData data))
                 {
-                    _isPlaying = data.IsPlaying;
-                    if (_isPlaying)
+                    
+                    if (data.IsPlaying)
                     {
+                        _currentSectionBar = 0;
                         _currentSectionIndex = 0;
                         _sectionIndices[0] = 0;
+                        AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex].ProgressionSteps[_currentSectionBar]);
+
                         for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
                         {
                             for (int trackIndex = 0; trackIndex < _anysongSections[sectionIndex].Tracks.Length; trackIndex++)
@@ -505,13 +510,15 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                                 var track = section.Tracks[trackIndex];
                                 track.Reset();
                                 var pattern = track.Patterns[track.CurrentPatternIndex];
-                                pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
+                                pattern.SetStepIndex(0);
                                 track.Patterns[track.CurrentPatternIndex] = pattern;
                                 section.Tracks[trackIndex] = track;
                                 _patternIndices[trackIndex] = track.CurrentPatternIndex;
                             }
                         }
                     }
+
+                    _isPlaying = data.IsPlaying;
                 }
 
                 if (element.TryGetData(out IntensityData intensityData))
@@ -557,7 +564,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             }
 
                             var pattern = track.Patterns[track.CurrentPatternIndex];
-                            pattern.SyncToMetronome(AnywhenAudioMetronome.SharedSub16Count.Data);
+                            pattern.SetStepIndex(AnywhenAudioMetronome.SharedSub16Count.Data);
                             track.Patterns[track.CurrentPatternIndex] = pattern;
                             section.Tracks[trackIndex] = track;
                         }
@@ -616,10 +623,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     section.AdvancePlayingSection();
                     if (section.IsComplete())
                     {
+                        _currentSectionBar = 0;
                         section.Reset();
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
                         _sectionIndices[0] = _currentSectionIndex;
                     }
+
+                    AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex].ProgressionSteps[_currentSectionBar]);
+
+                    _currentSectionBar++;
+                    _currentSectionBar %= _anysongSections[_currentSectionIndex].ProgressionSteps.Length;
 
                     _anysongSections[prevIndex] = section;
                 }

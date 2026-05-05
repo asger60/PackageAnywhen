@@ -11,6 +11,11 @@ namespace Anywhen.SettingsObjects
         public struct Unmanaged
         {
             public NativeArray<int> notes;
+
+            public bool IsNull()
+            {
+                return !notes.IsCreated || notes.Length == 0;
+            }
         }
 
         public Unmanaged ToUnmanaged()
