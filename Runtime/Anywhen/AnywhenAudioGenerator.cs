@@ -81,36 +81,29 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song?.RemoveListeners();
     }
 
-    public void OverrideTrackSettings(AnysongObject sourceSong, int trackTypeIndex)
+    public void OverrideTrackSettings(AnysongObject sourceSong, int overrideTrackTypeIndex)
     {
-        var newSettings = sourceSong.Tracks[0];
+        List<AnysongTrackSettings> trackSettingsList = new List<AnysongTrackSettings>();
         for (int i = 0; i < sourceSong.Tracks.Count; i++)
         {
-            if (sourceSong.Tracks[i].trackTypeIndex == trackTypeIndex)
+            if (sourceSong.Tracks[i].trackTypeIndex == overrideTrackTypeIndex)
             {
-                newSettings = sourceSong.Tracks[i];
-                break;
+                trackSettingsList.Add(sourceSong.Tracks[i]);
             }
         }
 
         NativeArray<AnysongTrackSettings.Unmanaged> trackSettings =
-            new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
+            new NativeArray<AnysongTrackSettings.Unmanaged>(trackSettingsList.Count, Allocator.Persistent);
 
-        for (int i = 0; i < song.Tracks.Count; i++)
+        for (int i = 0; i < trackSettingsList.Count; i++)
         {
-            trackSettings[i] = song.Tracks[i].ToUnmanaged();
-            var trackSettingsUnmanaged = trackSettings[i];
-            if (trackSettingsUnmanaged.trackTypeIndex == trackTypeIndex)
-            {
-                trackSettingsUnmanaged = newSettings.ToUnmanaged();
-            }
-
-            trackSettings[i] = trackSettingsUnmanaged;
+            trackSettings[i] = trackSettingsList[i].ToUnmanaged();
         }
 
+        Debug.Log("Overriding track settings " + trackSettingsList.Count);
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerSoundsReloadMsg(trackSettings));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
         }
     }
 
@@ -130,7 +123,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerSoundsReloadMsg(trackSettings));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
         }
     }
 
@@ -301,11 +294,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class TriggerSoundsReloadMsg
+    public class TriggerTrackSettingsReload
     {
         public readonly NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
 
-        public TriggerSoundsReloadMsg(NativeArray<AnysongTrackSettings.Unmanaged> trackSettings)
+        public TriggerTrackSettingsReload(NativeArray<AnysongTrackSettings.Unmanaged> trackSettings)
         {
             TrackSettings = trackSettings;
         }
@@ -551,23 +544,25 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     _intensity = intensityData.Intensity;
                 }
 
-                if (element.TryGetData(out SwapSoundsData snapshotData))
+                if (element.TryGetData(out NewTracksSettingsData newTrackSettings))
                 {
-                    foreach (var trackSettings in snapshotData.TrackSettings)
+                    for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
                     {
-                        for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
+                        var thisTrack = _tracks[trackIndex];
+                        foreach (var newTrackSetting in newTrackSettings.TrackSettings)
                         {
-                            var thisTrack = _tracks[trackIndex];
-                            if (trackSettings.trackTypeIndex == thisTrack.TrackTypeIndex)
+                            if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                thisTrack.SwapInstrument(trackSettings);
+                                Debug.Log("Creating new track " + newTrackSetting.trackTypeIndex + " " + trackIndex);
+                                thisTrack.CreateTrack(newTrackSetting, _sampleRate);
+                                thisTrack.UpdateSettings(newTrackSetting);
                             }
-
-                            _tracks[trackIndex] = thisTrack;
                         }
+
+                        _tracks[trackIndex] = thisTrack;
                     }
 
-                    snapshotData.TrackSettings.Dispose();
+                    newTrackSettings.TrackSettings.Dispose();
                 }
 
                 if (element.TryGetData(out SwapMidiData newMidiData))
@@ -786,10 +781,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
-                if (message.Is<TriggerSoundsReloadMsg>())
+                if (message.Is<TriggerTrackSettingsReload>())
                 {
-                    var payload = message.Get<TriggerSoundsReloadMsg>();
-                    pipe.SendData(context, new SwapSoundsData { TrackSettings = payload.TrackSettings });
+                    var payload = message.Get<TriggerTrackSettingsReload>();
+                    pipe.SendData(context, new NewTracksSettingsData { TrackSettings = payload.TrackSettings });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -854,7 +849,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public float Intensity;
     }
 
-    public struct SwapSoundsData
+    public struct NewTracksSettingsData
     {
         public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
     }

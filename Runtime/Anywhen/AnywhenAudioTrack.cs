@@ -51,24 +51,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         _amplitudeMod = settings.amplitudeMod;
     }
 
-    public void SwapInstrument(AnysongTrackSettings.Unmanaged newInstrument)
-    {
-        CreateTrack(newInstrument, _sampleRate);
-        
-        if (_voices.IsCreated)
-        {
-            for (int i = 0; i < _voices.Length; i++)
-            {
-                var voice = _voices[i];
-                voice.UpdateVoiceSettings(
-                    _settings.audioSources,
-                    _settings.TrackAudioEnvelope1.ToUnmanaged(),
-                    _settings.pitchMod,
-                    _settings.trackPitch);
-                _voices[i] = voice;
-            }
-        }
-    }
 
     public void OnTracksRebuild(AnysongTrackSettings.Unmanaged newSettings)
     {
@@ -89,7 +71,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         _hasPendingParameterUpdate = true;
     }
 
-    void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
+    public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
     {
         if (_voices.IsCreated) _voices.Dispose();
         if (_trackFilters.IsCreated) _trackFilters.Dispose();
@@ -131,7 +113,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     }
 
 
-    void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
+    public void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
     {
         _settings = settings;
         _trackVolume = settings.volume;
