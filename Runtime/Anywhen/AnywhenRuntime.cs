@@ -15,14 +15,23 @@ namespace Anywhen
     public class AnywhenRuntime : MonoBehaviour
     {
         private static AnywhenConductor _conductor;
-        public static AnywhenConductor Conductor => _conductor;
+
+        public static AnywhenConductor Conductor
+        {
+            get
+            {
+                if (!_conductor)
+                    _conductor = _instance.GetComponent<AnywhenConductor>();
+                return _conductor;
+            }
+        }
 
         private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
 
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
         private static InstrumentDatabase _instrumentDatabase;
-         AnywhenAudioMetronome _metronome;
+        AnywhenAudioMetronome _metronome;
         public static AnywhenAudioMetronome Metronome => _instance._metronome;
 
         public static InstrumentDatabase InstrumentDatabase => Instance._thisInstrumentDatabase;
