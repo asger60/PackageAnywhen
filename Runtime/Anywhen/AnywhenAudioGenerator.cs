@@ -397,12 +397,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
 
-                    // Preserve internal indices of all patterns in the track
-                    var internalIndices = new int[track.Patterns.Length];
-                    for (int i = 0; i < track.Patterns.Length; i++)
-                    {
-                        internalIndices[i] = track.Patterns[i].internalIndex;
-                    }
+
 
                     // Properly dispose the old NativeArray to avoid memory leaks
                     if (track.Patterns.IsCreated)
@@ -418,19 +413,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     // Create new patterns from the song data
                     track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
-
-                    // Restore internal indices for all patterns
-                    for (int i = 0; i < track.Patterns.Length; i++)
-                    {
-                        var p = track.Patterns[i];
-                        if (i < internalIndices.Length)
-                        {
-                            p.internalIndex = internalIndices[i];
-                        }
-
-                        track.Patterns[i] = p;
-                    }
-
+                    
                     // Update the CurrentPattern reference in the track
                     track.CurrentPattern = track.Patterns[track.CurrentPatternIndex];
 
@@ -533,7 +516,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                                 var track = section.Tracks[trackIndex];
                                 track.Reset();
                                 var pattern = track.Patterns[track.CurrentPatternIndex];
-                                pattern.SetStepIndex(0);
+                                //pattern.SetStepIndex(0);
                                 track.Patterns[track.CurrentPatternIndex] = pattern;
                                 section.Tracks[trackIndex] = track;
                                 _patternIndices[trackIndex] = track.CurrentPatternIndex;
@@ -596,7 +579,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             }
 
                             var pattern = track.Patterns[track.CurrentPatternIndex];
-                            pattern.SetStepIndex(AnywhenAudioMetronome.SharedSub16Count.Data);
+                            //pattern.SetStepIndex(AnywhenAudioMetronome.SharedSub16Count.Data);
                             track.Patterns[track.CurrentPatternIndex] = pattern;
                             section.Tracks[trackIndex] = track;
                         }
@@ -665,7 +648,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     var currentSection = _anysongSections[_currentSectionIndex];
                     if (currentSection.ProgressionSteps.Length > 0)
                     {
-                        _currentSectionBar = _currentSectionBar % currentSection.ProgressionSteps.Length;
+                        _currentSectionBar %= currentSection.ProgressionSteps.Length;
                         AnywhenRuntime.Conductor.SetScaleProgression(currentSection.ProgressionSteps[_currentSectionBar]);
                         _currentSectionBar = (_currentSectionBar + 1) % currentSection.ProgressionSteps.Length;
                     }
@@ -688,11 +671,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     if (_stepIndices.IsCreated && trackIndex < _stepIndices.Length)
                     {
-                        _stepIndices[trackIndex] = pattern.internalIndex;
+                        _stepIndices[trackIndex] = pattern.GetStepIndex(currentSub16Count);
                     }
 
 
-                    foreach (var thisNote in pattern.GetCurrentStep().StepNotes)
+                    foreach (var thisNote in pattern.GetCurrentStep(currentSub16Count).StepNotes)
                     {
                         bool chancePass = thisNote.chance * 100 > NextInt(0, 100);
                         bool intensityPass = thisNote.mixWeight > (1 - _intensity);
@@ -706,7 +689,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     }
 
 
-                    pattern.AdvancePlayingStep();
                     track.Patterns[track.CurrentPatternIndex] = pattern;
                     section.Tracks[trackIndex] = track;
                     _anysongSections[_currentSectionIndex] = section;

@@ -20,23 +20,19 @@ namespace Anywhen.Composing
             public NativeArray<float> triggerChances;
             public NativeArray<AnysongPatternStep.UnManaged> steps;
             public int patternLength;
-            public int internalIndex;
 
-            public AnysongPatternStep.UnManaged GetCurrentStep()
+
+            public AnysongPatternStep.UnManaged GetCurrentStep(int stepIndex)
             {
-                return steps[internalIndex];
+                return steps[stepIndex % patternLength];
             }
 
-            public void AdvancePlayingStep()
+            public int GetStepIndex(int stepIndex)
             {
-                internalIndex++;
-                internalIndex = (int)Mathf.Repeat(internalIndex, patternLength);
+                return stepIndex % patternLength;
             }
 
-            public void SetStepIndex(int i)
-            {
-                internalIndex = i;
-            }
+      
         }
 
         public Unmanaged ToUnmanaged()
@@ -52,7 +48,6 @@ namespace Anywhen.Composing
                 triggerChances = new NativeArray<float>(triggerChances.ToArray(), Allocator.Persistent),
                 steps = new NativeArray<AnysongPatternStep.UnManaged>(unmanagedSteps, Allocator.Persistent),
                 patternLength = patternLength,
-                internalIndex = _internalIndex
             };
         }
 

@@ -38,7 +38,7 @@ namespace Anywhen.Composing
                 CurrentPatternBar++;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
                 CurrentPattern = Patterns[CurrentPatternIndex];
-                CurrentPattern.SetStepIndex(0);
+
             }
 
             public AnysongPattern.Unmanaged GetCurrentPattern()
@@ -46,17 +46,14 @@ namespace Anywhen.Composing
                 return CurrentPattern;
             }
 
-            public void Sync(int index)
-            {
-                CurrentPattern.SetStepIndex(index);
-            }
+
 
             public void Reset()
             {
-                CurrentPatternBar = 0;
+                CurrentPatternBar = -1;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
                 CurrentPattern = Patterns[CurrentPatternIndex];
-                CurrentPattern.SetStepIndex(0);
+
             }
 
 
