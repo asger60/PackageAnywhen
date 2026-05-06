@@ -572,9 +572,18 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                 if (element.TryGetData(out SwapMidiData newMidiData))
                 {
+                    if (_anysongSections.Length != newMidiData.SectionData.Length)
+                    {
+                        if (_anysongSections.IsCreated)
+                            _anysongSections.Dispose();
+                        _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
+                        for (int i = 0; i < newMidiData.SectionData.Length; i++)
+                            _anysongSections[i] = newMidiData.SectionData[i];
+                        _currentSectionIndex = _currentSectionIndex % _anysongSections.Length;
+                    }
+
                     for (int sectionIndex = 0; sectionIndex < newMidiData.SectionData.Length; sectionIndex++)
                     {
-                        Debug.Log("sections " + _anysongSections.Length + " " + sectionIndex);
                         var section = _anysongSections[sectionIndex];
                         var newSection = newMidiData.SectionData[sectionIndex];
                         for (int trackIndex = 0; trackIndex < newSection.Tracks.Length; trackIndex++)
@@ -653,10 +662,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _sectionIndices[0] = _currentSectionIndex;
                     }
 
-                    AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex].ProgressionSteps[_currentSectionBar]);
-
-                    _currentSectionBar++;
-                    _currentSectionBar %= _anysongSections[_currentSectionIndex].ProgressionSteps.Length;
+                    var currentSection = _anysongSections[_currentSectionIndex];
+                    if (currentSection.ProgressionSteps.Length > 0)
+                    {
+                        _currentSectionBar = _currentSectionBar % currentSection.ProgressionSteps.Length;
+                        AnywhenRuntime.Conductor.SetScaleProgression(currentSection.ProgressionSteps[_currentSectionBar]);
+                        _currentSectionBar = (_currentSectionBar + 1) % currentSection.ProgressionSteps.Length;
+                    }
 
                     _anysongSections[prevIndex] = section;
                 }
