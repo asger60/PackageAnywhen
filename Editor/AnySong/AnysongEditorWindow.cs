@@ -319,6 +319,23 @@ namespace Anysong
             HandleSectionsLogic();
             HandleTracksLogic();
             HandleProgressionLogic();
+
+            rootVisualElement.RegisterCallback<KeyDownEvent>(OnKeyDown);
+        }
+
+        private void OnKeyDown(KeyDownEvent evt)
+        {
+            if (evt.keyCode == KeyCode.Space)
+            {
+                if (evt.target is TextInputBaseField<string> || evt.target is TextInputBaseField<int> || evt.target is TextInputBaseField<float>)
+                {
+                    return;
+                }
+                
+                ToggleIsPlaying();
+                AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
+                evt.StopPropagation();
+            }
         }
 
         void HandleTransportLogic()
