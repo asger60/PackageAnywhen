@@ -22,7 +22,11 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
     internal static readonly SharedStatic<double> SharedNextTime16 = SharedStatic<double>.GetOrCreate<AnywhenAudioMetronome, SharedNextTime16Key>();
-    private struct SharedNextTime16Key {}
+
+    private struct SharedNextTime16Key
+    {
+    }
+
     private GeneratorInstance _generatorInstance;
     [SerializeField] private int bpm = 120;
     public static int CurrentBPM;

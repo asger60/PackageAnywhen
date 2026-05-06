@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace Anywhen
 {
@@ -21,7 +18,7 @@ namespace Anywhen
             get
             {
                 if (!_conductor)
-                    _conductor = _instance.GetComponent<AnywhenConductor>();
+                    _conductor = Instance.GetComponent<AnywhenConductor>();
                 return _conductor;
             }
         }
@@ -38,7 +35,14 @@ namespace Anywhen
 
         private static AnywhenRuntime _instance;
 
-        private static AnywhenRuntime Instance => _instance;
+        private static AnywhenRuntime Instance
+        {
+            get
+            {
+                if (!_instance) _instance = FindObjectsByType<AnywhenRuntime>()[0];
+                return _instance;
+            }
+        }
 
 
         private bool _isPreviewing;

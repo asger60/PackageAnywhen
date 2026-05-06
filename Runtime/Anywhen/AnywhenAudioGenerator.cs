@@ -514,7 +514,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _currentSectionBar = 0;
                         _currentSectionIndex = 0;
                         _sectionIndices[0] = 0;
-                        AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex].ProgressionSteps[_currentSectionBar]);
+                        if (_anysongSections.IsCreated && _anysongSections.Length > 0)
+                        {
+                            Debug.Log("resetting ");
+                            if (AnywhenRuntime.Conductor)
+                                AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex]
+                                    .ProgressionSteps[_currentSectionBar]);
+                        }
 
                         for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
                         {
@@ -568,15 +574,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     for (int sectionIndex = 0; sectionIndex < newMidiData.SectionData.Length; sectionIndex++)
                     {
+                        Debug.Log("sections " + _anysongSections.Length + " " + sectionIndex);
                         var section = _anysongSections[sectionIndex];
                         var newSection = newMidiData.SectionData[sectionIndex];
                         for (int trackIndex = 0; trackIndex < newSection.Tracks.Length; trackIndex++)
                         {
                             var track = section.Tracks[trackIndex];
                             var newTrack = newSection.Tracks[trackIndex];
-                            for (int patternIndex = 0;
-                                 patternIndex < newTrack.Patterns.Length;
-                                 patternIndex++)
+                            for (int patternIndex = 0; patternIndex < newTrack.Patterns.Length; patternIndex++)
                             {
                                 track.Patterns[patternIndex] = newTrack.Patterns[patternIndex];
                             }
@@ -630,6 +635,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             double dspTime = context.dspTime * invSampleRate;
 
             int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
+            if (!_anysongSections.IsCreated) return buffer.frameCount;
 
             if (_isPlaying && currentSub16Count != _lastSub16Count)
             {
@@ -838,27 +844,27 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public struct PlaybackStateData
+    private struct PlaybackStateData
     {
         public bool IsPlaying;
     }
 
-    public struct IntensityData
+    private struct IntensityData
     {
         public float Intensity;
     }
 
-    public struct NewTracksSettingsData
+    private struct NewTracksSettingsData
     {
         public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
     }
 
-    public struct SwapMidiData
+    private struct SwapMidiData
     {
         public NativeArray<AnysongSection.Unmanaged> SectionData;
     }
 
-    public struct TrackStateData
+    private struct TrackStateData
     {
         public NativeArray<int> MutedTracks;
     }
