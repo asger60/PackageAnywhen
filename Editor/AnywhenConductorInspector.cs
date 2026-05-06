@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [CustomEditor(typeof(AnywhenConductor))]
-public class AnywhenConductorInspector : UnityEditor.Editor
+public class AnywhenConductorInspector : Editor
 {
 
     public override VisualElement CreateInspectorGUI()
@@ -24,7 +24,6 @@ public class AnywhenConductorInspector : UnityEditor.Editor
             isReadOnly = true,
         };
             
-        scaleLabel.BindProperty(serializedObject.FindProperty("_currentAnywhenScale"));
 
 
         
