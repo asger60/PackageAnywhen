@@ -3,12 +3,15 @@
     <engine:VisualElement name="Container" style="flex-grow: 1; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px;">
         <engine:VisualElement name="Transport" style="flex-grow: 1; height: 40px; max-height: 40px; justify-content: flex-start; flex-direction: row; min-height: 40px;">
             <engine:Button text="Play" style="width: 100px;"/>
-            <engine:Slider label="Tempo" value="42" high-value="200" low-value="50"/>
-            <engine:Slider label="Intensity" value="42" high-value="100" show-input-field="true"/>
-            <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <engine:Slider label="Tempo" value="42" high-value="200" low-value="50" name="TempoSlider"/>
+            <engine:Slider label="Intensity" value="42" high-value="100" show-input-field="true" name="IntensitySlider"/>
+            <engine:VisualElement name="SnapshotControls" style="flex-grow: 1; flex-direction: row;">
                 <engine:Button text="Button"/>
                 <engine:Slider label="Slider" value="42" high-value="100"/>
                 <engine:Button text="Button"/>
+            </engine:VisualElement>
+            <engine:VisualElement name="Visualizer" style="flex-grow: 1; min-width: 420px;">
+                <engine:VisualElement style="flex-grow: 1; position: absolute; width: 54px; height: 40px; background-image: url(&quot;project://database/Assets/PackageAnywhen/Editor/Sprites/AnywhenLogoSmall.png?fileID=2800000&amp;guid=41c828c49963c41d8afcb0ba18069e33&amp;type=3#AnywhenLogoSmall&quot;); -unity-background-image-tint-color: rgba(255, 255, 255, 0.57); right: 0; top: 0; -unity-background-scale-mode: scale-to-fit;"/>
             </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement name="Sections" style="flex-grow: 1; max-height: 70px; min-height: 70px; justify-content: center;">
@@ -47,5 +50,4 @@
             </engine:ScrollView>
         </engine:VisualElement>
     </engine:VisualElement>
-    <engine:VisualElement style="flex-grow: 1; position: absolute; top: 10px; right: 10px; width: 71px; height: 35px; background-image: url(&quot;project://database/Assets/PackageAnywhen/Editor/Sprites/AnywhenLogoSmall.png?fileID=2800000&amp;guid=41c828c49963c41d8afcb0ba18069e33&amp;type=3#AnywhenLogoSmall&quot;); -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: rgba(0, 0, 0, 0.57);"/>
 </engine:UXML>

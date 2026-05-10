@@ -1,4 +1,5 @@
 using Anysong;
+using Anywhen;
 using Anywhen.Composing;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -35,6 +36,7 @@ public static class AnysongTransportView
                 flexDirection = FlexDirection.Row,
             }
         };
+        var visualizerContainer = _parent.Q<VisualElement>("Visualizer");
 
         parent.Clear();
         _parent.Add(headerElement);
@@ -60,7 +62,6 @@ public static class AnysongTransportView
         tempoPropertyField.style.width = 300;
         tempoPropertyField.RegisterValueChangeCallback(evt => { AnysongEditorWindow.SetBPM(evt.changedProperty.intValue); });
         controlsElement.Add(tempoPropertyField);
-
 
 
         var intensitySlider = new Slider(0, 1)
@@ -108,14 +109,23 @@ public static class AnysongTransportView
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
             float newValue = evt.newValue;
-            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB, _song, newValue);
+            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB,
+                _song, newValue);
         });
 
         snapShotControlElement.Add(_snapshotButtonA);
         snapShotControlElement.Add(_snapShotLerpSlider);
         snapShotControlElement.Add(_snapshotButtonB);
 
+
         controlsElement.Add(snapShotControlElement);
+
+
+        var visualizer = new OscilloscopeElement();
+        visualizerContainer.Add(visualizer);
+        visualizer.style.width = 420;
+        visualizer.style.height = 80;
+        controlsElement.Add(visualizerContainer);
     }
 
     static VisualElement Spacer(float width = 20)

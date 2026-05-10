@@ -17,6 +17,7 @@ namespace Anysong
         private Event _currentEvent;
 
         static AnywhenAudioGenerator _currentPlayer;
+        public static AnywhenAudioGenerator CurrentPlayer => _currentPlayer;
         static AnywhenAudioMetronome _currentMetronome;
 
 
