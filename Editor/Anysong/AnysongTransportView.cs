@@ -22,90 +22,35 @@ public static class AnysongTransportView
     public static void Draw(VisualElement parent, AnysongObject currentSong)
     {
         _parent = parent;
-        var headerElement = new VisualElement
-        {
-            style =
-            {
-                flexDirection = FlexDirection.Row,
-            }
-        };
-        var controlsElement = new VisualElement
-        {
-            style =
-            {
-                flexDirection = FlexDirection.Row,
-            }
-        };
+
         var visualizerContainer = _parent.Q<VisualElement>("Visualizer");
 
-        parent.Clear();
-        _parent.Add(headerElement);
-        _parent.Add(controlsElement);
 
-        _playButton = new Button()
-        {
-            name = "PlayButton",
-            text = "Play",
-            style = { width = 100 }
-        };
+
+        _playButton = _parent.Q<Button>("PlayButton");
+
         _playButton.AddToClassList("transport-play-button");
-        controlsElement.Add(_playButton);
-
-
-        controlsElement.Add(Spacer());
-
+        
         _song = new SerializedObject(currentSong);
+        
         var tempoProperty = _song.FindProperty("tempo");
-
-        var tempoPropertyField = new PropertyField(tempoProperty);
-        tempoPropertyField.BindProperty(tempoProperty);
-        tempoPropertyField.style.width = 300;
-        tempoPropertyField.RegisterValueChangeCallback(evt => { AnysongEditorWindow.SetBPM(evt.changedProperty.intValue); });
-        controlsElement.Add(tempoPropertyField);
+        var tempoSlider = _parent.Q<SliderInt>("TempoSlider");
+        tempoSlider.BindProperty(tempoProperty);
+        tempoSlider.RegisterValueChangedCallback(evt => { AnysongEditorWindow.SetBPM(evt.newValue); });
 
 
-        var intensitySlider = new Slider(0, 1)
-        {
-            style = { width = 300 },
-            direction = SliderDirection.Horizontal,
-            name = "TestIntensitySlider",
-            label = "Intensity",
-            value = 1,
-            showInputField = true,
-        };
-
-        controlsElement.Add(Spacer());
-        controlsElement.Add(intensitySlider);
+        var intensitySlider = _parent.Q<Slider>("IntensitySlider");
         intensitySlider.RegisterValueChangedCallback(evt => { AnysongEditorWindow.SetTestIntensity(evt.newValue); });
 
-        VisualElement snapShotControlElement = new VisualElement
-        {
-            style =
-            {
-                flexDirection = FlexDirection.Row,
-                width = 400,
-                flexShrink = 0,
-            }
-        };
-        _snapshotButtonA = new Button
-        {
-            text = "A"
-        };
+
+        _snapshotButtonA = _parent.Q<Button>("SnapshotButtonA");
         _snapshotButtonA.clicked += () => ToggleSnapShot(false);
         _snapshotButtonA.AddToClassList("snapshot-button");
-        _snapshotButtonB = new Button
-        {
-            text = "B"
-        };
+        _snapshotButtonB = _parent.Q<Button>("SnapshotButtonB");
         _snapshotButtonB.AddToClassList("snapshot-button");
         _snapshotButtonB.clicked += () => ToggleSnapShot(true);
-        _snapShotLerpSlider = new Slider(0, 1)
-        {
-            style =
-            {
-                width = 200
-            }
-        };
+        _snapShotLerpSlider = _parent.Q<Slider>("SnapshotSlider");
+        
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
             float newValue = evt.newValue;
@@ -113,32 +58,15 @@ public static class AnysongTransportView
                 _song, newValue);
         });
 
-        snapShotControlElement.Add(_snapshotButtonA);
-        snapShotControlElement.Add(_snapShotLerpSlider);
-        snapShotControlElement.Add(_snapshotButtonB);
 
-
-        controlsElement.Add(snapShotControlElement);
-
+        
 
         var visualizer = new OscilloscopeElement();
         visualizerContainer.Add(visualizer);
         visualizer.style.width = 420;
         visualizer.style.height = 80;
-        controlsElement.Add(visualizerContainer);
     }
 
-    static VisualElement Spacer(float width = 20)
-    {
-        var spacer = new VisualElement
-        {
-            style =
-            {
-                width = width
-            }
-        };
-        return spacer;
-    }
 
 
     public static void RefreshPlaybuttonState(bool isPlaying)
