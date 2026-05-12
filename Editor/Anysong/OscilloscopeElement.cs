@@ -19,12 +19,12 @@ namespace Anysong
 
         private void OnAttachToPanel(AttachToPanelEvent evt)
         {
-            AnywhenAudioGenerator.OnAudioGeneratedStatic += HandleAudioGenerated;
+         //   AnywhenAudioGenerator.OnAudioGeneratedStatic += HandleAudioGenerated;
         }
 
         private void OnDetachFromPanel(DetachFromPanelEvent evt)
         {
-            AnywhenAudioGenerator.OnAudioGeneratedStatic -= HandleAudioGenerated;
+          //  AnywhenAudioGenerator.OnAudioGeneratedStatic -= HandleAudioGenerated;
         }
 
         private void HandleAudioGenerated(float[] samples, int channels)
