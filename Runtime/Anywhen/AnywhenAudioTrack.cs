@@ -153,6 +153,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     internal void HandlePlaybackEvent(AnywhenAudioGenerator.PlaybackEvent playbackEvent)
     {
+        if (IsMute) return;
         _nextEvent = playbackEvent;
 
         int voiceToSteal = -1;

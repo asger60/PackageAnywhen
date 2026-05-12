@@ -12,7 +12,7 @@ using UnityEngine.Audio;
 
 
 [CreateAssetMenu(fileName = "AnywhenAudioPlayer", menuName = "Anywhen/Create AnywhenAudioPlayer asset", order = 2)]
-public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
+public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 {
     [SerializeField] AnysongObject song;
 
@@ -50,6 +50,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     }
 
     public delegate void AudioGeneratedDelegate(float[] samples, int channels);
+
     public event AudioGeneratedDelegate OnAudioGenerated;
     public static event AudioGeneratedDelegate OnAudioGeneratedStatic;
 
@@ -239,7 +240,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     {
         if (!_sharedPatternIndices.IsCreated || trackIndex >= _sharedPatternIndices.Length)
         {
-            Debug.Log("returning 0");
             return 0;
         }
 
@@ -273,7 +273,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     }
 
 
-    public class TriggerTrackStateMsg
+    private class TriggerTrackStateMsg
     {
         public NativeArray<int> MutedTracks;
 
@@ -284,7 +284,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class TriggerPlaybackMsg
+    private class TriggerPlaybackMsg
     {
         public readonly bool IsPlaying;
 
@@ -294,17 +294,17 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class TriggerIntensityMsg
+    private class TriggerIntensityMsg
     {
-        public float intensity;
+        public readonly float Intensity;
 
         public TriggerIntensityMsg(float intensity)
         {
-            this.intensity = intensity;
+            Intensity = intensity;
         }
     }
 
-    public class TriggerTrackSettingsReload
+    private class TriggerTrackSettingsReload
     {
         public readonly NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
 
@@ -314,7 +314,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class TriggerMidiReloadMsg
+    private class TriggerMidiReloadMsg
     {
         public readonly NativeArray<AnysongSection.Unmanaged> SectionData;
 
@@ -324,7 +324,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public class TriggerNoteClipMsg
+    private class TriggerNoteClipMsg
     {
         private readonly SimpleNoteEvent _noteEvent;
         private readonly double _scheduledPlayTime;
@@ -339,18 +339,16 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     }
 
 
-    public struct AudioDataEvent
+    private struct AudioDataEvent
     {
-        public const int MaxSamples = 512;
+        public const int MaxSamples = 256;
         public int SampleCount;
         public int Channels;
-        // Using a set of fields instead of fixed buffer to avoid unsafe in the struct definition if possible,
-        // but fixed buffer is much better for indexing. Let's stick to fixed and fix the usage.
         public unsafe fixed float Samples[MaxSamples];
     }
 
     [BurstCompile(CompileSynchronously = true)]
-    public struct Processor : GeneratorInstance.IRealtime
+    private struct Processor : GeneratorInstance.IRealtime
     {
         NativeArray<AnysongTrack> _tracks;
         NativeArray<AnysongSection.Unmanaged> _anysongSections;
@@ -379,7 +377,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private bool _isPlaying;
         private float _intensity;
 
-        private float _currentSnapshotValue;
         private uint _seed;
         int _currentSectionIndex;
         private int _currentSectionBar;
@@ -398,7 +395,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _isPlaying = false;
             _currentSectionIndex = 0;
             _intensity = 1;
-            _currentSnapshotValue = 0;
             _sampleRate = sampleRate;
             _currentSectionBar = 0;
             _audioDataEvent = new AudioDataEvent { Channels = 2 }; // Assuming stereo for now
@@ -419,8 +415,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
 
-
-
                     // Properly dispose the old NativeArray to avoid memory leaks
                     if (track.Patterns.IsCreated)
                     {
@@ -435,7 +429,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     // Create new patterns from the song data
                     track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
-                    
+
                     // Update the CurrentPattern reference in the track
                     track.CurrentPattern = track.Patterns[track.CurrentPatternIndex];
 
@@ -519,9 +513,8 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _currentSectionBar = 0;
                         _currentSectionIndex = 0;
                         _sectionIndices[0] = 0;
-                        if (_anysongSections.IsCreated && _anysongSections.Length > 0)
+                        if (_anysongSections is { IsCreated: true, Length: > 0 })
                         {
-                            Debug.Log("resetting ");
                             if (AnywhenRuntime.Conductor)
                                 AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex]
                                     .ProgressionSteps[_currentSectionBar]);
@@ -538,7 +531,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                                 var track = section.Tracks[trackIndex];
                                 track.Reset();
                                 var pattern = track.Patterns[track.CurrentPatternIndex];
-                                //pattern.SetStepIndex(0);
                                 track.Patterns[track.CurrentPatternIndex] = pattern;
                                 section.Tracks[trackIndex] = track;
                                 _patternIndices[trackIndex] = track.CurrentPatternIndex;
@@ -563,7 +555,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         {
                             if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                Debug.Log("Creating new track " + newTrackSetting.trackTypeIndex + " " + trackIndex);
                                 thisTrack.CreateTrack(newTrackSetting, _sampleRate);
                                 thisTrack.UpdateSettings(newTrackSetting);
                             }
@@ -584,7 +575,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
                         for (int i = 0; i < newMidiData.SectionData.Length; i++)
                             _anysongSections[i] = newMidiData.SectionData[i];
-                        _currentSectionIndex = _currentSectionIndex % _anysongSections.Length;
+                        _currentSectionIndex %= _anysongSections.Length;
                     }
 
                     for (int sectionIndex = 0; sectionIndex < newMidiData.SectionData.Length; sectionIndex++)
@@ -601,7 +592,6 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             }
 
                             var pattern = track.Patterns[track.CurrentPatternIndex];
-                            //pattern.SetStepIndex(AnywhenAudioMetronome.SharedSub16Count.Data);
                             track.Patterns[track.CurrentPatternIndex] = pattern;
                             section.Tracks[trackIndex] = track;
                         }
@@ -744,15 +734,16 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 _tracks[i] = track;
             }
 
-                // Capture samples for visualization
-                _audioDataEvent.Channels = buffer.channelCount;
-                _audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
-                for (int i = 0; i < _audioDataEvent.SampleCount; i++)
-                {
-                    // For oscilloscope, we can just take the first channel or mix them
-                    _audioDataEvent.Samples[i] = buffer[0, i];
-                }
-                pipe.SendData(context, _audioDataEvent);
+            // Capture samples for visualization
+            _audioDataEvent.Channels = buffer.channelCount;
+            _audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
+            for (int i = 0; i < _audioDataEvent.SampleCount; i++)
+            {
+                // For oscilloscope, we can just take the first channel or mix them
+                _audioDataEvent.Samples[i] = buffer[0, i];
+            }
+
+            pipe.SendData(context, _audioDataEvent);
 
             _seed = state;
             return buffer.frameCount;
@@ -760,11 +751,16 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         struct Control : GeneratorInstance.IControl<Processor>
         {
+            private static float[] _managedSamples;
+
             public void Configure(ControlContext context, ref Processor generator, in AudioFormat config,
                 out GeneratorInstance.Setup setup, ref GeneratorInstance.Properties p)
             {
                 generator._setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, config.sampleRate);
                 setup = generator._setup;
+                // Only allocate if not already done
+                if (_managedSamples == null || _managedSamples.Length != AudioDataEvent.MaxSamples)
+                    _managedSamples = new float[AudioDataEvent.MaxSamples];
             }
 
             public void Dispose(ControlContext context, ref Processor generator)
@@ -783,13 +779,12 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (element.TryGetData(out AudioDataEvent data))
                     {
-                        float[] managedSamples = new float[data.SampleCount];
                         for (int i = 0; i < data.SampleCount; i++)
                         {
-                            managedSamples[i] = data.Samples[i];
+                            _managedSamples[i] = data.Samples[i];
                         }
-                        
-                        OnAudioGeneratedStatic?.Invoke(managedSamples, data.Channels);
+
+                        OnAudioGeneratedStatic?.Invoke(_managedSamples, data.Channels);
                     }
                 }
             }
@@ -814,7 +809,7 @@ public  class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (message.Is<TriggerIntensityMsg>())
                 {
                     var payload = message.Get<TriggerIntensityMsg>();
-                    pipe.SendData(context, new IntensityData { Intensity = payload.intensity });
+                    pipe.SendData(context, new IntensityData { Intensity = payload.Intensity });
                     return ProcessorInstance.Response.Handled;
                 }
 

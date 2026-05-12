@@ -27,7 +27,6 @@ namespace Anywhen
 
 
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
-        private static InstrumentDatabase _instrumentDatabase;
         AnywhenAudioMetronome _metronome;
         public static AnywhenAudioMetronome Metronome => _instance._metronome;
 
@@ -102,7 +101,6 @@ namespace Anywhen
         void GetAnyComponents()
         {
             TryGetComponent(out _conductor);
-            _instrumentDatabase = GetComponentInChildren<InstrumentDatabase>();
             AudioSource a = GetComponent<AudioSource>();
             a.Play();
             _metronome = a.generator as AnywhenAudioMetronome;

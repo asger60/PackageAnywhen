@@ -29,12 +29,14 @@ namespace Anywhen
 
             _scaleOverridden = false;
             if (anywhenScale != null)
+            {
                 _currentAnywhenScale = anywhenScale.ToUnmanaged();
+            }
+
             if (initialProgressionPattern != null)
+            {
                 _currentProgressionPattern = initialProgressionPattern;
-
-
-            //AnywhenMetronome.Instance.OnNextBar += OnNextBar;
+            }
         }
 
         private void OnNextBar()
