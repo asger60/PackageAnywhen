@@ -773,20 +773,20 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 }
             }
 
-            public unsafe void Update(ControlContext context, ProcessorInstance.Pipe pipe)
+            public void Update(ControlContext context, ProcessorInstance.Pipe pipe)
             {
-                foreach (var element in pipe.GetAvailableData(context))
-                {
-                    if (element.TryGetData(out AudioDataEvent data))
-                    {
-                        for (int i = 0; i < data.SampleCount; i++)
-                        {
-                            _managedSamples[i] = data.Samples[i];
-                        }
-
-                        OnAudioGeneratedStatic?.Invoke(_managedSamples, data.Channels);
-                    }
-                }
+                //foreach (var element in pipe.GetAvailableData(context))
+                //{
+                //    if (element.TryGetData(out AudioDataEvent data))
+                //    {
+                //        for (int i = 0; i < data.SampleCount; i++)
+                //        {
+                //            _managedSamples[i] = data.Samples[i];
+                //        }
+//
+                //        OnAudioGeneratedStatic?.Invoke(_managedSamples, data.Channels);
+                //    }
+                //}
             }
 
             public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe,
