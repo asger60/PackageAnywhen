@@ -4,7 +4,7 @@
         <engine:VisualElement name="Transport" style="flex-grow: 1; height: 40px; max-height: 40px; justify-content: flex-start; flex-direction: row; min-height: 40px; margin-bottom: 10px;">
             <engine:Button text="Play" name="PlayButton" class="section-edit-button editing" style="width: 100px;"/>
             <engine:SliderInt label="Tempo" value="42" high-value="200" low-value="50" name="TempoSlider" show-input-field="true" class="transport_section_slider" style="min-width: 200px;"/>
-            <engine:Slider label="Intensity" value="42" high-value="100" show-input-field="true" name="IntensitySlider" class="transport_section_slider" style="min-width: 200px;"/>
+            <engine:Slider label="Intensity" value="42" high-value="1" show-input-field="true" name="IntensitySlider" class="transport_section_slider" style="min-width: 200px;"/>
             <engine:VisualElement name="SnapshotControls" style="flex-grow: 0; flex-direction: row;">
                 <engine:Button text="A" name="SnapshotButtonA" class="progression-edit-button"/>
                 <engine:Slider label="" value="0" high-value="1" name="SnapshotSlider" show-input-field="true" fill="true" class="transport_section_slider" style="min-width: 200px;"/>
