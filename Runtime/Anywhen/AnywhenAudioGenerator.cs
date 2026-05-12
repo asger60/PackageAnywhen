@@ -23,7 +23,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private void OnEnable()
     {
-        //OnAudioGeneratedStatic += HandleAudioGeneratedStatic;
+        OnAudioGeneratedStatic += HandleAudioGeneratedStatic;
         if (song != null)
         {
             song.RemoveListeners();
@@ -32,7 +32,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private void OnDisable()
     {
-        //OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
+        OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
@@ -49,15 +49,15 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song = newSong;
     }
 
-    //public delegate void AudioGeneratedDelegate(float[] samples, int channels);
-//
-    //public event AudioGeneratedDelegate OnAudioGenerated;
-    //public static event AudioGeneratedDelegate OnAudioGeneratedStatic;
-//
-    //private void HandleAudioGeneratedStatic(float[] samples, int channels)
-    //{
-    //    OnAudioGenerated?.Invoke(samples, channels);
-    //}
+    public delegate void AudioGeneratedDelegate(float[] samples, int channels);
+
+    public event AudioGeneratedDelegate OnAudioGenerated;
+    public static event AudioGeneratedDelegate OnAudioGeneratedStatic;
+
+    private void HandleAudioGeneratedStatic(float[] samples, int channels)
+    {
+        OnAudioGenerated?.Invoke(samples, channels);
+    }
 
     public void SetPlay(bool state)
     {
@@ -751,12 +751,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         struct Control : GeneratorInstance.IControl<Processor>
         {
+            private static float[] _managedSamples;
 
             public void Configure(ControlContext context, ref Processor generator, in AudioFormat config,
                 out GeneratorInstance.Setup setup, ref GeneratorInstance.Properties p)
             {
                 generator._setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, config.sampleRate);
                 setup = generator._setup;
+                // Only allocate if not already done
+                if (_managedSamples == null || _managedSamples.Length != AudioDataEvent.MaxSamples)
+                    _managedSamples = new float[AudioDataEvent.MaxSamples];
             }
 
             public void Dispose(ControlContext context, ref Processor generator)
@@ -769,20 +773,20 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 }
             }
 
-            public void Update(ControlContext context, ProcessorInstance.Pipe pipe)
+            public unsafe void Update(ControlContext context, ProcessorInstance.Pipe pipe)
             {
-                //foreach (var element in pipe.GetAvailableData(context))
-                //{
-                //    if (element.TryGetData(out AudioDataEvent data))
-                //    {
-                //        for (int i = 0; i < data.SampleCount; i++)
-                //        {
-                //            _managedSamples[i] = data.Samples[i];
-                //        }
-//
-                //        OnAudioGeneratedStatic?.Invoke(_managedSamples, data.Channels);
-                //    }
-                //}
+                foreach (var element in pipe.GetAvailableData(context))
+                {
+                    if (element.TryGetData(out AudioDataEvent data))
+                    {
+                        for (int i = 0; i < data.SampleCount; i++)
+                        {
+                            _managedSamples[i] = data.Samples[i];
+                        }
+
+                        OnAudioGeneratedStatic?.Invoke(_managedSamples, data.Channels);
+                    }
+                }
             }
 
             public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe,
