@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Anywhen.SettingsObjects;
 using Unity.Collections;
 using UnityEngine;
 
@@ -70,7 +71,7 @@ namespace Anywhen.Composing
                 progressionSteps[i] = new AnywhenProgressionPatternObject.ProgressionStep
                 {
                     rootNote = 0,
-                    anywhenScale = AnywhenConductor.GetDefaultScale()
+                    anywhenScale = Resources.Load<AnywhenScaleObject>("Scales/Major")
                 };
             }
 

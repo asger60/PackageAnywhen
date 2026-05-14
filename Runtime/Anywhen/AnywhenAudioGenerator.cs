@@ -33,6 +33,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnDisable()
     {
         OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
+    
+        // Remove listeners FIRST, before any NativeArray disposal,
+        // so lambdas captured in the Processor constructor can't fire
+        // against already-disposed arrays during teardown.
+        if (song != null)
+            song.RemoveListeners();
+
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
@@ -515,8 +522,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _sectionIndices[0] = 0;
                         if (_anysongSections is { IsCreated: true, Length: > 0 })
                         {
-                            AnywhenConductor.SetBaseScaleProgressionStep(_anysongSections[_currentSectionIndex]
-                                .ProgressionSteps[_currentSectionBar]);
+                            AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex].ProgressionSteps);
                         }
 
                         for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
@@ -655,6 +661,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _currentSectionBar = 0;
                         section.Reset();
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
+                        AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex].ProgressionSteps);
                         _sectionIndices[0] = _currentSectionIndex;
                     }
 
@@ -662,7 +669,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     if (currentSection.ProgressionSteps.Length > 0)
                     {
                         _currentSectionBar %= currentSection.ProgressionSteps.Length;
-                        AnywhenConductor.SetBaseScaleProgressionStep(currentSection.ProgressionSteps[_currentSectionBar]);
+                        //AnywhenRuntime.Metronome.SetBaseProgressionStep(currentSection.ProgressionSteps[_currentSectionBar]);
                         _currentSectionBar = (_currentSectionBar + 1) % currentSection.ProgressionSteps.Length;
                     }
 

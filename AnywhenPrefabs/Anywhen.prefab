@@ -238,7 +238,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2171847884250104618}
   - component: {fileID: 52873300303208825}
-  - component: {fileID: 5342442075504646355}
   - component: {fileID: 5604494718384798635}
   m_Layer: 0
   m_Name: Anywhen
@@ -277,22 +276,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _thisInstrumentDatabase: {fileID: 7206175770718242344}
   logErrors: 0
---- !u!114 &5342442075504646355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5480952876350075817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bbf82b0c5e2c4cf3836bd9dd711b5cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rootNote: 0
-  anywhenScale: {fileID: 0}
-  _currentAnywhenScale: {fileID: 0}
-  initialProgressionPattern: {fileID: 0}
 --- !u!82 &5604494718384798635
 AudioSource:
   m_ObjectHideFlags: 0

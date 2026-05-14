@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using System;
 using Anywhen.SettingsObjects;
 using UnityEngine;
 
@@ -11,17 +12,7 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
-        private static AnywhenConductor _conductor;
 
-        public static AnywhenConductor Conductor
-        {
-            get
-            {
-                if (!_conductor)
-                    _conductor = Instance.GetComponent<AnywhenConductor>();
-                return _conductor;
-            }
-        }
 
         private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
@@ -100,7 +91,6 @@ namespace Anywhen
 
         void GetAnyComponents()
         {
-            TryGetComponent(out _conductor);
             AudioSource a = GetComponent<AudioSource>();
             a.Play();
             _metronome = a.generator as AnywhenAudioMetronome;
@@ -176,6 +166,16 @@ namespace Anywhen
         public static void SetTempo(int newTempo)
         {
             _instance._metronome.SetTempo(newTempo);
+        }
+
+        public static void Reset()
+        {
+            _instance._metronome.Restart();
+        }
+
+        private void OnDestroy()
+        {
+            _instance._metronome.Reset();
         }
     }
 }

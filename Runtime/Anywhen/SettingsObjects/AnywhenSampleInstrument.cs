@@ -123,7 +123,7 @@ namespace Anywhen.SettingsObjects
                 switch (clipSelectType)
                 {
                     case ClipSelectType.ScalePitchedNotes:
-                        note = AnywhenConductor.GetScaledNote(note);
+                        note = AnywhenAudioMetronome.Processor.GetScaledNote(note);
 
                         int bestDistance = int.MaxValue;
                         int matchingCount = 0;
@@ -254,7 +254,7 @@ namespace Anywhen.SettingsObjects
             switch (clipSelectType)
             {
                 case ClipSelectType.ScalePitchedNotes:
-                    note = AnywhenConductor.GetScaledNote(note);
+                    note = AnywhenAudioMetronome.Processor.GetScaledNote(note);
 
                     int bestDist = int.MaxValue;
                     int bestNoteIndex = 0;

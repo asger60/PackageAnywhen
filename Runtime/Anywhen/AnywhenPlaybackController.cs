@@ -24,8 +24,10 @@ namespace Anywhen
             _currentPlayer.SetSong(_currentSong);
             songSource.generator = _currentPlayer;
             songSource.Play();
-            _currentPlayer.SetPlay(true);
+            
             AnywhenRuntime.SetTempo(100);
+            AnywhenRuntime.Reset();
+            _currentPlayer.SetPlay(true);
         }
 
         private void Update()

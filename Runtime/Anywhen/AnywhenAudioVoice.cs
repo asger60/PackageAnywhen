@@ -87,6 +87,7 @@ public struct AnywhenAudioVoice
 
         return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
     }
+    
 
     internal void QueueNote(AnywhenAudioGenerator.PlaybackEvent playbackEvent)
     {

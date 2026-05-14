@@ -1,4 +1,5 @@
 ﻿using Anywhen.SettingsObjects;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Anywhen
@@ -42,10 +43,28 @@ namespace Anywhen
 
         public ProgressionStep[] patternSteps;
 
-        public ProgressionStep.Unmanaged GetCurrentUnmanagedStep()
+        public struct Unmanaged
         {
-            int index = AnywhenAudioMetronome.CurrentBar % patternSteps.Length;
-            return patternSteps[index].ToUnmanaged();
+            public NativeArray<ProgressionStep.Unmanaged> patternSteps;
+
+            public bool IsNull()
+            {
+                return !patternSteps.IsCreated || patternSteps.Length == 0;
+            }
+        }
+
+        public Unmanaged ToUnmanaged()
+        {
+            var unmanagedSteps = new NativeArray<ProgressionStep.Unmanaged>(patternSteps.Length, Allocator.Persistent);
+            for (int i = 0; i < patternSteps.Length; i++)
+            {
+                unmanagedSteps[i] = patternSteps[i].ToUnmanaged();
+            }
+
+            return new Unmanaged
+            {
+                patternSteps = unmanagedSteps
+            };
         }
     }
 }

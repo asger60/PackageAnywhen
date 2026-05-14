@@ -24,7 +24,7 @@ namespace Anywhen.Synth
 
         public void QueueNote(int noteIndex)
         {
-            noteIndex = AnywhenConductor.GetScaledNote(noteIndex);
+            noteIndex = AnywhenAudioMetronome.Processor.GetScaledNote(noteIndex);
             noteIndex += 30 + _settings.NoteOffset;
             double freqHz = Midi2Freq(noteIndex) * Mathf.Pow(2f, _settings.Detune / 12f);
             double freqPpsmp = freqHz / _sampleRate;
