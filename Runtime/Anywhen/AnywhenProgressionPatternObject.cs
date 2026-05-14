@@ -26,6 +26,7 @@ namespace Anywhen
             {
                 public int RootNote;
                 public AnywhenScaleObject.Unmanaged AnywhenScale;
+                public bool IsNull => AnywhenScale.IsNull();
             }
 
             public Unmanaged ToUnmanaged()
@@ -40,5 +41,11 @@ namespace Anywhen
 
 
         public ProgressionStep[] patternSteps;
+
+        public ProgressionStep.Unmanaged GetCurrentUnmanagedStep()
+        {
+            int index = AnywhenAudioMetronome.CurrentBar % patternSteps.Length;
+            return patternSteps[index].ToUnmanaged();
+        }
     }
 }

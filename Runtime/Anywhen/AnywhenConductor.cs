@@ -1,78 +1,61 @@
 ﻿using Anywhen.SettingsObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Anywhen
 {
     public class AnywhenConductor : MonoBehaviour
     {
-        [SerializeField] int _rootNote = 0;
-        [SerializeField] AnywhenScaleObject anywhenScale;
-        AnywhenScaleObject.Unmanaged _currentAnywhenScale;
+        [FormerlySerializedAs("_rootNote")] [SerializeField]
+        int initialRootNote = 0;
 
-        public static AnywhenConductor Instance => AnywhenRuntime.Conductor;
+        [FormerlySerializedAs("anywhenScale")] [SerializeField]
+        AnywhenScaleObject initialScale;
 
-        public AnywhenProgressionPatternObject initialProgressionPattern;
+        static AnywhenConductor Instance => AnywhenRuntime.Conductor;
 
-        private AnywhenProgressionPatternObject _currentProgressionPattern;
-        private int _currentPatternStep;
-        private bool _scaleOverridden;
-        private bool _rootOverridden;
+
+        AnywhenProgressionPatternObject.ProgressionStep.Unmanaged _currentBaseProgressionStep;
+        AnywhenProgressionPatternObject _currentOverrideProgression;
 
 
         private void Start()
         {
-            if (anywhenScale == null)
+            if (initialScale == null)
             {
-                anywhenScale = Resources.Load<AnywhenScaleObject>("Scales/Minor");
+                initialScale = Resources.Load<AnywhenScaleObject>("Scales/Minor");
             }
 
-
-            _scaleOverridden = false;
-            if (anywhenScale != null)
+            _currentBaseProgressionStep = new AnywhenProgressionPatternObject.ProgressionStep.Unmanaged
             {
-                _currentAnywhenScale = anywhenScale.ToUnmanaged();
-            }
-
-            if (initialProgressionPattern != null)
-            {
-                _currentProgressionPattern = initialProgressionPattern;
-            }
-        }
-
-        private void OnNextBar()
-        {
-            if (_currentProgressionPattern)
-            {
-                _currentPatternStep++;
-                _currentPatternStep =
-                    (int)Mathf.Repeat(_currentPatternStep, _currentProgressionPattern.patternSteps.Length);
-
-                if (!_rootOverridden)
-                {
-                    _rootNote = _currentProgressionPattern.patternSteps[_currentPatternStep].rootNote;
-                }
-
-                if (!_scaleOverridden)
-                {
-                    _currentAnywhenScale = _currentProgressionPattern.patternSteps[_currentPatternStep].anywhenScale.ToUnmanaged();
-                }
-            }
+                AnywhenScale = initialScale.ToUnmanaged(),
+                RootNote = initialRootNote
+            };
         }
 
 
-        public int GetScaledNote(int noteStep, int maxNote = -1)
+        public static int GetScaledNote(int noteStep)
         {
-            if (_currentAnywhenScale.IsNull())
+            if (Instance._currentBaseProgressionStep.IsNull)
+                return 0;
+
+            if (Instance._currentOverrideProgression)
+            {
+                return Instance.GetScaledNote(Instance._currentOverrideProgression.GetCurrentUnmanagedStep(), noteStep);
+            }
+
+            return Instance.GetScaledNote(Instance._currentBaseProgressionStep, noteStep);
+        }
+
+        int GetScaledNote(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged progressionStep, int noteStep)
+        {
+            if (progressionStep.AnywhenScale.IsNull() || progressionStep.AnywhenScale.notes.Length == 0)
             {
                 Debug.LogError("No scale set!");
                 return 0;
             }
 
-            if (_currentAnywhenScale.IsNull() || _currentAnywhenScale.notes.Length == 0) return 0;
-            int numNotes = _currentAnywhenScale.notes.Length;
-            if (numNotes == 0) return 0;
-
-
+            int numNotes = progressionStep.AnywhenScale.notes.Length;
             int octave = Mathf.FloorToInt((float)noteStep / numNotes);
             int noteIndex = noteStep % numNotes;
             if (noteIndex < 0)
@@ -80,60 +63,24 @@ namespace Anywhen
                 noteIndex += numNotes;
             }
 
-            int returnNote = _currentAnywhenScale.notes[noteIndex] + (octave * 12);
-
-            if (maxNote > 0 && returnNote >= maxNote)
-            {
-                returnNote -= 12;
-            }
-
-            return returnNote + _rootNote;
+            int returnNote = progressionStep.AnywhenScale.notes[noteIndex] + (octave * 12);
+            return returnNote + progressionStep.RootNote;
         }
 
-        public int[] GetScaledNotes(int[] notes)
-        {
-            int[] returnNotes = new int[notes.Length];
-            for (int i = 0; i < returnNotes.Length; i++)
-            {
-                returnNotes[i] = GetScaledNote(notes[i]);
-            }
 
-            return returnNotes;
+        public static void SetBaseScaleProgressionStep(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged progressionStep)
+        {
+            Instance._currentBaseProgressionStep = progressionStep;
         }
 
-        public void OverrideScale(AnywhenScaleObject newAnywhenScale)
+        public static void SetOverrideScaleProgression(AnywhenProgressionPatternObject overrideProgression)
         {
-            _currentAnywhenScale = newAnywhenScale.ToUnmanaged();
-            _scaleOverridden = true;
-        }
-
-        public void OverridePattern(AnywhenProgressionPatternObject anywhenProgressionPatternObject)
-        {
-            _currentProgressionPattern = anywhenProgressionPatternObject;
-            _currentPatternStep = 0;
-        }
-
-        public void OverrideRootNote(int newRoot)
-        {
-            _rootNote = newRoot;
-            _rootOverridden = true;
-        }
-
-        public void SetScaleProgression(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged step)
-        {
-            _currentAnywhenScale = step.AnywhenScale;
-            _rootNote = step.RootNote;
+            Instance._currentOverrideProgression = overrideProgression;
         }
 
         public static AnywhenScaleObject GetDefaultScale()
         {
             return Resources.Load<AnywhenScaleObject>("Scales/Major");
-        }
-
-        public void SetDefaultScale()
-        {
-            Debug.Log("Setting default scale");
-            _currentAnywhenScale = GetDefaultScale().ToUnmanaged();
         }
     }
 }

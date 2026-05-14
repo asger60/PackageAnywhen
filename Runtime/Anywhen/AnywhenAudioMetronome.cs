@@ -16,12 +16,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         Sub4 = 4,
         Sub8 = 8,
         Sub16 = 16,
+        Bar = 0,
     }
 
-    public delegate void MetronomeTickDelegate(MetronomeTickEvent tick);
 
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
-    internal static readonly SharedStatic<double> SharedNextTime16 = SharedStatic<double>.GetOrCreate<AnywhenAudioMetronome, SharedNextTime16Key>();
+
+    internal static readonly SharedStatic<double> SharedNextTime16 =
+        SharedStatic<double>.GetOrCreate<AnywhenAudioMetronome, SharedNextTime16Key>();
 
     private struct SharedNextTime16Key
     {
@@ -32,16 +34,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static int CurrentBPM;
     public int Bpm => bpm;
 
-    public static event MetronomeTickDelegate OnAudioTick;
-
-    internal static void TriggerTick(MetronomeTickEvent tick)
-    {
-        OnAudioTick?.Invoke(tick);
-        if (tick.Count == 0)
-        {
-            OnBar?.Invoke();
-        }
-    }
+    public static int CurrentBar;
 
     public static float Sub16Length => (60f / CurrentBPM) * 0.25f;
 
@@ -53,7 +46,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static Action OnTickSub8 { get; set; }
     public static Action OnTickSub4 { get; set; }
     public static Action OnTickSub2 { get; set; }
-    public static event Action OnBar;
+    public static Action OnTickBar { get; set; }
 
 
     public void Stop()
@@ -148,6 +141,8 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         private GeneratorInstance.Setup _setup;
 
+        static AnywhenProgressionPatternObject.ProgressionStep.Unmanaged _currentBaseProgressionStep;
+
         public static GeneratorInstance Allocate(ControlContext context, int sampleRate, int bpm)
         {
             return context.AllocateGenerator(new Processor(sampleRate, bpm), new Control());
@@ -168,6 +163,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             _nextTime16 = -1;
             _sub16Count = 0;
             _isPlaying = true;
+            _currentBaseProgressionStep = new AnywhenProgressionPatternObject.ProgressionStep.Unmanaged();
         }
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
@@ -232,6 +228,52 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             return buffer.frameCount;
         }
 
+
+        public static int GetScaledNote(int noteStep)
+        {
+            if (_currentBaseProgressionStep.IsNull)
+                return 0;
+
+            //if (_currentOverrideProgression)
+            //{
+            //    return GetScaledNote(_currentOverrideProgression.GetCurrentUnmanagedStep(), noteStep);
+            //}
+
+            return GetScaledNote(_currentBaseProgressionStep, noteStep);
+        }
+
+        static int GetScaledNote(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged progressionStep, int noteStep)
+        {
+            if (progressionStep.AnywhenScale.IsNull() || progressionStep.AnywhenScale.notes.Length == 0)
+            {
+                Debug.LogError("No scale set!");
+                return 0;
+            }
+
+            int numNotes = progressionStep.AnywhenScale.notes.Length;
+            int octave = Mathf.FloorToInt((float)noteStep / numNotes);
+            int noteIndex = noteStep % numNotes;
+            if (noteIndex < 0)
+            {
+                noteIndex += numNotes;
+            }
+
+            int returnNote = progressionStep.AnywhenScale.notes[noteIndex] + (octave * 12);
+            return returnNote + progressionStep.RootNote;
+        }
+
+
+        public void SetBaseScaleProgressionStep(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged progressionStep)
+        {
+            _currentBaseProgressionStep = progressionStep;
+        }
+
+        //public void SetOverrideScaleProgression(AnywhenProgressionPatternObject overrideProgression)
+        //{
+        //    _currentOverrideProgression = overrideProgression;
+        //}
+
+
         private void EmitTicks(RealtimeContext context, ProcessorInstance.Pipe pipe)
         {
             MetronomeTickEvent e = new MetronomeTickEvent
@@ -240,6 +282,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 Count = _sub16Count
             };
             pipe.SendData(context, e);
+
+            if (_sub16Count == 0)
+            {
+                e.TickRate = TickRate.Bar;
+                e.Count = 0;
+                pipe.SendData(context, e);
+            }
+
 
             if (_sub16Count % 2 == 0)
             {
@@ -287,8 +337,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 {
                     if (element.TryGetData(out MetronomeTickEvent tick))
                     {
-                        TriggerTick(tick);
-
                         switch (tick.TickRate)
                         {
                             case TickRate.Sub16:
@@ -302,7 +350,9 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                                 break;
                             case TickRate.Sub2:
                                 OnTickSub2?.Invoke();
-                                //if (tick.Count == 0) OnBar?.Invoke();
+                                break;
+                            case TickRate.Bar:
+                                OnTickBar?.Invoke();
                                 break;
                         }
                     }

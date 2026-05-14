@@ -63,7 +63,7 @@ public static class AnysongTransportView
 
         var visualizer = new OscilloscopeElement();
         visualizerContainer.Add(visualizer);
-        visualizer.style.width = 420;
+        visualizer.style.width = 340;
         visualizer.style.height = 80;
     }
 

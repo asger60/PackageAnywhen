@@ -196,7 +196,6 @@ namespace Anysong
             window.Show(true);
 
 
-            AnywhenRuntime.Conductor.SetDefaultScale();
         }
 
         private static bool _isPLaying;
@@ -214,19 +213,19 @@ namespace Anysong
                 _currentMetronome.Play();
                 _currentPlayer.Load(CurrentSong);
                 _currentPlayer.SetPlay(true);
-                AnywhenAudioMetronome.OnAudioTick += OnTick16;
-                AnywhenAudioMetronome.OnBar += OnBar;
+                AnywhenAudioMetronome.OnTickSub16 += OnTick16;
+                AnywhenAudioMetronome.OnTickBar += OnBar;
                 OnBar();
             }
             else
             {
                 _currentPlayer.SetPlay(false);
                 _currentMetronome.Stop();
-                AnywhenAudioMetronome.OnAudioTick -= OnTick16;
+                AnywhenAudioMetronome.OnTickSub16 -= OnTick16;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
                 AnysongPatternView.ResetTriggered();
                 AnysongProgressionsView.ResetTriggered();
-                AnywhenAudioMetronome.OnBar -= OnBar;
+                AnywhenAudioMetronome.OnTickBar -= OnBar;
             }
         }
 
@@ -249,8 +248,8 @@ namespace Anysong
             AnysongTracksView.Clear();
             AnysongTransportView.Clear();
             AnysongInspectorView.Clear();
-            AnywhenAudioMetronome.OnBar -= OnBar;
-            AnywhenAudioMetronome.OnAudioTick -= OnTick16;
+            AnywhenAudioMetronome.OnTickBar -= OnBar;
+            AnywhenAudioMetronome.OnTickSub16 -= OnTick16;
         }
 
         public static void SetTestIntensity(float value)
@@ -348,7 +347,7 @@ namespace Anysong
             });
         }
 
-        private static void OnTick16(MetronomeTickEvent tick)
+        private static void OnTick16()
         {
             if (_currentSelection == null) return;
             bool doShowCursor = _currentSelection.CurrentSectionIndex == _currentPlayer.GetPlayingSectionIndex() &&

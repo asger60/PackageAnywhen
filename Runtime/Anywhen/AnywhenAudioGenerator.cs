@@ -515,9 +515,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _sectionIndices[0] = 0;
                         if (_anysongSections is { IsCreated: true, Length: > 0 })
                         {
-                            if (AnywhenRuntime.Conductor)
-                                AnywhenRuntime.Conductor.SetScaleProgression(_anysongSections[_currentSectionIndex]
-                                    .ProgressionSteps[_currentSectionBar]);
+                            AnywhenConductor.SetBaseScaleProgressionStep(_anysongSections[_currentSectionIndex]
+                                .ProgressionSteps[_currentSectionBar]);
                         }
 
                         for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
@@ -572,7 +571,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     {
                         if (_anysongSections.IsCreated)
                             _anysongSections.Dispose();
-                        _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
+                        _anysongSections =
+                            new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
                         for (int i = 0; i < newMidiData.SectionData.Length; i++)
                             _anysongSections[i] = newMidiData.SectionData[i];
                         _currentSectionIndex %= _anysongSections.Length;
@@ -622,7 +622,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
 
 
-        public unsafe GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe, ChannelBuffer buffer,
+        public unsafe GeneratorInstance.Result Process(in RealtimeContext context, ProcessorInstance.Pipe pipe,
+            ChannelBuffer buffer,
             GeneratorInstance.Arguments args)
         {
             uint state = _seed;
@@ -661,7 +662,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     if (currentSection.ProgressionSteps.Length > 0)
                     {
                         _currentSectionBar %= currentSection.ProgressionSteps.Length;
-                        AnywhenRuntime.Conductor.SetScaleProgression(currentSection.ProgressionSteps[_currentSectionBar]);
+                        AnywhenConductor.SetBaseScaleProgressionStep(currentSection.ProgressionSteps[_currentSectionBar]);
                         _currentSectionBar = (_currentSectionBar + 1) % currentSection.ProgressionSteps.Length;
                     }
 

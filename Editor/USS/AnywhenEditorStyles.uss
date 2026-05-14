@@ -210,13 +210,32 @@ Button:hover {
 }
 
 .transport_section_slider {
-    min-width: 350px;
-    max-width: 350px;
-    width: 350px;
-    height: 100%;
+    width: 250px;
 }
 
-.unity-base-field__label {
-    max-width: 90px;
-    min-width: 90px;
+.unity-base-field__label--with-dragger {
+    min-width: 70px;
+    max-width: 80px;
+    height: 100%;
+    -unity-text-align: middle-left;
+    width: 70px;
+}
+
+.unity-base-slider--horizontal .unity-base-slider__text-field {
+    -unity-text-align: middle-center;
+    height: 100%;
+    width: 40px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.unity-base-slider--horizontal .unity-base-slider__drag-container {
+    height: 100%;
+    justify-content: center;
 }
