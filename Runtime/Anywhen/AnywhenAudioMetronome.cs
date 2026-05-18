@@ -284,7 +284,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 {
                     _sub16Count = 0;
                     SharedBarCount.Data++;
-                    Debug.Log("Bar " + SharedBarCount.Data);
                 }
 
                 _nextTime16 += _sub16Length;
