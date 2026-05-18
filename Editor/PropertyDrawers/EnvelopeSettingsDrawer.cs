@@ -14,7 +14,8 @@ namespace Anywhen.SettingsObjects
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!_foldout)
+            var enabledProp = property.FindPropertyRelative("enabled");
+            if (!enabledProp.boolValue)
                 return EditorGUIUtility.singleLineHeight;
 
             return EditorGUIUtility.singleLineHeight + // Foldout line
@@ -26,6 +27,7 @@ namespace Anywhen.SettingsObjects
         {
             EditorGUI.BeginProperty(position, label, property);
 
+            var enabledProp = property.FindPropertyRelative("enabled");
             var attackProp = property.FindPropertyRelative("attack");
             var decayProp = property.FindPropertyRelative("decay");
             var sustainProp = property.FindPropertyRelative("sustain");
@@ -33,9 +35,21 @@ namespace Anywhen.SettingsObjects
 
             // Create foldout header
             var foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-            _foldout = EditorGUI.Foldout(foldoutRect, _foldout, label, true);
+            
+            EditorGUI.BeginChangeCheck();
+            enabledProp.boolValue = EditorGUI.Foldout(foldoutRect, enabledProp.boolValue, label, true);
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (enabledProp.boolValue && attackProp.floatValue == 0 && decayProp.floatValue == 0 && sustainProp.floatValue == 0 && releaseProp.floatValue == 0)
+                {
+                    attackProp.floatValue = 0.01f;
+                    decayProp.floatValue = 0.1f;
+                    sustainProp.floatValue = 0.5f;
+                    releaseProp.floatValue = 0.1f;
+                }
+            }
 
-            if (_foldout)
+            if (enabledProp.boolValue)
             {
                 // Draw envelope preview
                 var previewRect = new Rect(

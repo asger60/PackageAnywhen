@@ -21,10 +21,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     private AnywhenAudioGenerator.PlaybackEvent _nextEvent;
     private NativeArray<TrackAudioProcessor> _trackFilters;
 
-    private float TrackLFO1Value => _trackLFO1Value;
-    private float TrackLFO2Value => _trackLFO2Value;
-    private float TrackEnvelope1Value => _trackEnvelope1Value;
-    private float TrackEnvelope2Value => _trackEnvelope2Value;
     public AudioProcessorSettings.EnvelopeSettings.Unmanaged EnvelopeSettings => _settings.TrackAudioEnvelope1.ToUnmanaged();
 
     private bool _hasPendingTracksUpdate;
@@ -190,6 +186,26 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     {
         if (IsMute) return 0;
 
+        bool trackActive = _trackEnvelope1.IsActive || _trackEnvelope2.IsActive;
+        bool anyVoiceActive = false;
+
+        if (_voices.IsCreated)
+        {
+            for (int i = 0; i < _voices.Length; i++)
+            {
+                if (!_voices[i].IsIdle)
+                {
+                    anyVoiceActive = true;
+                    break;
+                }
+            }
+        }
+
+        if (!trackActive && !anyVoiceActive && dspTime >= _nextEvent.ScheduledEndTime)
+        {
+            return 0;
+        }
+
         if (_hasPendingTracksUpdate)
         {
             CreateTrack(_pendingSettings, _sampleRate);
@@ -214,21 +230,40 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
         float clipAmplitude = 0;
 
+        float fTime = (float)dspTime;
+        if (_settings.TrackAudioLFO1.enabled)
+            _trackLFO1Value = _trackLFO1.Process(fTime, this);
+        else
+            _trackLFO1Value = 0;
 
-        _trackLFO1Value = _trackLFO1.Process((float)dspTime, this);
-        _trackLFO2Value = _trackLFO2.Process((float)dspTime, this);
-        _trackEnvelope1Value = _trackEnvelope1.Process((float)dspTime, this);
-        _trackEnvelope2Value = _trackEnvelope2.Process((float)dspTime, this);
+        if (_settings.TrackAudioLFO2.enabled)
+            _trackLFO2Value = _trackLFO2.Process(fTime, this);
+        else
+            _trackLFO2Value = 0;
+
+        if (_settings.TrackAudioEnvelope1.enabled)
+            _trackEnvelope1Value = _trackEnvelope1.Process(fTime, this);
+        else
+            _trackEnvelope1Value = 1;
+
+        if (_settings.TrackAudioEnvelope2.enabled)
+            _trackEnvelope2Value = _trackEnvelope2.Process(fTime, this);
+        else
+            _trackEnvelope2Value = 1;
 
         if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
         {
-            _trackEnvelope1.SetGate(true);
-            _trackEnvelope2.SetGate(true);
+            if (_settings.TrackAudioEnvelope1.enabled)
+                _trackEnvelope1.SetGate(true);
+            if (_settings.TrackAudioEnvelope2.enabled)
+                _trackEnvelope2.SetGate(true);
         }
         else if (dspTime >= _nextEvent.ScheduledEndTime)
         {
-            _trackEnvelope1.SetGate(false);
-            _trackEnvelope2.SetGate(false);
+            if (_settings.TrackAudioEnvelope1.enabled)
+                _trackEnvelope1.SetGate(false);
+            if (_settings.TrackAudioEnvelope2.enabled)
+                _trackEnvelope2.SetGate(false);
         }
 
 
@@ -262,10 +297,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             var mod = modRoutingSettings[i];
             float signal = mod.modSource switch
             {
-                SynthFilterBase.ModRouting.ModSources.Envelope1 => TrackEnvelope1Value,
-                SynthFilterBase.ModRouting.ModSources.Envelope2 => TrackEnvelope2Value,
-                SynthFilterBase.ModRouting.ModSources.LFO1 => TrackLFO1Value,
-                SynthFilterBase.ModRouting.ModSources.LFO2 => TrackLFO2Value,
+                SynthFilterBase.ModRouting.ModSources.Envelope1 => _trackEnvelope1Value,
+                SynthFilterBase.ModRouting.ModSources.Envelope2 => _trackEnvelope2Value,
+                SynthFilterBase.ModRouting.ModSources.LFO1 => _trackLFO1Value,
+                SynthFilterBase.ModRouting.ModSources.LFO2 => _trackLFO2Value,
                 _ => 0f
             };
 
@@ -286,7 +321,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public bool Equals(AnysongTrack other)
     {
-        return _voices.Equals(other._voices) && 
+        return _voices.Equals(other._voices) &&
                _trackVolume.Equals(other._trackVolume) && _trackEnvelope1.Equals(other._trackEnvelope1) &&
                _nextEvent.Equals(other._nextEvent);
     }

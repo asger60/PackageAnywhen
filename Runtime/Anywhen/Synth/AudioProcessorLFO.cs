@@ -95,9 +95,19 @@ namespace Anywhen.Synth
 
         private float Sin()
         {
-            // uint _phase divided by PhaseMax maps [0 .. 2^32) → [0 .. 1)
-            float ph01 = _phase / PhaseMax;
-            return Mathf.Sin(ph01 * 2f * Mathf.PI);
+            // Use a faster parabolic sine approximation
+            // ph maps [0 .. 1)
+            float x = (_phase / PhaseMax) * 2f - 1f; // map to [-1, 1]
+        
+            // y = 4x(1 - |x|)
+            float y = 4f * x * (1f - (x < 0 ? -x : x));
+        
+            // Extra precision: y = 0.225(y(|y| - 1) + y)
+            // For LFO, the basic version is often enough, but let's keep it smooth.
+            // float absY = y < 0 ? -y : y;
+            // y = 0.225f * (y * (absY - 1f)) + y;
+
+            return y;
         }
     }
 }

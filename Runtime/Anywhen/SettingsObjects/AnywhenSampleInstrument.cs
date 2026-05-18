@@ -108,6 +108,7 @@ namespace Anywhen.SettingsObjects
                     return new AnywhenNoteClipPlaybackSettings();
                 }
 
+                
                 uint state = seed;
 
                 int NextInt(int min, int max)
@@ -120,6 +121,8 @@ namespace Anywhen.SettingsObjects
                 NextInt(0, 1);
 
                 AnywhenNoteClipPlaybackSettings settings;
+                
+                
                 switch (clipSelectType)
                 {
                     case ClipSelectType.ScalePitchedNotes:

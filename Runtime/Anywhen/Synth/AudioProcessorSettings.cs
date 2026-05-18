@@ -275,7 +275,7 @@ namespace Anywhen.Synth
         [Serializable]
         public struct EnvelopeSettings
         {
-            //public bool enabled;
+            public bool enabled;
             [Range(0, 2f)] public float attack;
             [Range(0, 1f)] public float decay;
             [Range(0, 1f)] public float sustain;
@@ -283,6 +283,7 @@ namespace Anywhen.Synth
 
             public struct Unmanaged
             {
+                public bool enabled;
                 public float attack;
                 public float decay;
                 public float sustain;
@@ -293,6 +294,7 @@ namespace Anywhen.Synth
             {
                 return new Unmanaged
                 {
+                    enabled = enabled,
                     attack = attack,
                     decay = decay,
                     sustain = sustain,
@@ -302,6 +304,7 @@ namespace Anywhen.Synth
 
             public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
             {
+                this.enabled = true;
                 this.attack = attack;
                 this.decay = decay;
                 this.sustain = sustain;
@@ -328,11 +331,13 @@ namespace Anywhen.Synth
         [Serializable]
         public struct LFOSettings
         {
+            public bool enabled;
             [Range(0.01f, 10)] public float frequency;
             public bool unipolar;
 
             public struct Unmanaged
             {
+                public bool enabled;
                 public float frequency;
                 public bool unipolar;
             }
@@ -341,6 +346,7 @@ namespace Anywhen.Synth
             {
                 return new Unmanaged
                 {
+                    enabled = enabled,
                     frequency = frequency,
                     unipolar = unipolar,
                 };
@@ -348,6 +354,7 @@ namespace Anywhen.Synth
 
             public LFOSettings(float frequency, float amplitude) : this()
             {
+                this.enabled = true;
                 this.frequency = frequency;
             }
 
@@ -388,7 +395,7 @@ namespace Anywhen.Synth
                        formantSettings.Equals(other.formantSettings) && bitcrushSettings.Equals(other.bitcrushSettings) &&
                        saturatorSettings.Equals(other.saturatorSettings) && delaySettings.Equals(other.delaySettings) &&
                        chorusSettings.Equals(other.chorusSettings) && envelopeSettings.Equals(other.envelopeSettings) &&
-                       lfoSettings.Equals(other.lfoSettings);
+                       lfoSettings.Equals(other.lfoSettings) && reverbSettings.Equals(other.reverbSettings);
             }
 
             public override bool Equals(object obj)

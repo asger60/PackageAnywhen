@@ -62,7 +62,9 @@ public struct AnywhenAudioVoice
     internal float Process(double dspTime, in AnysongTrack anysongTrack)
     {
         float clipAmplitude = 0;
-        if (_noteQueued && dspTime >= _scheduledStartTime)
+        bool isPlaying = _noteQueued && dspTime >= _scheduledStartTime;
+
+        if (isPlaying)
         {
             float pitchModSignal = anysongTrack.GetModSignal(_pitchMod);
             float pitchMultiplier = _trackPitch * (float)Math.Pow(2.0, pitchModSignal);
@@ -81,6 +83,12 @@ public struct AnywhenAudioVoice
                 if (!anyPlaying)
                     _noteQueued = false;
             }
+        }
+
+        bool envelopeActive = _voiceEnvelope.IsActive;
+        if (!isPlaying && !envelopeActive)
+        {
+            return 0;
         }
 
         _voiceEnvelope.SetGate(dspTime >= _scheduledStartTime && dspTime <= _scheduledEndTime);

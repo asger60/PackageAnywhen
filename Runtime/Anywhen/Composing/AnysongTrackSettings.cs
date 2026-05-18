@@ -76,7 +76,9 @@ namespace Anywhen.Composing
         {
             volume = 1;
             trackAudioEnvelope1 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
+            trackAudioEnvelope1.enabled = true;
             trackAudioLFO1 = new AudioProcessorSettings.LFOSettings(2, 0.01f);
+            trackAudioLFO1.enabled = true;
         }
 
         public AnysongTrackSettings Clone()
