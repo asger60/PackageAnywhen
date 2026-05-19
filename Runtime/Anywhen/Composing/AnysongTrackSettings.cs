@@ -114,6 +114,22 @@ namespace Anywhen.Composing
             public int trackTypeIndex;
 
             public NativeArray<AudioProcessorSettings.Unmanaged> trackFilters;
+
+            public void Dispose()
+            {
+                if (audioSources.IsCreated) audioSources.Dispose();
+                if (amplitudeMod.IsCreated) amplitudeMod.Dispose();
+                if (pitchMod.IsCreated) pitchMod.Dispose();
+                if (trackFilters.IsCreated)
+                {
+                    for (int i = 0; i < trackFilters.Length; i++)
+                    {
+                        trackFilters[i].Dispose();
+                    }
+
+                    trackFilters.Dispose();
+                }
+            }
         }
 
         public Unmanaged ToUnmanaged()

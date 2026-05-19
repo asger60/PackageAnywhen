@@ -317,20 +317,21 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
         public static int GetScaledNote(int noteStep)
         {
-            if (!SharedOverrideProgression.Data.IsNull())
+            var overrideProgression = SharedOverrideProgression.Data;
+            if (overrideProgression.patternSteps.IsCreated && overrideProgression.patternSteps.Length > 0)
             {
-                return GetScaledNote(
-                    SharedOverrideProgression.Data.patternSteps[
-                        SharedBarCount.Data % SharedOverrideProgression.Data.patternSteps.Length],
-                    noteStep);
+                var steps = overrideProgression.patternSteps;
+                return GetScaledNote(steps[SharedBarCount.Data % steps.Length], noteStep);
             }
 
-            if (SharedBaseProgression.Data.IsNull())
-                return 0;
+            var baseProgression = SharedBaseProgression.Data;
+            if (baseProgression.patternSteps.IsCreated && baseProgression.patternSteps.Length > 0)
+            {
+                var steps = baseProgression.patternSteps;
+                return GetScaledNote(steps[SharedBarCount.Data % steps.Length], noteStep);
+            }
 
-            return GetScaledNote(
-                SharedBaseProgression.Data.patternSteps[SharedBarCount.Data % SharedBaseProgression.Data.patternSteps.Length],
-                noteStep);
+            return 0;
         }
 
         static int GetScaledNote(AnywhenProgressionPatternObject.ProgressionStep.Unmanaged progressionStep, int noteStep)

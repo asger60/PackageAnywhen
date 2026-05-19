@@ -421,42 +421,47 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     var section = sectionsRef[sectionIndex];
                     var track = section.Tracks[trackIndex];
-
-                    // Properly dispose the old NativeArray to avoid memory leaks
-                    if (track.Patterns.IsCreated)
-                    {
-                        for (int i = 0; i < track.Patterns.Length; i++)
-                        {
-                            if (track.Patterns[i].triggerChances.IsCreated) track.Patterns[i].triggerChances.Dispose();
-                            if (track.Patterns[i].steps.IsCreated) track.Patterns[i].steps.Dispose();
-                        }
-
-                        track.Patterns.Dispose();
-                    }
+                    var oldTrack = track;
 
                     // Create new patterns from the song data
-                    track.Patterns = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged().Patterns;
+                    var updatedTrack = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged();
 
-                    // Update the CurrentPattern reference in the track
-                    track.CurrentPattern = track.Patterns[track.CurrentPatternIndex];
+                    // We need to keep some state from the old track
+                    updatedTrack.CurrentPatternBar = track.CurrentPatternBar;
+                    updatedTrack.CurrentPatternIndex = track.CurrentPatternIndex;
+                    updatedTrack.CurrentPattern = updatedTrack.Patterns[track.CurrentPatternIndex];
+                    updatedTrack.Random = track.Random;
 
-                    section.Tracks[trackIndex] = track;
+                    section.Tracks[trackIndex] = updatedTrack;
                     sectionsRef[sectionIndex] = section;
+
+                    // Dispose the old one AFTER updating the reference to avoid race conditions
+                    oldTrack.Dispose();
                 };
                 song.OnSongMidiChanged += midiListener;
 
 
                 Action sectionsChangedListener = () =>
                 {
+                    if (!sectionsRef.IsCreated) return;
                     for (int i = 0; i < sectionsRef.Length; i++)
                     {
-                        var section = sectionsRef[i];
-                        if (section.ProgressionSteps.IsCreated) section.ProgressionSteps.Dispose();
-
+                        var oldSection = sectionsRef[i];
                         var updated = song.Sections[i].ToUnmanaged();
-                        section.ProgressionSteps = updated.ProgressionSteps;
-                        section.SectionLength = updated.SectionLength;
-                        sectionsRef[i] = section;
+
+                        // Preserve playback state
+                        updated._currentBar = oldSection._currentBar;
+
+                        sectionsRef[i] = updated;
+
+                        // Update metronome if it's currently using this section's progression
+                        if (sectionIndices.IsCreated && sectionIndices.Length > 0 && sectionIndices[0] == i)
+                        {
+                            AnywhenAudioMetronome.Processor.SetBaseProgression(updated.ProgressionSteps);
+                        }
+
+                        // Dispose old section AFTER updating references
+                        oldSection.Dispose();
                     }
                 };
 
@@ -779,6 +784,20 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         generator._tracks[i].Dispose();
                     generator._tracks.Dispose();
                 }
+
+                if (generator._anysongSections.IsCreated)
+                {
+                    for (int i = 0; i < generator._anysongSections.Length; i++)
+                    {
+                        generator._anysongSections[i].Dispose();
+                    }
+
+                    generator._anysongSections.Dispose();
+                }
+
+                if (generator._stepIndices.IsCreated) generator._stepIndices.Dispose();
+                if (generator._patternIndices.IsCreated) generator._patternIndices.Dispose();
+                if (generator._sectionIndices.IsCreated) generator._sectionIndices.Dispose();
             }
 
             public unsafe void Update(ControlContext context, ProcessorInstance.Pipe pipe)

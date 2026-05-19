@@ -51,6 +51,22 @@ namespace Anywhen
             {
                 return !patternSteps.IsCreated || patternSteps.Length == 0;
             }
+
+            public void Dispose()
+            {
+                if (patternSteps.IsCreated)
+                {
+                    for (int i = 0; i < patternSteps.Length; i++)
+                    {
+                        if (patternSteps[i].AnywhenScale.notes.IsCreated)
+                        {
+                            patternSteps[i].AnywhenScale.notes.Dispose();
+                        }
+                    }
+
+                    patternSteps.Dispose();
+                }
+            }
         }
 
         public Unmanaged ToUnmanaged()

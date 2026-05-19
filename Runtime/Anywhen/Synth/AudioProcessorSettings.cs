@@ -37,6 +37,11 @@ namespace Anywhen.Synth
                 public float resonance;
                 public int oversampling;
                 public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
+
+                public void Dispose()
+                {
+                    if (cutoffMod.IsCreated) cutoffMod.Dispose();
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -68,6 +73,11 @@ namespace Anywhen.Synth
                 public float resonance;
                 public int oversampling;
                 public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
+
+                public void Dispose()
+                {
+                    if (cutoffMod.IsCreated) cutoffMod.Dispose();
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -387,6 +397,12 @@ namespace Anywhen.Synth
             public EnvelopeSettings envelopeSettings;
             public LFOSettings lfoSettings;
             public ReverbSettings.Unmanaged reverbSettings;
+
+            public void Dispose()
+            {
+                lowPassSettings.Dispose();
+                ladderSettings.Dispose();
+            }
 
             public bool Equals(Unmanaged other)
             {

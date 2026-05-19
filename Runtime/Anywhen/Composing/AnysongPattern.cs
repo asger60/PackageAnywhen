@@ -32,7 +32,19 @@ namespace Anywhen.Composing
                 return stepIndex % patternLength;
             }
 
-      
+            public void Dispose()
+            {
+                if (triggerChances.IsCreated) triggerChances.Dispose();
+                if (steps.IsCreated)
+                {
+                    for (int i = 0; i < steps.Length; i++)
+                    {
+                        steps[i].Dispose();
+                    }
+
+                    steps.Dispose();
+                }
+            }
         }
 
         public Unmanaged ToUnmanaged()

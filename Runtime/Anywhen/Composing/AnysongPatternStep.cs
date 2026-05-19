@@ -54,6 +54,11 @@ namespace Anywhen.Composing
         public struct UnManaged
         {
             public NativeArray<AnysongPatternNote> StepNotes;
+
+            public void Dispose()
+            {
+                if (StepNotes.IsCreated) StepNotes.Dispose();
+            }
         }
 
         public UnManaged ToUnmanaged()

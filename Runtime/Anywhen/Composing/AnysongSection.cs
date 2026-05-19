@@ -19,7 +19,7 @@ namespace Anywhen.Composing
             public int SectionLength;
             public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> ProgressionSteps;
             public NativeArray<AnysongSectionTrack.Unmanaged> Tracks;
-            int _currentBar;
+            public int _currentBar;
 
             public void AdvancePlayingSection()
             {
@@ -34,6 +34,32 @@ namespace Anywhen.Composing
             public void Reset()
             {
                 _currentBar = 0;
+            }
+
+            public void Dispose()
+            {
+                if (ProgressionSteps.IsCreated)
+                {
+                    for (int i = 0; i < ProgressionSteps.Length; i++)
+                    {
+                        if (ProgressionSteps[i].AnywhenScale.notes.IsCreated)
+                        {
+                            ProgressionSteps[i].AnywhenScale.notes.Dispose();
+                        }
+                    }
+
+                    ProgressionSteps.Dispose();
+                }
+
+                if (Tracks.IsCreated)
+                {
+                    for (int i = 0; i < Tracks.Length; i++)
+                    {
+                        Tracks[i].Dispose();
+                    }
+
+                    Tracks.Dispose();
+                }
             }
         }
 

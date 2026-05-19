@@ -111,6 +111,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
     {
+        _settings.Dispose();
         _settings = settings;
         _trackVolume = settings.volume;
 
@@ -312,6 +313,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public void Dispose()
     {
+        _settings.Dispose();
+
         if (_voices.IsCreated)
             _voices.Dispose();
 

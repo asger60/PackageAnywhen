@@ -57,6 +57,19 @@ namespace Anywhen.Composing
             }
 
 
+            public void Dispose()
+            {
+                if (Patterns.IsCreated)
+                {
+                    for (int i = 0; i < Patterns.Length; i++)
+                    {
+                        Patterns[i].Dispose();
+                    }
+
+                    Patterns.Dispose();
+                }
+            }
+
             static int GetProgressionPatternIndex(int patternBar, NativeArray<AnysongPattern.Unmanaged> patterns,
                 PatternProgressionType patternProgressionType, ref Unity.Mathematics.Random random)
             {
