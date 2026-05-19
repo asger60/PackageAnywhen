@@ -27,6 +27,11 @@ namespace Anywhen.Synth
             {
                 public AnywhenSampleInstrument.Unmanaged SampleInstrument;
                 [Range(0, 1)] public float SourceVolume;
+                public bool Equals(Unmanaged other)
+                {
+                    return SampleInstrument.Equals(other.SampleInstrument) && 
+                        Mathf.Approximately(SourceVolume, other.SourceVolume);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -74,6 +79,13 @@ namespace Anywhen.Synth
                 [Range(0, 1)] public float SourceVolume;
                 [Range(-24, 24)] public int NoteOffset;
                 public float Detune;
+                public bool Equals(Unmanaged other)
+                {
+                    return SynthType == other.SynthType && 
+                        Mathf.Approximately(SourceVolume, other.SourceVolume) && 
+                        NoteOffset == other.NoteOffset && 
+                        Mathf.Approximately(Detune, other.Detune);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -108,6 +120,11 @@ namespace Anywhen.Synth
             {
                 public NoiseType NoiseType;
                 [Range(0, 1)] public float SourceVolume;
+                public bool Equals(Unmanaged other)
+                {
+                    return NoiseType == other.NoiseType && 
+                        Mathf.Approximately(SourceVolume, other.SourceVolume);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -133,6 +150,14 @@ namespace Anywhen.Synth
             public SampleSourceSettings.Unmanaged sampleSourceSettings;
             public SynthSourceSettings.Unmanaged synthSourceSettings;
             public NoiseSourceSettings.Unmanaged noiseSourceSettings;
+            
+            public bool Equals(Unmanaged other)
+            {
+                return audioSourceType == other.audioSourceType &&
+                    sampleSourceSettings.Equals(other.sampleSourceSettings) &&
+                    synthSourceSettings.Equals(other.synthSourceSettings) &&
+                    noiseSourceSettings.Equals(other.noiseSourceSettings);
+            }
         }
 
         public Unmanaged ToUnmanaged()

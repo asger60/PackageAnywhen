@@ -73,7 +73,7 @@ namespace Anywhen
         {
             AnywhenSnapshotBlender.ApplyBlend(_currentSong, 0);
             _currentSong.RefreshSettings();
-            _currentSong.RemoveListeners();
+            _currentSong.RemoveAllListeners();
         }
     }
 }

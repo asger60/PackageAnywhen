@@ -24,25 +24,98 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnEnable()
     {
         OnAudioGeneratedStatic += HandleAudioGeneratedStatic;
-        if (song != null)
-        {
-            song.RemoveListeners();
-        }
+        
     }
 
     private void OnDisable()
     {
         OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
-
-        // Remove listeners FIRST, before any NativeArray disposal,
-        // so lambdas captured in the Processor constructor can't fire
-        // against already-disposed arrays during teardown.
-        if (song != null)
-            song.RemoveListeners();
+        UnregisterSongListeners();
 
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
+    }
+
+    private void RegisterSongListeners()
+    {
+        if (song == null) return;
+        song.OnSongMidiChanged += HandleSongMidiChanged;
+        song.OnSongSectionsChanged += HandleSongSectionsChanged;
+        song.OnSongSettingsChanged += HandleSongSettingsChanged;
+        song.OnSongEffectsChanged += HandleSongEffectsChanged;
+        song.OnSongTracksChanged += HandleSongTracksChanged;
+    }
+
+    private void UnregisterSongListeners()
+    {
+        if (song == null) return;
+        song.OnSongMidiChanged -= HandleSongMidiChanged;
+        song.OnSongSectionsChanged -= HandleSongSectionsChanged;
+        song.OnSongSettingsChanged -= HandleSongSettingsChanged;
+        song.OnSongEffectsChanged -= HandleSongEffectsChanged;
+        song.OnSongTracksChanged -= HandleSongTracksChanged;
+    }
+
+    private void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Temp);
+            for (int i = 0; i < song.Sections.Count; i++)
+            {
+                sectionData[i] = song.Sections[i].ToUnmanaged();
+            }
+
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerMidiReloadMsg(sectionData));
+        }
+    }
+
+    private void HandleSongSectionsChanged()
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Temp);
+            for (int i = 0; i < song.Sections.Count; i++)
+            {
+                sectionData[i] = song.Sections[i].ToUnmanaged();
+            }
+
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerMidiReloadMsg(sectionData));
+        }
+    }
+
+    private void HandleSongSettingsChanged()
+    {
+        NotifyTrackSettingsChanged();
+    }
+
+    private void HandleSongEffectsChanged()
+    {
+        NotifyTrackSettingsChanged();
+    }
+
+    private void HandleSongTracksChanged()
+    {
+        NotifyTrackSettingsChanged();
+    }
+
+    private void NotifyTrackSettingsChanged()
+    {
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            var trackSettings = new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
+            for (int i = 0; i < song.Tracks.Count; i++)
+            {
+                trackSettings[i] = song.Tracks[i].ToUnmanaged();
+            }
+
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+        }
+        else
+        {
+            Debug.Log("No generator instance");
+        }
     }
 
     public void SetSectionLock(bool state, int lockedSectionIndex)
@@ -90,14 +163,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (!Mathf.Approximately(newSnapshotValue, _currentSnapshotValue))
         {
             AnywhenSnapshotBlender.ApplyBlend(song, newSnapshotValue);
-            //song.RefreshSettings();
+            song.RefreshSettings();
             _currentSnapshotValue = newSnapshotValue;
         }
     }
 
     private void OnDestroy()
     {
-        song?.RemoveListeners();
+        UnregisterSongListeners();
     }
 
     public void OverrideTrackSettings(AnysongObject sourceSong, int overrideTrackTypeIndex)
@@ -276,6 +349,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices,
             _sharedPatternIndices,
             _sharedSectionIndices);
+        RegisterSongListeners();
         return _generatorInstance;
     }
 
@@ -413,98 +487,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     _anysongSections[i] = song.Sections[i].ToUnmanaged();
                 }
 
-
-                var sectionsRef = _anysongSections;
-                Action<int, int, int> midiListener = (sectionIndex, trackIndex, patternIndex) =>
-                {
-                    if (!sectionsRef.IsCreated) return;
-
-                    var section = sectionsRef[sectionIndex];
-                    var track = section.Tracks[trackIndex];
-                    var oldTrack = track;
-
-                    // Create new patterns from the song data
-                    var updatedTrack = song.Sections[sectionIndex].tracks[trackIndex].ToUnmanaged();
-
-                    // We need to keep some state from the old track
-                    updatedTrack.CurrentPatternBar = track.CurrentPatternBar;
-                    updatedTrack.CurrentPatternIndex = track.CurrentPatternIndex;
-                    updatedTrack.CurrentPattern = updatedTrack.Patterns[track.CurrentPatternIndex];
-                    updatedTrack.Random = track.Random;
-
-                    section.Tracks[trackIndex] = updatedTrack;
-                    sectionsRef[sectionIndex] = section;
-
-                    // Dispose the old one AFTER updating the reference to avoid race conditions
-                    oldTrack.Dispose();
-                };
-                song.OnSongMidiChanged += midiListener;
-
-
-                Action sectionsChangedListener = () =>
-                {
-                    if (!sectionsRef.IsCreated) return;
-                    for (int i = 0; i < sectionsRef.Length; i++)
-                    {
-                        var oldSection = sectionsRef[i];
-                        var updated = song.Sections[i].ToUnmanaged();
-
-                        // Preserve playback state
-                        updated._currentBar = oldSection._currentBar;
-
-                        sectionsRef[i] = updated;
-
-                        // Update metronome if it's currently using this section's progression
-                        if (sectionIndices.IsCreated && sectionIndices.Length > 0 && sectionIndices[0] == i)
-                        {
-                            AnywhenAudioMetronome.Processor.SetBaseProgression(updated.ProgressionSteps);
-                        }
-
-                        // Dispose old section AFTER updating references
-                        oldSection.Dispose();
-                    }
-                };
-
-                song.OnSongSectionsChanged += sectionsChangedListener;
-
-
                 _tracks = new NativeArray<AnysongTrack>(song.Tracks.Count, Allocator.Persistent);
 
                 for (int i = 0; i < _tracks.Length; i++)
                 {
                     var trackSettings = song.Tracks[i];
-
                     var unmanagedSettings = trackSettings.ToUnmanaged();
                     _tracks[i] = new AnysongTrack(sampleRate, unmanagedSettings);
-
-                    int capturedIndex = i;
-                    var tracksRef = _tracks;
-                    Action settingsListener = () =>
-                    {
-                        if (!tracksRef.IsCreated) return;
-                        var t = tracksRef[capturedIndex];
-                        t.OnValuesChanged(song.Tracks[capturedIndex].ToUnmanaged());
-                        tracksRef[capturedIndex] = t;
-                    };
-                    Action effectsListener = () =>
-                    {
-                        if (!tracksRef.IsCreated) return;
-                        var t = tracksRef[capturedIndex];
-                        t.OnEffectsRebuild(song.Tracks[capturedIndex].ToUnmanaged());
-                        tracksRef[capturedIndex] = t;
-                    };
-
-                    Action tracksListener = () =>
-                    {
-                        if (!tracksRef.IsCreated) return;
-                        var t = tracksRef[capturedIndex];
-                        t.OnTracksRebuild(song.Tracks[capturedIndex].ToUnmanaged());
-                        tracksRef[capturedIndex] = t;
-                    };
-
-                    song.OnSongSettingsChanged += settingsListener;
-                    song.OnSongEffectsChanged += effectsListener;
-                    song.OnSongTracksChanged += tracksListener;
                 }
             }
             else
@@ -527,7 +516,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _sectionIndices[0] = 0;
                         if (_anysongSections is { IsCreated: true, Length: > 0 })
                         {
-                            AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex].ProgressionSteps);
+                            AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex]
+                                .ProgressionSteps);
                         }
 
                         for (int sectionIndex = 0; sectionIndex < _anysongSections.Length; sectionIndex++)
@@ -561,12 +551,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
                     {
                         var thisTrack = _tracks[trackIndex];
-                        foreach (var newTrackSetting in newTrackSettings.TrackSettings)
+                        //foreach (var newTrackSetting in newTrackSettings.TrackSettings)
                         {
-                            if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
+                            //if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                thisTrack.CreateTrack(newTrackSetting, _sampleRate);
-                                thisTrack.UpdateSettings(newTrackSetting);
+                                //thisTrack.CreateTrack(newTrackSettings.TrackSettings[trackIndex], _sampleRate);
+                                thisTrack.UpdateSettings(newTrackSettings.TrackSettings[trackIndex]);
                             }
                         }
 
@@ -666,7 +656,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         _currentSectionBar = 0;
                         section.Reset();
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
-                        AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex].ProgressionSteps);
+                        AnywhenAudioMetronome.Processor.SetBaseProgression(
+                            _anysongSections[_currentSectionIndex].ProgressionSteps);
                         _sectionIndices[0] = _currentSectionIndex;
                     }
 
@@ -794,10 +785,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     generator._anysongSections.Dispose();
                 }
-
-                if (generator._stepIndices.IsCreated) generator._stepIndices.Dispose();
-                if (generator._patternIndices.IsCreated) generator._patternIndices.Dispose();
-                if (generator._sectionIndices.IsCreated) generator._sectionIndices.Dispose();
             }
 
             public unsafe void Update(ControlContext context, ProcessorInstance.Pipe pipe)

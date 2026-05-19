@@ -4,6 +4,7 @@ using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
+using UnityEngine;
 
 
 public struct AnysongTrack : IEquatable<AnysongTrack>
@@ -47,20 +48,20 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     }
 
 
-    public void OnTracksRebuild(AnysongTrackSettings.Unmanaged newSettings)
+    public void HandleTracksRebuild(AnysongTrackSettings.Unmanaged newSettings)
     {
         _pendingSettings = newSettings;
         _hasPendingTracksUpdate = true;
     }
 
-    public void OnEffectsRebuild(AnysongTrackSettings.Unmanaged newSettings)
+    public void HandleEffectsRebuild(AnysongTrackSettings.Unmanaged newSettings)
     {
         _pendingSettings = newSettings;
         _hasPendingEffectsUpdate = true;
         _hasPendingParameterUpdate = true;
     }
 
-    public void OnValuesChanged(AnysongTrackSettings.Unmanaged newSettings)
+    public void HandleValuesChanged(AnysongTrackSettings.Unmanaged newSettings)
     {
         _pendingSettings = newSettings;
         _hasPendingParameterUpdate = true;
@@ -114,11 +115,12 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
     {
-        _settings.Dispose();
+        if (_settings.Equals(settings)) return;
         _settings = settings;
         _trackVolume = settings.Volume;
 
         _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1);
+
         if (settings.TrackAudioEnvelope2.enabled)
             _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2);
 
@@ -152,7 +154,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             }
         }
 
-        _amplitudeMod = settings.AmplitudeMod;
+        if (!_amplitudeMod.Equals(settings.AmplitudeMod))
+            _amplitudeMod = settings.AmplitudeMod;
     }
 
     internal void HandlePlaybackEvent(AnywhenAudioGenerator.PlaybackEvent playbackEvent)

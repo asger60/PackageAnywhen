@@ -38,10 +38,15 @@ public struct AnywhenAudioVoice
         NativeArray<SynthFilterBase.ModRouting> pitchMod,
         float trackPitch)
     {
-        _audioSourceSettings = audioSourceSettings;
-        _envelopeSettings = envelopeSettings;
-        _pitchMod = pitchMod;
-        _trackPitch = trackPitch;
+        if (!_audioSourceSettings.Equals(audioSourceSettings))
+            _audioSourceSettings = audioSourceSettings;
+        if (!_envelopeSettings.Equals(envelopeSettings))
+            _envelopeSettings = envelopeSettings;
+        if (!_pitchMod.Equals(pitchMod))
+            _pitchMod = pitchMod;
+        if (!Mathf.Approximately(_trackPitch, trackPitch))
+            _trackPitch = trackPitch;
+        
         for (int i = 0; i < _audioSources.Length; i++)
         {
             _audioSources[i].UpdateSettings(audioSourceSettings[i]);
@@ -95,7 +100,7 @@ public struct AnywhenAudioVoice
 
         return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
     }
-    
+
 
     internal void QueueNote(AnywhenAudioGenerator.PlaybackEvent playbackEvent)
     {

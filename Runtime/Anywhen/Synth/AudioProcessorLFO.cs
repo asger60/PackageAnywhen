@@ -42,7 +42,9 @@ namespace Anywhen.Synth
             SetFreq(_currentFrequency);
         }
 
-        public void DoUpdate() { }
+        public void DoUpdate()
+        {
+        }
 
         public float Process(float current, AnysongTrack anysongTrack)
         {
@@ -59,17 +61,18 @@ namespace Anywhen.Synth
             return sin;
         }
 
-        public void SetGate(bool gate) { }
-        
+        public void SetGate(bool gate)
+        {
+        }
+
         public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
-            
-            
         }
 
 
         public void SetSettings(AudioProcessorSettings.LFOSettings settings)
         {
+            if (_settings.Equals(settings)) return;
             _settings = settings;
             UpdateSettings();
         }
@@ -95,10 +98,10 @@ namespace Anywhen.Synth
             // Use a faster parabolic sine approximation
             // ph maps [0 .. 1)
             float x = (_phase / PhaseMax) * 2f - 1f; // map to [-1, 1]
-        
+
             // y = 4x(1 - |x|)
             float y = 4f * x * (1f - (x < 0 ? -x : x));
-        
+
             // Extra precision: y = 0.225(y(|y| - 1) + y)
             // For LFO, the basic version is often enough, but let's keep it smooth.
             // float absY = y < 0 ? -y : y;

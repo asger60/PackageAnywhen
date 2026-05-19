@@ -40,9 +40,9 @@ namespace Anysong
             Draw(_parent);
             _parent.Add(Spacer());
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"),
-                AnysongEditorWindow.CurrentSong.RefrestSections));
+                AnysongEditorWindow.CurrentSong.RefreshSections));
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"),
-                AnysongEditorWindow.CurrentSong.RefrestSections));
+                AnysongEditorWindow.CurrentSong.RefreshSections));
             _parent.Add(CreateUtilsBox());
         }
 
@@ -174,7 +174,7 @@ namespace Anysong
                 () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
                 () =>
                 {
-                    AnysongEditorWindow.CurrentSong.RefrestTrack();
+                    AnysongEditorWindow.CurrentSong.RefreshTrack();
                     AnysongEditorWindow.CurrentSong.RefreshSettings();
                 });
             _parent.Add(el_volume);

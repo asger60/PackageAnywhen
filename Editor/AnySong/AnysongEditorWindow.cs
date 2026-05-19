@@ -271,7 +271,7 @@ namespace Anysong
                 return;
             }
 
-            CurrentSong.RemoveListeners();
+            CurrentSong.RemoveAllListeners();
             CreatePlayer();
             if (uxmlAsset)
             {

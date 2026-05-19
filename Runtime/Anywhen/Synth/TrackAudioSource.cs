@@ -55,6 +55,7 @@ namespace Anywhen.Synth
 
         public void UpdateSettings(AudioSourceSettings.Unmanaged settings)
         {
+            if(_settings.Equals(settings)) return;
             _settings = settings;
             switch (_settings.audioSourceType)
             {

@@ -24,7 +24,6 @@ namespace Anywhen.Composing
         public string author = "Floppy Club";
         public event Action<int, int, int> OnSongMidiChanged;
         public event Action OnSongSettingsChanged;
-
         public event Action OnSongEffectsChanged;
         public event Action OnSongTracksChanged;
         public event Action OnSongSectionsChanged;
@@ -32,7 +31,7 @@ namespace Anywhen.Composing
         private void OnValidate()
         {
             RefreshSettings();
-            RefrestSections();
+            RefreshSections();
         }
 
         
@@ -68,9 +67,7 @@ namespace Anywhen.Composing
                 }
             }
         }
-
-
-
+        
 
 
         public void RefreshMidi(int sectionIndex, int trackIndex, int patternIndex)
@@ -88,19 +85,20 @@ namespace Anywhen.Composing
             OnSongEffectsChanged?.Invoke();
         }
 
-        public void RefrestTrack()
+        public void RefreshTrack()
         {
             OnSongTracksChanged?.Invoke();
         }
         
-        public void RefrestSections()
+        public void RefreshSections()
         {
             OnSongSectionsChanged?.Invoke();
         }
 
 
-        public void RemoveListeners()
+        public void RemoveAllListeners()
         {
+            Debug.Log("Removing listeners");
             if (OnSongMidiChanged != null)
             {
                 foreach (var currentDelegate in OnSongMidiChanged.GetInvocationList())

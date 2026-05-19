@@ -26,7 +26,7 @@ namespace Anywhen.Synth
             _chorus = default;
             _delay = default;
             _reverb = default;
-            
+
             switch (_settings.filterType)
             {
                 case AudioProcessorSettings.FilterTypes.LowPassFilter:
@@ -87,6 +87,7 @@ namespace Anywhen.Synth
 
         public void UpdateSettings(AudioProcessorSettings.Unmanaged settings)
         {
+            if (_settings.Equals(settings)) return;
             _settings = settings;
             switch (_settings.filterType)
             {

@@ -42,6 +42,10 @@ namespace Anywhen.Synth
                 {
                     if (cutoffMod.IsCreated) cutoffMod.Dispose();
                 }
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(cutoffFrequency, other.cutoffFrequency) && Mathf.Approximately(resonance, other.resonance) && oversampling == other.oversampling;
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -78,6 +82,10 @@ namespace Anywhen.Synth
                 {
                     if (cutoffMod.IsCreated) cutoffMod.Dispose();
                 }
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(cutoffFrequency, other.cutoffFrequency) && Mathf.Approximately(resonance, other.resonance) && oversampling == other.oversampling;
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -109,6 +117,10 @@ namespace Anywhen.Synth
                 public float frequency;
                 public float bandWidth;
                 public float q;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(frequency, other.frequency) && Mathf.Approximately(bandWidth, other.bandWidth) && Mathf.Approximately(q, other.q);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -132,6 +144,10 @@ namespace Anywhen.Synth
             public struct Unmanaged
             {
                 public int vowel;
+                public bool Equals(Unmanaged other)
+                {
+                    return vowel == other.vowel;
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -155,6 +171,10 @@ namespace Anywhen.Synth
             {
                 public float bitDepth;
                 public int downsampling;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(bitDepth, other.bitDepth) && downsampling == other.downsampling;
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -179,6 +199,10 @@ namespace Anywhen.Synth
             {
                 public float drive;
                 public float wet;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(drive, other.drive) && Mathf.Approximately(wet, other.wet);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -205,6 +229,10 @@ namespace Anywhen.Synth
                 public float delayTime;
                 public float feedback;
                 public float wet;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(delayTime, other.delayTime) && Mathf.Approximately(feedback, other.feedback) && Mathf.Approximately(wet, other.wet);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -234,6 +262,10 @@ namespace Anywhen.Synth
                 public float roomSize;
                 public float damping;
                 public float wet;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(roomSize, other.roomSize) && Mathf.Approximately(damping, other.damping) && Mathf.Approximately(wet, other.wet);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -265,6 +297,10 @@ namespace Anywhen.Synth
                 public float delay;
                 public float feedback;
                 public float wet;
+                public bool Equals(Unmanaged other)
+                {
+                    return Mathf.Approximately(rate, other.rate) && Mathf.Approximately(depth, other.depth) && Mathf.Approximately(delay, other.delay) && Mathf.Approximately(feedback, other.feedback) && Mathf.Approximately(wet, other.wet);
+                }
             }
 
             public Unmanaged ToUnmanaged()
@@ -313,6 +349,14 @@ namespace Anywhen.Synth
                 sustain = 0.5f;
                 release = 0.1f;
             }
+
+            public bool Equals(EnvelopeSettings other)
+            {
+                return Mathf.Approximately(attack, other.attack) &&
+                    Mathf.Approximately(decay, other.decay) &&
+                    Mathf.Approximately(sustain, other.sustain) &&
+                    Mathf.Approximately(release, other.release);
+            }
         }
 
         public EnvelopeSettings envelopeSettings;
@@ -341,6 +385,10 @@ namespace Anywhen.Synth
             {
                 frequency = 1;
                 unipolar = false;
+            }
+            public bool Equals(LFOSettings other)
+            {
+                return Mathf.Approximately(frequency, other.frequency) && unipolar == other.unipolar;
             }
         }
 

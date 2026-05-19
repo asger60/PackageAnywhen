@@ -111,7 +111,6 @@ namespace Anywhen.Composing
 
             public int voices;
 
-            //public AnyTrackTypes trackType;
             public int trackTypeIndex;
 
             public NativeArray<AudioProcessorSettings.Unmanaged> trackFilters;
@@ -130,6 +129,17 @@ namespace Anywhen.Composing
 
                     trackFilters.Dispose();
                 }
+            }
+
+            public bool Equals(Unmanaged other)
+            {
+                return
+                    Mathf.Approximately(Volume, other.Volume) &&
+                    trackTypeIndex == other.trackTypeIndex &&
+                    trackFilters.Length == other.trackFilters.Length &&
+                    audioSources.Length == other.audioSources.Length &&
+                    AmplitudeMod.Equals(other.AmplitudeMod) &&
+                    PitchMod.Equals(other.PitchMod);
             }
         }
 
