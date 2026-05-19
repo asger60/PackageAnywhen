@@ -33,7 +33,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnDisable()
     {
         OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
-    
+
         // Remove listeners FIRST, before any NativeArray disposal,
         // so lambdas captured in the Processor constructor can't fire
         // against already-disposed arrays during teardown.
@@ -90,7 +90,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (!Mathf.Approximately(newSnapshotValue, _currentSnapshotValue))
         {
             AnywhenSnapshotBlender.ApplyBlend(song, newSnapshotValue);
-            song.RefreshSettings();
+            //song.RefreshSettings();
             _currentSnapshotValue = newSnapshotValue;
         }
     }
@@ -191,7 +191,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void Load(AnysongObject currentSong, LoadOptions options = LoadOptions.Default)
     {
-        Debug.Log("Loading song: " + currentSong.name);
+        Debug.Log("Loading song: " + currentSong.name + " load options: " + options + " ");
 
         switch (options)
         {
@@ -772,7 +772,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 generator._setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, config.sampleRate);
                 setup = generator._setup;
                 // Only allocate if not already done
-                if (_managedSamples == null || _managedSamples.Length != AudioDataEvent.MaxSamples)
+                if (_managedSamples is not { Length: AudioDataEvent.MaxSamples })
                     _managedSamples = new float[AudioDataEvent.MaxSamples];
             }
 
