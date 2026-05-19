@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 namespace Anywhen.Synth
 {
     public struct AudioProcessorLFO : IAudioProcessor
@@ -15,7 +12,7 @@ namespace Anywhen.Synth
 
         private float _currentFrequency;
         bool _retrigger;
-        AudioProcessorSettings.LFOSettings.Unmanaged _settings;
+        AudioProcessorSettings.LFOSettings _settings;
         private int _sampleRate;
 
         public AudioProcessorLFO(int sampleRate)
@@ -71,7 +68,7 @@ namespace Anywhen.Synth
         }
 
 
-        public void SetSettings(AudioProcessorSettings.LFOSettings.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.LFOSettings settings)
         {
             _settings = settings;
             UpdateSettings();

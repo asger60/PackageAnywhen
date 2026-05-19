@@ -15,7 +15,7 @@ public struct AnywhenAudioVoice
     private float _velocity;
     AudioProcessorEnvelope _voiceEnvelope;
 
-    private AudioProcessorSettings.EnvelopeSettings.Unmanaged _envelopeSettings;
+    private AudioProcessorSettings.EnvelopeSettings _envelopeSettings;
     private NativeArray<SynthFilterBase.ModRouting> _pitchMod;
     public bool IsIdle => !_noteQueued;
     public double ScheduledStartTime => _scheduledStartTime;
@@ -34,7 +34,7 @@ public struct AnywhenAudioVoice
 
     public void UpdateVoiceSettings(
         NativeArray<AudioSourceSettings.Unmanaged> audioSourceSettings,
-        AudioProcessorSettings.EnvelopeSettings.Unmanaged envelopeSettings,
+        AudioProcessorSettings.EnvelopeSettings envelopeSettings,
         NativeArray<SynthFilterBase.ModRouting> pitchMod,
         float trackPitch)
     {

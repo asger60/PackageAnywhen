@@ -21,7 +21,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     private AnywhenAudioGenerator.PlaybackEvent _nextEvent;
     private NativeArray<TrackAudioProcessor> _trackFilters;
 
-    public AudioProcessorSettings.EnvelopeSettings.Unmanaged EnvelopeSettings => _settings.TrackAudioEnvelope1.ToUnmanaged();
 
     private bool _hasPendingTracksUpdate;
     private bool _hasPendingEffectsUpdate;
@@ -44,7 +43,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         CreateTrack(settings, sampleRate);
         UpdateSettings(settings);
         _nextEvent = new AnywhenAudioGenerator.PlaybackEvent(new SimpleNoteEvent(), 0);
-        _amplitudeMod = settings.amplitudeMod;
+        _amplitudeMod = settings.AmplitudeMod;
     }
 
 
@@ -82,9 +81,13 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
 
         _trackEnvelope1 = new AudioProcessorEnvelope(_sampleRate);
-        _trackEnvelope2 = new AudioProcessorEnvelope(_sampleRate);
-        _trackLFO1 = new AudioProcessorLFO(_sampleRate);
-        _trackLFO2 = new AudioProcessorLFO(_sampleRate);
+
+        if (settings.TrackAudioEnvelope2.enabled)
+            _trackEnvelope2 = new AudioProcessorEnvelope(_sampleRate);
+        if (settings.TrackAudioLFO1.enabled)
+            _trackLFO1 = new AudioProcessorLFO(_sampleRate);
+        if (settings.TrackAudioLFO2.enabled)
+            _trackLFO2 = new AudioProcessorLFO(_sampleRate);
 
         _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
@@ -94,7 +97,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
 
 
-        _amplitudeMod = settings.amplitudeMod;
+        _amplitudeMod = settings.AmplitudeMod;
     }
 
     private void CreateEffects(AnysongTrackSettings.Unmanaged settings)
@@ -113,16 +116,20 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     {
         _settings.Dispose();
         _settings = settings;
-        _trackVolume = settings.volume;
+        _trackVolume = settings.Volume;
 
-        _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1.ToUnmanaged());
-        _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2.ToUnmanaged());
+        _trackEnvelope1.SetSettings(settings.TrackAudioEnvelope1);
+        if (settings.TrackAudioEnvelope2.enabled)
+            _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2);
 
         _trackEnvelope1Value = 1;
         _trackEnvelope2Value = 1;
 
-        _trackLFO1.SetSettings(settings.TrackAudioLFO1.ToUnmanaged());
-        _trackLFO2.SetSettings(settings.TrackAudioLFO2.ToUnmanaged());
+        if (settings.TrackAudioLFO1.enabled)
+            _trackLFO1.SetSettings(settings.TrackAudioLFO1);
+
+        if (settings.TrackAudioLFO2.enabled)
+            _trackLFO2.SetSettings(settings.TrackAudioLFO2);
 
         for (int i = 0; i < settings.trackFilters.Length; i++)
         {
@@ -138,14 +145,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
                 var voice = _voices[i];
                 voice.UpdateVoiceSettings(
                     settings.audioSources,
-                    settings.TrackAudioEnvelope1.ToUnmanaged(),
-                    _settings.pitchMod,
+                    settings.TrackAudioEnvelope1,
+                    _settings.PitchMod,
                     _settings.trackPitch);
                 _voices[i] = voice;
             }
         }
 
-        _amplitudeMod = settings.amplitudeMod;
+        _amplitudeMod = settings.AmplitudeMod;
     }
 
     internal void HandlePlaybackEvent(AnywhenAudioGenerator.PlaybackEvent playbackEvent)
@@ -293,9 +300,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     public float GetModSignal(NativeArray<SynthFilterBase.ModRouting> modRoutingSettings)
     {
         float s = 0;
-        for (int i = 0; i < modRoutingSettings.Length; i++)
+        foreach (var mod in modRoutingSettings)
         {
-            var mod = modRoutingSettings[i];
             float signal = mod.modSource switch
             {
                 SynthFilterBase.ModRouting.ModSources.Envelope1 => _trackEnvelope1Value,

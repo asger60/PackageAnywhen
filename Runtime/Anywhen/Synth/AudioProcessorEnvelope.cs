@@ -30,7 +30,7 @@ namespace Anywhen.Synth
         private float _releaseBase;
 
 
-        private AudioProcessorSettings.EnvelopeSettings.Unmanaged _settings;
+        private AudioProcessorSettings.EnvelopeSettings _settings;
         private readonly int _sampleRate;
 
         public bool IsActive => _state != EnvState.env_idle;
@@ -148,7 +148,7 @@ namespace Anywhen.Synth
             _state = EnvState.env_release;
         }
 
-        public void SetSettings(AudioProcessorSettings.EnvelopeSettings.Unmanaged settings)
+        public void SetSettings(AudioProcessorSettings.EnvelopeSettings settings)
         {
             _settings = settings;
         }

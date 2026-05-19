@@ -1,8 +1,8 @@
 using Anywhen.Synth;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
-namespace Anywhen.SettingsObjects
+namespace PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(AudioProcessorSettings.EnvelopeSettings))]
     public class EnvelopeSettingsDrawer : PropertyDrawer
@@ -10,12 +10,10 @@ namespace Anywhen.SettingsObjects
         private const float PreviewHeight = 80f;
         private const float Spacing = 2f;
         private const float SliderHeight = 16f;
-        private bool _foldout = true;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var enabledProp = property.FindPropertyRelative("enabled");
-            if (!enabledProp.boolValue)
+            if (!property.isExpanded)
                 return EditorGUIUtility.singleLineHeight;
 
             return EditorGUIUtility.singleLineHeight + // Foldout line
@@ -35,12 +33,15 @@ namespace Anywhen.SettingsObjects
 
             // Create foldout header
             var foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-            
+
             EditorGUI.BeginChangeCheck();
-            enabledProp.boolValue = EditorGUI.Foldout(foldoutRect, enabledProp.boolValue, label, true);
+            property.isExpanded = enabledProp.boolValue;
+            property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, label, true);
             if (EditorGUI.EndChangeCheck())
             {
-                if (enabledProp.boolValue && attackProp.floatValue == 0 && decayProp.floatValue == 0 && sustainProp.floatValue == 0 && releaseProp.floatValue == 0)
+                enabledProp.boolValue = property.isExpanded;
+                if (enabledProp.boolValue && attackProp.floatValue == 0 && decayProp.floatValue == 0 && sustainProp.floatValue == 0 &&
+                    releaseProp.floatValue == 0)
                 {
                     attackProp.floatValue = 0.01f;
                     decayProp.floatValue = 0.1f;
@@ -49,7 +50,7 @@ namespace Anywhen.SettingsObjects
                 }
             }
 
-            if (enabledProp.boolValue)
+            if (property.isExpanded)
             {
                 // Draw envelope preview
                 var previewRect = new Rect(

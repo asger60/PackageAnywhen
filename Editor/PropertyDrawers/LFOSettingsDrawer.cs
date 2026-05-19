@@ -10,43 +10,44 @@ namespace Anywhen.SettingsObjects
         private const float PreviewHeight = 60f;
         private const float Spacing = 2f;
         private const float SliderHeight = 16f;
-        private bool _foldout = true;
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!_foldout)
+            if (!property.isExpanded)
                 return EditorGUIUtility.singleLineHeight;
 
             return EditorGUIUtility.singleLineHeight + // Foldout line
-                   PreviewHeight + Spacing +           // LFO wave preview
-                   (SliderHeight + Spacing) * 2;       // 3 controls with spacing
+                   PreviewHeight + Spacing + // LFO wave preview
+                   (SliderHeight + Spacing) * 2; // 2 controls with spacing
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
 
+            var enabledProp = property.FindPropertyRelative("enabled");
             var frequencyProp = property.FindPropertyRelative("frequency");
-            
+            var unipolarProp = property.FindPropertyRelative("unipolar");
 
-            
+
             // Create foldout header that controls the enabled state
+            property.isExpanded = enabledProp.boolValue;
             var foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
             EditorGUI.BeginChangeCheck();
-            _foldout = EditorGUI.Foldout(foldoutRect, _foldout, label, true);
+            property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, label, true);
 
             if (EditorGUI.EndChangeCheck())
             {
-
+                enabledProp.boolValue = property.isExpanded;
                 // Initialize default values when enabling for the first time
-                if (_foldout && frequencyProp.floatValue == 0 )
+                if (enabledProp.boolValue && frequencyProp.floatValue == 0)
                 {
-                    
                     frequencyProp.floatValue = 1f;
                 }
             }
 
-            if (_foldout)
+            if (property.isExpanded)
             {
                 // Draw LFO wave preview
                 var previewRect = new Rect(
@@ -55,7 +56,7 @@ namespace Anywhen.SettingsObjects
                     position.width,
                     PreviewHeight
                 );
-                DrawLFOPreview(previewRect, frequencyProp.floatValue, _foldout);
+                DrawLFOPreview(previewRect, frequencyProp.floatValue, property.isExpanded);
 
                 float yPos = position.y + EditorGUIUtility.singleLineHeight + PreviewHeight + Spacing;
                 float indent = 15f;
@@ -64,7 +65,9 @@ namespace Anywhen.SettingsObjects
                 var controlRect = new Rect(position.x + indent, yPos, position.width - indent, SliderHeight);
                 EditorGUI.PropertyField(controlRect, frequencyProp);
 
-               
+                yPos += SliderHeight + Spacing;
+                controlRect.y = yPos;
+                EditorGUI.PropertyField(controlRect, unipolarProp);
             }
 
             EditorGUI.EndProperty();
@@ -107,7 +110,7 @@ namespace Anywhen.SettingsObjects
                 float t = (float)i / (steps - 1);
                 float x = rect.x + 2 + t * (rect.width - 4);
                 float time = t * timeSpan;
-                float lfoValue = Mathf.Sin(time * frequency * 2f * Mathf.PI) ;
+                float lfoValue = Mathf.Sin(time * frequency * 2f * Mathf.PI);
                 float y = centerY - lfoValue * (rect.height * 0.4f); // Scale to fit in preview
 
                 points[i] = new Vector3(x, y);
@@ -118,7 +121,6 @@ namespace Anywhen.SettingsObjects
             {
                 Handles.DrawLine(points[i], points[i + 1]);
             }
-            
         }
     }
 }

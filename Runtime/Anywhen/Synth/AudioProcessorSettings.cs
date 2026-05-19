@@ -290,31 +290,11 @@ namespace Anywhen.Synth
             [Range(0, 1f)] public float decay;
             [Range(0, 1f)] public float sustain;
             [Range(0, 3f)] public float release;
+            
 
-            public struct Unmanaged
+            public EnvelopeSettings(float attack, float decay, float sustain, float release, bool enabled) : this()
             {
-                public bool enabled;
-                public float attack;
-                public float decay;
-                public float sustain;
-                public float release;
-            }
-
-            public Unmanaged ToUnmanaged()
-            {
-                return new Unmanaged
-                {
-                    enabled = enabled,
-                    attack = attack,
-                    decay = decay,
-                    sustain = sustain,
-                    release = release,
-                };
-            }
-
-            public EnvelopeSettings(float attack, float decay, float sustain, float release) : this()
-            {
-                this.enabled = true;
+                this.enabled = enabled;
                 this.attack = attack;
                 this.decay = decay;
                 this.sustain = sustain;
@@ -345,26 +325,10 @@ namespace Anywhen.Synth
             [Range(0.01f, 10)] public float frequency;
             public bool unipolar;
 
-            public struct Unmanaged
-            {
-                public bool enabled;
-                public float frequency;
-                public bool unipolar;
-            }
 
-            public Unmanaged ToUnmanaged()
+            public LFOSettings(float frequency, float amplitude, bool enabled) : this()
             {
-                return new Unmanaged
-                {
-                    enabled = enabled,
-                    frequency = frequency,
-                    unipolar = unipolar,
-                };
-            }
-
-            public LFOSettings(float frequency, float amplitude) : this()
-            {
-                this.enabled = true;
+                this.enabled = enabled;
                 this.frequency = frequency;
             }
 

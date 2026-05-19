@@ -57,7 +57,6 @@ namespace Anywhen.Composing
         }
 
 
-
         [Range(1, 16)] public int voices = 1;
         [AnywhenTrackType] public int trackTypeIndex;
 
@@ -75,10 +74,10 @@ namespace Anywhen.Composing
         public void Init()
         {
             volume = 1;
-            trackAudioEnvelope1 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f);
-            trackAudioEnvelope1.enabled = true;
-            trackAudioLFO1 = new AudioProcessorSettings.LFOSettings(2, 0.01f);
-            trackAudioLFO1.enabled = true;
+            trackAudioEnvelope1 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f, true);
+            trackAudioEnvelope2 = new AudioProcessorSettings.EnvelopeSettings(0.01f, 0.5f, 1, 0.1f, false);
+            trackAudioLFO1 = new AudioProcessorSettings.LFOSettings(2, 0.01f, false);
+            trackAudioLFO2 = new AudioProcessorSettings.LFOSettings(2, 0.01f, false);
         }
 
         public AnysongTrackSettings Clone()
@@ -88,7 +87,9 @@ namespace Anywhen.Composing
                 instrument = instrument,
                 volume = volume,
                 trackAudioEnvelope1 = trackAudioEnvelope1,
+                trackAudioEnvelope2 = trackAudioEnvelope2,
                 trackAudioLFO1 = trackAudioLFO1,
+                trackAudioLFO2 = trackAudioLFO2,
                 TrackPitch = TrackPitch,
             };
             return clone;
@@ -97,13 +98,13 @@ namespace Anywhen.Composing
         public struct Unmanaged
         {
             public NativeArray<AudioSourceSettings.Unmanaged> audioSources;
-            public float volume;
+            public float Volume;
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope1;
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
-            public NativeArray<SynthFilterBase.ModRouting> amplitudeMod;
-            public NativeArray<SynthFilterBase.ModRouting> pitchMod;
+            public NativeArray<SynthFilterBase.ModRouting> AmplitudeMod;
+            public NativeArray<SynthFilterBase.ModRouting> PitchMod;
 
 
             public float trackPitch;
@@ -118,8 +119,8 @@ namespace Anywhen.Composing
             public void Dispose()
             {
                 if (audioSources.IsCreated) audioSources.Dispose();
-                if (amplitudeMod.IsCreated) amplitudeMod.Dispose();
-                if (pitchMod.IsCreated) pitchMod.Dispose();
+                if (AmplitudeMod.IsCreated) AmplitudeMod.Dispose();
+                if (PitchMod.IsCreated) PitchMod.Dispose();
                 if (trackFilters.IsCreated)
                 {
                     for (int i = 0; i < trackFilters.Length; i++)
@@ -148,7 +149,7 @@ namespace Anywhen.Composing
 
             return new Unmanaged
             {
-                volume = volume,
+                Volume = volume,
                 TrackAudioEnvelope1 = trackAudioEnvelope1,
                 TrackAudioEnvelope2 = trackAudioEnvelope2,
                 TrackAudioLFO1 = trackAudioLFO1,
@@ -157,8 +158,8 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                amplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
-                pitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
+                AmplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
+                PitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
                 audioSources = new NativeArray<AudioSourceSettings.Unmanaged>(sources, Allocator.Persistent),
             };
         }
