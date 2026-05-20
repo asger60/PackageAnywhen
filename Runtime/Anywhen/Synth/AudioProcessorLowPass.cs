@@ -57,7 +57,6 @@ namespace Anywhen.Synth
 
         public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
-            _settings.Dispose();
             _settings = settings.lowPassSettings;
             _resonance = _settings.Resonance;
             _cutoff = _settings.CutoffFrequency;

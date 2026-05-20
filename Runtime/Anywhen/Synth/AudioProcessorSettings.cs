@@ -46,7 +46,7 @@ namespace Anywhen.Synth
                 public bool Equals(Unmanaged other)
                 {
                     return Mathf.Approximately(CutoffFrequency, other.CutoffFrequency) && Mathf.Approximately(Resonance, other.Resonance) &&
-                           Oversampling == other.Oversampling;
+                           Oversampling == other.Oversampling && CutoffMod.Equals(other.CutoffMod);
                 }
             }
 
@@ -88,7 +88,7 @@ namespace Anywhen.Synth
                 public bool Equals(Unmanaged other)
                 {
                     return Mathf.Approximately(cutoffFrequency, other.cutoffFrequency) && Mathf.Approximately(resonance, other.resonance) &&
-                           oversampling == other.oversampling;
+                           oversampling == other.oversampling && cutoffMod.Equals(other.cutoffMod);
                 }
             }
 

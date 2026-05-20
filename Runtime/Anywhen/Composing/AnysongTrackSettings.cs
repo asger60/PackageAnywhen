@@ -160,8 +160,8 @@ namespace Anywhen.Composing
                 return
                     Mathf.Approximately(Volume, other.Volume) &&
                     trackTypeIndex == other.trackTypeIndex &&
-                    trackFilters.Length == other.trackFilters.Length &&
-                    audioSources.Length == other.audioSources.Length &&
+                    trackFilters.Equals(other.trackFilters) &&
+                    audioSources.Equals(other.audioSources) &&
                     AmplitudeMod.Equals(other.AmplitudeMod) &&
                     PitchMod.Equals(other.PitchMod);
             }
