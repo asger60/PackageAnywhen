@@ -111,8 +111,8 @@ namespace Anywhen.Composing
                 trackTypeIndex = trackTypeIndex,
                 snapshotA = snapshotA.Clone(),
                 snapshotB = snapshotB.Clone(),
-                volumeMods = volumeMods != null ? (SynthFilterBase.ModRouting[])volumeMods.Clone() : null,
-                pitchMods = pitchMods != null ? (SynthFilterBase.ModRouting[])pitchMods.Clone() : null,
+                volumeMods = (SynthFilterBase.ModRouting[])volumeMods?.Clone(),
+                pitchMods = (SynthFilterBase.ModRouting[])pitchMods?.Clone(),
                 trackFilters = new List<AudioProcessorSettings>(TrackFilters),
                 audioSources = new List<AudioSourceSettings>(AudioSources)
             };
@@ -192,8 +192,8 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                AmplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
-                PitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
+                //AmplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
+                //PitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
                 audioSources = sources,
             };
         }
