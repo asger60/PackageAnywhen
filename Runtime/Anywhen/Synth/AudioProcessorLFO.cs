@@ -69,6 +69,10 @@ namespace Anywhen.Synth
         {
         }
 
+        public void Dispose()
+        {
+        }
+
 
         public void SetSettings(AudioProcessorSettings.LFOSettings settings)
         {

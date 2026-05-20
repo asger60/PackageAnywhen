@@ -10,7 +10,71 @@ namespace Anywhen
         public static void ApplyBlend(AnysongObject song, float mixValue)
         {
             if (!song) return;
-            ApplyBlend(song, song.snapshotA, song.snapshotB, mixValue);
+            //ApplyBlend(song, song.snapshotA, song.snapshotB, mixValue);
+            foreach (var track in song.Tracks)
+            {
+                ApplyBlend(track, track.snapshotA, track.snapshotB, mixValue);
+            }
+        }
+
+        private static void ApplyBlend(AnysongTrackSettings track, AnywhenSnapshot snapshotA, AnywhenSnapshot snapshotB, float mixValue)
+        {
+            if (track == null || snapshotA == null || snapshotB == null) return;
+
+            var snapshotAData = snapshotA.Snapshot;
+            var snapshotBData = snapshotB.Snapshot;
+
+            if (snapshotAData == null || snapshotBData == null || snapshotAData.Count == 0 || snapshotBData.Count == 0) return;
+
+            var bLookup = new Dictionary<string, AnywhenSnapshot.PropertyValue>(snapshotBData.Count);
+            foreach (var pv in snapshotBData) bLookup[pv.path] = pv;
+
+            foreach (var a in snapshotAData)
+            {
+                if (!bLookup.TryGetValue(a.path, out var b)) continue;
+
+                string propertyPath = a.path;
+
+                // Filter properties: trackFilters[0].lowPassSettings.cutoffFrequency
+                if (propertyPath.StartsWith("trackFilters["))
+                {
+                    var fOpenBracketIdx = propertyPath.IndexOf('[');
+                    var fCloseBracketIdx = propertyPath.IndexOf(']');
+                    if (fOpenBracketIdx == -1 || fCloseBracketIdx == -1) continue;
+
+                    string fIndexStr = propertyPath.Substring(fOpenBracketIdx + 1, fCloseBracketIdx - fOpenBracketIdx - 1);
+                    if (!int.TryParse(fIndexStr, out int filterIndex)) continue;
+
+                    var filters = track.TrackFilters;
+                    if (filterIndex < 0 || filterIndex >= filters.Count) continue;
+
+                    var filterSettings = filters[filterIndex];
+                    string filterPropertyPath = propertyPath.Substring(fCloseBracketIdx + 2); // skip "]."
+
+                    ApplyLerpToFilter(filterSettings, filterPropertyPath, a, b, mixValue);
+                }
+                else if (propertyPath.StartsWith("audioSources["))
+                {
+                    var sOpenBracketIdx = propertyPath.IndexOf('[');
+                    var sCloseBracketIdx = propertyPath.IndexOf(']');
+                    if (sOpenBracketIdx == -1 || sCloseBracketIdx == -1) continue;
+
+                    string sIndexStr = propertyPath.Substring(sOpenBracketIdx + 1, sCloseBracketIdx - sOpenBracketIdx - 1);
+                    if (!int.TryParse(sIndexStr, out int sourceIndex)) continue;
+
+                    var sources = track.AudioSources;
+                    if (sourceIndex < 0 || sourceIndex >= sources.Count) continue;
+
+                    var sourceSettings = sources[sourceIndex];
+                    string sourcePropertyPath = propertyPath.Substring(sCloseBracketIdx + 2); // skip "]."
+
+                    ApplyLerpToAudioSource(sourceSettings, sourcePropertyPath, a, b, mixValue);
+                }
+                else
+                {
+                    ApplyLerpToTrack(track, propertyPath, a, b, mixValue);
+                }
+            }
         }
 
         public static void ApplyBlend(AnysongObject song, AnywhenSnapshot snapshotA, AnywhenSnapshot snapshotB, float mixValue)

@@ -179,7 +179,7 @@ namespace Anywhen.Composing
 
             for (var i = 0; i < patterns.Count; i++)
             {
-                clone.patterns[i] = patterns[i].Clone();
+                clone.patterns.Add(patterns[i].Clone());
             }
 
             //clone.anysongTrackSettings = anysongTrackSettings;

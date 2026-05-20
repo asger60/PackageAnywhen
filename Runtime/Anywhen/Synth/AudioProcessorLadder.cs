@@ -3,7 +3,7 @@
     // A 303-style diode ladder filter.
     // Diode ladders have a specific resonance behavior and a shallower slope (18dB-ish)
     // compared to Moog-style transistor ladders (24dB/oct).
-    public struct AudioProcessorLadder : IAudioProcessor
+    public struct AudioProcessorLadder : IAudioProcessor, System.IDisposable
     {
         private float _cutoffMod;
 
@@ -164,6 +164,11 @@
             _oversampling = iterationCount;
             if (_oversampling < 1)
                 _oversampling = 1;
+        }
+
+        public void Dispose()
+        {
+            _settings.Dispose();
         }
     }
 }

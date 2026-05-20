@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorBandPass : IAudioProcessor
+    public struct AudioProcessorBandPass : IAudioProcessor, System.IDisposable
     {
         //_sampleRate = sampleRate;
 
@@ -95,6 +95,10 @@ namespace Anywhen.Synth
         }
 
         public void SetGate(bool gate)
+        {
+        }
+
+        public void Dispose()
         {
         }
     }

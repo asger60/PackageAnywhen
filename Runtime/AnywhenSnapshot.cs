@@ -41,5 +41,24 @@ namespace Anywhen
 
         [SerializeField] private List<PropertyValue> _snapshot = new();
         public List<PropertyValue> Snapshot => _snapshot;
+
+        public AnywhenSnapshot Clone()
+        {
+            var clone = new AnywhenSnapshot();
+            foreach (var pv in _snapshot)
+            {
+                var newPv = pv;
+                if (pv.curveVal != null)
+                {
+                    newPv.curveVal = new AnimationCurve(pv.curveVal.keys)
+                    {
+                        postWrapMode = pv.curveVal.postWrapMode,
+                        preWrapMode = pv.curveVal.preWrapMode
+                    };
+                }
+                clone.Snapshot.Add(newPv);
+            }
+            return clone;
+        }
     }
 }

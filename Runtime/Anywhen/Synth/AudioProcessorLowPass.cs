@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorLowPass : IAudioProcessor
+    public struct AudioProcessorLowPass : IAudioProcessor, System.IDisposable
     {
         const float V_t = 1.22070313f;
 
@@ -135,5 +135,7 @@ namespace Anywhen.Synth
             _s = 1.0f - Mathf.Exp(-omega);
             _s = Clamp(_s, 0f, 1.0f);
         }
+
+        public void Dispose() => _settings.Dispose();
     }
 }

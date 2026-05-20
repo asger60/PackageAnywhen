@@ -2,7 +2,7 @@ using System;
 
 namespace Anywhen.Synth
 {
-    public struct TrackAudioProcessor
+    public struct TrackAudioProcessor : IDisposable
     {
         private AudioProcessorSettings.Unmanaged _settings;
 
@@ -121,9 +121,21 @@ namespace Anywhen.Synth
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public void Dispose()
+        {
+            _lowPass.Dispose();
+            _saturator.Dispose();
+            _bandPass.Dispose();
+            _bitcrush.Dispose();
+            _ladder.Dispose();
+            _chorus.Dispose();
+            _delay.Dispose();
+            _reverb.Dispose();
+        }
     }
 
-    public interface IAudioProcessor
+    public interface IAudioProcessor : IDisposable
     {
         public void DoUpdate();
 

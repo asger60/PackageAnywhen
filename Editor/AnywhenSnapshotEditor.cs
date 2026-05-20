@@ -8,34 +8,75 @@ public static class AnywhenSnapshotEditor
     // --- Capture ---
     public static void CaptureSnapshot(SerializedObject serializedObject, ref AnywhenSnapshot snapshot)
     {
+        AnysongObject song = (AnysongObject)serializedObject.targetObject;
+        bool isSnapshotB = (snapshot == song.snapshotB);
+
         snapshot = new AnywhenSnapshot();
         serializedObject.Update();
 
-        // Capture root properties
-        var tempoProp = serializedObject.FindProperty("tempo");
-        if (tempoProp != null)
+        var iterator = serializedObject.GetIterator();
+        bool enterChildren = true;
+        if (iterator.NextVisible(true))
         {
-            var pv = ReadProperty(tempoProp);
-            if (pv.HasValue) snapshot.Snapshot.Add(pv.Value);
-        }
+            do
+            {
+                if (iterator.name == "m_Script" || iterator.name == "Tracks" || iterator.name == "Sections" || 
+                    iterator.name == "snapshotA" || iterator.name == "snapshotB")
+                {
+                    enterChildren = false;
+                    continue;
+                }
+                enterChildren = true;
 
-        var volumeProp = serializedObject.FindProperty("songVolume");
-        if (volumeProp != null)
-        {
-            var pv = ReadProperty(volumeProp);
-            if (pv.HasValue) snapshot.Snapshot.Add(pv.Value);
+                var pv = ReadProperty(iterator);
+                if (pv.HasValue) snapshot.Snapshot.Add(pv.Value);
+            } while (iterator.NextVisible(enterChildren));
         }
 
         var tracksProp = serializedObject.FindProperty("Tracks");
-        if (tracksProp == null) return;
-
-        var iterator = tracksProp.Copy();
-        var end = tracksProp.GetEndProperty();
-
-        while (iterator.NextVisible(true) && !SerializedProperty.EqualContents(iterator, end))
+        if (tracksProp != null)
         {
+            for (int i = 0; i < song.Tracks.Count; i++)
+            {
+                var track = song.Tracks[i];
+                var trackProp = tracksProp.GetArrayElementAtIndex(i);
+                if (isSnapshotB) CaptureTrackSnapshot(trackProp, ref track.snapshotB);
+                else CaptureTrackSnapshot(trackProp, ref track.snapshotA);
+            }
+        }
+
+        EditorUtility.SetDirty(song);
+    }
+
+    private static void CaptureTrackSnapshot(SerializedProperty trackProp, ref AnywhenSnapshot snapshot)
+    {
+        snapshot = new AnywhenSnapshot();
+        var iterator = trackProp.Copy();
+        var end = trackProp.GetEndProperty();
+
+        string trackPath = NormalizePath(trackProp.propertyPath);
+
+        bool enterChildren = true;
+        while (iterator.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iterator, end))
+        {
+            if (iterator.name == "m_Script" || iterator.name == "snapshotA" || iterator.name == "snapshotB")
+            {
+                enterChildren = false;
+                continue;
+            }
+            enterChildren = true;
+
             var pv = ReadProperty(iterator);
-            if (pv.HasValue) snapshot.Snapshot.Add(pv.Value);
+            if (pv.HasValue)
+            {
+                var val = pv.Value;
+                if (val.path.StartsWith(trackPath + "."))
+                {
+                    val.path = val.path.Substring(trackPath.Length + 1);
+                }
+
+                snapshot.Snapshot.Add(val);
+            }
         }
     }
 

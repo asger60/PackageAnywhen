@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorSaturator : IAudioProcessor
+    public struct AudioProcessorSaturator : IAudioProcessor, System.IDisposable
     {
         private float _drive;
         private float _wet;
@@ -54,6 +54,11 @@ namespace Anywhen.Synth
 
         public void SetGate(bool gate)
         {
+        }
+
+        public void Dispose()
+        {
+            _settings.Dispose();
         }
     }
 }

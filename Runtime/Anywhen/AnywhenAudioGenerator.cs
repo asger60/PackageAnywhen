@@ -125,7 +125,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SetSong(AnysongObject newSong)
     {
-        song = newSong;
+        song = Instantiate(newSong);
     }
 
     public delegate void AudioGeneratedDelegate(float[] samples, int channels);
@@ -162,7 +162,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (!Mathf.Approximately(newSnapshotValue, _currentSnapshotValue))
         {
             AnywhenSnapshotBlender.ApplyBlend(song, newSnapshotValue);
-            //song.RefreshSettings();
+
             _currentSnapshotValue = newSnapshotValue;
 
             if (ControlContext.builtIn.Exists(_generatorInstance))
@@ -189,27 +189,33 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void OverrideTrackSettings(AnysongObject sourceSong, int overrideTrackTypeIndex)
     {
-        Debug.Log("Override track settings: " + overrideTrackTypeIndex);
-        List<AnysongTrackSettings> trackSettingsList = new List<AnysongTrackSettings>();
-        for (int i = 0; i < sourceSong.Tracks.Count; i++)
+        var sourceTrackSettings = new AnysongTrackSettings();
+        int trackIndex = 0;
+        foreach (var sourceTrack in sourceSong.Tracks)
         {
-            if (sourceSong.Tracks[i].trackTypeIndex == overrideTrackTypeIndex)
+            if (sourceTrack.trackTypeIndex == overrideTrackTypeIndex)
             {
-                trackSettingsList.Add(sourceSong.Tracks[i]);
+                sourceTrackSettings = sourceTrack;
+                break;
             }
         }
 
-        NativeArray<AnysongTrackSettings.Unmanaged> trackSettings =
-            new NativeArray<AnysongTrackSettings.Unmanaged>(trackSettingsList.Count, Allocator.Persistent);
-
-        for (int i = 0; i < trackSettingsList.Count; i++)
+        for (int i = 0; i < song.Tracks.Count; i++)
         {
-            trackSettings[i] = trackSettingsList[i].ToUnmanaged();
+            if (song.Tracks[i].trackTypeIndex == overrideTrackTypeIndex)
+            {
+                song.Tracks[i] = new AnysongTrackSettings();
+                song.Tracks[i] = sourceTrackSettings.Clone();
+                trackIndex = i;
+                break;
+            }
         }
+
+        Debug.Log("Override track settings: " + trackIndex);
 
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(sourceTrackSettings.ToUnmanaged(), trackIndex));
         }
     }
 
@@ -412,11 +418,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private class TriggerTrackSettingsReload
     {
-        public readonly NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
+        public int TrackIndex;
+        public readonly AnysongTrackSettings.Unmanaged TrackSettings;
 
-        public TriggerTrackSettingsReload(NativeArray<AnysongTrackSettings.Unmanaged> trackSettings)
+        public TriggerTrackSettingsReload(AnysongTrackSettings.Unmanaged trackSettings, int trackIndex)
         {
             TrackSettings = trackSettings;
+            TrackIndex = trackIndex;
         }
     }
 
@@ -584,23 +592,17 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     settingsUpdate.TrackSettings.Dispose();
                 }
 
-                if (element.TryGetData(out NewTracksSettingsData newTrackSettings))
+                if (element.TryGetData(out CreateNewTracksSettingsData newTrackSettings))
                 {
-                    for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
-                    {
-                        var thisTrack = _tracks[trackIndex];
-                        foreach (var newTrackSetting in newTrackSettings.TrackSettings)
-                        {
-                            if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
-                            {
-                                thisTrack.CreateTrack(newTrackSetting, _sampleRate);
-                                thisTrack.UpdateSettings(newTrackSetting);
-                            }
-                            break;
-                        }
+                    Debug.Log("Creating new tracks " + newTrackSettings.TrackIndex);
 
-                        _tracks[trackIndex] = thisTrack;
-                    }
+                    var thisTrack = _tracks[newTrackSettings.TrackIndex];
+
+                    thisTrack.CreateTrack(newTrackSettings.TrackSettings, _sampleRate);
+                    thisTrack.UpdateSettings(newTrackSettings.TrackSettings);
+
+                    _tracks[newTrackSettings.TrackIndex] = thisTrack;
+
 
                     newTrackSettings.TrackSettings.Dispose();
                 }
@@ -793,7 +795,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             return buffer.frameCount;
         }
 
-        struct Control : GeneratorInstance.IControl<Processor>
+        struct Control :
+            GeneratorInstance.IControl<Processor>
         {
             private static float[] _managedSamples;
 
@@ -884,7 +887,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (message.Is<TriggerTrackSettingsReload>())
                 {
                     var payload = message.Get<TriggerTrackSettingsReload>();
-                    pipe.SendData(context, new NewTracksSettingsData() { TrackSettings = payload.TrackSettings });
+                    pipe.SendData(context,
+                        new CreateNewTracksSettingsData() { TrackSettings = payload.TrackSettings, TrackIndex = payload.TrackIndex });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -954,9 +958,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
     }
 
-    private struct NewTracksSettingsData
+    private struct CreateNewTracksSettingsData
     {
-        public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
+        public int TrackIndex;
+        public AnysongTrackSettings.Unmanaged TrackSettings;
     }
 
 

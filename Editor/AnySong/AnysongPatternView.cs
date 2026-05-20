@@ -95,12 +95,11 @@ namespace Anysong
             }
 
             _currentPatternNoteIndex = 0;
-            _isPercussionTrack =
-                AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
-                    sampleInstrument
-                && sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
+            _isPercussionTrack = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsPercussionTrack();
+
             if (_isPercussionTrack)
                 SetPolyfonic(true);
+
             _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.voices == 1;
 
 
@@ -255,15 +254,12 @@ namespace Anysong
             int rowCount = 1;
             if (!compact) rowCount = 15;
             int noteStartIndex = _currentPatternNoteIndex;
-            if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
-                sampleInstrument)
+            if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsPercussionTrack())
             {
-                if (sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion)
-                {
-                    noteStartIndex = 35;
-                    rowCount = 13;
-                }
+                noteStartIndex = 35;
+                rowCount = 13;
             }
+
 
             for (int rowIndex = rowCount - 1; rowIndex >= 0; rowIndex--)
             {
@@ -273,10 +269,7 @@ namespace Anysong
                 };
                 rowElement.AddToClassList("pattern-step-row");
                 string text = "";
-                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument
-                    {
-                        clipSelectType: AnywhenSampleInstrument.ClipSelectType.Percussion
-                    })
+                if (AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsPercussionTrack())
                 {
                     text = AnywhenSampleInstrument.MidiDrumMappings[rowIndex].Name;
                 }

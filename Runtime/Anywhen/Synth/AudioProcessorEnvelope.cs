@@ -166,6 +166,10 @@ namespace Anywhen.Synth
             return HandleEnvelope();
         }
 
+        public void Dispose()
+        {
+        }
+
         public float HandleEnvelope()
         {
             switch (_state)

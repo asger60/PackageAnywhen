@@ -21,7 +21,7 @@ namespace Anywhen.Composing
                 {
                     AudioSourceSettings newSettings = new AudioSourceSettings();
                     newSettings.audioSourceType = AudioSourceSettings.AudioSourceTypes.Sample;
-                    newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
+                    //newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
                     newSettings.sampleSourceSettings.sourceVolume = 1;
                     audioSources = new List<AudioSourceSettings> { newSettings };
                 }
@@ -30,8 +30,21 @@ namespace Anywhen.Composing
             }
         }
 
+        public bool IsPercussionTrack()
+        {
+            if (AudioSources.Count > 0)
+            {
+                var sampleInstrument = AudioSources[0].sampleSourceSettings.sampleInstrument;
+                if (sampleInstrument && sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion)
+                    return true;
+            }
+
+            return false;
+        }
+
         [Range(0, 1f)] public float volume;
-        public AnywhenInstrument instrument;
+
+        //public AnywhenInstrument instrument;
         public SynthFilterBase.ModRouting[] volumeMods;
 
         public AudioProcessorSettings.EnvelopeSettings trackAudioEnvelope1;
@@ -60,6 +73,9 @@ namespace Anywhen.Composing
         [Range(1, 16)] public int voices = 1;
         [AnywhenTrackType] public int trackTypeIndex;
 
+        public AnywhenSnapshot snapshotA = new();
+        public AnywhenSnapshot snapshotB = new();
+
         [SerializeField] private List<AudioProcessorSettings> trackFilters;
 
         public List<AudioProcessorSettings> TrackFilters
@@ -84,13 +100,21 @@ namespace Anywhen.Composing
         {
             var clone = new AnysongTrackSettings
             {
-                instrument = instrument,
+                //instrument = instrument,
                 volume = volume,
                 trackAudioEnvelope1 = trackAudioEnvelope1,
                 trackAudioEnvelope2 = trackAudioEnvelope2,
                 trackAudioLFO1 = trackAudioLFO1,
                 trackAudioLFO2 = trackAudioLFO2,
                 TrackPitch = TrackPitch,
+                voices = voices,
+                trackTypeIndex = trackTypeIndex,
+                snapshotA = snapshotA.Clone(),
+                snapshotB = snapshotB.Clone(),
+                volumeMods = volumeMods != null ? (SynthFilterBase.ModRouting[])volumeMods.Clone() : null,
+                pitchMods = pitchMods != null ? (SynthFilterBase.ModRouting[])pitchMods.Clone() : null,
+                trackFilters = new List<AudioProcessorSettings>(TrackFilters),
+                audioSources = new List<AudioSourceSettings>(AudioSources)
             };
             return clone;
         }
@@ -208,7 +232,7 @@ namespace Anywhen.Composing
             {
                 AudioSourceSettings newSettings = new AudioSourceSettings();
                 newSettings.audioSourceType = AudioSourceSettings.AudioSourceTypes.Sample;
-                newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
+                //newSettings.sampleSourceSettings.sampleInstrument = instrument as AnywhenSampleInstrument;
                 newSettings.sampleSourceSettings.sourceVolume = 1;
                 audioSources = new List<AudioSourceSettings> { newSettings };
             }

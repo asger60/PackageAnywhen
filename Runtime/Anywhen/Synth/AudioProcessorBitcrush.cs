@@ -3,7 +3,7 @@ using Unity.Collections;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorBitcrush : IAudioProcessor
+    public struct AudioProcessorBitcrush : IAudioProcessor, System.IDisposable
     {
         private float _bitDepth;
         private int _downsampling;
@@ -78,6 +78,11 @@ namespace Anywhen.Synth
 
         public void SetGate(bool gate)
         {
+        }
+
+        public void Dispose()
+        {
+            if (_lastSamples.IsCreated) _lastSamples.Dispose();
         }
     }
 }

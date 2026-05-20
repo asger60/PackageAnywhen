@@ -27,8 +27,8 @@ namespace Anysong
                 }
             };
 
-            bool isPercussion = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.instrument is AnywhenSampleInstrument sampleInstrument &&
-                                sampleInstrument.clipSelectType == AnywhenSampleInstrument.ClipSelectType.Percussion;
+
+            bool isPercussion = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.IsPercussionTrack();
 
             if (!isPercussion)
             {

@@ -70,7 +70,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
     {
         if (_voices.IsCreated) _voices.Dispose();
-        if (_trackFilters.IsCreated) _trackFilters.Dispose();
+        if (_trackFilters.IsCreated)
+        {
+            foreach (var trackFilter in _trackFilters)
+            {
+                trackFilter.Dispose();
+            }
+            _trackFilters.Dispose();
+        }
 
         _voices = new NativeArray<AnywhenAudioVoice>(settings.voices, Allocator.Persistent);
         for (int i = 0; i < _voices.Length; i++)
@@ -103,7 +110,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     private void CreateEffects(AnysongTrackSettings.Unmanaged settings)
     {
-        if (_trackFilters.IsCreated) _trackFilters.Dispose();
+        if (_trackFilters.IsCreated)
+        {
+            for (int i = 0; i < _trackFilters.Length; i++)
+            {
+                _trackFilters[i].Dispose();
+            }
+            _trackFilters.Dispose();
+        }
         _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
         for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -132,6 +146,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
         if (settings.TrackAudioLFO2.enabled)
             _trackLFO2.SetSettings(settings.TrackAudioLFO2);
+
 
         for (int i = 0; i < settings.trackFilters.Length; i++)
         {
@@ -328,7 +343,13 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _voices.Dispose();
 
         if (_trackFilters.IsCreated)
+        {
+            for (int i = 0; i < _trackFilters.Length; i++)
+            {
+                _trackFilters[i].Dispose();
+            }
             _trackFilters.Dispose();
+        }
     }
 
     public bool Equals(AnysongTrack other)
