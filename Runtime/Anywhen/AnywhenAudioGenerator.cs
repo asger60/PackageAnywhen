@@ -109,7 +109,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 trackSettings[i] = song.Tracks[i].ToUnmanaged();
             }
 
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsUpdate(trackSettings));
         }
         else
         {
@@ -173,7 +173,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     trackSettings[i] = song.Tracks[i].ToUnmanaged();
                 }
 
-                ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+                ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsUpdate(trackSettings));
             }
             else
             {
@@ -189,6 +189,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void OverrideTrackSettings(AnysongObject sourceSong, int overrideTrackTypeIndex)
     {
+        Debug.Log("Override track settings: " + overrideTrackTypeIndex);
         List<AnysongTrackSettings> trackSettingsList = new List<AnysongTrackSettings>();
         for (int i = 0; i < sourceSong.Tracks.Count; i++)
         {
@@ -228,7 +229,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsUpdate(trackSettings));
         }
     }
 
@@ -399,6 +400,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    private class TriggerTrackSettingsUpdate
+    {
+        public readonly NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
+
+        public TriggerTrackSettingsUpdate(NativeArray<AnysongTrackSettings.Unmanaged> trackSettings)
+        {
+            TrackSettings = trackSettings;
+        }
+    }
+
     private class TriggerTrackSettingsReload
     {
         public readonly NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
@@ -408,6 +419,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             TrackSettings = trackSettings;
         }
     }
+
 
     private class TriggerMidiReloadMsg
     {
@@ -560,18 +572,31 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     _intensity = intensityData.Intensity;
                 }
 
+                if (element.TryGetData(out TrackSettingsUpdate settingsUpdate))
+                {
+                    for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
+                    {
+                        var thisTrack = _tracks[trackIndex];
+                        thisTrack.UpdateSettings(settingsUpdate.TrackSettings[trackIndex]);
+                        _tracks[trackIndex] = thisTrack;
+                    }
+
+                    settingsUpdate.TrackSettings.Dispose();
+                }
+
                 if (element.TryGetData(out NewTracksSettingsData newTrackSettings))
                 {
                     for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
                     {
                         var thisTrack = _tracks[trackIndex];
-                        //foreach (var newTrackSetting in newTrackSettings.TrackSettings)
+                        foreach (var newTrackSetting in newTrackSettings.TrackSettings)
                         {
-                            //if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
+                            if (newTrackSetting.trackTypeIndex == thisTrack.TrackTypeIndex)
                             {
-                                //thisTrack.CreateTrack(newTrackSettings.TrackSettings[trackIndex], _sampleRate);
-                                thisTrack.UpdateSettings(newTrackSettings.TrackSettings[trackIndex]);
+                                thisTrack.CreateTrack(newTrackSetting, _sampleRate);
+                                thisTrack.UpdateSettings(newTrackSetting);
                             }
+                            break;
                         }
 
                         _tracks[trackIndex] = thisTrack;
@@ -579,6 +604,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                     newTrackSettings.TrackSettings.Dispose();
                 }
+
 
                 if (element.TryGetData(out SwapMidiData newMidiData))
                 {
@@ -848,10 +874,17 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     return ProcessorInstance.Response.Handled;
                 }
 
+                if (message.Is<TriggerTrackSettingsUpdate>())
+                {
+                    var payload = message.Get<TriggerTrackSettingsUpdate>();
+                    pipe.SendData(context, new TrackSettingsUpdate { TrackSettings = payload.TrackSettings });
+                    return ProcessorInstance.Response.Handled;
+                }
+
                 if (message.Is<TriggerTrackSettingsReload>())
                 {
                     var payload = message.Get<TriggerTrackSettingsReload>();
-                    pipe.SendData(context, new NewTracksSettingsData { TrackSettings = payload.TrackSettings });
+                    pipe.SendData(context, new NewTracksSettingsData() { TrackSettings = payload.TrackSettings });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -916,10 +949,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public float Intensity;
     }
 
+    private struct TrackSettingsUpdate
+    {
+        public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
+    }
+
     private struct NewTracksSettingsData
     {
         public NativeArray<AnysongTrackSettings.Unmanaged> TrackSettings;
     }
+
 
     private struct SwapMidiData
     {

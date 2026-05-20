@@ -233,11 +233,11 @@ namespace Anysong
                     AudioProcessorInspector.Draw(audioProcessorSettings,
                         () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
                 filterElement.Add(filterVisualElement);
-                AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
-                filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
-                {
-                    AnywhenSnapshotEditor.OnBlendApplied -= filterVisualElement.Refresh;
-                });
+                //AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
+                //filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
+                //{
+                //    AnywhenSnapshotEditor.OnBlendApplied -= filterVisualElement.Refresh;
+                //});
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
