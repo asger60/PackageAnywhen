@@ -73,10 +73,7 @@ namespace Anywhen.Composing
             OnSongMidiChanged?.Invoke(sectionIndex, trackIndex, patternIndex);
         }
 
-        public void RefreshSettings()
-        {
-            OnSongSettingsChanged?.Invoke();
-        }
+
 
         public void RefreshEffects()
         {

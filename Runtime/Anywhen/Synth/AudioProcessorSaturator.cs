@@ -1,10 +1,9 @@
-using Anywhen.Synth.Filter;
-using PlasticPipe.Server;
+
 using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorSaturator : IAudioProcessor, System.IDisposable
+    public struct AudioProcessorSaturator : IAudioProcessor
     {
         private float _drive;
         private float _wet;
@@ -56,9 +55,9 @@ namespace Anywhen.Synth
         {
         }
 
+
         public void Dispose()
         {
-            _settings.Dispose();
         }
     }
 }

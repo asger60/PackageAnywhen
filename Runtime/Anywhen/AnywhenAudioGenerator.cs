@@ -84,7 +84,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    private void HandleSongSettingsChanged()
+    public void HandleSongSettingsChanged()
     {
         NotifyTrackSettingsChanged();
     }
@@ -211,8 +211,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             }
         }
 
-        Debug.Log("Override track settings: " + trackIndex);
-
+       
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(sourceTrackSettings.ToUnmanaged(), trackIndex));
@@ -601,8 +600,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                 if (element.TryGetData(out CreateNewTracksSettingsData newTrackSettings))
                 {
-                    Debug.Log("Creating new tracks " + newTrackSettings.TrackIndex);
-
                     var thisTrack = _tracks[newTrackSettings.TrackIndex];
 
                     thisTrack.CreateTrack(newTrackSettings.TrackSettings, _sampleRate);

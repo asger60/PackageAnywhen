@@ -57,10 +57,11 @@ namespace Anywhen.Synth
 
         public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
+            _settings.Dispose();
             _settings = settings.lowPassSettings;
-            _resonance = _settings.resonance;
-            _cutoff = _settings.cutoffFrequency;
-            _oversampling = _settings.oversampling;
+            _resonance = _settings.Resonance;
+            _cutoff = _settings.CutoffFrequency;
+            _oversampling = _settings.Oversampling;
             _frequencyMod = 1f; // reset mod when settings change
 
             RecalculateS();
@@ -70,9 +71,9 @@ namespace Anywhen.Synth
         {
             if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
+            if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
             {
-                float mod = anysongTrack.GetModSignal(_settings.cutoffMod); // (-1, 1)
+                float mod = anysongTrack.GetModSignal(_settings.CutoffMod); // (-1, 1)
                 _frequencyMod = (float)System.Math.Pow(2.0, mod);
                 RecalculateS();
             }
@@ -136,6 +137,8 @@ namespace Anywhen.Synth
             _s = Clamp(_s, 0f, 1.0f);
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

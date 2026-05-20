@@ -142,8 +142,8 @@ namespace Anysong
 
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
 
-            var audioSourcesField = CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+            var audioSourcesField =
+                CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), AnysongEditorWindow.UpdateSettings);
             audioSourcesField.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 var foldout = audioSourcesField.Q<Foldout>();
@@ -160,47 +160,44 @@ namespace Anysong
             _parent.Add(SectionHeader("Instrument settings"));
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"), AnysongEditorWindow.UpdateSettings));
 
             _parent.Add(Spacer(20));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"), AnysongEditorWindow.UpdateSettings));
 
             var (el_volume, ref_volume) = CreateModRoutingUIBound("Volume Modulation",
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods,
                 v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods = v,
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
+                AnysongEditorWindow.UpdateSettings,
                 () =>
                 {
                     AnysongEditorWindow.CurrentSong.RefreshTrack();
-                    AnysongEditorWindow.CurrentSong.RefreshSettings();
+                    AnysongEditorWindow.UpdateSettings();
                 });
             _parent.Add(el_volume);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"), AnysongEditorWindow.UpdateSettings));
 
             var (el_pitch, ref_pitch) = CreateModRoutingUIBound("Pitch Modulation",
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.pitchMods,
                 v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.pitchMods = v,
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); },
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+                AnysongEditorWindow.UpdateSettings,
+                AnysongEditorWindow.UpdateSettings);
             _parent.Add(el_pitch);
 
 
             _parent.Add(SectionHeader("Modulation"));
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope1"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+                AnysongEditorWindow.UpdateSettings));
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioEnvelope2"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+                AnysongEditorWindow.UpdateSettings));
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO1"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+                AnysongEditorWindow.UpdateSettings));
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackAudioLFO2"),
-                () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); }));
+                AnysongEditorWindow.UpdateSettings));
 
 
             _parent.Add(SectionHeader("Effects"));
@@ -229,15 +226,13 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
-                var filterVisualElement =
-                    AudioProcessorInspector.Draw(audioProcessorSettings,
-                        () => { AnysongEditorWindow.CurrentSong.RefreshSettings(); });
+                var filterVisualElement = AudioProcessorInspector.Draw(audioProcessorSettings, AnysongEditorWindow.UpdateSettings);
                 filterElement.Add(filterVisualElement);
-                //AnywhenSnapshotEditor.OnBlendApplied += filterVisualElement.Refresh;
-                //filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
-                //{
-                //    AnywhenSnapshotEditor.OnBlendApplied -= filterVisualElement.Refresh;
-                //});
+                AnysongEditorWindow.OnSongSettingsChanged += filterVisualElement.Refresh;
+                filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
+                {
+                    AnysongEditorWindow.OnSongSettingsChanged -= filterVisualElement.Refresh;
+                });
                 filterElement.Add(deleteFilter);
                 _parent.Add(filterElement);
             }
@@ -507,7 +502,7 @@ namespace Anysong
             AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                 AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
 
-            AnysongEditorWindow.CurrentSong.RefreshSettings();
+            AnysongEditorWindow.UpdateSettings();
         }
 
 

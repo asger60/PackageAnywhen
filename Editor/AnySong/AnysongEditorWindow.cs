@@ -814,5 +814,12 @@ namespace Anysong
             });
             AnysongPatternView.Refresh();
         }
+
+        public static event Action OnSongSettingsChanged; 
+        public static void UpdateSettings()
+        {
+            _currentPlayer.HandleSongSettingsChanged();
+            OnSongSettingsChanged?.Invoke();
+        }
     }
 }
