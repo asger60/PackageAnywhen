@@ -150,7 +150,10 @@ namespace Anywhen.Synth
 
         public void SetSettings(AudioProcessorSettings.EnvelopeSettings settings)
         {
-            if (_settings.Equals(settings)) return;
+            if (_settings.Equals(settings))
+            {
+                return;
+            }
             _settings = settings;
         }
 

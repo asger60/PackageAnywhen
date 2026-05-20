@@ -319,7 +319,7 @@ namespace Anywhen.Synth
         public ChorusSettings chorusSettings;
 
         [Serializable]
-        public struct EnvelopeSettings
+        public struct EnvelopeSettings : IEquatable<EnvelopeSettings>
         {
             public bool enabled;
             [Range(0, 2f)] public float attack;
@@ -352,10 +352,29 @@ namespace Anywhen.Synth
 
             public bool Equals(EnvelopeSettings other)
             {
-                return Mathf.Approximately(attack, other.attack) &&
+                return enabled == other.enabled &&
+                    Mathf.Approximately(attack, other.attack) &&
                     Mathf.Approximately(decay, other.decay) &&
                     Mathf.Approximately(sustain, other.sustain) &&
                     Mathf.Approximately(release, other.release);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is EnvelopeSettings other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = enabled.GetHashCode();
+                    hashCode = (hashCode * 397) ^ attack.GetHashCode();
+                    hashCode = (hashCode * 397) ^ decay.GetHashCode();
+                    hashCode = (hashCode * 397) ^ sustain.GetHashCode();
+                    hashCode = (hashCode * 397) ^ release.GetHashCode();
+                    return hashCode;
+                }
             }
         }
 
@@ -363,7 +382,7 @@ namespace Anywhen.Synth
 
 
         [Serializable]
-        public struct LFOSettings
+        public struct LFOSettings : IEquatable<LFOSettings>
         {
             public bool enabled;
             [Range(0.01f, 10)] public float frequency;
@@ -386,9 +405,28 @@ namespace Anywhen.Synth
                 frequency = 1;
                 unipolar = false;
             }
+
             public bool Equals(LFOSettings other)
             {
-                return Mathf.Approximately(frequency, other.frequency) && unipolar == other.unipolar;
+                return enabled == other.enabled &&
+                       Mathf.Approximately(frequency, other.frequency) &&
+                       unipolar == other.unipolar;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is LFOSettings other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = enabled.GetHashCode();
+                    hashCode = (hashCode * 397) ^ frequency.GetHashCode();
+                    hashCode = (hashCode * 397) ^ unipolar.GetHashCode();
+                    return hashCode;
+                }
             }
         }
 

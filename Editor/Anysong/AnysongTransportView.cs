@@ -53,9 +53,7 @@ public static class AnysongTransportView
         
         _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
         {
-            float newValue = evt.newValue;
-            AnywhenSnapshotEditor.ApplyBlend(AnysongEditorWindow.CurrentSong.snapshotA, AnysongEditorWindow.CurrentSong.snapshotB,
-                _song, newValue);
+            AnysongEditorWindow.SetTestSnapshot(evt.newValue);
         });
 
 

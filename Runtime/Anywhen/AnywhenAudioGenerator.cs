@@ -24,7 +24,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnEnable()
     {
         OnAudioGeneratedStatic += HandleAudioGeneratedStatic;
-        
     }
 
     private void OnDisable()
@@ -163,8 +162,23 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         if (!Mathf.Approximately(newSnapshotValue, _currentSnapshotValue))
         {
             AnywhenSnapshotBlender.ApplyBlend(song, newSnapshotValue);
-            song.RefreshSettings();
+            //song.RefreshSettings();
             _currentSnapshotValue = newSnapshotValue;
+
+            if (ControlContext.builtIn.Exists(_generatorInstance))
+            {
+                var trackSettings = new NativeArray<AnysongTrackSettings.Unmanaged>(song.Tracks.Count, Allocator.Persistent);
+                for (int i = 0; i < song.Tracks.Count; i++)
+                {
+                    trackSettings[i] = song.Tracks[i].ToUnmanaged();
+                }
+
+                ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(trackSettings));
+            }
+            else
+            {
+                Debug.Log("No generator instance");
+            }
         }
     }
 

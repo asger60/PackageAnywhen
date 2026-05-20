@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.Synth;
-using Anywhen.Synth.Filter;
 using UnityEngine;
 
 namespace Anywhen
@@ -10,17 +9,23 @@ namespace Anywhen
     {
         public static void ApplyBlend(AnysongObject song, float mixValue)
         {
-            if (!song || song.snapshotA == null || song.snapshotB == null) return;
+            if (!song) return;
+            ApplyBlend(song, song.snapshotA, song.snapshotB, mixValue);
+        }
 
-            var snapshotA = song.snapshotA.Snapshot;
-            var snapshotB = song.snapshotB.Snapshot;
+        public static void ApplyBlend(AnysongObject song, AnywhenSnapshot snapshotA, AnywhenSnapshot snapshotB, float mixValue)
+        {
+            if (!song || snapshotA == null || snapshotB == null) return;
 
-            if (snapshotA == null || snapshotB == null || snapshotA.Count == 0 || snapshotB.Count == 0) return;
+            var snapshotAData = snapshotA.Snapshot;
+            var snapshotBData = snapshotB.Snapshot;
 
-            var bLookup = new Dictionary<string, AnywhenSnapshot.PropertyValue>(snapshotB.Count);
-            foreach (var pv in snapshotB) bLookup[pv.path] = pv;
+            if (snapshotAData == null || snapshotBData == null || snapshotAData.Count == 0 || snapshotBData.Count == 0) return;
 
-            foreach (var a in snapshotA)
+            var bLookup = new Dictionary<string, AnywhenSnapshot.PropertyValue>(snapshotBData.Count);
+            foreach (var pv in snapshotBData) bLookup[pv.path] = pv;
+
+            foreach (var a in snapshotAData)
             {
                 if (!bLookup.TryGetValue(a.path, out var b)) continue;
 
@@ -69,16 +74,27 @@ namespace Anywhen
                         string filterPropertyPath = propertyPath.Substring(fCloseBracketIdx + 2); // skip "]."
 
                         ApplyLerpToFilter(filterSettings, filterPropertyPath, a, b, mixValue);
+                    }
+                    else if (propertyPath.StartsWith("audioSources["))
+                    {
+                        var sOpenBracketIdx = propertyPath.IndexOf('[');
+                        var sCloseBracketIdx = propertyPath.IndexOf(']');
+                        if (sOpenBracketIdx == -1 || sCloseBracketIdx == -1) continue;
 
-                        // Update the runtime filter if it exists
-                       
+                        string sIndexStr = propertyPath.Substring(sOpenBracketIdx + 1, sCloseBracketIdx - sOpenBracketIdx - 1);
+                        if (!int.TryParse(sIndexStr, out int sourceIndex)) continue;
+
+                        var sources = track.AudioSources;
+                        if (sourceIndex < 0 || sourceIndex >= sources.Count) continue;
+
+                        var sourceSettings = sources[sourceIndex];
+                        string sourcePropertyPath = propertyPath.Substring(sCloseBracketIdx + 2); // skip "]."
+
+                        ApplyLerpToAudioSource(sourceSettings, sourcePropertyPath, a, b, mixValue);
                     }
                     else
                     {
                         ApplyLerpToTrack(track, propertyPath, a, b, mixValue);
-
-                        // Update the runtime envelope/LFO if it exists
-                    
                     }
                 }
             }
@@ -91,25 +107,46 @@ namespace Anywhen
             {
                 trackSettings.TrackPitch = Mathf.Lerp(a.floatVal, b.floatVal, t);
             }
-            else if (path.StartsWith("trackEnvelope."))
+            else if (path.StartsWith("trackAudioEnvelope1."))
             {
-                string subPath = path.Substring("trackEnvelope.".Length);
-                if (subPath == "attack") trackSettings.trackAudioEnvelope1.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "decay") trackSettings.trackAudioEnvelope1.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "sustain") trackSettings.trackAudioEnvelope1.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
-                else if (subPath == "release") trackSettings.trackAudioEnvelope1.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                ApplyLerpToEnvelope(ref trackSettings.trackAudioEnvelope1, path.Substring("trackAudioEnvelope1.".Length), a, b, t);
             }
-            else if (path.StartsWith("trackLFO."))
+            else if (path.StartsWith("trackAudioEnvelope2."))
             {
-                string subPath = path.Substring("trackLFO.".Length);
-                if (subPath == "frequency") trackSettings.trackAudioLFO1.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                ApplyLerpToEnvelope(ref trackSettings.trackAudioEnvelope2, path.Substring("trackAudioEnvelope2.".Length), a, b, t);
             }
+            else if (path.StartsWith("trackAudioLFO1."))
+            {
+                ApplyLerpToLFO(ref trackSettings.trackAudioLFO1, path.Substring("trackAudioLFO1.".Length), a, b, t);
+            }
+            else if (path.StartsWith("trackAudioLFO2."))
+            {
+                ApplyLerpToLFO(ref trackSettings.trackAudioLFO2, path.Substring("trackAudioLFO2.".Length), a, b, t);
+            }
+            else if (path == "voices") trackSettings.voices = Mathf.RoundToInt(Mathf.Lerp(a.intVal, b.intVal, t));
+            else if (path == "trackTypeIndex") trackSettings.trackTypeIndex = t >= 0.5f ? b.intVal : a.intVal;
             else if (path == "intensityMappingCurve")
             {
                 // AnimationCurves cannot be easily lerped at runtime without custom logic.
                 // For now, we just switch at 0.5.
                 //trackSettings.intensityMappingCurve = t >= 0.5f ? b.curveVal : a.curveVal;
             }
+        }
+
+        private static void ApplyLerpToEnvelope(ref AudioProcessorSettings.EnvelopeSettings settings, string subPath, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        {
+            if (subPath == "attack") settings.attack = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            else if (subPath == "decay") settings.decay = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            else if (subPath == "sustain") settings.sustain = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            else if (subPath == "release") settings.release = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            else if (subPath == "enabled") settings.enabled = t >= 0.5f ? b.boolVal : a.boolVal;
+        }
+
+        private static void ApplyLerpToLFO(ref AudioProcessorSettings.LFOSettings settings, string subPath, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        {
+            if (subPath == "frequency") settings.frequency = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            else if (subPath == "enabled") settings.enabled = t >= 0.5f ? b.boolVal : a.boolVal;
+            else if (subPath == "unipolar") settings.unipolar = t >= 0.5f ? b.boolVal : a.boolVal;
         }
 
         private static void ApplyLerpToFilter(AudioProcessorSettings filter, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
@@ -153,6 +190,59 @@ namespace Anywhen
                 if (subPath == "delayTime") filter.delaySettings.delayTime = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 else if (subPath == "feedback") filter.delaySettings.feedback = Mathf.Lerp(a.floatVal, b.floatVal, t);
                 else if (subPath == "wet") filter.delaySettings.wet = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            }
+            else if (path.StartsWith("reverbSettings."))
+            {
+                string subPath = path.Substring("reverbSettings.".Length);
+                if (subPath == "roomSize") filter.reverbSettings.roomSize = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "damping") filter.reverbSettings.damping = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "wet") filter.reverbSettings.wet = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            }
+            else if (path.StartsWith("chorusSettings."))
+            {
+                string subPath = path.Substring("chorusSettings.".Length);
+                if (subPath == "rate") filter.chorusSettings.rate = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "depth") filter.chorusSettings.depth = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "delay") filter.chorusSettings.delay = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "feedback") filter.chorusSettings.feedback = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "wet") filter.chorusSettings.wet = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            }
+            else if (path.StartsWith("formantSettings."))
+            {
+                string subPath = path.Substring("formantSettings.".Length);
+                if (subPath == "vowel") filter.formantSettings.vowel = t >= 0.5f ? b.intVal : a.intVal;
+            }
+            else if (path.StartsWith("envelopeSettings."))
+            {
+                ApplyLerpToEnvelope(ref filter.envelopeSettings, path.Substring("envelopeSettings.".Length), a, b, t);
+            }
+            else if (path.StartsWith("lfoSettings."))
+            {
+                ApplyLerpToLFO(ref filter.lfoSettings, path.Substring("lfoSettings.".Length), a, b, t);
+            }
+        }
+
+        private static void ApplyLerpToAudioSource(AudioSourceSettings source, string path, AnywhenSnapshot.PropertyValue a, AnywhenSnapshot.PropertyValue b, float t)
+        {
+            if (path == "audioSourceType") source.audioSourceType = t >= 0.5f ? (AudioSourceSettings.AudioSourceTypes)b.intVal : (AudioSourceSettings.AudioSourceTypes)a.intVal;
+            else if (path.StartsWith("sampleSourceSettings."))
+            {
+                string subPath = path.Substring("sampleSourceSettings.".Length);
+                if (subPath == "sourceVolume") source.sampleSourceSettings.sourceVolume = Mathf.Lerp(a.floatVal, b.floatVal, t);
+            }
+            else if (path.StartsWith("synthSourceSettings."))
+            {
+                string subPath = path.Substring("synthSourceSettings.".Length);
+                if (subPath == "sourceVolume") source.synthSourceSettings.sourceVolume = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "noteOffset") source.synthSourceSettings.noteOffset = t >= 0.5f ? b.intVal : a.intVal;
+                else if (subPath == "detune") source.synthSourceSettings.detune = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "synthType") source.synthSourceSettings.synthType = t >= 0.5f ? (AudioSourceSettings.SynthSourceSettings.SynthType)b.intVal : (AudioSourceSettings.SynthSourceSettings.SynthType)a.intVal;
+            }
+            else if (path.StartsWith("noiseSourceSettings."))
+            {
+                string subPath = path.Substring("noiseSourceSettings.".Length);
+                if (subPath == "sourceVolume") source.noiseSourceSettings.sourceVolume = Mathf.Lerp(a.floatVal, b.floatVal, t);
+                else if (subPath == "noiseType") source.noiseSourceSettings.noiseType = t >= 0.5f ? (AudioSourceSettings.NoiseSourceSettings.NoiseType)b.intVal : (AudioSourceSettings.NoiseSourceSettings.NoiseType)a.intVal;
             }
         }
     }

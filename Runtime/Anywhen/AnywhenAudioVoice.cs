@@ -40,17 +40,19 @@ public struct AnywhenAudioVoice
     {
         if (!_audioSourceSettings.Equals(audioSourceSettings))
             _audioSourceSettings = audioSourceSettings;
+        
         if (!_envelopeSettings.Equals(envelopeSettings))
             _envelopeSettings = envelopeSettings;
+        
         if (!_pitchMod.Equals(pitchMod))
             _pitchMod = pitchMod;
+        
         if (!Mathf.Approximately(_trackPitch, trackPitch))
             _trackPitch = trackPitch;
         
         for (int i = 0; i < _audioSources.Length; i++)
-        {
             _audioSources[i].UpdateSettings(audioSourceSettings[i]);
-        }
+        
     }
 
     public void RecreateVoice(NativeArray<AudioSourceSettings.Unmanaged> audioSourceSettings)

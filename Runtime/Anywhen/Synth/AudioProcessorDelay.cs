@@ -42,7 +42,7 @@ namespace Anywhen.Synth
 
             if (_sampleRate == 0)
             {
-                _sampleRate = AudioSettings.outputSampleRate;
+                //_sampleRate = AudioSettings.outputSampleRate;
                 if (_sampleRate == 0) _sampleRate = 44100;
             }
 

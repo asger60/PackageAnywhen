@@ -30,8 +30,8 @@ namespace Anywhen.Composing
 
         private void OnValidate()
         {
-            RefreshSettings();
-            RefreshSections();
+            //RefreshSettings();
+            //RefreshSections();
         }
 
         

@@ -256,6 +256,11 @@ namespace Anysong
         {
             _currentPlayer.SetIntensity(value);
         }
+        
+        public static void SetTestSnapshot(float value)
+        {
+            _currentPlayer.SetSnapshot(value);
+        }
 
         public static void SetBPM(int bpm)
         {
