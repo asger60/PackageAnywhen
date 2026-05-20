@@ -582,11 +582,18 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                 if (element.TryGetData(out TrackSettingsUpdate settingsUpdate))
                 {
-                    for (int trackIndex = 0; trackIndex < _tracks.Length; trackIndex++)
+                    for (int trackIndex = 0; trackIndex < settingsUpdate.TrackSettings.Length; trackIndex++)
                     {
-                        var thisTrack = _tracks[trackIndex];
-                        thisTrack.UpdateSettings(settingsUpdate.TrackSettings[trackIndex]);
-                        _tracks[trackIndex] = thisTrack;
+                        if (trackIndex < _tracks.Length)
+                        {
+                            var thisTrack = _tracks[trackIndex];
+                            thisTrack.UpdateSettings(settingsUpdate.TrackSettings[trackIndex]);
+                            _tracks[trackIndex] = thisTrack;
+                        }
+                        else
+                        {
+                            settingsUpdate.TrackSettings[trackIndex].Dispose();
+                        }
                     }
 
                     settingsUpdate.TrackSettings.Dispose();
@@ -602,9 +609,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     thisTrack.UpdateSettings(newTrackSettings.TrackSettings);
 
                     _tracks[newTrackSettings.TrackIndex] = thisTrack;
-
-
-                    newTrackSettings.TrackSettings.Dispose();
                 }
 
 

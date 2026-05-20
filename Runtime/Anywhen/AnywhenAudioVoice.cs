@@ -132,4 +132,9 @@ public struct AnywhenAudioVoice
 
         _velocity = playbackEvent.Note.velocity;
     }
+
+    public void Dispose()
+    {
+        if (_audioSources.IsCreated) _audioSources.Dispose();
+    }
 }

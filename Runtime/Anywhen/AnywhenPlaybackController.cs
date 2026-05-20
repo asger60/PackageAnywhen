@@ -59,7 +59,6 @@ namespace Anywhen
 
         private void OnSoundPressed(int index)
         {
-            Debug.Log($"Button 1 pressed: {index}");
             _currentPlayer.OverrideTrackSettings(sounds[index], overrideTrackTypeIndex);
         }
 

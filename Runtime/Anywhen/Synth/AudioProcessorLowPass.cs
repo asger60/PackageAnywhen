@@ -136,6 +136,6 @@ namespace Anywhen.Synth
             _s = Clamp(_s, 0f, 1.0f);
         }
 
-        public void Dispose() => _settings.Dispose();
+        public void Dispose() { }
     }
 }

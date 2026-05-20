@@ -69,13 +69,23 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
     {
-        if (_voices.IsCreated) _voices.Dispose();
+        if (_voices.IsCreated)
+        {
+            for (int i = 0; i < _voices.Length; i++)
+            {
+                _voices[i].Dispose();
+            }
+
+            _voices.Dispose();
+        }
+
         if (_trackFilters.IsCreated)
         {
             foreach (var trackFilter in _trackFilters)
             {
                 trackFilter.Dispose();
             }
+
             _trackFilters.Dispose();
         }
 
@@ -116,8 +126,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             {
                 _trackFilters[i].Dispose();
             }
+
             _trackFilters.Dispose();
         }
+
         _trackFilters = new NativeArray<TrackAudioProcessor>(settings.trackFilters.Length, Allocator.Persistent);
 
         for (int i = 0; i < settings.trackFilters.Length; i++)
@@ -129,7 +141,12 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
     {
-        if (_settings.Equals(settings)) return;
+        if (_settings.Equals(settings))
+        {
+            return;
+        }
+
+        _settings.Dispose();
         _settings = settings;
         _trackVolume = settings.Volume;
 
@@ -317,6 +334,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public float GetModSignal(NativeArray<SynthFilterBase.ModRouting> modRoutingSettings)
     {
+        
+        if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return 0;
         float s = 0;
         foreach (var mod in modRoutingSettings)
         {
@@ -340,7 +359,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         _settings.Dispose();
 
         if (_voices.IsCreated)
+        {
+            for (int i = 0; i < _voices.Length; i++)
+            {
+                _voices[i].Dispose();
+            }
+
             _voices.Dispose();
+        }
 
         if (_trackFilters.IsCreated)
         {
@@ -348,6 +374,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             {
                 _trackFilters[i].Dispose();
             }
+
             _trackFilters.Dispose();
         }
     }

@@ -194,7 +194,7 @@ namespace Anywhen.Composing
                 trackFilters = filters,
                 AmplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
                 PitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
-                audioSources = new NativeArray<AudioSourceSettings.Unmanaged>(sources, Allocator.Persistent),
+                audioSources = sources,
             };
         }
 
