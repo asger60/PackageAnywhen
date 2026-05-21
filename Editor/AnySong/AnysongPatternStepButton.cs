@@ -97,8 +97,7 @@ namespace Anysong
                     AnysongEditorWindow.SelectPatternStep(_patternStep, _stepIndex, _noteIndex);
                 }
 
-                AnysongEditorWindow.CurrentSong.RefreshMidi(
-                    AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                AnysongEditorWindow.UpdateMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                     AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
                     AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
             }

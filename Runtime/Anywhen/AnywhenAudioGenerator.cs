@@ -56,11 +56,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song.OnSongTracksChanged -= HandleSongTracksChanged;
     }
 
-    private void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
+    public void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
     {
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Temp);
+            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
             for (int i = 0; i < song.Sections.Count; i++)
             {
                 sectionData[i] = song.Sections[i].ToUnmanaged();
@@ -211,7 +211,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             }
         }
 
-       
+
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(sourceTrackSettings.ToUnmanaged(), trackIndex));
@@ -613,12 +613,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (_anysongSections.Length != newMidiData.SectionData.Length)
                     {
-                        if (_anysongSections.IsCreated)
-                            _anysongSections.Dispose();
-                        _anysongSections =
-                            new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
+                        if (_anysongSections.IsCreated) _anysongSections.Dispose();
+                        
+                        _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
                         for (int i = 0; i < newMidiData.SectionData.Length; i++)
+                        {
                             _anysongSections[i] = newMidiData.SectionData[i];
+                        }
+
                         _currentSectionIndex %= _anysongSections.Length;
                     }
 
@@ -642,6 +644,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                         _anysongSections[sectionIndex] = section;
                     }
+                    
+                    newMidiData.SectionData.Dispose();
                 }
 
                 if (element.TryGetData(out TrackStateData newTrackStateData))

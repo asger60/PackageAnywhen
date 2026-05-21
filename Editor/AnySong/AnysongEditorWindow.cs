@@ -194,8 +194,6 @@ namespace Anysong
 
 
             window.Show(true);
-
-
         }
 
         private static bool _isPLaying;
@@ -256,7 +254,7 @@ namespace Anysong
         {
             _currentPlayer.SetIntensity(value);
         }
-        
+
         public static void SetTestSnapshot(float value)
         {
             _currentPlayer.SetSnapshot(value);
@@ -336,7 +334,7 @@ namespace Anysong
                 {
                     return;
                 }
-                
+
                 ToggleIsPlaying();
                 AnysongTransportView.RefreshPlaybuttonState(_isPLaying);
                 evt.StopPropagation();
@@ -815,11 +813,17 @@ namespace Anysong
             AnysongPatternView.Refresh();
         }
 
-        public static event Action OnSongSettingsChanged; 
+        public static event Action OnSongSettingsChanged;
+
         public static void UpdateSettings()
         {
             _currentPlayer.HandleSongSettingsChanged();
             OnSongSettingsChanged?.Invoke();
+        }
+
+        public static void UpdateMidi(int sectionIndex, int trackIndex, int patternIndex)
+        {
+            _currentPlayer.HandleSongMidiChanged(sectionIndex, trackIndex, patternIndex);
         }
     }
 }

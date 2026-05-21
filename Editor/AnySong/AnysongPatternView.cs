@@ -101,8 +101,7 @@ namespace Anysong
                 SetPolyfonic(true);
 
             _isMonoVoice = AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.voices == 1;
-
-
+            
             AddCallbacks();
         }
 
@@ -212,7 +211,7 @@ namespace Anysong
 
                     MoveStep(_movePatternStep, _currentStepIndex);
 
-                    _movePatternStep = default;
+                    _movePatternStep = null;
                 }
             }
         }
