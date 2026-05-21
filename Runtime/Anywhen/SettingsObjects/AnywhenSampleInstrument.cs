@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Burst;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
@@ -104,7 +105,7 @@ namespace Anywhen.SettingsObjects
                 var clips = InstrumentDatabase.GetNoteClips(this);
                 if (!clips.IsCreated)
                 {
-                    Debug.LogWarning("no clip found for instrument");
+                    LogWarningNoClip();
                     return new AnywhenNoteClipPlaybackSettings();
                 }
 
@@ -199,6 +200,12 @@ namespace Anywhen.SettingsObjects
 
                 seed = state;
                 return settings;
+            }
+
+            [BurstDiscard]
+            private void LogWarningNoClip()
+            {
+                Debug.LogWarning("no clip found for instrument");
             }
         }
 
@@ -421,10 +428,11 @@ namespace Anywhen.SettingsObjects
             EditorUtility.SetDirty(this);
         }
 
-#endif
+
         public bool IsNull()
         {
             return clipDatas == null || clipDatas.Length == 0;
         }
+#endif
     }
 }

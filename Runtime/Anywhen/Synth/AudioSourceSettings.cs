@@ -49,7 +49,7 @@ namespace Anywhen.Synth
             {
                 if(sampleInstrument == null)
                     return true;
-                return sampleInstrument.IsNull();
+                return false;
             }
         }
 

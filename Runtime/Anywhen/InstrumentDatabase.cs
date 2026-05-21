@@ -4,6 +4,7 @@ using System.Linq;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
+using Unity.Burst;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
@@ -90,9 +91,16 @@ namespace Anywhen
 
         public static NativeArray<LoadedInstrument.Unmanaged> GetLoadedInstrumentsUnmanaged()
         {
+            CheckUpdateLoadedInstrumentsUnmanaged();
+            return _loadedInstruments;
+        }
+
+        [BurstDiscard]
+        private static void CheckUpdateLoadedInstrumentsUnmanaged()
+        {
             if (_loadedInstruments.IsCreated && _loadedInstruments.Length == AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count)
             {
-                return _loadedInstruments;
+                return;
             }
 
             if (_loadedInstruments.IsCreated)
@@ -110,8 +118,6 @@ namespace Anywhen
             {
                 _loadedInstruments[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
             }
-
-            return _loadedInstruments;
         }
 
         private void OnDestroy()
@@ -182,6 +188,8 @@ namespace Anywhen
         public static NativeArray<AnywhenNoteClip.Unmanaged> GetNoteClips(AnywhenSampleInstrument.Unmanaged instrument)
         {
             var loadedInstruments = GetLoadedInstrumentsUnmanaged();
+            if (!loadedInstruments.IsCreated) return default;
+            
             for (var i = 0; i < loadedInstruments.Length; i++)
             {
                 var loaded = loadedInstruments[i];
@@ -194,8 +202,14 @@ namespace Anywhen
             }
 
 
-            Debug.LogError("No instruments loaded in InstrumentDatabase!");
+            LogErrorNoInstruments();
             return default;
+        }
+
+        [BurstDiscard]
+        private static void LogErrorNoInstruments()
+        {
+            Debug.LogError("No instruments loaded in InstrumentDatabase!");
         }
 
         public static void LoadAllInstruments(AnysongObject currentSong)
@@ -209,7 +223,9 @@ namespace Anywhen
                         var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
                         if (sampleInstrument && !IsLoaded(sampleInstrument))
                         {
+                            #if UNITY_EDITOR
                             LoadInstrumentNotes(sampleInstrument);
+                            #endif
                         }
                     }
                 }

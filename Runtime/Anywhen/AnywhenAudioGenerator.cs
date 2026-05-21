@@ -299,7 +299,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
                             if (sampleInstrument && !InstrumentDatabase.IsLoaded(sampleInstrument))
                             {
+                                #if UNITY_EDITOR
                                 InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
+                                #endif
                             }
                         }
                     }
@@ -479,6 +481,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             NativeArray<int> stepIndices,
             NativeArray<int> patternIndices, NativeArray<int> sectionIndices)
         {
+            InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are loaded on managed side
             var processor = new Processor(sampleRate, initialSong, stepIndices, patternIndices, sectionIndices);
             var handle = context.AllocateGenerator(processor, new Control());
             processor._selfHandle = handle;
@@ -538,6 +541,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
+            InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are updated on managed side
             foreach (var element in pipe.GetAvailableData(context))
             {
                 if (element.TryGetData(out PlaybackStateData data))
