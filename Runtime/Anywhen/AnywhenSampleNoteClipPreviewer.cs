@@ -9,7 +9,7 @@ namespace Anywhen
     {
         private AudioSource _audioSource;
         private AnywhenSampleInstrument _instrument;
-        private AnywhenNoteClip _currentClip;
+        private AnywhenNoteClip.Unmanaged _currentClip;
         private bool _isInitialized;
         private float _scheduledEndTime;
         private float _volume = 1f;
@@ -27,7 +27,7 @@ namespace Anywhen
         }
 
 
-        public void PlayNoteClip(AnywhenNoteClip noteClip)
+        public void PlayNoteClip(AnywhenNoteClip.Unmanaged noteClip)
         {
             Debug.Log("PlayNoteClip");
             Init();
@@ -35,7 +35,7 @@ namespace Anywhen
             NoteEvent n = new NoteEvent(0, 1);
             PlaySampleDirectly(_currentClip, n);
         }
-        
+
 
         public void StopClip()
         {
@@ -43,9 +43,9 @@ namespace Anywhen
         }
 
 
-        private void PlaySampleDirectly(AnywhenNoteClip noteClip, NoteEvent noteEvent)
+        private void PlaySampleDirectly(AnywhenNoteClip.Unmanaged noteClip, NoteEvent noteEvent)
         {
-            if (!noteClip || noteClip.clipSamples == null || noteClip.clipSamples.Length == 0)
+            if (noteClip.IsNull())
             {
                 Debug.LogError("Note clip has no samples!");
                 return;
@@ -70,8 +70,6 @@ namespace Anywhen
             // start from zero and apply envelope
             _audioSource.volume = 1;
             _audioSource.Play();
-
-
         }
 
         private void StopScheduled(float fadeOutTime)

@@ -105,7 +105,6 @@ namespace Anywhen.SettingsObjects
                 var clips = InstrumentDatabase.GetNoteClips(this);
                 if (!clips.IsCreated)
                 {
-                    LogWarningNoClip();
                     return new AnywhenNoteClipPlaybackSettings();
                 }
 
@@ -202,11 +201,7 @@ namespace Anywhen.SettingsObjects
                 return settings;
             }
 
-            [BurstDiscard]
-            private void LogWarningNoClip()
-            {
-                Debug.LogWarning("no clip found for instrument");
-            }
+          
         }
 
 
@@ -233,22 +228,17 @@ namespace Anywhen.SettingsObjects
 
         public struct AnywhenNoteClipPlaybackSettings
         {
-            public AnywhenNoteClip noteClip;
+            public readonly AnywhenNoteClip.Unmanaged NoteClip;
             public AnywhenNoteClip.Unmanaged NoteClipUnmanaged;
-            public float clipPitch;
+            public readonly float ClipPitch;
 
-            public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip noteClip, float clipPitch)
-            {
-                this.noteClip = noteClip;
-                this.NoteClipUnmanaged = noteClip.ToUnmanaged();
-                this.clipPitch = clipPitch;
-            }
+
 
             public AnywhenNoteClipPlaybackSettings(AnywhenNoteClip.Unmanaged noteClip, float clipPitch)
             {
-                this.noteClip = null;
+                this.NoteClip = noteClip;
                 this.NoteClipUnmanaged = noteClip;
-                this.clipPitch = clipPitch;
+                this.ClipPitch = clipPitch;
             }
         }
 
@@ -312,13 +302,13 @@ namespace Anywhen.SettingsObjects
                     }
 
                     if (resultClip == null) return new AnywhenNoteClipPlaybackSettings();
-                    return new AnywhenNoteClipPlaybackSettings(resultClip, p);
+                    return new AnywhenNoteClipPlaybackSettings(resultClip.ToUnmanaged(), p);
 
 
                 case ClipSelectType.RandomVariations:
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(clips[_random.Next(0, clips.Count)], 1);
+                        return new AnywhenNoteClipPlaybackSettings(clips[_random.Next(0, clips.Count)].ToUnmanaged(), 1);
                     }
 
 
@@ -336,7 +326,7 @@ namespace Anywhen.SettingsObjects
 
                     lock (_random)
                     {
-                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)], 1);
+                        return new AnywhenNoteClipPlaybackSettings(percussionClips[_random.Next(0, percussionClips.Count)].ToUnmanaged(), 1);
                     }
 
                 default:

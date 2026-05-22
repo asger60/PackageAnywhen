@@ -26,7 +26,7 @@ namespace Anywhen
 
         public AnysongPatternNote(int noteIndex)
         {
-            duration = AnywhenAudioMetronome.Sub16Length;
+            duration = (float)AnywhenAudioMetronome.Processor.Sub16Length;
             drift = 0;
             velocity = 1;
             mixWeight = 1;

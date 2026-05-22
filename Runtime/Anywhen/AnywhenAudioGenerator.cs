@@ -299,9 +299,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
                             if (sampleInstrument && !InstrumentDatabase.IsLoaded(sampleInstrument))
                             {
-                                #if UNITY_EDITOR
+#if UNITY_EDITOR
                                 InstrumentDatabase.LoadInstrumentNotes(sampleInstrument);
-                                #endif
+#endif
                             }
                         }
                     }
@@ -618,7 +618,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     if (_anysongSections.Length != newMidiData.SectionData.Length)
                     {
                         if (_anysongSections.IsCreated) _anysongSections.Dispose();
-                        
+
                         _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
                         for (int i = 0; i < newMidiData.SectionData.Length; i++)
                         {
@@ -648,7 +648,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                         _anysongSections[sectionIndex] = section;
                     }
-                    
+
                     newMidiData.SectionData.Dispose();
                 }
 
@@ -923,9 +923,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public PlaybackEvent(AnysongPatternNote note, double scheduledPlayTime)
         {
             Note = note;
-            ScheduledPlayTime = scheduledPlayTime + Note.drift * AnywhenAudioMetronome.Sub16Length;
-            ScheduledEndTime = scheduledPlayTime + Note.duration +
-                               Note.drift * AnywhenAudioMetronome.Sub16Length;
+            ScheduledPlayTime = scheduledPlayTime + Note.drift * AnywhenAudioMetronome.Processor.Sub16Length;
+            ScheduledEndTime = scheduledPlayTime + Note.duration + Note.drift * AnywhenAudioMetronome.Processor.Sub16Length;
         }
 
         public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime)

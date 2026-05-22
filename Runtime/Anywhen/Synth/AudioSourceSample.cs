@@ -33,7 +33,7 @@ namespace Anywhen.Synth
             var clipSettings = _settings.SampleInstrument.GetNoteClipSettings(noteIndex);
             _clipData = clipSettings.NoteClipUnmanaged;
             _sampleCount = _clipData.clipSamples.IsCreated ? _clipData.clipSamples.Length : 0;
-            _clipPitch = clipSettings.clipPitch;
+            _clipPitch = clipSettings.ClipPitch;
             _samplePosition = 0;
             _isPlaying = true;
             _volume = _settings.SourceVolume;

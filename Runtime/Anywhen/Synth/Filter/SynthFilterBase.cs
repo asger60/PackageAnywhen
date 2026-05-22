@@ -4,32 +4,30 @@ using UnityEngine;
 
 namespace Anywhen.Synth.Filter
 {
-    public abstract class SynthFilterBase
+    [Serializable]
+    public struct ModRouting
     {
-        [Serializable]
-        public struct ModRouting
+        public enum ModSources
         {
-            public enum ModSources
-            {
-                LFO1,
-                LFO2,
-                Envelope1,
-                Envelope2,
-            }
-
-            public ModSources modSource;
-            [Range(0, 10f)] public float modAmount;
-
-
-            public ModRouting(ModSources modSource, float modAmount)
-            {
-                this.modSource = modSource;
-                this.modAmount = modAmount;
-            }
-            
-
+            LFO1,
+            LFO2,
+            Envelope1,
+            Envelope2,
         }
 
+        public ModSources modSource;
+        [Range(0, 10f)] public float modAmount;
+
+
+        public ModRouting(ModSources modSource, float modAmount)
+        {
+            this.modSource = modSource;
+            this.modAmount = modAmount;
+        }
+    }
+
+    public abstract class SynthFilterBase
+    {
         public AudioProcessorSettings Settings { get; protected set; }
         protected List<ModRouting> ModRoutings = new();
 

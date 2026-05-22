@@ -52,6 +52,11 @@ namespace Anywhen.SettingsObjects
                     clipSamples.Dispose();
                 }
             }
+
+            public bool IsNull()
+            {
+                return !clipSamples.IsCreated;
+            }
         }
 
         private Unmanaged? _cachedUnmanaged;

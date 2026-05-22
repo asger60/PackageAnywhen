@@ -28,7 +28,7 @@
             _frequencyMod = 1;
             _cutoffMod = 1;
             _oversampling = 1;
-            _settings = new AudioProcessorSettings.LadderSettings().ToUnmanaged();
+            _settings = new AudioProcessorSettings.LadderSettings.Unmanaged();
             _sampleRate = sampleRate;
         }
 
@@ -45,9 +45,9 @@
 
         private void UpdateSettings()
         {
-            _resolution = _settings.resonance;
-            SetCutOff(_settings.cutoffFrequency);
-            SetOversampling(_settings.oversampling);
+            _resolution = _settings.Resonance;
+            SetCutOff(_settings.CutoffFrequency);
+            SetOversampling(_settings.Oversampling);
         }
 
 
@@ -58,9 +58,9 @@
         public float Process(float sample, AnysongTrack anysongTrack)
         {
             _frequencyMod = 1f;
-            if (_settings.cutoffMod is { IsCreated: true, Length: > 0 })
+            if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
             {
-                float mod = anysongTrack.GetModSignal(_settings.cutoffMod);
+                float mod = anysongTrack.GetModSignal(_settings.CutoffMod);
                 _frequencyMod = (float)System.Math.Pow(2.0, mod);
             }
 

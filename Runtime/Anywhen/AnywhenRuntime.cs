@@ -126,7 +126,7 @@ namespace Anywhen
             if (!Instance._noteClipPreviewer)
                 Instance._noteClipPreviewer = Instance.FindOrCreatePreviewer();
 
-            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip);
+            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip.ToUnmanaged());
         }
 
         public static void PreviewNoteClip(AnywhenSampleInstrument.AnywhenNoteClipPlaybackSettings anywhenNoteClip)
@@ -134,7 +134,7 @@ namespace Anywhen
             if (!Instance._noteClipPreviewer)
                 Instance._noteClipPreviewer = Instance.FindOrCreatePreviewer();
 
-            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip.noteClip);
+            Instance._noteClipPreviewer.PlayNoteClip(anywhenNoteClip.NoteClip);
         }
 
         public static void StopNoteClipPreview(AnywhenNoteClip anywhenNoteClip)

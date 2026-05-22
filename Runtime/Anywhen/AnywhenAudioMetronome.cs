@@ -22,11 +22,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
 
     public static readonly SharedStatic<int> SharedSub16Count = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome>();
-
-    public static readonly SharedStatic<int> SharedBarCount =
-        SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome, SharedBarCountKey>();
+    public static readonly SharedStatic<int> SharedBarCount = SharedStatic<int>.GetOrCreate<AnywhenAudioMetronome, SharedBarCountKey>();
+    public static readonly SharedStatic<double> SharedSub16Length = SharedStatic<double>.GetOrCreate<AnywhenAudioMetronome, SharedSub16LengthKey>();
 
     private struct SharedBarCountKey
+    {
+    }
+
+    private struct SharedSub16LengthKey
     {
     }
 
@@ -56,13 +59,10 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
 
     private GeneratorInstance _generatorInstance;
     [SerializeField] private int bpm = 120;
-    public static int CurrentBPM;
     public int Bpm => bpm;
 
     public static int CurrentBar;
-
-    public static float Sub16Length => (60f / CurrentBPM) * 0.25f;
-
+    
     public bool isFinite => false;
     public bool isRealtime => true;
     public DiscreteTime? length => null;
@@ -197,6 +197,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         private double _sampleRate;
         private double _invSampleRate;
         private double _sub16Length;
+        public static double Sub16Length => SharedSub16Length.Data;
         private double _nextTime16;
         private int _sub16Count;
         private bool _isPlaying;
@@ -220,6 +221,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             _setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, sampleRate);
 
             _sub16Length = (60.0 / _bpm) * 0.25;
+            AnywhenAudioMetronome.SharedSub16Length.Data = _sub16Length;
             _nextTime16 = -1;
             _sub16Count = 0;
             _isPlaying = true;
@@ -232,15 +234,13 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             {
                 if (element.TryGetData(out BPMState data))
                 {
-                    Debug.Log("BPM changed to " + data.bpm);
-                    CurrentBPM = data.bpm;
                     _bpm = data.bpm;
                     _sub16Length = (60.0 / _bpm) * 0.25f;
+                    AnywhenAudioMetronome.SharedSub16Length.Data = _sub16Length;
                 }
 
                 if (element.TryGetData(out RestartState _))
                 {
-                    Debug.Log("Restart");
                     SharedBarCount.Data = 0;
                     SharedSub16Count.Data = -1;
                     _nextTime16 = -1;

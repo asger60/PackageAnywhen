@@ -61,7 +61,7 @@ public class AnywhenUtils : MonoBehaviour
 
         if (source.volumeMods != null)
         {
-            clone.volumeMods = new SynthFilterBase.ModRouting[source.volumeMods.Length];
+            clone.volumeMods = new ModRouting[source.volumeMods.Length];
             for (int i = 0; i < source.volumeMods.Length; i++)
             {
                 clone.volumeMods[i] = CloneModRouting(source.volumeMods[i]);
@@ -70,7 +70,7 @@ public class AnywhenUtils : MonoBehaviour
 
         if (source.pitchMods != null)
         {
-            clone.pitchMods = new SynthFilterBase.ModRouting[source.pitchMods.Length];
+            clone.pitchMods = new ModRouting[source.pitchMods.Length];
             for (int i = 0; i < source.pitchMods.Length; i++)
             {
                 clone.pitchMods[i] = CloneModRouting(source.pitchMods[i]);
@@ -94,10 +94,10 @@ public class AnywhenUtils : MonoBehaviour
         return clone;
     }
 
-    private static SynthFilterBase.ModRouting CloneModRouting(SynthFilterBase.ModRouting source)
+    private static ModRouting CloneModRouting(ModRouting source)
     {
         if (source == null) return null;
-        return new SynthFilterBase.ModRouting
+        return new ModRouting
         {
             modSource = source.modSource,
             modAmount = source.modAmount,
@@ -121,7 +121,7 @@ public class AnywhenUtils : MonoBehaviour
 
         if (source.modRouting != null)
         {
-            clone.modRouting = new SynthFilterBase.ModRouting[source.modRouting.Length];
+            clone.modRouting = new ModRouting[source.modRouting.Length];
             for (int i = 0; i < source.modRouting.Length; i++)
             {
                 clone.modRouting[i] = CloneModRouting(source.modRouting[i]);

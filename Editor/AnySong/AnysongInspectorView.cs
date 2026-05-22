@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Anywhen.Composing;
 using Anywhen.Synth;
+using Anywhen.Synth.Filter;
 using Synth;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -593,8 +594,8 @@ namespace Anysong
 
         private static (VisualElement, Action) CreateModRoutingUIBound(
             string label,
-            Func<Anywhen.Synth.Filter.SynthFilterBase.ModRouting[]> getter,
-            Action<Anywhen.Synth.Filter.SynthFilterBase.ModRouting[]> setter,
+            Func<ModRouting[]> getter,
+            Action<ModRouting[]> setter,
             Action onParameterChanged,
             Action onArrayChanged)
         {

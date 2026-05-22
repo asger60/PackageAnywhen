@@ -87,49 +87,56 @@ namespace Anywhen
 
         public List<LoadedInstrument> LoadedInstruments = new();
 
-        static NativeArray<LoadedInstrument.Unmanaged> _loadedInstruments;
+        private struct SharedLoadedInstrumentsKey
+        {
+        }
+
+        private static readonly SharedStatic<NativeArray<LoadedInstrument.Unmanaged>> _loadedInstruments =
+            SharedStatic<NativeArray<LoadedInstrument.Unmanaged>>.GetOrCreate<InstrumentDatabase, SharedLoadedInstrumentsKey>();
 
         public static NativeArray<LoadedInstrument.Unmanaged> GetLoadedInstrumentsUnmanaged()
         {
             CheckUpdateLoadedInstrumentsUnmanaged();
-            return _loadedInstruments;
+            return _loadedInstruments.Data;
         }
 
         [BurstDiscard]
         private static void CheckUpdateLoadedInstrumentsUnmanaged()
         {
-            if (_loadedInstruments.IsCreated && _loadedInstruments.Length == AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count)
+            if (_loadedInstruments.Data.IsCreated && _loadedInstruments.Data.Length == AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count)
             {
                 return;
             }
 
-            if (_loadedInstruments.IsCreated)
+            if (_loadedInstruments.Data.IsCreated)
             {
-                for (int i = 0; i < _loadedInstruments.Length; i++)
+                for (int i = 0; i < _loadedInstruments.Data.Length; i++)
                 {
-                    _loadedInstruments[i].Dispose();
+                    _loadedInstruments.Data[i].Dispose();
                 }
 
-                _loadedInstruments.Dispose();
+                _loadedInstruments.Data.Dispose();
             }
 
-            _loadedInstruments = new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);
+            _loadedInstruments.Data =
+                new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);
             for (var index = 0; index < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; index++)
             {
-                _loadedInstruments[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
+                _loadedInstruments.Data[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
             }
         }
 
         private void OnDestroy()
         {
-            if (_loadedInstruments.IsCreated)
+            if (_loadedInstruments.Data.IsCreated)
             {
-                for (int i = 0; i < _loadedInstruments.Length; i++)
+                for (int i = 0; i < _loadedInstruments.Data.Length; i++)
                 {
-                    _loadedInstruments[i].Dispose();
+                    _loadedInstruments.Data[i].Dispose();
                 }
 
-                _loadedInstruments.Dispose();
+                _loadedInstruments.Data.Dispose();
+                _loadedInstruments.Data = default;
             }
         }
 
@@ -189,7 +196,7 @@ namespace Anywhen
         {
             var loadedInstruments = GetLoadedInstrumentsUnmanaged();
             if (!loadedInstruments.IsCreated) return default;
-            
+
             for (var i = 0; i < loadedInstruments.Length; i++)
             {
                 var loaded = loadedInstruments[i];
@@ -223,9 +230,9 @@ namespace Anywhen
                         var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
                         if (sampleInstrument && !IsLoaded(sampleInstrument))
                         {
-                            #if UNITY_EDITOR
+#if UNITY_EDITOR
                             LoadInstrumentNotes(sampleInstrument);
-                            #endif
+#endif
                         }
                     }
                 }

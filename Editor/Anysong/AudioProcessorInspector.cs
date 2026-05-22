@@ -455,8 +455,8 @@ namespace Synth
 
         public static VisualElement CreateModRoutingUI(
             string label,
-            Func<SynthFilterBase.ModRouting[]> getter,
-            Action<SynthFilterBase.ModRouting[]> setter,
+            Func<ModRouting[]> getter,
+            Action<ModRouting[]> setter,
             FilterPreviewElement preview,
             Action onParameterChanged,
             Action onArrayChanged)
@@ -477,7 +477,7 @@ namespace Synth
             void Rebuild()
             {
                 listContainer.Clear();
-                var routes = getter() ?? Array.Empty<SynthFilterBase.ModRouting>();
+                var routes = getter() ?? Array.Empty<ModRouting>();
 
                 for (int i = 0; i < routes.Length; i++)
                 {
@@ -494,7 +494,7 @@ namespace Synth
                     sourceField.RegisterValueChangedCallback(evt =>
                     {
                         var arr = getter();
-                        arr[idx].modSource = (SynthFilterBase.ModRouting.ModSources)evt.newValue;
+                        arr[idx].modSource = (ModRouting.ModSources)evt.newValue;
                         setter(arr);
                         preview?.Refresh();
                         onParameterChanged?.Invoke();
@@ -519,7 +519,7 @@ namespace Synth
                     var removeBtn = new Button(() =>
                     {
                         var arr = getter();
-                        var list = new System.Collections.Generic.List<SynthFilterBase.ModRouting>(arr);
+                        var list = new System.Collections.Generic.List<ModRouting>(arr);
                         list.RemoveAt(idx);
                         setter(list.ToArray());
                         Rebuild();
@@ -539,9 +539,9 @@ namespace Synth
                 // Add button
                 var addBtn = new Button(() =>
                 {
-                    var arr = getter() ?? Array.Empty<SynthFilterBase.ModRouting>();
-                    var list = new System.Collections.Generic.List<SynthFilterBase.ModRouting>(arr);
-                    list.Add(new SynthFilterBase.ModRouting()); // default source + 0 amount
+                    var arr = getter() ?? Array.Empty<ModRouting>();
+                    var list = new System.Collections.Generic.List<ModRouting>(arr);
+                    list.Add(new ModRouting()); // default source + 0 amount
                     setter(list.ToArray());
                     Rebuild();
                     preview?.Refresh();

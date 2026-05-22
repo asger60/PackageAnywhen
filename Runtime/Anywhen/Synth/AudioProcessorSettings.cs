@@ -24,19 +24,19 @@ namespace Anywhen.Synth
         public FilterTypes filterType;
 
         [Serializable]
-        public struct LowPassSettings
+        public class LowPassSettings
         {
-            [Range(1, 4)] public int oversampling;
-            [Range(10, 24000)] public float cutoffFrequency;
-            [Range(0, 1)] public float resonance;
-            public SynthFilterBase.ModRouting[] cutoffMod;
+            [Range(1, 4)] public int oversampling = 2;
+            [Range(10, 24000)] public float cutoffFrequency = 24000;
+            [Range(0, 1)] public float resonance = 0.25f;
+            public ModRouting[] cutoffMod;
 
             public struct Unmanaged
             {
                 public float CutoffFrequency;
                 public float Resonance;
                 public int Oversampling;
-                public NativeArray<SynthFilterBase.ModRouting> CutoffMod;
+                public NativeArray<ModRouting> CutoffMod;
 
                 public void Dispose()
                 {
@@ -57,38 +57,37 @@ namespace Anywhen.Synth
                     CutoffFrequency = cutoffFrequency,
                     Resonance = resonance,
                     Oversampling = oversampling,
-                    CutoffMod = new NativeArray<SynthFilterBase.ModRouting>(
-                        cutoffMod ?? Array.Empty<SynthFilterBase.ModRouting>(), Allocator.Persistent)
+                    CutoffMod = new NativeArray<ModRouting>(cutoffMod ?? Array.Empty<ModRouting>(), Allocator.Persistent)
                 };
             }
         }
 
-        public LowPassSettings lowPassSettings;
+        public LowPassSettings lowPassSettings = new();
 
         [Serializable]
-        public struct LadderSettings
+        public class LadderSettings
         {
-            [Range(1, 4)] public int oversampling;
-            [Range(10, 24000)] public float cutoffFrequency;
-            [Range(0, 1)] public float resonance;
-            public SynthFilterBase.ModRouting[] cutoffMod;
+            [Range(1, 4)] public int oversampling = 2;
+            [Range(10, 24000)] public float cutoffFrequency = 24000;
+            [Range(0, 1)] public float resonance = 0.25f;
+            public ModRouting[] cutoffMod;
 
             public struct Unmanaged
             {
-                public float cutoffFrequency;
-                public float resonance;
-                public int oversampling;
-                public NativeArray<SynthFilterBase.ModRouting> cutoffMod;
+                public float CutoffFrequency;
+                public float Resonance;
+                public int Oversampling;
+                public NativeArray<ModRouting> CutoffMod;
 
                 public void Dispose()
                 {
-                    if (cutoffMod.IsCreated) cutoffMod.Dispose();
+                    if (CutoffMod.IsCreated) CutoffMod.Dispose();
                 }
 
                 public bool Equals(Unmanaged other)
                 {
-                    return Mathf.Approximately(cutoffFrequency, other.cutoffFrequency) && Mathf.Approximately(resonance, other.resonance) &&
-                           oversampling == other.oversampling && cutoffMod.Equals(other.cutoffMod);
+                    return Mathf.Approximately(CutoffFrequency, other.CutoffFrequency) && Mathf.Approximately(Resonance, other.Resonance) &&
+                           Oversampling == other.Oversampling && CutoffMod.Equals(other.CutoffMod);
                 }
             }
 
@@ -96,17 +95,15 @@ namespace Anywhen.Synth
             {
                 return new Unmanaged
                 {
-                    cutoffFrequency = cutoffFrequency,
-                    resonance = resonance,
-                    oversampling = oversampling,
-                    cutoffMod = new NativeArray<SynthFilterBase.ModRouting>(cutoffMod ?? Array.Empty<SynthFilterBase.ModRouting>(),
-                        Allocator.Persistent
-                    ),
+                    CutoffFrequency = cutoffFrequency,
+                    Resonance = resonance,
+                    Oversampling = oversampling,
+                    CutoffMod = new NativeArray<ModRouting>(cutoffMod ?? Array.Empty<ModRouting>(), Allocator.Persistent)
                 };
             }
         }
 
-        public LadderSettings ladderSettings;
+        public LadderSettings ladderSettings = new();
 
         [Serializable]
         public struct BandPassSettings
@@ -143,7 +140,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public BandPassSettings bandPassSettings;
+        public BandPassSettings bandPassSettings = new();
 
         [Serializable]
         public struct FormantSettings
@@ -173,7 +170,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public FormantSettings formantSettings;
+        public FormantSettings formantSettings = new();
 
         [Serializable]
         public struct BitcrushSettings
@@ -206,7 +203,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public BitcrushSettings bitcrushSettings;
+        public BitcrushSettings bitcrushSettings = new();
 
         [Serializable]
         public struct SaturatorSettings
@@ -239,7 +236,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public SaturatorSettings saturatorSettings;
+        public SaturatorSettings saturatorSettings = new();
 
         [Serializable]
         public struct DelaySettings
@@ -276,9 +273,8 @@ namespace Anywhen.Synth
             }
         }
 
-        public DelaySettings delaySettings;
-// Add to FilterTypes enum:
-// ReverbFilter
+        public DelaySettings delaySettings = new();
+
 
         [Serializable]
         public struct ReverbSettings
@@ -315,7 +311,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public ReverbSettings reverbSettings;
+        public ReverbSettings reverbSettings = new();
 
         [Serializable]
         public struct ChorusSettings
@@ -359,7 +355,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public ChorusSettings chorusSettings;
+        public ChorusSettings chorusSettings = new();
 
         [Serializable]
         public struct EnvelopeSettings : IEquatable<EnvelopeSettings>
@@ -421,7 +417,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public EnvelopeSettings envelopeSettings;
+        public EnvelopeSettings envelopeSettings = new();
 
 
         [Serializable]
@@ -473,7 +469,7 @@ namespace Anywhen.Synth
             }
         }
 
-        public LFOSettings lfoSettings;
+        public LFOSettings lfoSettings = new();
 
 
         public struct Unmanaged : IEquatable<Unmanaged>

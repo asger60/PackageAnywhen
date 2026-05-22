@@ -45,7 +45,7 @@ namespace Anywhen.Composing
         [Range(0, 1f)] public float volume;
 
         //public AnywhenInstrument instrument;
-        public SynthFilterBase.ModRouting[] volumeMods;
+        public ModRouting[] volumeMods;
 
         public AudioProcessorSettings.EnvelopeSettings trackAudioEnvelope1;
         public AudioProcessorSettings.EnvelopeSettings trackAudioEnvelope2;
@@ -61,7 +61,7 @@ namespace Anywhen.Composing
             set => trackPitch = value;
         }
 
-        public SynthFilterBase.ModRouting[] pitchMods;
+        public ModRouting[] pitchMods;
 
         public enum AudioSourceType
         {
@@ -111,8 +111,8 @@ namespace Anywhen.Composing
                 trackTypeIndex = trackTypeIndex,
                 snapshotA = snapshotA.Clone(),
                 snapshotB = snapshotB.Clone(),
-                volumeMods = (SynthFilterBase.ModRouting[])volumeMods?.Clone(),
-                pitchMods = (SynthFilterBase.ModRouting[])pitchMods?.Clone(),
+                volumeMods = (ModRouting[])volumeMods?.Clone(),
+                pitchMods = (ModRouting[])pitchMods?.Clone(),
                 trackFilters = new List<AudioProcessorSettings>(TrackFilters),
                 audioSources = new List<AudioSourceSettings>(AudioSources)
             };
@@ -127,8 +127,8 @@ namespace Anywhen.Composing
             public AudioProcessorSettings.EnvelopeSettings TrackAudioEnvelope2;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO1;
             public AudioProcessorSettings.LFOSettings TrackAudioLFO2;
-            public NativeArray<SynthFilterBase.ModRouting> AmplitudeMod;
-            public NativeArray<SynthFilterBase.ModRouting> PitchMod;
+            public NativeArray<ModRouting> AmplitudeMod;
+            public NativeArray<ModRouting> PitchMod;
 
 
             public float trackPitch;
@@ -192,8 +192,8 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                //AmplitudeMod = new NativeArray<SynthFilterBase.ModRouting>(volumeMods, Allocator.Persistent),
-                //PitchMod = new NativeArray<SynthFilterBase.ModRouting>(pitchMods, Allocator.Persistent),
+                //AmplitudeMod = new NativeArray<ModRouting>(volumeMods, Allocator.Persistent),
+                //PitchMod = new NativeArray<ModRouting>(pitchMods, Allocator.Persistent),
                 audioSources = sources,
             };
         }

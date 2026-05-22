@@ -31,7 +31,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     private int _trackTypeIndex;
     public int TrackTypeIndex => _trackTypeIndex;
     public bool IsMute;
-    private NativeArray<SynthFilterBase.ModRouting> _amplitudeMod;
+    private NativeArray<ModRouting> _amplitudeMod;
 
 
     public AnysongTrack(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
@@ -332,7 +332,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         return clipAmplitude * _trackVolume;
     }
 
-    public float GetModSignal(NativeArray<SynthFilterBase.ModRouting> modRoutingSettings)
+    public float GetModSignal(NativeArray<ModRouting> modRoutingSettings)
     {
         
         if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return 0;
@@ -341,10 +341,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         {
             float signal = mod.modSource switch
             {
-                SynthFilterBase.ModRouting.ModSources.Envelope1 => _trackEnvelope1Value,
-                SynthFilterBase.ModRouting.ModSources.Envelope2 => _trackEnvelope2Value,
-                SynthFilterBase.ModRouting.ModSources.LFO1 => _trackLFO1Value,
-                SynthFilterBase.ModRouting.ModSources.LFO2 => _trackLFO2Value,
+                ModRouting.ModSources.Envelope1 => _trackEnvelope1Value,
+                ModRouting.ModSources.Envelope2 => _trackEnvelope2Value,
+                ModRouting.ModSources.LFO1 => _trackLFO1Value,
+                ModRouting.ModSources.LFO2 => _trackLFO2Value,
                 _ => 0f
             };
 
