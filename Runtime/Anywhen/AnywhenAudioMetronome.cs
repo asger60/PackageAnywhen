@@ -60,6 +60,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     private GeneratorInstance _generatorInstance;
     [SerializeField] private int bpm = 120;
     public int Bpm => bpm;
+    public static int CurrentBPM => AnywhenRuntime.Metronome.Bpm;
 
     public static int CurrentBar;
     
