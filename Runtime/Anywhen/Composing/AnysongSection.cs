@@ -19,21 +19,14 @@ namespace Anywhen.Composing
             public int SectionLength;
             public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> ProgressionSteps;
             public NativeArray<AnysongSectionTrack.Unmanaged> Tracks;
-            public int _currentBar;
 
-            public void AdvancePlayingSection()
-            {
-                _currentBar++;
-            }
-
-            public bool IsComplete()
-            {
-                return _currentBar >= SectionLength;
-            }
 
             public void Reset()
             {
-                _currentBar = 0;
+                foreach (var track in Tracks)
+                {
+                    track.Reset();
+                }
             }
 
             public void Dispose()

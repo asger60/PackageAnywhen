@@ -214,7 +214,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(sourceTrackSettings.ToUnmanaged(), trackIndex));
+            ControlContext.builtIn.SendMessage(_generatorInstance,
+                new TriggerTrackSettingsReload(sourceTrackSettings.ToUnmanaged(), trackIndex));
         }
     }
 
@@ -496,7 +497,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         private uint _seed;
         int _currentSectionIndex;
-        private int _currentSectionBar;
+        int _currentSectionBar;
 
         Processor(int sampleRate, AnysongObject song, NativeArray<int> stepIndices, NativeArray<int> patternIndices,
             NativeArray<int> sectionIndices)
@@ -548,7 +549,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (data.IsPlaying)
                     {
-                        _currentSectionBar = 0;
                         _currentSectionIndex = 0;
                         _sectionIndices[0] = 0;
                         if (_anysongSections is { IsCreated: true, Length: > 0 })
@@ -619,7 +619,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                     {
                         if (_anysongSections.IsCreated) _anysongSections.Dispose();
 
-                        _anysongSections = new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
+                        _anysongSections =
+                            new NativeArray<AnysongSection.Unmanaged>(newMidiData.SectionData.Length, Allocator.Persistent);
                         for (int i = 0; i < newMidiData.SectionData.Length; i++)
                         {
                             _anysongSections[i] = newMidiData.SectionData[i];
@@ -694,38 +695,38 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
             if (!_anysongSections.IsCreated) return buffer.frameCount;
 
+            var section = _anysongSections[_currentSectionIndex];
+
             if (_isPlaying && currentSub16Count != _lastSub16Count)
             {
                 if (currentSub16Count == 0)
                 {
-                    int prevIndex = _currentSectionIndex;
-                    var section = _anysongSections[prevIndex];
-
-                    section.AdvancePlayingSection();
-                    if (section.IsComplete())
+                    if (_currentSectionBar >= section.SectionLength)
                     {
+                        Debug.Log("Section is complete " + _currentSectionBar + " " + section.SectionLength);
                         _currentSectionBar = 0;
-                        section.Reset();
                         _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
-                        AnywhenAudioMetronome.Processor.SetBaseProgression(
-                            _anysongSections[_currentSectionIndex].ProgressionSteps);
+
+                        section = _anysongSections[_currentSectionIndex];
+                        section.Reset();
+                        for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
+                        {
+                            var track = section.Tracks[trackIndex];
+                            track.Reset();
+                            section.Tracks[trackIndex] = track;
+                        }
+
+
+                        AnywhenAudioMetronome.Processor.SetBaseProgression(section.ProgressionSteps);
                         _sectionIndices[0] = _currentSectionIndex;
                     }
 
-                    var currentSection = _anysongSections[_currentSectionIndex];
-                    if (currentSection.ProgressionSteps.Length > 0)
-                    {
-                        _currentSectionBar %= currentSection.ProgressionSteps.Length;
-                        //AnywhenRuntime.Metronome.SetBaseProgressionStep(currentSection.ProgressionSteps[_currentSectionBar]);
-                        _currentSectionBar = (_currentSectionBar + 1) % currentSection.ProgressionSteps.Length;
-                    }
-
-                    _anysongSections[prevIndex] = section;
+                    _currentSectionBar++;
+                    Debug.Log("Section is now" + _currentSectionIndex + " " + _currentSectionBar);
                 }
 
-                for (int trackIndex = 0; trackIndex < _anysongSections[_currentSectionIndex].Tracks.Length; trackIndex++)
+                for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
                 {
-                    var section = _anysongSections[_currentSectionIndex];
                     var track = section.Tracks[trackIndex];
                     if (currentSub16Count == 0)
                     {
@@ -897,7 +898,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var payload = message.Get<TriggerTrackSettingsReload>();
                     pipe.SendData(context,
-                        new CreateNewTracksSettingsData() { TrackSettings = payload.TrackSettings, TrackIndex = payload.TrackIndex });
+                        new CreateNewTracksSettingsData()
+                            { TrackSettings = payload.TrackSettings, TrackIndex = payload.TrackIndex });
                     return ProcessorInstance.Response.Handled;
                 }
 

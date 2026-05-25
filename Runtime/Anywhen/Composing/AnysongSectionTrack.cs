@@ -27,7 +27,6 @@ namespace Anywhen.Composing
         {
             public PatternProgressionType PatternProgressionType;
             public NativeArray<AnysongPattern.Unmanaged> Patterns;
-            public AnysongPattern.Unmanaged CurrentPattern;
             public int CurrentPatternBar;
             public int CurrentPatternIndex;
             public Unity.Mathematics.Random Random;
@@ -37,23 +36,13 @@ namespace Anywhen.Composing
             {
                 CurrentPatternBar++;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
-                CurrentPattern = Patterns[CurrentPatternIndex];
-
             }
-
-            public AnysongPattern.Unmanaged GetCurrentPattern()
-            {
-                return CurrentPattern;
-            }
-
-
+            
 
             public void Reset()
             {
                 CurrentPatternBar = -1;
                 CurrentPatternIndex = GetProgressionPatternIndex(CurrentPatternBar, Patterns, PatternProgressionType, ref Random);
-                CurrentPattern = Patterns[CurrentPatternIndex];
-
             }
 
 
@@ -153,7 +142,6 @@ namespace Anywhen.Composing
             {
                 PatternProgressionType = patternProgressionType,
                 Patterns = new NativeArray<AnysongPattern.Unmanaged>(unmanagedPatterns, Allocator.Persistent),
-                CurrentPattern = _currentPattern.ToUnmanaged(),
                 CurrentPatternBar = _currentPatternBar,
                 CurrentPatternIndex = _currentPatternIndex,
                 Random = new Unity.Mathematics.Random((uint)Random.Range(1, int.MaxValue))
