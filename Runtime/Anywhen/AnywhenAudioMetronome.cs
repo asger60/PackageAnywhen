@@ -213,6 +213,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         public bool isFinite => false;
         public bool isRealtime => true;
         public DiscreteTime? length => null;
+        
 
         private Processor(int sampleRate, int bpm)
         {
@@ -222,7 +223,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
             _setup = new GeneratorInstance.Setup(AudioSpeakerMode.Mono, sampleRate);
 
             _sub16Length = (60.0 / _bpm) * 0.25;
-            AnywhenAudioMetronome.SharedSub16Length.Data = _sub16Length;
+            SharedSub16Length.Data = _sub16Length;
             _nextTime16 = -1;
             _sub16Count = 0;
             _isPlaying = true;
@@ -237,7 +238,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
                 {
                     _bpm = data.bpm;
                     _sub16Length = (60.0 / _bpm) * 0.25f;
-                    AnywhenAudioMetronome.SharedSub16Length.Data = _sub16Length;
+                    SharedSub16Length.Data = _sub16Length;
                 }
 
                 if (element.TryGetData(out RestartState _))
@@ -319,14 +320,14 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         public static int GetScaledNote(int noteStep)
         {
             var overrideProgression = SharedOverrideProgression.Data;
-            if (overrideProgression.patternSteps.IsCreated && overrideProgression.patternSteps.Length > 0)
+            if (overrideProgression.patternSteps is { IsCreated: true, Length: > 0 })
             {
                 var steps = overrideProgression.patternSteps;
                 return GetScaledNote(steps[SharedBarCount.Data % steps.Length], noteStep);
             }
 
             var baseProgression = SharedBaseProgression.Data;
-            if (baseProgression.patternSteps.IsCreated && baseProgression.patternSteps.Length > 0)
+            if (baseProgression.patternSteps is { IsCreated: true, Length: > 0 })
             {
                 var steps = baseProgression.patternSteps;
                 return GetScaledNote(steps[SharedBarCount.Data % steps.Length], noteStep);

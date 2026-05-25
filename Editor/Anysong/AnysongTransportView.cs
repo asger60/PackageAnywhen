@@ -26,13 +26,12 @@ public static class AnysongTransportView
         var visualizerContainer = _parent.Q<VisualElement>("Visualizer");
 
 
-
         _playButton = _parent.Q<Button>("PlayButton");
 
         _playButton.AddToClassList("transport-play-button");
-        
+
         _song = new SerializedObject(currentSong);
-        
+
         var tempoProperty = _song.FindProperty("tempo");
         var tempoSlider = _parent.Q<SliderInt>("TempoSlider");
         tempoSlider.BindProperty(tempoProperty);
@@ -50,21 +49,15 @@ public static class AnysongTransportView
         _snapshotButtonB.AddToClassList("snapshot-button");
         _snapshotButtonB.clicked += () => ToggleSnapShot(true);
         _snapShotLerpSlider = _parent.Q<Slider>("SnapshotSlider");
-        
-        _snapShotLerpSlider.RegisterValueChangedCallback(evt =>
-        {
-            AnysongEditorWindow.SetTestSnapshot(evt.newValue);
-        });
 
+        _snapShotLerpSlider.RegisterValueChangedCallback(evt => { AnysongEditorWindow.SetTestSnapshot(evt.newValue); });
 
-        
 
         var visualizer = new OscilloscopeElement();
         visualizerContainer.Add(visualizer);
         visualizer.style.width = 340;
         visualizer.style.height = 80;
     }
-
 
 
     public static void RefreshPlaybuttonState(bool isPlaying)

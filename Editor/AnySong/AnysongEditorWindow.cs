@@ -136,7 +136,8 @@ namespace Anysong
                 var track = section.FindPropertyRelative("tracks").GetArrayElementAtIndex(_currentTrackIndex);
                 var pattern = track.FindPropertyRelative("patterns").GetArrayElementAtIndex(_currentPatternIndex);
                 var step = pattern.FindPropertyRelative("steps").GetArrayElementAtIndex(_currentStepIndex);
-                if (step != null && step.FindPropertyRelative("stepNotes").isArray && step.FindPropertyRelative("stepNotes").arraySize > 0)
+                if (step != null && step.FindPropertyRelative("stepNotes").isArray &&
+                    step.FindPropertyRelative("stepNotes").arraySize > 0)
                 {
                     _currentNoteIndex = Mathf.Clamp(_currentNoteIndex, 0, step.FindPropertyRelative("stepNotes").arraySize - 1);
                     CurrentNoteProperty = step.FindPropertyRelative("stepNotes").GetArrayElementAtIndex(_currentNoteIndex);
@@ -210,14 +211,16 @@ namespace Anysong
                 _currentMetronome.Restart();
                 _currentMetronome.Play();
                 _currentPlayer.Load(CurrentSong);
-                _currentPlayer.SetPlay(true);
+                _currentPlayer.SetPlay(true, 
+                    AnysongSectionsView.IsSectionLocked ? _currentSelection.CurrentSectionIndex : 0,
+                    AnysongSectionsView.IsSectionLocked);
                 AnywhenAudioMetronome.OnTickSub16 += OnTick16;
                 AnywhenAudioMetronome.OnTickBar += OnBar;
                 OnBar();
             }
             else
             {
-                _currentPlayer.SetPlay(false);
+                _currentPlayer.SetPlay(false, 0, false);
                 _currentMetronome.Stop();
                 AnywhenAudioMetronome.OnTickSub16 -= OnTick16;
                 AnysongSectionsView.SetPlayingSectionIndex(-1);
@@ -330,7 +333,8 @@ namespace Anysong
         {
             if (evt.keyCode == KeyCode.Space)
             {
-                if (evt.target is TextInputBaseField<string> || evt.target is TextInputBaseField<int> || evt.target is TextInputBaseField<float>)
+                if (evt.target is TextInputBaseField<string> || evt.target is TextInputBaseField<int> ||
+                    evt.target is TextInputBaseField<float>)
                 {
                     return;
                 }
@@ -407,7 +411,7 @@ namespace Anysong
                         HandleProgressionLogic();
 
                         AnysongTracksView.UpdateMuteSoleState();
-                        Debug.LogWarning("AnysongSectionsView not completely implemented");
+                        //Debug.LogWarning("AnysongSectionsView not completely implemented");
                         //AnysongSectionsView.SetPlayingSectionIndex(CurrentRuntimeSongPlayer.CurrentSectionIndex);
                         AnysongProgressionsView.Refresh();
                     }
@@ -416,7 +420,6 @@ namespace Anysong
 
             _sectionsPanel.Q<Button>("AddButton").RegisterCallback((ClickEvent ev) => { CreateNewSection(); });
             _sectionsPanel.Q<Button>("RemoveButton").RegisterCallback((ClickEvent ev) => { DeleteSection(); });
-            _sectionsPanel.Q<Button>("SectionLockButton").RegisterCallback((ClickEvent ev) => { ToggleSectionLock(); });
         }
 
 
@@ -567,16 +570,7 @@ namespace Anysong
         }
 
 
-        void ToggleSectionLock()
-        {
-            _currentPlayer.SetSectionLock(!_currentPlayer.SectionLockState, _currentSelection.CurrentSectionIndex);
-            AnysongSectionsView.Draw(_sectionsPanel, CurrentSong, _currentSelection.CurrentSectionIndex);
-            HandleSectionsLogic();
-        }
-
-        public static bool IsSectionLocked => _currentPlayer.SectionLockState;
-
-        private static List<int> _muteTracks = new List<int>();
+        private static List<int> _muteTracks = new();
         public static List<int> MuteTracks => _muteTracks;
         private static int _soloTrackIndex;
 
@@ -700,7 +694,10 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
+            {
+                CopyPattern(_currentSelection.CurrentPattern);
+            });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 
@@ -824,6 +821,11 @@ namespace Anysong
         public static void UpdateMidi(int sectionIndex, int trackIndex, int patternIndex)
         {
             _currentPlayer.HandleSongMidiChanged(sectionIndex, trackIndex, patternIndex);
+        }
+
+        public static void SetSectionLocked(bool isSectionLocked)
+        {
+            _currentPlayer.SetSectionLocked(isSectionLocked);
         }
     }
 }

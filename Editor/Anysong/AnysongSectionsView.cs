@@ -8,6 +8,7 @@ namespace Anysong
     public static class AnysongSectionsView
     {
         private static VisualElement _parent;
+        public static bool IsSectionLocked => _isSectionLocked;
 
         public static void Clear()
         {
@@ -45,7 +46,7 @@ namespace Anysong
                 }
             };
             lockButton.AddToClassList("section-lock-button");
-         
+
 
             var lockElement = new VisualElement
             {
@@ -88,19 +89,28 @@ namespace Anysong
 
             parent.Add(AnysongEditorWindow.CreateAddRemoveButtons());
             RefreshSectionLocked();
+            lockButton.RegisterCallback((ClickEvent ev) => { ToggleSectionLock(); });
         }
+
+        static void ToggleSectionLock()
+        {
+            _isSectionLocked = !_isSectionLocked;
+            AnysongEditorWindow.SetSectionLocked(_isSectionLocked);
+            RefreshSectionLocked();
+        }
+
+        private static bool _isSectionLocked;
 
         public static void RefreshSectionLocked()
         {
             _parent.Query<Button>("SectionLockButton").ForEach(button =>
             {
-                if (AnysongEditorWindow.IsSectionLocked)
+                if (_isSectionLocked)
                     button.AddToClassList("triggered");
                 else
                     button.RemoveFromClassList("triggered");
             });
         }
-
 
 
         public static void SetPlayingSectionIndex(int currentSectionIndex)
