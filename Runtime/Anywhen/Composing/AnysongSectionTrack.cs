@@ -76,7 +76,7 @@ namespace Anywhen.Composing
                         for (var i = 0; i < patterns.Length; i++)
                         {
                             var anyPattern = patterns[i];
-                            float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
+                            float thisTriggerChance = anyPattern.TriggerChances[(int)Mathf.Repeat(patternBar, 4)];
                             totalWeight += thisTriggerChance;
                         }
 
@@ -97,7 +97,7 @@ namespace Anywhen.Composing
                             for (var i = 0; i < patterns.Length; i++)
                             {
                                 var anyPattern = patterns[i];
-                                float thisTriggerChance = anyPattern.triggerChances[(int)Mathf.Repeat(patternBar, 4)];
+                                float thisTriggerChance = anyPattern.TriggerChances[(int)Mathf.Repeat(patternBar, 4)];
                                 currentWeight += thisTriggerChance;
 
                                 if (randomValue <= currentWeight)

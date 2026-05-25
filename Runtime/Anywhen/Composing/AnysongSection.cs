@@ -12,14 +12,14 @@ namespace Anywhen.Composing
         public AnywhenProgressionPatternObject.ProgressionStep[] progressionSteps;
         public List<AnysongSectionTrack> tracks;
         public int sectionLength;
-
+        [SerializeField] [Range(0, 1f)] private float[] groove;
 
         public struct Unmanaged
         {
             public int SectionLength;
             public NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged> ProgressionSteps;
             public NativeArray<AnysongSectionTrack.Unmanaged> Tracks;
-
+            public NativeArray<float> Groove;
 
             public void Reset()
             {
@@ -53,14 +53,23 @@ namespace Anywhen.Composing
 
                     Tracks.Dispose();
                 }
+
+                if (Groove.IsCreated) Groove.Dispose();
+            }
+
+            public float GetGrooveValue(int currentSub16Count)
+            {
+                if (!Groove.IsCreated || Groove.Length == 0) return 0;
+                return Groove[currentSub16Count % Groove.Length];
             }
         }
 
         public Unmanaged ToUnmanaged()
         {
             var unmanagedProgression =
-                new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(progressionSteps.Length, Allocator.Persistent);
-            
+                new NativeArray<AnywhenProgressionPatternObject.ProgressionStep.Unmanaged>(progressionSteps.Length,
+                    Allocator.Persistent);
+
             for (int i = 0; i < progressionSteps.Length; i++)
             {
                 unmanagedProgression[i] = progressionSteps[i].ToUnmanaged();
@@ -74,7 +83,8 @@ namespace Anywhen.Composing
             {
                 SectionLength = sectionLength,
                 ProgressionSteps = unmanagedProgression,
-                Tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent)
+                Tracks = new NativeArray<AnysongSectionTrack.Unmanaged>(unmanagedTracks, Allocator.Persistent),
+                Groove = new NativeArray<float>(groove, Allocator.Persistent)
             };
         }
 

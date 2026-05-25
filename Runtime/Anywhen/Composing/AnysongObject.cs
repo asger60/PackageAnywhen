@@ -87,6 +87,7 @@ namespace Anywhen.Composing
         
         public void RefreshSections()
         {
+            Debug.Log("RefreshSections");
             OnSongSectionsChanged?.Invoke();
         }
 

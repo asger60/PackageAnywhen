@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Anywhen
 {
     [Serializable]
-    public struct AnysongPatternNote
+    public struct AnysongPatternNote : IEquatable<AnysongPatternNote>
     {
         [Range(0.01f, 2f)] public float duration;
         [Range(0f, 1f)] public float drift;
@@ -55,6 +54,16 @@ namespace Anywhen
                    Mathf.Approximately(other.velocity, velocity) && Mathf.Approximately(other.mixWeight, mixWeight) &&
                    other.stepRepeats == stepRepeats &&
                    Mathf.Approximately(other.chance, chance);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AnysongPatternNote other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(duration, drift, velocity, mixWeight, stepRepeats, chance, noteIndex, (int)repeatRate);
         }
     }
 }

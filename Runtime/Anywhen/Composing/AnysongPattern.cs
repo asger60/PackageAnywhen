@@ -17,32 +17,32 @@ namespace Anywhen.Composing
 
         public struct Unmanaged
         {
-            public NativeArray<float> triggerChances;
-            public NativeArray<AnysongPatternStep.UnManaged> steps;
-            public int patternLength;
+            public NativeArray<float> TriggerChances;
+            public NativeArray<AnysongPatternStep.UnManaged> Steps;
+            public int PatternLength;
 
 
             public AnysongPatternStep.UnManaged GetCurrentStep(int stepIndex)
             {
-                return steps[stepIndex % patternLength];
+                return Steps[stepIndex % PatternLength];
             }
 
             public int GetStepIndex(int stepIndex)
             {
-                return stepIndex % patternLength;
+                return stepIndex % PatternLength;
             }
 
             public void Dispose()
             {
-                if (triggerChances.IsCreated) triggerChances.Dispose();
-                if (steps.IsCreated)
+                if (TriggerChances.IsCreated) TriggerChances.Dispose();
+                if (Steps.IsCreated)
                 {
-                    for (int i = 0; i < steps.Length; i++)
+                    for (int i = 0; i < Steps.Length; i++)
                     {
-                        steps[i].Dispose();
+                        Steps[i].Dispose();
                     }
 
-                    steps.Dispose();
+                    Steps.Dispose();
                 }
             }
         }
@@ -57,9 +57,9 @@ namespace Anywhen.Composing
 
             return new Unmanaged
             {
-                triggerChances = new NativeArray<float>(triggerChances.ToArray(), Allocator.Persistent),
-                steps = new NativeArray<AnysongPatternStep.UnManaged>(unmanagedSteps, Allocator.Persistent),
-                patternLength = patternLength,
+                TriggerChances = new NativeArray<float>(triggerChances.ToArray(), Allocator.Persistent),
+                Steps = new NativeArray<AnysongPatternStep.UnManaged>(unmanagedSteps, Allocator.Persistent),
+                PatternLength = patternLength,
             };
         }
 

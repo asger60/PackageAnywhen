@@ -823,6 +823,11 @@ namespace Anysong
             _currentPlayer.HandleSongMidiChanged(sectionIndex, trackIndex, patternIndex);
         }
 
+        public static void UpdateSongSectionsSettings()
+        {
+            _currentPlayer.HandleSongSectionsChanged();
+        }
+
         public static void SetSectionLocked(bool isSectionLocked)
         {
             _currentPlayer.SetSectionLocked(isSectionLocked);

@@ -43,29 +43,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         _trackTypeIndex = settings.trackTypeIndex;
         CreateTrack(settings, sampleRate);
         UpdateSettings(settings);
-        _nextEvent = new AnywhenAudioGenerator.PlaybackEvent(new SimpleNoteEvent(), 0);
         _amplitudeMod = settings.AmplitudeMod;
     }
 
 
-    public void HandleTracksRebuild(AnysongTrackSettings.Unmanaged newSettings)
-    {
-        _pendingSettings = newSettings;
-        _hasPendingTracksUpdate = true;
-    }
-
-    public void HandleEffectsRebuild(AnysongTrackSettings.Unmanaged newSettings)
-    {
-        _pendingSettings = newSettings;
-        _hasPendingEffectsUpdate = true;
-        _hasPendingParameterUpdate = true;
-    }
-
-    public void HandleValuesChanged(AnysongTrackSettings.Unmanaged newSettings)
-    {
-        _pendingSettings = newSettings;
-        _hasPendingParameterUpdate = true;
-    }
 
     public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
     {
@@ -227,20 +208,18 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     internal float Process(double dspTime)
     {
-        if (IsMute) return 0;
+        //if (IsMute) return 0;
 
         bool trackActive = _trackEnvelope1.IsActive || _trackEnvelope2.IsActive;
         bool anyVoiceActive = false;
 
         if (_voices.IsCreated)
         {
-            for (int i = 0; i < _voices.Length; i++)
+            foreach (var voice in _voices)
             {
-                if (!_voices[i].IsIdle)
-                {
-                    anyVoiceActive = true;
-                    break;
-                }
+                if (voice.IsIdle) continue;
+                anyVoiceActive = true;
+                break;
             }
         }
 
@@ -334,7 +313,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
     public float GetModSignal(NativeArray<ModRouting> modRoutingSettings)
     {
-        
         if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return 0;
         float s = 0;
         foreach (var mod in modRoutingSettings)

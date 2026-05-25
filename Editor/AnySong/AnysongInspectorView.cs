@@ -41,9 +41,12 @@ namespace Anysong
             Draw(_parent);
             _parent.Add(Spacer());
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("sectionLength"),
-                AnysongEditorWindow.CurrentSong.RefreshSections));
+                AnysongEditorWindow.UpdateSongSectionsSettings));
+            _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("groove"),
+                AnysongEditorWindow.UpdateSongSectionsSettings));
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"),
-                AnysongEditorWindow.CurrentSong.RefreshSections));
+                AnysongEditorWindow.UpdateSongSectionsSettings));
+            Debug.Log("DrawSection");
             _parent.Add(CreateUtilsBox());
         }
 
@@ -144,7 +147,8 @@ namespace Anysong
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
 
             var audioSourcesField =
-                CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), AnysongEditorWindow.UpdateSettings);
+                CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"),
+                    AnysongEditorWindow.UpdateSettings);
             audioSourcesField.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 var foldout = audioSourcesField.Q<Foldout>();
@@ -161,11 +165,13 @@ namespace Anysong
             _parent.Add(SectionHeader("Instrument settings"));
 
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"), AnysongEditorWindow.UpdateSettings));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("voices"),
+                AnysongEditorWindow.UpdateSettings));
 
             _parent.Add(Spacer(20));
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"), AnysongEditorWindow.UpdateSettings));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("volume"),
+                AnysongEditorWindow.UpdateSettings));
 
             var (el_volume, ref_volume) = CreateModRoutingUIBound("Volume Modulation",
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods,
@@ -178,7 +184,8 @@ namespace Anysong
                 });
             _parent.Add(el_volume);
 
-            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"), AnysongEditorWindow.UpdateSettings));
+            _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),
+                AnysongEditorWindow.UpdateSettings));
 
             var (el_pitch, ref_pitch) = CreateModRoutingUIBound("Pitch Modulation",
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.pitchMods,
@@ -227,7 +234,8 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
-                var filterVisualElement = AudioProcessorInspector.Draw(audioProcessorSettings, AnysongEditorWindow.UpdateSettings);
+                var filterVisualElement =
+                    AudioProcessorInspector.Draw(audioProcessorSettings, AnysongEditorWindow.UpdateSettings);
                 filterElement.Add(filterVisualElement);
                 AnysongEditorWindow.OnSongSettingsChanged += filterVisualElement.Refresh;
                 filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
@@ -579,6 +587,7 @@ namespace Anysong
             var propertyField = new PropertyField(property);
             propertyField.BindProperty(property);
             var isFirstCallback = true;
+            
             propertyField.RegisterValueChangeCallback((ev) =>
             {
                 if (isFirstCallback)
@@ -589,6 +598,19 @@ namespace Anysong
 
                 didUpdate?.Invoke();
             });
+
+            if (property.isArray && property.propertyType != SerializedPropertyType.String)
+            {
+                propertyField.schedule.Execute(() =>
+                {
+                    propertyField.TrackPropertyValue(property, (p) =>
+                    {
+                        //if (isFirstCallback) return;
+                        didUpdate?.Invoke();
+                    });
+                });
+            }
+
             return propertyField;
         }
 

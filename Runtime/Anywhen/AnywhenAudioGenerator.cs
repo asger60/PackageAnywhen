@@ -68,18 +68,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    private void HandleSongSectionsChanged()
+    public void HandleSongSectionsChanged()
     {
-        if (ControlContext.builtIn.Exists(_generatorInstance))
-        {
-            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Temp);
-            for (int i = 0; i < song.Sections.Count; i++)
-            {
-                sectionData[i] = song.Sections[i].ToUnmanaged();
-            }
-
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerMidiReloadMsg(sectionData));
-        }
+        Debug.Log("Song sections changed");
+        NotifySongMidiChanged();
     }
 
     public void HandleSongSettingsChanged()
@@ -115,6 +107,21 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
+    private void NotifySongMidiChanged()
+    {
+        Debug.Log("Song sections changed");
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
+            for (int i = 0; i < song.Sections.Count; i++)
+            {
+                sectionData[i] = song.Sections[i].ToUnmanaged();
+            }
+
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerMidiReloadMsg(sectionData));
+        }
+    }
+
 
     public void SetSong(AnysongObject newSong)
     {
@@ -133,7 +140,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SetPlay(bool state, int startSectionIndex, bool sectionLocked)
     {
-        Debug.Log("SetPlay: " + state + " startSectionIndex: " + startSectionIndex);
         _isPlaying = state;
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
@@ -144,7 +150,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SetSectionLocked(bool sectionLocked)
     {
-        Debug.Log("SetSectionLocked: " + sectionLocked);
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
             ControlContext.builtIn.SendMessage(_generatorInstance, new ToggleSectionLockMsg(sectionLocked));
@@ -289,8 +294,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void Load(AnysongObject currentSong, LoadOptions options = LoadOptions.Default)
     {
-        Debug.Log("Loading song: " + currentSong.name + " load options: " + options + " ");
-
         switch (options)
         {
             case LoadOptions.Default:
@@ -382,7 +385,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private class TriggerTrackStateMsg
     {
-        public NativeArray<int> MutedTracks;
+        public readonly NativeArray<int> MutedTracks;
 
 
         public TriggerTrackStateMsg(NativeArray<int> mutedTracks)
@@ -437,7 +440,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private class TriggerTrackSettingsReload
     {
-        public int TrackIndex;
+        public readonly int TrackIndex;
         public readonly AnysongTrackSettings.Unmanaged TrackSettings;
 
         public TriggerTrackSettingsReload(AnysongTrackSettings.Unmanaged trackSettings, int trackIndex)
@@ -455,20 +458,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public TriggerMidiReloadMsg(NativeArray<AnysongSection.Unmanaged> sectionData)
         {
             SectionData = sectionData;
-        }
-    }
-
-    private class TriggerNoteClipMsg
-    {
-        private readonly SimpleNoteEvent _noteEvent;
-        private readonly double _scheduledPlayTime;
-
-        public PlaybackEvent PlaybackEvent => new(_noteEvent, _scheduledPlayTime);
-
-        public TriggerNoteClipMsg(SimpleNoteEvent noteEvent, double scheduledPlayTime)
-        {
-            _noteEvent = noteEvent;
-            _scheduledPlayTime = scheduledPlayTime;
         }
     }
 
@@ -638,6 +627,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (_anysongSections.Length != newMidiData.SectionData.Length)
                     {
+                        Debug.Log("sections amount updated");
                         if (_anysongSections.IsCreated) _anysongSections.Dispose();
 
                         _anysongSections =
@@ -668,6 +658,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                             section.Tracks[trackIndex] = track;
                         }
 
+                        section.SectionLength = newSection.SectionLength;
+                        section.Groove = newSection.Groove;
                         _anysongSections[sectionIndex] = section;
                     }
 
@@ -696,8 +688,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (element.TryGetData(out SectionLockStateData sectionLockStateData))
                 {
                     _sectionLocked = sectionLockStateData.SectionLocked;
-
-                    Debug.Log("SetSectionLocked: " + _sectionLocked);
                 }
             }
         }
@@ -777,7 +767,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         if (chancePass && intensityPass)
                         {
                             var playbackTrack = _tracks[trackIndex];
-                            playbackTrack.HandlePlaybackEvent(new PlaybackEvent(thisNote, dspTime));
+                            playbackTrack.HandlePlaybackEvent(
+                                new PlaybackEvent(
+                                    thisNote,
+                                    _anysongSections[_currentSectionIndex].GetGrooveValue(currentSub16Count),
+                                    dspTime));
                             _tracks[trackIndex] = playbackTrack;
                         }
                     }
@@ -885,13 +879,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             public ProcessorInstance.Response OnMessage(ControlContext context, ProcessorInstance.Pipe pipe,
                 ProcessorInstance.Message message)
             {
-                if (message.Is<TriggerNoteClipMsg>())
-                {
-                    var payload = message.Get<TriggerNoteClipMsg>();
-                    pipe.SendData(context, payload.PlaybackEvent);
-                    return ProcessorInstance.Response.Handled;
-                }
-
                 if (message.Is<TriggerPlaybackMsg>())
                 {
                     var payload = message.Get<TriggerPlaybackMsg>();
@@ -961,29 +948,19 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public readonly double ScheduledPlayTime;
         public readonly double ScheduledEndTime;
 
-        public PlaybackEvent(AnysongPatternNote note, double scheduledPlayTime)
+        public PlaybackEvent(AnysongPatternNote note, float grooveValue, double scheduledPlayTime)
         {
             Note = note;
-            ScheduledPlayTime = scheduledPlayTime + Note.drift * AnywhenAudioMetronome.Processor.Sub16Length;
-            ScheduledEndTime = scheduledPlayTime + Note.duration + Note.drift * AnywhenAudioMetronome.Processor.Sub16Length;
+            ScheduledPlayTime = scheduledPlayTime + ((Note.drift + grooveValue) * AnywhenAudioMetronome.Processor.Sub16Length);
+            ScheduledEndTime = scheduledPlayTime +
+                               Note.duration + ((Note.drift + grooveValue) * AnywhenAudioMetronome.Processor.Sub16Length);
         }
 
-        public PlaybackEvent(SimpleNoteEvent simpleNoteEvent, double scheduledPlayTime)
-        {
-            Note = new AnysongPatternNote(simpleNoteEvent.note);
-            ScheduledPlayTime = scheduledPlayTime + simpleNoteEvent.drift;
-            ScheduledEndTime = ScheduledPlayTime + Note.duration + simpleNoteEvent.drift;
-        }
 
         public bool Equals(PlaybackEvent other)
         {
             return Note.Equals(other.Note) && ScheduledPlayTime.Equals(other.ScheduledPlayTime) &&
                    ScheduledEndTime.Equals(other.ScheduledEndTime);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is PlaybackEvent other && Equals(other);
         }
 
         public override int GetHashCode()
