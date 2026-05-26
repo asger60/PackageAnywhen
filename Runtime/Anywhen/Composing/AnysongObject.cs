@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,28 +8,20 @@ namespace Anywhen.Composing
     {
         [Range(10, 200)] public int tempo;
         [Range(0, 1f)] public float songVolume = 1;
-
-
+        
         public List<AnysongSection> Sections;
         public List<AnysongTrackSettings> Tracks;
-
-
+        
         public AnywhenSnapshot snapshotA = new();
         public AnywhenSnapshot snapshotB = new();
-
-
+        
         public string author = "Floppy Club";
-        public event Action<int, int, int> OnSongMidiChanged;
-        public event Action OnSongSettingsChanged;
-        public event Action OnSongEffectsChanged;
-        public event Action OnSongSectionsChanged;
-
 
 
         [ContextMenu("ClearPatterns")]
         void ClearPatterns()
         {
-            Debug.Log("ClearPatterns");
+            Debug.Log("ClearPatterns"); 
             foreach (var section in Sections)
             {
                 section.Init(Tracks);
@@ -57,64 +48,6 @@ namespace Anywhen.Composing
                     }
                 }
             }
-        }
-        
-
-
-        public void RefreshMidi(int sectionIndex, int trackIndex, int patternIndex)
-        {
-            OnSongMidiChanged?.Invoke(sectionIndex, trackIndex, patternIndex);
-        }
-
-
-
-        public void RefreshEffects()
-        {
-            OnSongEffectsChanged?.Invoke();
-        }
-
-
-        public void RemoveAllListeners()
-        {
-            Debug.Log("Removing listeners");
-            if (OnSongMidiChanged != null)
-            {
-                foreach (var currentDelegate in OnSongMidiChanged.GetInvocationList())
-                {
-                    OnSongMidiChanged -= (Action<int, int, int>)currentDelegate;
-                }
-            }
-
-            if (OnSongSettingsChanged != null)
-            {
-                foreach (var currentDelegate in OnSongSettingsChanged.GetInvocationList())
-                {
-                    OnSongSettingsChanged -= (Action)currentDelegate;
-                }
-            }
-
-            if (OnSongEffectsChanged != null)
-            {
-                foreach (var currentDelegate in OnSongEffectsChanged.GetInvocationList())
-                {
-                    OnSongEffectsChanged -= (Action)currentDelegate;
-                }
-            }
-
-
-            
-            if (OnSongSectionsChanged != null)
-            {
-                foreach (var currentDelegate in OnSongSectionsChanged.GetInvocationList())
-                {
-                    OnSongSectionsChanged -= (Action)currentDelegate;
-                }
-            }
-
-            OnSongMidiChanged = null;
-            OnSongSettingsChanged = null;
-            OnSongEffectsChanged = null;
-            OnSongSectionsChanged = null;
         }
     }
 }

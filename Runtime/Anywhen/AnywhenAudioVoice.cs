@@ -55,7 +55,6 @@ public struct AnywhenAudioVoice
         {
             if (i >= audioSourceSettings.Length)
             {
-                Debug.LogWarning("Audio source settings array is too short");
                 break;
             }
 
@@ -107,13 +106,6 @@ public struct AnywhenAudioVoice
             }
         }
 
-        //bool envelopeActive = _voiceEnvelope.IsActive;
-        //if (!isPlaying && !envelopeActive)
-        //{
-        //    return 0;
-        //}
-
-        //_voiceEnvelope.SetGate(dspTime >= _scheduledStartTime && dspTime <= _scheduledEndTime);
 
         return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
     }

@@ -27,30 +27,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnDisable()
     {
         OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
-        UnregisterSongListeners();
-
         if (_sharedStepIndices.IsCreated) _sharedStepIndices.Dispose();
         if (_sharedPatternIndices.IsCreated) _sharedPatternIndices.Dispose();
         if (_sharedSectionIndices.IsCreated) _sharedSectionIndices.Dispose();
     }
 
-    private void RegisterSongListeners()
-    {
-        if (song == null) return;
-        song.OnSongMidiChanged += HandleSongMidiChanged;
-        song.OnSongSectionsChanged += HandleSongSectionsChanged;
-        song.OnSongSettingsChanged += HandleSongSettingsChanged;
-        song.OnSongEffectsChanged += HandleSongEffectsChanged;
-    }
 
-    private void UnregisterSongListeners()
-    {
-        if (song == null) return;
-        song.OnSongMidiChanged -= HandleSongMidiChanged;
-        song.OnSongSectionsChanged -= HandleSongSectionsChanged;
-        song.OnSongSettingsChanged -= HandleSongSettingsChanged;
-        song.OnSongEffectsChanged -= HandleSongEffectsChanged;
-    }
 
     public void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
     {
@@ -68,7 +50,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void HandleSongSectionsChanged()
     {
-        Debug.Log("Song sections changed");
         NotifySongMidiChanged();
     }
 
@@ -77,9 +58,13 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         NotifyTrackSettingsChanged();
     }
 
-    private void HandleSongEffectsChanged()
+    public void HandleTrackRebuild(int trackIndex)
     {
-        NotifyTrackSettingsChanged();
+        if (ControlContext.builtIn.Exists(_generatorInstance))
+        {
+            ControlContext.builtIn.SendMessage(_generatorInstance,
+                new TriggerTrackSettingsReload(song.Tracks[trackIndex].ToUnmanaged(), trackIndex));
+        }
     }
 
 
@@ -103,7 +88,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     private void NotifySongMidiChanged()
     {
-        Debug.Log("Song sections changed");
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
             var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
@@ -185,10 +169,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    private void OnDestroy()
-    {
-        UnregisterSongListeners();
-    }
 
     public void OverrideTrackSettings(AnysongObject sourceSong, int overrideTrackTypeIndex)
     {
@@ -372,7 +352,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         _generatorInstance = Processor.Allocate(context, nestedFormat?.sampleRate ?? 48000, song, _sharedStepIndices,
             _sharedPatternIndices,
             _sharedSectionIndices);
-        RegisterSongListeners();
         return _generatorInstance;
     }
 

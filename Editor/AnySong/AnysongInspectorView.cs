@@ -14,6 +14,8 @@ namespace Anysong
     public static class AnysongInspectorView
     {
         private static VisualElement _parent;
+        private static VisualElement _synthSettingsElement;
+        private static VisualElement _sampleSettingsElement;
 
         public static void Clear()
         {
@@ -60,7 +62,7 @@ namespace Anysong
 
             _parent.Add(CreatePropertyFieldWithCallback(pattern.FindPropertyRelative("patternLength"), () =>
             {
-                AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                AnysongEditorWindow.UpdateMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                     AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
                     AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
                 didUpdate.Invoke();
@@ -130,8 +132,6 @@ namespace Anysong
             _parent.Add(utilsBox);
         }
 
-        private static VisualElement _synthSettingsElement;
-        private static VisualElement _sampleSettingsElement;
 
         public static void DrawTrack()
         {
@@ -147,8 +147,11 @@ namespace Anysong
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.UpgradeToSources();
 
             var audioSourcesField =
-                CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"),
-                    AnysongEditorWindow.UpdateSettings);
+                CreatePropertyFieldWithCallback(selection.FindPropertyRelative("audioSources"), () =>
+                {
+                    AnysongEditorWindow.HandleTrackRebuild(AnysongEditorWindow.CurrentSelection.CurrentTrackIndex);
+                    AnysongEditorWindow.UpdateSettings();
+                });
             audioSourcesField.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 var foldout = audioSourcesField.Q<Foldout>();
@@ -230,8 +233,7 @@ namespace Anysong
                 };
 
                 deleteFilter.clicked += () => { RemoveFilter(audioProcessorSettings); };
-                var filterVisualElement =
-                    AudioProcessorInspector.Draw(audioProcessorSettings, AnysongEditorWindow.UpdateSettings);
+                var filterVisualElement = AudioProcessorInspector.Draw(audioProcessorSettings, AnysongEditorWindow.UpdateSettings);
                 filterElement.Add(filterVisualElement);
                 AnysongEditorWindow.OnSongSettingsChanged += filterVisualElement.Refresh;
                 filterVisualElement.RegisterCallback<DetachFromPanelEvent>(_ =>
@@ -256,7 +258,7 @@ namespace Anysong
                     menu.AddItem(new GUIContent(filterType.ToString()), false, () =>
                     {
                         AddFilter(filterType);
-                        AnysongEditorWindow.CurrentSong.RefreshEffects();
+                        AnysongEditorWindow.UpdateSettings();
                     });
                 }
 
@@ -274,8 +276,7 @@ namespace Anysong
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.AddAudioProcessor(newProcessor);
             EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             AssetDatabase.SaveAssets();
-            AnysongEditorWindow.CurrentSong.RefreshEffects();
-            // Refresh the inspector
+            AnysongEditorWindow.HandleTrackRebuild(AnysongEditorWindow.CurrentSelection.CurrentTrackIndex);
             DrawTrack();
         }
 
@@ -284,6 +285,7 @@ namespace Anysong
             AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.RemoveAudioProcessor(filter);
             EditorUtility.SetDirty(AnysongEditorWindow.CurrentSong);
             AssetDatabase.SaveAssets();
+            AnysongEditorWindow.HandleTrackRebuild(AnysongEditorWindow.CurrentSelection.CurrentTrackIndex);
 
             // Refresh the inspector
             DrawTrack();
@@ -311,7 +313,7 @@ namespace Anysong
                         .CurrentSectionTrackProperty
                         .FindPropertyRelative("patternProgressionType")
                         .enumValueIndex, AnysongEditorWindow.CurrentSelection));
-                    AnysongEditorWindow.CurrentSong.RefreshMidi(
+                    AnysongEditorWindow.UpdateMidi(
                         AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                         AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
                         0);
@@ -504,17 +506,25 @@ namespace Anysong
                 }
             }
 
-            AnysongEditorWindow.CurrentSong.RefreshMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+            AnysongEditorWindow.UpdateMidi(AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
                 AnysongEditorWindow.CurrentSelection.CurrentTrackIndex, AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
 
             AnysongEditorWindow.UpdateSettings();
         }
 
 
-        public static void DrawNote(SerializedProperty note, Action didUpdate)
+        public static void DrawNote(SerializedProperty note)
         {
             _parent.Clear();
             Draw(_parent);
+            Action didUpdate = () =>
+            {
+                AnysongPatternView.Refresh();
+                AnysongEditorWindow.UpdateMidi(
+                    AnysongEditorWindow.CurrentSelection.CurrentSectionIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentTrackIndex,
+                    AnysongEditorWindow.CurrentSelection.CurrentPatternIndex);
+            };
 
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("noteIndex"), didUpdate));
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("drift"), didUpdate));
@@ -524,17 +534,14 @@ namespace Anysong
             _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("mixWeight"), didUpdate));
 
 
-            var s = CreatePropertyFieldWithCallback(note.FindPropertyRelative("repeatRate"), didUpdate);
-
-            _parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("stepRepeats"),
-                () =>
-                {
-                    didUpdate?.Invoke();
-                    s.visible = note.FindPropertyRelative("stepRepeats").intValue > 0;
-                }));
-
-
-            _parent.Add(s);
+            //var s = CreatePropertyFieldWithCallback(note.FindPropertyRelative("repeatRate"), didUpdate);
+            //_parent.Add(CreatePropertyFieldWithCallback(note.FindPropertyRelative("stepRepeats"),
+            //    () =>
+            //    {
+            //        didUpdate?.Invoke();
+            //        s.visible = note.FindPropertyRelative("stepRepeats").intValue > 0;
+            //    }));
+            //_parent.Add(s);
 
 
             _parent.Add(Spacer());
@@ -583,7 +590,7 @@ namespace Anysong
             var propertyField = new PropertyField(property);
             propertyField.BindProperty(property);
             var isFirstCallback = true;
-            
+
             propertyField.RegisterValueChangeCallback((ev) =>
             {
                 if (isFirstCallback)

@@ -71,7 +71,6 @@ namespace Anywhen
         private void OnDestroy()
         {
             AnywhenSnapshotBlender.ApplyBlend(_currentSong, 0);
-            _currentSong.RemoveAllListeners();
         }
     }
 }

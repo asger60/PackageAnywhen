@@ -211,7 +211,7 @@ namespace Anysong
                 _currentMetronome.Restart();
                 _currentMetronome.Play();
                 _currentPlayer.Load(CurrentSong);
-                _currentPlayer.SetPlay(true, 
+                _currentPlayer.SetPlay(true,
                     AnysongSectionsView.IsSectionLocked ? _currentSelection.CurrentSectionIndex : 0,
                     AnysongSectionsView.IsSectionLocked);
                 AnywhenAudioMetronome.OnTickSub16 += OnTick16;
@@ -277,7 +277,6 @@ namespace Anysong
                 return;
             }
 
-            CurrentSong.RemoveAllListeners();
             CreatePlayer();
             if (uxmlAsset)
             {
@@ -664,13 +663,7 @@ namespace Anysong
 
                     break;
                 case InspectorModes.Step:
-                    AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty,
-                        () =>
-                        {
-                            AnysongPatternView.Refresh();
-                            CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
-                                CurrentSelection.CurrentPatternIndex);
-                        });
+                    AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty);
                     break;
                 case InspectorModes.Progression:
                     AnysongInspectorView.DrawProgression();
@@ -694,10 +687,7 @@ namespace Anysong
 
             _inspectorPanel.Q<Button>("RandomizeMelody").RegisterCallback((ClickEvent ev) => { RandomizeMelody(); });
             _inspectorPanel.Q<Button>("RandomizeRhythm").RegisterCallback((ClickEvent ev) => { RandomizeRhythm(); });
-            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) =>
-            {
-                CopyPattern(_currentSelection.CurrentPattern);
-            });
+            _inspectorPanel.Q<Button>("CopyButton").RegisterCallback<ClickEvent>((evt) => { CopyPattern(_currentSelection.CurrentPattern); });
             _inspectorPanel.Q<Button>("PasteButton").RegisterCallback<ClickEvent>((evt) => { PastePattern(); });
         }
 
@@ -797,16 +787,9 @@ namespace Anysong
         public static void SelectPatternStep(AnysongPatternStep patternStep, int stepIndex, int noteIndex)
         {
             if (!patternStep.NoteOn) return;
-
             _currentSelection.SetStepIndex(stepIndex);
             _currentSelection.SetNoteIndex(patternStep.GetArrayIndex(noteIndex));
-            AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty, () =>
-            {
-                AnysongPatternView.Refresh();
-
-                CurrentSong.RefreshMidi(CurrentSelection.CurrentSectionIndex, CurrentSelection.CurrentTrackIndex,
-                    CurrentSelection.CurrentPatternIndex);
-            });
+            AnysongInspectorView.DrawNote(_currentSelection.CurrentNoteProperty);
             AnysongPatternView.Refresh();
         }
 
@@ -831,6 +814,11 @@ namespace Anysong
         public static void SetSectionLocked(bool isSectionLocked)
         {
             _currentPlayer.SetSectionLocked(isSectionLocked);
+        }
+
+        public static void HandleTrackRebuild(int trackIndex)
+        {
+            _currentPlayer.HandleTrackRebuild(trackIndex);
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Anysong
         {
             _parent.focusable = true;
             _parent.pickingMode = PickingMode.Position;
-            _parent.Focus();
+            //_parent.Focus();
             _parent.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
             _parent.RegisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
             _parent.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEvent);
