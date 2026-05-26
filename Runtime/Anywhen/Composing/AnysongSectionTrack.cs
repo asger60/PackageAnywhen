@@ -52,6 +52,7 @@ namespace Anywhen.Composing
                 {
                     for (int i = 0; i < Patterns.Length; i++)
                     {
+                        if(Patterns[i].IsNull()) continue;
                         Patterns[i].Dispose();
                     }
 

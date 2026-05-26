@@ -45,6 +45,11 @@ namespace Anywhen.Composing
                     Steps.Dispose();
                 }
             }
+
+            public bool IsNull()
+            {
+                return !Steps.IsCreated && !TriggerChances.IsCreated;
+            }
         }
 
         public Unmanaged ToUnmanaged()

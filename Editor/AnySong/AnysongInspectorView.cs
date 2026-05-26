@@ -48,7 +48,6 @@ namespace Anysong
                 AnysongEditorWindow.UpdateSongSectionsSettings));
             _parent.Add(CreatePropertyFieldWithCallback(section.FindPropertyRelative("progressionSteps"),
                 AnysongEditorWindow.UpdateSongSectionsSettings));
-            Debug.Log("DrawSection");
             _parent.Add(CreateUtilsBox());
         }
 
