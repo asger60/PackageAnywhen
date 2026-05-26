@@ -23,16 +23,9 @@ namespace Anywhen.Composing
         public event Action<int, int, int> OnSongMidiChanged;
         public event Action OnSongSettingsChanged;
         public event Action OnSongEffectsChanged;
-        public event Action OnSongTracksChanged;
         public event Action OnSongSectionsChanged;
 
-        private void OnValidate()
-        {
-            //RefreshSettings();
-            //RefreshSections();
-        }
 
-        
 
         [ContextMenu("ClearPatterns")]
         void ClearPatterns()
@@ -80,17 +73,6 @@ namespace Anywhen.Composing
             OnSongEffectsChanged?.Invoke();
         }
 
-        public void RefreshTrack()
-        {
-            OnSongTracksChanged?.Invoke();
-        }
-        
-        public void RefreshSections()
-        {
-            Debug.Log("RefreshSections");
-            OnSongSectionsChanged?.Invoke();
-        }
-
 
         public void RemoveAllListeners()
         {
@@ -119,13 +101,7 @@ namespace Anywhen.Composing
                 }
             }
 
-            if (OnSongTracksChanged != null)
-            {
-                foreach (var currentDelegate in OnSongTracksChanged.GetInvocationList())
-                {
-                    OnSongTracksChanged -= (Action)currentDelegate;
-                }
-            }
+
             
             if (OnSongSectionsChanged != null)
             {
@@ -138,7 +114,6 @@ namespace Anywhen.Composing
             OnSongMidiChanged = null;
             OnSongSettingsChanged = null;
             OnSongEffectsChanged = null;
-            OnSongTracksChanged = null;
             OnSongSectionsChanged = null;
         }
     }

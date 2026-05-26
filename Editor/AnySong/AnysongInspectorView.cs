@@ -177,11 +177,7 @@ namespace Anysong
                 () => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods,
                 v => AnysongEditorWindow.CurrentSelection.CurrentSongTrackSettings.volumeMods = v,
                 AnysongEditorWindow.UpdateSettings,
-                () =>
-                {
-                    AnysongEditorWindow.CurrentSong.RefreshTrack();
-                    AnysongEditorWindow.UpdateSettings();
-                });
+                AnysongEditorWindow.UpdateSettings);
             _parent.Add(el_volume);
 
             _parent.Add(CreatePropertyFieldWithCallback(selection.FindPropertyRelative("trackPitch"),

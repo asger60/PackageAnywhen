@@ -47,7 +47,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     }
 
 
-
     public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
     {
         if (_voices.IsCreated)
@@ -223,10 +222,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             }
         }
 
-        if (!trackActive && !anyVoiceActive && dspTime >= _nextEvent.ScheduledEndTime)
-        {
-            return 0;
-        }
+        //if (!trackActive && !anyVoiceActive && dspTime >= _nextEvent.ScheduledEndTime)
+        //{
+        //    return 0;
+        //}
 
         if (_hasPendingTracksUpdate)
         {
@@ -247,8 +246,8 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
 
 
-        if (!_voices.IsCreated)
-            return 0;
+        //if (!_voices.IsCreated)
+        //    return 0;
 
         float clipAmplitude = 0;
 
@@ -311,7 +310,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         return clipAmplitude * _trackVolume;
     }
 
-    public float GetModSignal(NativeArray<ModRouting> modRoutingSettings)
+    public readonly float GetModSignal(NativeArray<ModRouting> modRoutingSettings)
     {
         if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return 0;
         float s = 0;

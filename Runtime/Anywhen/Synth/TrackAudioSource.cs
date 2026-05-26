@@ -51,7 +51,7 @@ namespace Anywhen.Synth
 
 
 
-        public bool IsSamplePlaying => _sampleSource.IsPlaying;
+
 
         public void UpdateSettings(AudioSourceSettings.Unmanaged settings)
         {

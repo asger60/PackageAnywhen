@@ -52,7 +52,7 @@ namespace Anywhen.Synth
 
             float output = 0;
             float ph01 = (float)_phase / PhaseMax;
-            float dt = (float)(_phaseIncrement * pitchMultiplier) / PhaseMax;
+            float dt = (_phaseIncrement * pitchMultiplier) / PhaseMax;
 
             switch (_settings.SynthType)
             {

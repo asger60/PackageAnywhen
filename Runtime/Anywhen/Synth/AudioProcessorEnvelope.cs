@@ -154,6 +154,7 @@ namespace Anywhen.Synth
             {
                 return;
             }
+
             _settings = settings;
         }
 
@@ -207,7 +208,7 @@ namespace Anywhen.Synth
                     break;
             }
 
-            return Mathf.Clamp01(_output);
+            return (_output);
         }
 
         public bool Equals(AudioProcessorEnvelope other)

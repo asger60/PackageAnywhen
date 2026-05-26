@@ -41,7 +41,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song.OnSongSectionsChanged += HandleSongSectionsChanged;
         song.OnSongSettingsChanged += HandleSongSettingsChanged;
         song.OnSongEffectsChanged += HandleSongEffectsChanged;
-        song.OnSongTracksChanged += HandleSongTracksChanged;
     }
 
     private void UnregisterSongListeners()
@@ -51,7 +50,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         song.OnSongSectionsChanged -= HandleSongSectionsChanged;
         song.OnSongSettingsChanged -= HandleSongSettingsChanged;
         song.OnSongEffectsChanged -= HandleSongEffectsChanged;
-        song.OnSongTracksChanged -= HandleSongTracksChanged;
     }
 
     public void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
@@ -84,10 +82,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         NotifyTrackSettingsChanged();
     }
 
-    private void HandleSongTracksChanged()
-    {
-        NotifyTrackSettingsChanged();
-    }
 
     private void NotifyTrackSettingsChanged()
     {

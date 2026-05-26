@@ -17,12 +17,13 @@ public struct AnywhenAudioVoice
 
     private AudioProcessorSettings.EnvelopeSettings _envelopeSettings;
     private NativeArray<ModRouting> _pitchMod;
-    public bool IsIdle => !_noteQueued;
+    public bool IsIdle => !_noteQueued && !_isPlaying;
     public double ScheduledStartTime => _scheduledStartTime;
     private float _trackPitch;
     private NativeArray<TrackAudioSource> _audioSources;
     int _sampleRate;
     NativeArray<AudioSourceSettings.Unmanaged> _audioSourceSettings;
+    private bool _isPlaying;
 
     public void Init(int sampleRate)
     {
@@ -76,36 +77,43 @@ public struct AnywhenAudioVoice
     internal float Process(double dspTime, in AnysongTrack anysongTrack)
     {
         float clipAmplitude = 0;
-        bool isPlaying = _noteQueued && dspTime >= _scheduledStartTime;
-
-        if (isPlaying)
+        if (_noteQueued && dspTime >= _scheduledStartTime)
         {
+            _isPlaying = true;
+            _noteQueued = false;
+        }
+
+        if (_isPlaying)
+        {
+            _voiceEnvelope.SetGate(true);
             float pitchModSignal = anysongTrack.GetModSignal(_pitchMod);
             float pitchMultiplier = _trackPitch * (float)Math.Pow(2.0, pitchModSignal);
 
             if (_audioSources.IsCreated)
             {
-                bool anyPlaying = false;
                 for (int i = 0; i < _audioSources.Length; i++)
                 {
                     var audioSource = _audioSources[i];
                     clipAmplitude += audioSource.Process(clipAmplitude, pitchMultiplier);
-                    anyPlaying |= audioSource.IsSamplePlaying;
                     _audioSources[i] = audioSource;
                 }
+            }
 
-                if (!anyPlaying)
-                    _noteQueued = false;
+            if (dspTime >= _scheduledEndTime)
+            {
+                _voiceEnvelope.SetGate(false);
+                if (!_voiceEnvelope.IsActive)
+                    _isPlaying = false;
             }
         }
 
-        bool envelopeActive = _voiceEnvelope.IsActive;
-        if (!isPlaying && !envelopeActive)
-        {
-            return 0;
-        }
+        //bool envelopeActive = _voiceEnvelope.IsActive;
+        //if (!isPlaying && !envelopeActive)
+        //{
+        //    return 0;
+        //}
 
-        _voiceEnvelope.SetGate(dspTime >= _scheduledStartTime && dspTime <= _scheduledEndTime);
+        //_voiceEnvelope.SetGate(dspTime >= _scheduledStartTime && dspTime <= _scheduledEndTime);
 
         return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
     }
