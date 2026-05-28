@@ -76,7 +76,6 @@ namespace Anysong
                 {
                     _patternStep.RemoveNote(currentNote);
                     AnysongPatternView.Refresh();   
-                    Debug.Log("Remove Note");
                 }
                 else
                 {

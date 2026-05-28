@@ -130,6 +130,7 @@ public struct AnywhenAudioVoice
             }
         }
 
+        _isPlaying = false;
         _velocity = playbackEvent.Note.velocity;
     }
 
