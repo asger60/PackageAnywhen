@@ -100,6 +100,14 @@ namespace Anywhen
             return _loadedInstruments.Data;
         }
 
+
+        [ContextMenu("DeleteDatabase")]
+        void DeleteDatabase()
+        {
+            LoadedInstruments.Clear();
+            _loadedInstruments.Data.Dispose();
+        }
+
         [BurstDiscard]
         private static void CheckUpdateLoadedInstrumentsUnmanaged()
         {
@@ -120,6 +128,7 @@ namespace Anywhen
 
             _loadedInstruments.Data =
                 new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);
+
             for (var index = 0; index < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; index++)
             {
                 _loadedInstruments.Data[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
