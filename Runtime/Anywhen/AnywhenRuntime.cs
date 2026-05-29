@@ -12,14 +12,21 @@ namespace Anywhen
 #endif
     public class AnywhenRuntime : MonoBehaviour
     {
-
-
         private static AnywhenSampleNoteClipPreviewer _sampleNoteClipPreviewer;
 
 
         [SerializeField] InstrumentDatabase _thisInstrumentDatabase;
         AnywhenAudioMetronome _metronome;
-        public static AnywhenAudioMetronome Metronome => _instance._metronome;
+
+        public static AnywhenAudioMetronome Metronome
+        {
+            get
+            {
+                if (_instance == null)
+                    return null;
+                return _instance._metronome;
+            }
+        }
 
         public static InstrumentDatabase InstrumentDatabase => Instance._thisInstrumentDatabase;
 

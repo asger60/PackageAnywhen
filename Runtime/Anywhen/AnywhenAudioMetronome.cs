@@ -63,7 +63,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     public static int CurrentBPM => AnywhenRuntime.Metronome.Bpm;
 
     public static int CurrentBar;
-    
+
     public bool isFinite => false;
     public bool isRealtime => true;
     public DiscreteTime? length => null;
@@ -213,7 +213,7 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
         public bool isFinite => false;
         public bool isRealtime => true;
         public DiscreteTime? length => null;
-        
+
 
         private Processor(int sampleRate, int bpm)
         {
@@ -494,8 +494,6 @@ public class AnywhenAudioMetronome : ScriptableObject, IAudioGenerator
     {
         public bool isPlaying;
     }
-
-  
 }
 
 public struct MetronomeTickEvent
