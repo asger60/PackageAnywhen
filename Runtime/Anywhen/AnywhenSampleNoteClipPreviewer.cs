@@ -29,7 +29,6 @@ namespace Anywhen
 
         public void PlayNoteClip(AnywhenNoteClip.Unmanaged noteClip)
         {
-            Debug.Log("PlayNoteClip");
             Init();
             _currentClip = noteClip;
             NoteEvent n = new NoteEvent(0, 1);

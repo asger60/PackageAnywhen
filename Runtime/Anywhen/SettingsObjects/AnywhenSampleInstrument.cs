@@ -70,14 +70,11 @@ namespace Anywhen.SettingsObjects
                        clipSelectType == other.clipSelectType &&
                        Mathf.Approximately(volume, other.volume) &&
                        originalTempo == other.originalTempo &&
-                       tempoControlPitch == other.tempoControlPitch &&
-                       seed == other.seed;
+                       tempoControlPitch == other.tempoControlPitch;
             }
 
-            public override bool Equals(object obj)
-            {
-                return obj is Unmanaged other && Equals(other);
-            }
+
+       
 
             public override int GetHashCode()
             {

@@ -25,17 +25,17 @@ namespace Anywhen
 
             public struct Unmanaged : IEquatable<Unmanaged>, IDisposable
             {
-                public AnywhenSampleInstrument.Unmanaged instrument;
-                public NativeArray<AnywhenNoteClip.Unmanaged> clips;
+                public AnywhenSampleInstrument.Unmanaged Instrument;
+                public NativeArray<AnywhenNoteClip.Unmanaged> Clips;
 
                 public bool Equals(Unmanaged other)
                 {
-                    return instrument.Equals(other.instrument);
+                    return Instrument.Equals(other.Instrument);
                 }
 
                 public void Dispose()
                 {
-                    if (clips.IsCreated) clips.Dispose();
+                    if (Clips.IsCreated) Clips.Dispose();
                 }
             }
 
@@ -49,24 +49,11 @@ namespace Anywhen
 
                 return new Unmanaged
                 {
-                    instrument = Instrument.ToUnmanaged(),
-                    clips = unmanagedClips
+                    Instrument = Instrument.ToUnmanaged(),
+                    Clips = unmanagedClips
                 };
             }
 
-            public NativeArray<AnywhenNoteClip.Unmanaged> UnmanagedClips
-            {
-                get
-                {
-                    var r = new NativeArray<AnywhenNoteClip.Unmanaged>(clips.Count, Allocator.Temp);
-                    for (int i = 0; i < clips.Count; i++)
-                    {
-                        r[i] = clips[i].ToUnmanaged();
-                    }
-
-                    return r;
-                }
-            }
 
             public bool Equals(LoadedInstrument other)
             {
@@ -91,13 +78,13 @@ namespace Anywhen
         {
         }
 
-        private static readonly SharedStatic<NativeArray<LoadedInstrument.Unmanaged>> _loadedInstruments =
+        private static readonly SharedStatic<NativeArray<LoadedInstrument.Unmanaged>> LoadedInstrumentsUnmanaged =
             SharedStatic<NativeArray<LoadedInstrument.Unmanaged>>.GetOrCreate<InstrumentDatabase, SharedLoadedInstrumentsKey>();
 
         public static NativeArray<LoadedInstrument.Unmanaged> GetLoadedInstrumentsUnmanaged()
         {
             CheckUpdateLoadedInstrumentsUnmanaged();
-            return _loadedInstruments.Data;
+            return LoadedInstrumentsUnmanaged.Data;
         }
 
 
@@ -105,47 +92,64 @@ namespace Anywhen
         void DeleteDatabase()
         {
             LoadedInstruments.Clear();
-            _loadedInstruments.Data.Dispose();
+            for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
+            {
+                LoadedInstrumentsUnmanaged.Data[i].Dispose();
+            }
+
+            LoadedInstrumentsUnmanaged.Data.Dispose();
         }
 
         [BurstDiscard]
         private static void CheckUpdateLoadedInstrumentsUnmanaged()
         {
-            if (_loadedInstruments.Data.IsCreated && _loadedInstruments.Data.Length == AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count)
+            if (LoadedInstrumentsUnmanaged.Data.IsCreated &&
+                LoadedInstrumentsUnmanaged.Data.Length == AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count)
             {
-                return;
-            }
-
-            if (_loadedInstruments.Data.IsCreated)
-            {
-                for (int i = 0; i < _loadedInstruments.Data.Length; i++)
+                bool allGood = true;
+                for (var i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
                 {
-                    _loadedInstruments.Data[i].Dispose();
+                    if (!LoadedInstrumentsUnmanaged.Data[i].Instrument
+                            .Equals(AnywhenRuntime.InstrumentDatabase.LoadedInstruments[i].Instrument.ToUnmanaged()))
+                    {
+                        allGood = false;
+                    }
                 }
 
-                _loadedInstruments.Data.Dispose();
+                if (allGood)
+                    return;
             }
 
-            _loadedInstruments.Data =
+            if (LoadedInstrumentsUnmanaged.Data.IsCreated)
+            {
+                for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
+                {
+                    LoadedInstrumentsUnmanaged.Data[i].Dispose();
+                }
+
+                LoadedInstrumentsUnmanaged.Data.Dispose();
+            }
+
+            LoadedInstrumentsUnmanaged.Data =
                 new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);
 
             for (var index = 0; index < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; index++)
             {
-                _loadedInstruments.Data[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
+                LoadedInstrumentsUnmanaged.Data[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
             }
         }
 
         private void OnDestroy()
         {
-            if (_loadedInstruments.Data.IsCreated)
+            if (LoadedInstrumentsUnmanaged.Data.IsCreated)
             {
-                for (int i = 0; i < _loadedInstruments.Data.Length; i++)
+                for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
                 {
-                    _loadedInstruments.Data[i].Dispose();
+                    LoadedInstrumentsUnmanaged.Data[i].Dispose();
                 }
 
-                _loadedInstruments.Data.Dispose();
-                _loadedInstruments.Data = default;
+                LoadedInstrumentsUnmanaged.Data.Dispose();
+                LoadedInstrumentsUnmanaged.Data = default;
             }
         }
 
@@ -156,12 +160,12 @@ namespace Anywhen
         public static void LoadInstrumentNotes(AnywhenSampleInstrument instrument)
         {
             if (!instrument) return;
-            //if (AnywhenRuntime.InstrumentDatabase.IsLoaded(instrument)) return;
             var newLoadInstrument = new LoadedInstrument
             {
                 Instrument = instrument,
                 clips = instrument.LoadClips()
             };
+
             if (!AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Contains(newLoadInstrument))
             {
                 AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Add(newLoadInstrument);
@@ -209,11 +213,11 @@ namespace Anywhen
             for (var i = 0; i < loadedInstruments.Length; i++)
             {
                 var loaded = loadedInstruments[i];
-                var unmanaged = loaded.instrument;
+                var unmanaged = loaded.Instrument;
                 unmanaged.seed = instrument.seed; // Ignore seed for comparison
                 if (unmanaged.Equals(instrument))
                 {
-                    return loaded.clips;
+                    return loaded.Clips;
                 }
             }
 
