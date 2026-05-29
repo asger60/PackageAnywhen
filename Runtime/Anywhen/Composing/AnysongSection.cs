@@ -79,6 +79,8 @@ namespace Anywhen.Composing
             for (int i = 0; i < tracks.Count; i++)
                 unmanagedTracks[i] = tracks[i].ToUnmanaged();
 
+            groove ??= Array.Empty<float>();
+
             return new Unmanaged
             {
                 SectionLength = sectionLength,
