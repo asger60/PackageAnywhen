@@ -101,6 +101,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SetSong(AnysongObject newSong)
     {
+        InstrumentDatabase.LoadAllInstruments(newSong);
         song = Instantiate(newSong);
     }
 
@@ -284,6 +285,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         {
             case LoadOptions.Default:
                 song = currentSong;
+
+                InstrumentDatabase.LoadAllInstruments(currentSong);
                 foreach (var track in song.Tracks)
                 {
                     foreach (var audioSource in track.AudioSources)
@@ -523,7 +526,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
-            InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are updated on managed side
+            InstrumentDatabase.RefreshUnamanged();
+            //InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are updated on managed side
             foreach (var element in pipe.GetAvailableData(context))
             {
                 if (element.TryGetData(out PlaybackStateData data))
@@ -735,7 +739,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                         if (chancePass && intensityPass)
                         {
-              
                             var playbackTrack = _tracks[trackIndex];
                             playbackTrack.HandlePlaybackEvent(
                                 new PlaybackEvent(

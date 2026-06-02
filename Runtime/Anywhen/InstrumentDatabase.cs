@@ -81,6 +81,25 @@ namespace Anywhen
         private static readonly SharedStatic<NativeArray<LoadedInstrument.Unmanaged>> LoadedInstrumentsUnmanaged =
             SharedStatic<NativeArray<LoadedInstrument.Unmanaged>>.GetOrCreate<InstrumentDatabase, SharedLoadedInstrumentsKey>();
 
+
+        public static void RefreshUnamanged()
+        {
+            for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
+            {
+                LoadedInstrumentsUnmanaged.Data[i].Dispose();
+            }
+
+            LoadedInstrumentsUnmanaged.Data.Dispose();
+
+            LoadedInstrumentsUnmanaged.Data =
+                new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);
+
+            for (var index = 0; index < AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count; index++)
+            {
+                LoadedInstrumentsUnmanaged.Data[index] = AnywhenRuntime.InstrumentDatabase.LoadedInstruments[index].ToUnmanaged(Allocator.Persistent);
+            }
+        }
+
         public static NativeArray<LoadedInstrument.Unmanaged> GetLoadedInstrumentsUnmanaged()
         {
             CheckUpdateLoadedInstrumentsUnmanaged();
@@ -89,7 +108,7 @@ namespace Anywhen
 
 
         [ContextMenu("DeleteDatabase")]
-        void DeleteDatabase()
+        public void DeleteDatabase()
         {
             LoadedInstruments.Clear();
             for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
@@ -234,6 +253,7 @@ namespace Anywhen
 
         public static void LoadAllInstruments(AnysongObject currentSong)
         {
+#if UNITY_EDITOR
             foreach (var songTrack in currentSong.Tracks)
             {
                 foreach (var audioSource in songTrack.AudioSources)
@@ -243,13 +263,14 @@ namespace Anywhen
                         var sampleInstrument = audioSource.sampleSourceSettings.sampleInstrument;
                         if (sampleInstrument && !IsLoaded(sampleInstrument))
                         {
-#if UNITY_EDITOR
                             LoadInstrumentNotes(sampleInstrument);
-#endif
+                            Debug.LogWarning("Loaded instrument at runtime, make sure to load instruments from the editor - instrument: " +
+                                             sampleInstrument.name);
                         }
                     }
                 }
             }
+#endif
         }
     }
 }
