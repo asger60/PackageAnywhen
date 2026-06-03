@@ -56,7 +56,9 @@ namespace Anywhen.Synth
             }
         }
 
-        public void SetGate(bool gate) { }
+        public void SetGate(bool gate)
+        {
+        }
 
         public void SetSettings(AudioProcessorSettings.Unmanaged settings)
         {
@@ -64,43 +66,49 @@ namespace Anywhen.Synth
             UpdateSettings();
         }
 
-        public void DoUpdate() { }
+        public void DoUpdate()
+        {
+        }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> channelBuffer, AnysongTrack anysongTrack)
         {
             UpdateSettings();
 
-            if (!_initialized) return sample;
+            if (!_initialized) return;
 
-            int channel = _channelCounter % 2;
-            _channelCounter++;
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
+            {
+                float sample = channelBuffer[frame];
+                int channel = _channelCounter % 2;
+                _channelCounter++;
 
-            ref NativeArray<float> buffer = ref (channel == 0 ? ref _delayBuffer0 : ref _delayBuffer1);
-            ref int writePos = ref (channel == 0 ? ref _writePos0 : ref _writePos1);
+                ref NativeArray<float> buffer = ref (channel == 0 ? ref _delayBuffer0 : ref _delayBuffer1);
+                ref int writePos = ref (channel == 0 ? ref _writePos0 : ref _writePos1);
 
-            // Calculate read position
-            float delayInSamples = _delayTime * _sampleRate;
-            float readPos = writePos - delayInSamples;
+                // Calculate read position
+                float delayInSamples = _delayTime * _sampleRate;
+                float readPos = writePos - delayInSamples;
 
-            // Wrap read position
-            int bufLen = buffer.Length;
-            while (readPos < 0) readPos += bufLen;
+                // Wrap read position
+                int bufLen = buffer.Length;
+                while (readPos < 0) readPos += bufLen;
 
-            // Linear interpolation
-            int idx1 = (int)readPos % bufLen;
-            int idx2 = (idx1 + 1) % bufLen;
-            float frac = readPos - (int)readPos;
+                // Linear interpolation
+                int idx1 = (int)readPos % bufLen;
+                int idx2 = (idx1 + 1) % bufLen;
+                float frac = readPos - (int)readPos;
 
-            float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
+                float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
 
-            // Write to buffer (input + feedback)
-            buffer[writePos] = sample + (delayedSample * _feedback);
+                // Write to buffer (input + feedback)
+                buffer[writePos] = sample + (delayedSample * _feedback);
 
-            // Advance write position
-            writePos = (writePos + 1) % bufLen;
+                // Advance write position
+                writePos = (writePos + 1) % bufLen;
 
-            // Mix dry and wet
-            return (delayedSample * _wet) + (sample * (1f - _wet));
+                // Mix dry and wet
+                channelBuffer[frame] = (delayedSample * _wet) + (sample * (1f - _wet));
+            }
         }
 
         public void Dispose()

@@ -131,6 +131,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void SetPlay(bool state, int startSectionIndex, bool sectionLocked)
     {
+        if (state)
+        {
+            InstrumentDatabase.LoadAllInstruments(song);
+            InstrumentDatabase.RefreshUnamangedInstruments();
+        }
+
         _isPlaying = state;
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
@@ -465,6 +471,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         private GeneratorInstance _selfHandle;
         private int _lastSub16Count;
         bool _sectionLocked;
+        private NativeArray<float> _mixBuffer;
+        const int blockSize = 64;
+
 
         public static GeneratorInstance Allocate(ControlContext context, int sampleRate, AnysongObject initialSong)
         {
@@ -485,6 +494,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         int _currentSectionIndex;
         int _currentSectionBar;
 
+
         Processor(int sampleRate, AnysongObject song)
         {
             _seed = 12345;
@@ -500,6 +510,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _sectionLocked = false;
             _audioDataEvent = new AudioDataEvent { Channels = 2 }; // Assuming stereo for now
             _playbackIndicesEvent = default;
+            _mixBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
+
             if (song != null)
             {
                 _anysongSections = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
@@ -514,7 +526,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var trackSettings = song.Tracks[i];
                     var unmanagedSettings = trackSettings.ToUnmanaged();
-                    _tracks[i] = new AnysongTrack(sampleRate, unmanagedSettings);
+                    _tracks[i] = new AnysongTrack(sampleRate, unmanagedSettings, blockSize);
                 }
             }
             else
@@ -523,10 +535,15 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             }
         }
 
+        public void Dispose()
+        {
+            _tracks.Dispose();
+            _anysongSections.Dispose();
+            _mixBuffer.Dispose();
+        }
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
-            InstrumentDatabase.RefreshUnamanged();
             //InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are updated on managed side
             foreach (var element in pipe.GetAvailableData(context))
             {
@@ -534,9 +551,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (data.IsPlaying)
                     {
+                        Debug.Log("Updating playback state for section: " + _currentSectionIndex);
                         _currentSectionBar = 0;
                         _currentSectionIndex = data.StartSectionIndex;
                         _sectionLocked = data.SectionLocked;
+
                         if (_anysongSections is { IsCreated: true, Length: > 0 })
                         {
                             AnywhenAudioMetronome.Processor.SetBaseProgression(_anysongSections[_currentSectionIndex].ProgressionSteps);
@@ -574,7 +593,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                         if (trackIndex < _tracks.Length)
                         {
                             var thisTrack = _tracks[trackIndex];
-                            thisTrack.UpdateSettings(settingsUpdate.TrackSettings[trackIndex]);
+                            thisTrack.UpdateSettings(settingsUpdate.TrackSettings[trackIndex], blockSize);
                             _tracks[trackIndex] = thisTrack;
                         }
                         else
@@ -590,8 +609,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     var thisTrack = _tracks[newTrackSettings.TrackIndex];
 
-                    thisTrack.CreateTrack(newTrackSettings.TrackSettings, _sampleRate);
-                    thisTrack.UpdateSettings(newTrackSettings.TrackSettings);
+                    thisTrack.CreateTrack(newTrackSettings.TrackSettings, _sampleRate, blockSize);
+                    thisTrack.UpdateSettings(newTrackSettings.TrackSettings, blockSize);
 
                     _tracks[newTrackSettings.TrackIndex] = thisTrack;
                 }
@@ -682,122 +701,132 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
             double sampleRate = _setup.sampleRate;
             double invSampleRate = 1.0 / sampleRate;
-            double dspTime = context.dspTime * invSampleRate;
 
-            int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
             if (!_anysongSections.IsCreated) return buffer.frameCount;
 
-            var section = _anysongSections[_currentSectionIndex];
+            if (sampleRate <= 0) return buffer.frameCount;
 
-            if (_isPlaying && currentSub16Count != _lastSub16Count)
+            for (int blockOffset = 0; blockOffset < buffer.frameCount; blockOffset += blockSize)
             {
-                if (currentSub16Count == 0)
+                double dspTime = (context.dspTime + (ulong)blockOffset) * invSampleRate;
+
+                int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
+
+
+                var section = _anysongSections[_currentSectionIndex];
+
+                if (_isPlaying && currentSub16Count != _lastSub16Count)
                 {
-                    if (_currentSectionBar >= section.SectionLength && !_sectionLocked)
-                    {
-                        _currentSectionBar = 0;
-                        _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
-
-                        section = _anysongSections[_currentSectionIndex];
-                        section.Reset();
-                        for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
-                        {
-                            var track = section.Tracks[trackIndex];
-                            track.Reset();
-                            section.Tracks[trackIndex] = track;
-                        }
-
-
-                        AnywhenAudioMetronome.Processor.SetBaseProgression(section.ProgressionSteps);
-                    }
-
-                    _currentSectionBar++;
-                }
-
-                _playbackIndicesEvent.SectionIndex = _currentSectionIndex;
-
-                for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
-                {
-                    var track = section.Tracks[trackIndex];
                     if (currentSub16Count == 0)
                     {
-                        track.AdvancePlayingPattern();
-                    }
-
-                    var pattern = track.Patterns[track.CurrentPatternIndex];
-
-                    if (trackIndex < PlaybackIndicesEvent.MaxTracks)
-                    {
-                        _playbackIndicesEvent.PatternIndices[trackIndex] = track.CurrentPatternIndex;
-                        _playbackIndicesEvent.StepIndices[trackIndex] = pattern.GetStepIndex(currentSub16Count);
-                    }
-
-                    foreach (var thisNote in pattern.GetCurrentStep(currentSub16Count).StepNotes)
-                    {
-                        bool chancePass = thisNote.chance * 100 > NextInt(0, 100);
-                        bool intensityPass = thisNote.mixWeight > (1 - _intensity);
-
-                        if (chancePass && intensityPass)
+                        if (_currentSectionBar >= section.SectionLength && !_sectionLocked)
                         {
-                            var playbackTrack = _tracks[trackIndex];
-                            playbackTrack.HandlePlaybackEvent(
-                                new PlaybackEvent(
-                                    thisNote,
-                                    _anysongSections[_currentSectionIndex].GetGrooveValue(currentSub16Count),
-                                    dspTime)
-                            );
+                            _currentSectionBar = 0;
+                            _currentSectionIndex = (_currentSectionIndex + 1) % _anysongSections.Length;
 
-                            _tracks[trackIndex] = playbackTrack;
+                            section = _anysongSections[_currentSectionIndex];
+                            section.Reset();
+                            for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
+                            {
+                                var track = section.Tracks[trackIndex];
+                                track.Reset();
+                                section.Tracks[trackIndex] = track;
+                            }
+
+
+                            AnywhenAudioMetronome.Processor.SetBaseProgression(section.ProgressionSteps);
                         }
+
+                        _currentSectionBar++;
                     }
 
+                    _playbackIndicesEvent.SectionIndex = _currentSectionIndex;
 
-                    track.Patterns[track.CurrentPatternIndex] = pattern;
-                    section.Tracks[trackIndex] = track;
-                    _anysongSections[_currentSectionIndex] = section;
+                    for (int trackIndex = 0; trackIndex < section.Tracks.Length; trackIndex++)
+                    {
+                        var track = section.Tracks[trackIndex];
+                        if (currentSub16Count == 0)
+                        {
+                            track.AdvancePlayingPattern();
+                        }
+
+                        var pattern = track.Patterns[track.CurrentPatternIndex];
+
+                        if (trackIndex < PlaybackIndicesEvent.MaxTracks)
+                        {
+                            _playbackIndicesEvent.PatternIndices[trackIndex] = track.CurrentPatternIndex;
+                            _playbackIndicesEvent.StepIndices[trackIndex] = pattern.GetStepIndex(currentSub16Count);
+                        }
+
+                        foreach (var thisNote in pattern.GetCurrentStep(currentSub16Count).StepNotes)
+                        {
+                            bool chancePass = thisNote.chance * 100 > NextInt(0, 100);
+                            bool intensityPass = thisNote.mixWeight > (1 - _intensity);
+
+                            if (chancePass && intensityPass)
+                            {
+                                var playbackTrack = _tracks[trackIndex];
+                                playbackTrack.HandlePlaybackEvent(
+                                    new PlaybackEvent(
+                                        thisNote,
+                                        _anysongSections[_currentSectionIndex].GetGrooveValue(currentSub16Count),
+                                        dspTime)
+                                );
+
+                                _tracks[trackIndex] = playbackTrack;
+                            }
+                        }
+
+
+                        track.Patterns[track.CurrentPatternIndex] = pattern;
+                        section.Tracks[trackIndex] = track;
+                        _anysongSections[_currentSectionIndex] = section;
+                    }
+
+                    _lastSub16Count = currentSub16Count;
                 }
 
-                _lastSub16Count = currentSub16Count;
-            }
 
-            if (sampleRate <= 0)
-                return buffer.frameCount;
-
-            // Clear buffer before mixing
-            for (var frame = 0; frame < buffer.frameCount; frame++)
-            {
-                for (var channel = 0; channel < buffer.channelCount; channel++)
-                    buffer[channel, frame] = 0;
-            }
-
-            for (int i = 0; i < _tracks.Length; i++)
-            {
-                var track = _tracks[i];
-                for (var frame = 0; frame < buffer.frameCount; frame++)
+                // Clear buffer before mixing
+                for (var frame = 0; frame < _mixBuffer.Length; frame++)
                 {
-                    double currentFrameDspTime = dspTime + (frame * invSampleRate);
-                    float trackAmp = track.Process(currentFrameDspTime);
-
-                    for (var channel = 0; channel < buffer.channelCount; channel++)
-                        buffer[channel, frame] += trackAmp;
+                    _mixBuffer[frame] = 0;
                 }
 
-                _tracks[i] = track;
+                for (int i = 0; i < _tracks.Length; i++)
+                {
+                    var track = _tracks[i];
+                    //for (var frame = 0; frame < buffer.frameCount; frame++) // flyt denne løkke så kangt ind i funtionerne som jeg kan
+                    {
+                        track.Process(dspTime, invSampleRate, _mixBuffer, blockSize);
+
+                        //for (var channel = 0; channel < buffer.channelCount; channel++)
+                        //    buffer[channel, frame] += trackAmp;
+                    }
+
+                    _tracks[i] = track;
+                }
+
+                // Capture samples for visualization
+                //_audioDataEvent.Channels = buffer.channelCount;
+                //_audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
+                //for (int i = 0; i < _audioDataEvent.SampleCount; i++)
+                //{
+                //    // For oscilloscope, we can just take the first channel or mix them
+                //    _audioDataEvent.Samples[i] = buffer[0, i];
+                //}
+//
+                //pipe.SendData(context, _audioDataEvent);
+                //pipe.SendData(context, _playbackIndicesEvent);
+
+                _seed = state;
+                for (int frame = 0; frame < blockSize; frame++)
+                {
+                    buffer[0, blockOffset + frame] = _mixBuffer[frame];
+                }
             }
 
-            // Capture samples for visualization
-            _audioDataEvent.Channels = buffer.channelCount;
-            _audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
-            for (int i = 0; i < _audioDataEvent.SampleCount; i++)
-            {
-                // For oscilloscope, we can just take the first channel or mix them
-                _audioDataEvent.Samples[i] = buffer[0, i];
-            }
 
-            pipe.SendData(context, _audioDataEvent);
-            pipe.SendData(context, _playbackIndicesEvent);
-
-            _seed = state;
             return buffer.frameCount;
         }
 

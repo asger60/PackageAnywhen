@@ -1,6 +1,6 @@
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorLFO : IAudioProcessor
+    public struct AudioProcessorLFO 
     {
         // FIX 1: uint so overflow wraps naturally at 2^32,
         //         matching the PhaseMax constant design intent
@@ -46,7 +46,7 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float current, AnysongTrack anysongTrack)
+        public float Process(AnysongTrack anysongTrack)
         {
             // FIX 2: removed "_phase = current" — that was clobbering the
             //         phase accumulator with the audio input every single sample.

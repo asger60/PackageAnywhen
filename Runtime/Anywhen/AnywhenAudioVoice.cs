@@ -5,6 +5,7 @@ using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 
 public struct AnywhenAudioVoice
@@ -24,12 +25,17 @@ public struct AnywhenAudioVoice
     int _sampleRate;
     NativeArray<AudioSourceSettings.Unmanaged> _audioSourceSettings;
     private bool _isPlaying;
+    NativeArray<float> _pitchModBuffer;
 
-    public void Init(int sampleRate)
+    NativeArray<float> _subMix;
+
+    public void Init(int sampleRate, int blockSize)
     {
         _sampleRate = sampleRate;
         _voiceEnvelope = new AudioProcessorEnvelope(sampleRate);
         _trackPitch = 1;
+        _pitchModBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _subMix = new NativeArray<float>(blockSize, Allocator.Persistent);
         if (_audioSources.IsCreated) _audioSources.Dispose();
     }
 
@@ -73,10 +79,9 @@ public struct AnywhenAudioVoice
         }
     }
 
-    internal float Process(double dspTime, in AnysongTrack anysongTrack)
+    internal void Process(double dspTime, double inverseSampleRate, in AnysongTrack anysongTrack, NativeArray<float> channelBuffer)
     {
-        float clipAmplitude = 0;
-        if (_noteQueued && dspTime >= _scheduledStartTime)
+        if (_noteQueued && dspTime + (float)(_pitchModBuffer.Length * inverseSampleRate) >= _scheduledStartTime)
         {
             _isPlaying = true;
             _noteQueued = false;
@@ -85,29 +90,50 @@ public struct AnywhenAudioVoice
         if (_isPlaying)
         {
             _voiceEnvelope.SetGate(true);
-            float pitchModSignal = anysongTrack.GetModSignal(_pitchMod);
-            float pitchMultiplier = _trackPitch * (float)Math.Pow(2.0, pitchModSignal);
+        }
 
-            if (_audioSources.IsCreated)
+
+        if (_audioSources.IsCreated && _isPlaying)
+        {
+            anysongTrack.CalculateModSignal(_pitchMod, _pitchModBuffer);
+
+            for (int frame = 0; frame < _pitchModBuffer.Length; frame++)
             {
-                for (int i = 0; i < _audioSources.Length; i++)
-                {
-                    var audioSource = _audioSources[i];
-                    clipAmplitude += audioSource.Process(clipAmplitude, pitchMultiplier);
-                    _audioSources[i] = audioSource;
-                }
+                _pitchModBuffer[frame] = _trackPitch * (float)Math.Pow(2.0, _pitchModBuffer[frame]);
             }
 
-            if (dspTime >= _scheduledEndTime)
+            for (int frame = 0; frame < _subMix.Length; frame++)
             {
-                _voiceEnvelope.SetGate(false);
-                if (!_voiceEnvelope.IsActive)
-                    _isPlaying = false;
+                _subMix[frame] = 0;
+            }
+
+            for (int i = 0; i < _audioSources.Length; i++)
+            {
+                var audioSource = _audioSources[i];
+
+                //double currentFrameDspTime = dspTime + (frame * inverseSampleRate);
+                audioSource.Process(_pitchModBuffer, dspTime, inverseSampleRate, _subMix);
+                _audioSources[i] = audioSource;
+            }
+
+            float gain = (_voiceEnvelope.IsActive) ? _velocity : 0;
+
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
+            {
+                channelBuffer[frame] += _subMix[frame] * gain *
+                                        _voiceEnvelope.Process((float)dspTime + (float)(frame * inverseSampleRate), anysongTrack);
+
+                
+                if (dspTime + (float)(frame * inverseSampleRate) >= _scheduledEndTime)
+                {
+                    _voiceEnvelope.SetGate(false);
+                    if (!_voiceEnvelope.IsActive)
+                        _isPlaying = false;
+                }
             }
         }
 
 
-        return clipAmplitude * _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
     }
 
 
@@ -137,5 +163,7 @@ public struct AnywhenAudioVoice
     public void Dispose()
     {
         if (_audioSources.IsCreated) _audioSources.Dispose();
+        if (_pitchModBuffer.IsCreated) _pitchModBuffer.Dispose();
+        if (_subMix.IsCreated) _subMix.Dispose();
     }
 }

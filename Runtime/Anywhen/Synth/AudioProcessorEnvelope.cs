@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioProcessorEnvelope : IAudioProcessor
+    public struct AudioProcessorEnvelope 
     {
         private enum EnvState
         {
@@ -35,6 +35,7 @@ namespace Anywhen.Synth
 
         public bool IsActive => _state != EnvState.env_idle;
         private bool _currentGate;
+        
 
 
         public AudioProcessorEnvelope(int sampleRate) : this()
@@ -196,6 +197,7 @@ namespace Anywhen.Synth
 
                     break;
                 case EnvState.env_sustain:
+                    
                     break;
                 case EnvState.env_release:
                     _output = _releaseBase + _output * _releaseCoef;

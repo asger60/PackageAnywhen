@@ -1,4 +1,6 @@
 using System;
+using Unity.Collections;
+using UnityEngine.Audio;
 
 namespace Anywhen.Synth
 {
@@ -38,15 +40,27 @@ namespace Anywhen.Synth
         }
 
 
-        public float Process(float sample, float pitchMultiplier)
+        public void Process(NativeArray<float> pitchMultiplier, double dspTime, double inverseSampleRate, NativeArray<float> channelBuffer)
         {
-            return _settings.audioSourceType switch
+            switch (_settings.audioSourceType)
             {
-                AudioSourceSettings.AudioSourceTypes.Sample => _sampleSource.Process(sample, pitchMultiplier),
-                AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample, pitchMultiplier),
-                AudioSourceSettings.AudioSourceTypes.Noise => _noiseSource.Process(sample, pitchMultiplier),
-                _ => sample
-            };
+                case AudioSourceSettings.AudioSourceTypes.Sample:
+                    _sampleSource.Process( pitchMultiplier, channelBuffer);
+
+                    break;
+                case AudioSourceSettings.AudioSourceTypes.Synth:
+                    break;
+                case AudioSourceSettings.AudioSourceTypes.Noise:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            //_settings.audioSourceType switch
+            //{
+            //    AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample, pitchMultiplier),
+            //    AudioSourceSettings.AudioSourceTypes.Noise => _noiseSource.Process(sample, pitchMultiplier),
+            //    _ => sample
+            //};
         }
 
 

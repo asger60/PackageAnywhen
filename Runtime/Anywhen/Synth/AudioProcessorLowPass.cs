@@ -21,6 +21,7 @@
 // Huovilainen moog filter:
 
 
+using Unity.Collections;
 using UnityEngine;
 
 namespace Anywhen.Synth
@@ -66,45 +67,48 @@ namespace Anywhen.Synth
             RecalculateS();
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> buffer, AnysongTrack anysongTrack)
         {
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
+            // if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
+            //if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
+            //{
+            //    float mod = anysongTrack.CalculateModSignal(_settings.CutoffMod); // (-1, 1)
+            //    _frequencyMod = (float)System.Math.Pow(2.0, mod);
+            //    RecalculateS();
+            //}
+
+            for (int frame = 0; frame < buffer.Length; frame++)
             {
-                float mod = anysongTrack.GetModSignal(_settings.CutoffMod); // (-1, 1)
-                _frequencyMod = (float)System.Math.Pow(2.0, mod);
-                RecalculateS();
-            }
+                float input = buffer[frame];
 
-            float input = sample;
-
-            for (int j = 0; j < _oversampling; ++j)
-            {
-                float resonanceFeedback = 4.0f * _resonance * y_d;
-                float x = input - resonanceFeedback;
-
-                y_a += _s * (FastTanh(x * _v) - w_a);
-                w_a = FastTanh(y_a * _v);
-
-                y_b += _s * (w_a - w_b);
-                w_b = FastTanh(y_b * _v);
-
-                y_c += _s * (w_b - w_c);
-                w_c = FastTanh(y_c * _v);
-
-                y_d += _s * (w_c - FastTanh(y_d * _v));
-
-                if (float.IsNaN(y_d) || float.IsInfinity(y_d))
+                for (int j = 0; j < _oversampling; ++j)
                 {
-                    y_a = y_b = y_c = y_d = 0;
-                    w_a = w_b = w_c = 0;
-                    break;
-                }
-            }
+                    float resonanceFeedback = 4.0f * _resonance * y_d;
+                    float x = input - resonanceFeedback;
 
-            float outSample = y_d * (1.0f + _resonance * 4.0f);
-            return Clamp(outSample, -1f, 1f);
+                    y_a += _s * (FastTanh(x * _v) - w_a);
+                    w_a = FastTanh(y_a * _v);
+
+                    y_b += _s * (w_a - w_b);
+                    w_b = FastTanh(y_b * _v);
+
+                    y_c += _s * (w_b - w_c);
+                    w_c = FastTanh(y_c * _v);
+
+                    y_d += _s * (w_c - FastTanh(y_d * _v));
+
+                    if (float.IsNaN(y_d) || float.IsInfinity(y_d))
+                    {
+                        y_a = y_b = y_c = y_d = 0;
+                        w_a = w_b = w_c = 0;
+                        break;
+                    }
+                }
+
+                float outSample = y_d * (1.0f + _resonance * 4.0f);
+                buffer[frame] = Clamp(outSample, -1f, 1f);
+            }
         }
 
         public void SetGate(bool gate)

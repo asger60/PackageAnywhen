@@ -1,9 +1,10 @@
 ﻿using Anywhen.SettingsObjects;
-using UnityEngine;
+using Unity.Collections;
+using UnityEngine.Audio;
 
 namespace Anywhen.Synth
 {
-    public struct AudioSourceSample : IAudioSource
+    public struct AudioSourceSample
     {
         private int _sampleRate;
         AudioSourceSettings.SampleSourceSettings.Unmanaged _settings;
@@ -46,45 +47,48 @@ namespace Anywhen.Synth
         }
 
 
-
-        public float Process(float sample, float pitchMultiplier)
+        public void Process(NativeArray<float> pitchMultiplier, NativeArray<float> channelBuffer)
         {
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) return 0;
-
-            int channels = _clipData.channels;
-            int frameCount = channels > 0 ? _sampleCount / channels : 0;
-
-            if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
             {
-                int index = (int)_samplePosition;
-                float t = (float)(_samplePosition - index);
+                int channels = _clipData.channels;
+                int frameCount = channels > 0 ? _sampleCount / channels : 0;
 
-                float frameAmplitude = sample;
-                bool canInterpolate = index < frameCount - 1;
-
-                for (int c = 0; c < channels; c++)
+                if (_clipData.clipSamples.IsCreated && _samplePosition < frameCount)
                 {
-                    float s0 = _clipData.clipSamples[index * channels + c];
-                    if (canInterpolate)
+                    int index = (int)_samplePosition;
+                    float t = (float)(_samplePosition - index);
+
+                    float frameAmplitude = 0;
+
+                    bool canInterpolate = index < frameCount - 1;
+
+                    for (int c = 0; c < channels; c++)
                     {
-                        float s1 = _clipData.clipSamples[(index + 1) * channels + c];
-                        frameAmplitude += s0 + t * (s1 - s0);
+                        float s0 = _clipData.clipSamples[index * channels + c];
+                        if (canInterpolate)
+                        {
+                            float s1 = _clipData.clipSamples[(index + 1) * channels + c];
+                            frameAmplitude = s0 + t * (s1 - s0);
+                        }
+                        else
+                        {
+                            frameAmplitude = s0;
+                        }
                     }
-                    else
-                    {
-                        frameAmplitude += s0;
-                    }
+
+                    if (channels > 1)
+                        frameAmplitude /= channels;
+
+                    _samplePosition += _clipPitch * _trackPitch * pitchMultiplier[frame];
+             
+                    channelBuffer[frame] += frameAmplitude * _volume;
                 }
-
-                if (channels > 1)
-                    frameAmplitude /= channels;
-
-                _samplePosition += _clipPitch * _trackPitch * pitchMultiplier;
-                return frameAmplitude * _volume;
+                else
+                {
+                    _isPlaying = false;
+                }
             }
-
-            _isPlaying = false;
-            return 0;
         }
 
 

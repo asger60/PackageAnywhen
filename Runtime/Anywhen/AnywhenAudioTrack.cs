@@ -1,10 +1,12 @@
 using System;
+using System.ComponentModel;
 using Anywhen.Composing;
 using Anywhen.SettingsObjects;
 using Anywhen.Synth;
 using Anywhen.Synth.Filter;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 
 public struct AnysongTrack : IEquatable<AnysongTrack>
@@ -14,10 +16,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     private float _trackVolume;
     private AudioProcessorEnvelope _trackEnvelope1, _trackEnvelope2;
     AudioProcessorLFO _trackLFO1, _trackLFO2;
-    private float _trackLFO1Value;
-    float _trackLFO2Value;
-    private float _trackEnvelope1Value;
-    private float _trackEnvelope2Value;
+    private NativeArray<float> _trackLFO1Value;
+    private NativeArray<float> _trackLFO2Value;
+    private NativeArray<float> _trackEnvelope1Value;
+    private NativeArray<float> _trackEnvelope2Value;
 
     private AnywhenAudioGenerator.PlaybackEvent _nextEvent;
     private NativeArray<TrackAudioProcessor> _trackFilters;
@@ -32,22 +34,30 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     public int TrackTypeIndex => _trackTypeIndex;
     public bool IsMute;
     private NativeArray<ModRouting> _amplitudeMod;
+    private NativeArray<float> _nullBuffer;
+    private NativeArray<float> _tempModBuffer;
+    private NativeArray<float> _subMixBuffer;
 
 
-    public AnysongTrack(int sampleRate, AnysongTrackSettings.Unmanaged settings) : this()
+    public AnysongTrack(int sampleRate, AnysongTrackSettings.Unmanaged settings, int blockSize) : this()
     {
         IsMute = false;
         _sampleRate = sampleRate;
-        _trackLFO1Value = 0;
-        _trackLFO2Value = 0;
+        _trackLFO1Value = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _trackLFO2Value = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _trackEnvelope1Value = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _trackEnvelope2Value = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _nullBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _tempModBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
+        _subMixBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
         _trackTypeIndex = settings.trackTypeIndex;
-        CreateTrack(settings, sampleRate);
-        UpdateSettings(settings);
+        CreateTrack(settings, sampleRate, blockSize);
+        UpdateSettings(settings, blockSize);
         _amplitudeMod = settings.AmplitudeMod;
     }
 
 
-    public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate)
+    public void CreateTrack(AnysongTrackSettings.Unmanaged settings, int sampleRate, int blockSize)
     {
         if (_voices.IsCreated)
         {
@@ -73,10 +83,11 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         for (int i = 0; i < _voices.Length; i++)
         {
             var voice = _voices[i];
-            voice.Init(sampleRate);
+            voice.Init(sampleRate, blockSize);
             voice.RecreateVoice(settings.audioSources);
             _voices[i] = voice;
         }
+
 
         _trackEnvelope1 = new AudioProcessorEnvelope(_sampleRate);
 
@@ -119,7 +130,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
     }
 
 
-    public void UpdateSettings(AnysongTrackSettings.Unmanaged settings)
+    public void UpdateSettings(AnysongTrackSettings.Unmanaged settings, int blockSize)
     {
         if (_settings.Equals(settings))
         {
@@ -135,8 +146,11 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         if (settings.TrackAudioEnvelope2.enabled)
             _trackEnvelope2.SetSettings(settings.TrackAudioEnvelope2);
 
-        _trackEnvelope1Value = 1;
-        _trackEnvelope2Value = 1;
+        for (int frame = 0; frame < blockSize; frame++)
+        {
+            _trackEnvelope1Value[frame] = 1;
+            _trackEnvelope2Value[frame] = 1;
+        }
 
         if (settings.TrackAudioLFO1.enabled)
             _trackLFO1.SetSettings(settings.TrackAudioLFO1);
@@ -205,7 +219,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
     }
 
-    internal float Process(double dspTime)
+    internal void Process(double dspTime, double inverseSampleRate, NativeArray<float> channelBuffer, int blockSize) // tilføj buffer som input
     {
         //if (IsMute) return 0;
 
@@ -229,7 +243,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
         if (_hasPendingTracksUpdate)
         {
-            CreateTrack(_pendingSettings, _sampleRate);
+            CreateTrack(_pendingSettings, _sampleRate, blockSize);
             _hasPendingTracksUpdate = false;
         }
 
@@ -241,7 +255,7 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
         if (_hasPendingParameterUpdate)
         {
-            UpdateSettings(_pendingSettings);
+            UpdateSettings(_pendingSettings, blockSize);
             _hasPendingParameterUpdate = false;
         }
 
@@ -249,86 +263,107 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         //if (!_voices.IsCreated)
         //    return 0;
 
-        float clipAmplitude = 0;
 
-        float fTime = (float)dspTime;
-        if (_settings.TrackAudioLFO1.enabled)
-            _trackLFO1Value = _trackLFO1.Process(fTime, this);
-        else
-            _trackLFO1Value = 0;
-
-        if (_settings.TrackAudioLFO2.enabled)
-            _trackLFO2Value = _trackLFO2.Process(fTime, this);
-        else
-            _trackLFO2Value = 0;
-
-        if (_settings.TrackAudioEnvelope1.enabled)
-            _trackEnvelope1Value = _trackEnvelope1.Process(fTime, this);
-        else
-            _trackEnvelope1Value = 1;
-
-        if (_settings.TrackAudioEnvelope2.enabled)
-            _trackEnvelope2Value = _trackEnvelope2.Process(fTime, this);
-        else
-            _trackEnvelope2Value = 1;
-
-        if (dspTime >= _nextEvent.ScheduledPlayTime && dspTime < _nextEvent.ScheduledEndTime)
+        for (int frame = 0; frame < channelBuffer.Length; frame++)
         {
+            //channelBuffer[0, frame] *= _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
+
+            double fTime = dspTime + (frame * inverseSampleRate);
+            if (_settings.TrackAudioLFO1.enabled)
+                _trackLFO1Value[frame] = _trackLFO1.Process(this);
+            else
+                _trackLFO1Value[frame] = 0;
+
+            if (_settings.TrackAudioLFO2.enabled)
+                _trackLFO2Value[frame] = _trackLFO2.Process(this);
+            else
+                _trackLFO2Value[frame] = 0;
+
             if (_settings.TrackAudioEnvelope1.enabled)
-                _trackEnvelope1.SetGate(true);
+                _trackEnvelope1Value[frame] = _trackEnvelope1.Process((float)fTime, this);
+            else
+                _trackEnvelope1Value[frame] = 1;
+
             if (_settings.TrackAudioEnvelope2.enabled)
-                _trackEnvelope2.SetGate(true);
-        }
-        else if (dspTime >= _nextEvent.ScheduledEndTime)
-        {
-            if (_settings.TrackAudioEnvelope1.enabled)
-                _trackEnvelope1.SetGate(false);
-            if (_settings.TrackAudioEnvelope2.enabled)
-                _trackEnvelope2.SetGate(false);
+                _trackEnvelope2Value[frame] = _trackEnvelope2.Process((float)fTime, this);
+            else
+                _trackEnvelope2Value[frame] = 1;
+
+            if (fTime >= _nextEvent.ScheduledPlayTime && fTime < _nextEvent.ScheduledEndTime)
+            {
+                if (_settings.TrackAudioEnvelope1.enabled)
+                    _trackEnvelope1.SetGate(true);
+                if (_settings.TrackAudioEnvelope2.enabled)
+                    _trackEnvelope2.SetGate(true);
+            }
+            else if (fTime >= _nextEvent.ScheduledEndTime)
+            {
+                if (_settings.TrackAudioEnvelope1.enabled)
+                    _trackEnvelope1.SetGate(false);
+                if (_settings.TrackAudioEnvelope2.enabled)
+                    _trackEnvelope2.SetGate(false);
+            }
         }
 
+        for (int frame = 0; frame < _subMixBuffer.Length; frame++)
+        {
+            _subMixBuffer[frame] = 0;
+        }
 
         for (int i = 0; i < _voices.Length; i++)
         {
             var voice = _voices[i];
-            clipAmplitude += voice.Process(dspTime, this);
+            voice.Process(dspTime, inverseSampleRate, this, _subMixBuffer);
             _voices[i] = voice;
         }
 
-        clipAmplitude *= 1 + GetModSignal(_amplitudeMod);
+        //clipAmplitude *= 1 + GetModSignal(_amplitudeMod);
+//
+
 
         if (_trackFilters.IsCreated)
         {
             for (int i = 0; i < _trackFilters.Length; i++)
             {
                 var filter = _trackFilters[i];
-                clipAmplitude = filter.Process(clipAmplitude, this);
+                filter.Process(_subMixBuffer, this);
                 _trackFilters[i] = filter;
             }
         }
 
-        return clipAmplitude * _trackVolume;
+        for (int frame = 0; frame < _subMixBuffer.Length; frame++)
+        {
+            channelBuffer[frame] += _subMixBuffer[frame];
+        }
+        // return clipAmplitude * _trackVolume;
     }
 
-    public readonly float GetModSignal(NativeArray<ModRouting> modRoutingSettings)
+    public readonly void CalculateModSignal(NativeArray<ModRouting> modRoutingSettings, NativeArray<float> modBuffer)
     {
-        if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return 0;
-        float s = 0;
+        for (int frame = 0; frame < modBuffer.Length; frame++)
+        {
+            modBuffer[frame] = 0;
+        }
+
+
+        if (!modRoutingSettings.IsCreated || modRoutingSettings.Length == 0) return;
+
         foreach (var mod in modRoutingSettings)
         {
-            float signal = mod.modSource switch
+            NativeArray<float> signal = mod.modSource switch
             {
                 ModRouting.ModSources.Envelope1 => _trackEnvelope1Value,
                 ModRouting.ModSources.Envelope2 => _trackEnvelope2Value,
                 ModRouting.ModSources.LFO1 => _trackLFO1Value,
                 ModRouting.ModSources.LFO2 => _trackLFO2Value,
-                _ => 0f
+                _ => _nullBuffer
             };
 
-            s += signal * mod.modAmount;
+            for (int frame = 0; frame < modBuffer.Length; frame++)
+            {
+                modBuffer[frame] += signal[frame] * mod.modAmount;
+            }
         }
-
-        return s;
     }
 
     public void Dispose()
@@ -354,6 +389,14 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
             _trackFilters.Dispose();
         }
+
+        _trackLFO1Value.Dispose();
+        _trackLFO2Value.Dispose();
+        _trackEnvelope1Value.Dispose();
+        _trackEnvelope2Value.Dispose();
+        _nullBuffer.Dispose();
+        _tempModBuffer.Dispose();
+        _subMixBuffer.Dispose();
     }
 
     public bool Equals(AnysongTrack other)

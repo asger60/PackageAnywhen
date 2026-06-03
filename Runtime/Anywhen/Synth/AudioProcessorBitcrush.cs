@@ -46,33 +46,39 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> buffer, AnysongTrack anysongTrack)
         {
             UpdateSettings();
-            // Bitcrush / Quantization
-            if (_bitDepth < 24f)
+            for (int frame = 0; frame < buffer.Length; frame++)
             {
-                float levels = UnityEngine.Mathf.Pow(2, _bitDepth);
-                sample = UnityEngine.Mathf.Round(sample * levels) / levels;
-            }
-
-            // Downsampling
-            if (_downsampling > 1)
-            {
-                int channel = _downsamplingCounter % 2;
-                int step = _downsamplingCounter / 2;
-
-                int modifiedDownsampling = (int)(_downsampling * (_filterMod * 2));
-                if (step % modifiedDownsampling == 0)
+                float sample = buffer[frame];
+                // Bitcrush / Quantization
+                if (_bitDepth < 24f)
                 {
-                    _lastSamples[channel] = sample;
+                    float levels = UnityEngine.Mathf.Pow(2, _bitDepth);
+                    sample = UnityEngine.Mathf.Round(sample * levels) / levels;
                 }
 
-                _downsamplingCounter++;
-                return _lastSamples[channel];
-            }
+                // Downsampling
+                if (_downsampling > 1)
+                {
+                    int channel = _downsamplingCounter % 2;
+                    int step = _downsamplingCounter / 2;
 
-            return sample;
+                    int modifiedDownsampling = (int)(_downsampling * (_filterMod * 2));
+                    if (step % modifiedDownsampling == 0)
+                    {
+                        _lastSamples[channel] = sample;
+                    }
+
+                    _downsamplingCounter++;
+                    buffer[frame] = _lastSamples[channel];
+                }
+
+                //return sample;
+            }
+            
+
         }
 
         public void SetGate(bool gate)

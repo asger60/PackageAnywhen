@@ -132,9 +132,7 @@ namespace Anywhen.Composing
 
 
             public float trackPitch;
-
             public int voices;
-
             public int trackTypeIndex;
 
             public NativeArray<AudioProcessorSettings.Unmanaged> trackFilters;
@@ -192,8 +190,8 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                //AmplitudeMod = new NativeArray<ModRouting>(volumeMods, Allocator.Persistent),
-                //PitchMod = new NativeArray<ModRouting>(pitchMods, Allocator.Persistent),
+                AmplitudeMod = new NativeArray<ModRouting>(volumeMods, Allocator.Persistent),
+                PitchMod = new NativeArray<ModRouting>(pitchMods, Allocator.Persistent),
                 audioSources = sources,
             };
         }

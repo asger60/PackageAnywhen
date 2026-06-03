@@ -79,53 +79,59 @@ namespace Anywhen.Synth
             UpdateSettings();
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> channelBuffer, AnysongTrack anysongTrack)
         {
             UpdateSettings();
 
-            if (!_initialized) return sample;
+            
+            if (!_initialized) return;
 
-            int channel = _channelCounter % 2;
-            _channelCounter++;
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
+            {
+                float sample = channelBuffer[frame];
+                int channel = _channelCounter % 2;
+                _channelCounter++;
 
-            ref NativeArray<float> buffer = ref (channel == 0 ? ref _delayBuffer0 : ref _delayBuffer1);
-            ref int writePos = ref (channel == 0 ? ref _writePos0 : ref _writePos1);
-            ref float lfoPhase = ref (channel == 0 ? ref _lfoPhase0 : ref _lfoPhase1);
+                ref NativeArray<float> buffer = ref (channel == 0 ? ref _delayBuffer0 : ref _delayBuffer1);
+                ref int writePos = ref (channel == 0 ? ref _writePos0 : ref _writePos1);
+                ref float lfoPhase = ref (channel == 0 ? ref _lfoPhase0 : ref _lfoPhase1);
 
-            // LFO for delay modulation (Sine wave)
-            float lfo = Mathf.Sin(lfoPhase * 2f * Mathf.PI);
+                // LFO for delay modulation (Sine wave)
+                float lfo = Mathf.Sin(lfoPhase * 2f * Mathf.PI);
 
-            // _rate is 0-1, mapped to 0.1Hz - 5Hz
-            float mappedRate = Mathf.Lerp(0.1f, 5.0f, _rate);
-            lfoPhase += mappedRate / _sampleRate;
-            if (lfoPhase > 1f) lfoPhase -= 1f;
+                // _rate is 0-1, mapped to 0.1Hz - 5Hz
+                float mappedRate = Mathf.Lerp(0.1f, 5.0f, _rate);
+                lfoPhase += mappedRate / _sampleRate;
+                if (lfoPhase > 1f) lfoPhase -= 1f;
 
-            int bufLen = buffer.Length;
+                int bufLen = buffer.Length;
 
-            // Base delay 5ms to 50ms, modulation depth up to 5ms
-            float baseDelaySamples = Mathf.Lerp(0.005f, 0.050f, _delay) * _sampleRate;
-            float modDepthSamples = _depth * _filterMod * 0.005f * _sampleRate;
-            float currentDelaySamples = baseDelaySamples + (lfo * modDepthSamples);
+                // Base delay 5ms to 50ms, modulation depth up to 5ms
+                float baseDelaySamples = Mathf.Lerp(0.005f, 0.050f, _delay) * _sampleRate;
+                float modDepthSamples = _depth * _filterMod * 0.005f * _sampleRate;
+                float currentDelaySamples = baseDelaySamples + (lfo * modDepthSamples);
 
-            // Calculate read position
-            float readPos = writePos - currentDelaySamples;
-            while (readPos < 0) readPos += bufLen;
-            while (readPos >= bufLen) readPos -= bufLen;
+                // Calculate read position
+                float readPos = writePos - currentDelaySamples;
+                while (readPos < 0) readPos += bufLen;
+                while (readPos >= bufLen) readPos -= bufLen;
 
-            // Linear interpolation
-            int idx1 = (int)readPos % bufLen;
-            int idx2 = (idx1 + 1) % bufLen;
-            float frac = readPos - (int)readPos;
-            float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
+                // Linear interpolation
+                int idx1 = (int)readPos % bufLen;
+                int idx2 = (idx1 + 1) % bufLen;
+                float frac = readPos - (int)readPos;
+                float delayedSample = Mathf.Lerp(buffer[idx1], buffer[idx2], frac);
 
-            // Write to buffer with feedback (cap feedback slightly)
-            buffer[writePos] = sample + (delayedSample * _feedback * 0.95f);
+                // Write to buffer with feedback (cap feedback slightly)
+                buffer[writePos] = sample + (delayedSample * _feedback * 0.95f);
 
-            // Advance write position
-            writePos = (writePos + 1) % bufLen;
+                // Advance write position
+                writePos = (writePos + 1) % bufLen;
 
-            // Mix dry and wet
-            return (delayedSample * _wet) + (sample * (1f - _wet));
+                // Mix dry and wet
+                channelBuffer[frame] = (delayedSample * _wet) + (sample * (1f - _wet));
+            }
+          
         }
 
         public void Dispose()

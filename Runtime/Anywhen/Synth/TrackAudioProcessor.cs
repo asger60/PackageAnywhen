@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 
 namespace Anywhen.Synth
 {
@@ -68,21 +69,41 @@ namespace Anywhen.Synth
             }
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> channelBuffer, AnysongTrack anysongTrack)
         {
-            return _settings.filterType switch
+            switch (_settings.filterType)
             {
-                AudioProcessorSettings.FilterTypes.LowPassFilter => _lowPass.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.SaturatorFilter => _saturator.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.BandPassFilter => _bandPass.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.BitcrushFilter => _bitcrush.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.LadderFilter => _ladder.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.ChorusFilter => _chorus.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.DelayFilter => _delay.Process(sample, anysongTrack),
-                AudioProcessorSettings.FilterTypes.ReverbFilter => _reverb.Process(sample, anysongTrack),
+                case AudioProcessorSettings.FilterTypes.LowPassFilter:
+                    _lowPass.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.BandPassFilter:
+                    _bandPass.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.FormantFilter:
+                    
+                    break;
+                case AudioProcessorSettings.FilterTypes.LadderFilter:
+                    _ladder.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.BitcrushFilter:
+                    _bitcrush.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.SaturatorFilter:
+                    _saturator.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.DelayFilter:
+                    _delay.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.ChorusFilter:
+                    _chorus.Process(channelBuffer, anysongTrack);
+                    break;
+                case AudioProcessorSettings.FilterTypes.ReverbFilter:
+                    _reverb.Process(channelBuffer, anysongTrack);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-                _ => sample
-            };
         }
 
         public void UpdateSettings(AudioProcessorSettings.Unmanaged settings)
@@ -139,7 +160,7 @@ namespace Anywhen.Synth
     {
         public void DoUpdate();
 
-        public float Process(float sample, AnysongTrack anysongTrack);
+        public void Process(NativeArray<float> buffer, AnysongTrack anysongTrack);
 
         public void SetGate(bool gate);
 

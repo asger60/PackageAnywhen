@@ -82,14 +82,19 @@ namespace Anywhen
             SharedStatic<NativeArray<LoadedInstrument.Unmanaged>>.GetOrCreate<InstrumentDatabase, SharedLoadedInstrumentsKey>();
 
 
-        public static void RefreshUnamanged()
+        public static void RefreshUnamangedInstruments()
         {
-            for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
+            Debug.Log("Refreshing instrument database");
+            if (LoadedInstrumentsUnmanaged.Data.IsCreated)
             {
-                LoadedInstrumentsUnmanaged.Data[i].Dispose();
+                for (int i = 0; i < LoadedInstrumentsUnmanaged.Data.Length; i++)
+                {
+                    LoadedInstrumentsUnmanaged.Data[i].Dispose();
+                }
+
+                LoadedInstrumentsUnmanaged.Data.Dispose();
             }
 
-            LoadedInstrumentsUnmanaged.Data.Dispose();
 
             LoadedInstrumentsUnmanaged.Data =
                 new NativeArray<LoadedInstrument.Unmanaged>(AnywhenRuntime.InstrumentDatabase.LoadedInstruments.Count, Allocator.Persistent);

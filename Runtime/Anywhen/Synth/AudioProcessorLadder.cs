@@ -1,4 +1,6 @@
-﻿namespace Anywhen.Synth
+﻿using Unity.Collections;
+
+namespace Anywhen.Synth
 {
     // A 303-style diode ladder filter.
     // Diode ladders have a specific resonance behavior and a shallower slope (18dB-ish)
@@ -55,76 +57,82 @@
         {
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> buffer, AnysongTrack anysongTrack)
         {
             _frequencyMod = 1f;
-            if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
-            {
-                float mod = anysongTrack.GetModSignal(_settings.CutoffMod);
-                _frequencyMod = (float)System.Math.Pow(2.0, mod);
-            }
+            //if (_settings.CutoffMod is { IsCreated: true, Length: > 0 })
+            //{
+            //    float mod = anysongTrack.CalculateModSignal(_settings.CutoffMod);
+            //    _frequencyMod = (float)System.Math.Pow(2.0, mod);
+            //}
 
 
             UpdateSettings();
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-            // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.
-            // Diode ladder characteristics: stages load each other, feedback is non-linear.
-
-            float k = _resolution * 17.0f; // Resonance range tuning
-            k = Clamp(k, 0, 16.5f); // Keep it within stable self-oscillation limit
-
-            for (int j = 0; j < _oversampling; ++j)
+            for (int frame = 0; frame < buffer.Length; frame++)
             {
-                // Calculate feedback based on previous outputs to solve the delay-free loop
-                // In a true TPT diode ladder, this is a bit complex due to stage coupling.
-                // We use a simplified coupling approximation.
+                float sample = buffer[frame];
+                if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
 
-                float G = _g;
-                float G2 = G * G;
-                float G3 = G2 * G;
+                // Improved TPT (Topology Preserving Transform) 303-style diode ladder model.
+                // Diode ladder characteristics: stages load each other, feedback is non-linear.
 
-                // Simplified estimate of the filter's "instantaneous response" (S)
-                // for the delay-free loop resolution: x = (input - k*S) / (1 + k*gamma)
-                // gamma is the feedback gain through the stages.
-                float S = (G3 * G * _s1 + G3 * _s2 + G2 * _s3 + G * _s4) / (1.0f + G);
-                float gamma = G3 * G / (1.0f + G);
+                float k = _resolution * 17.0f; // Resonance range tuning
+                k = Clamp(k, 0, 16.5f); // Keep it within stable self-oscillation limit
 
-                float input = sample;
-                float x = (input - k * S) / (1.0f + k * gamma);
-
-                // Stage 1
-                float v1 = (FastTanh(x) - _s1) * _h;
-                float y1 = v1 + _s1;
-                _s1 = y1 + v1;
-
-                // Stage 2
-                float v2 = (y1 - _s2) * _h;
-                float y2 = v2 + _s2;
-                _s2 = y2 + v2;
-
-                // Stage 3
-                float v3 = (y2 - _s3) * _h;
-                float y3 = v3 + _s3;
-                _s3 = y3 + v3;
-
-                // Stage 4
-                float v4 = (y3 - _s4) * _h;
-                float y4 = v4 + _s4;
-                _s4 = y4 + v4;
-
-                sample = y4;
-
-                // Guard against state explosion
-                if (float.IsNaN(sample) || float.IsInfinity(sample))
+                for (int j = 0; j < _oversampling; ++j)
                 {
-                    _s1 = _s2 = _s3 = _s4 = 0;
-                    sample = 0;
-                    break;
-                }
-            }
+                    // Calculate feedback based on previous outputs to solve the delay-free loop
+                    // In a true TPT diode ladder, this is a bit complex due to stage coupling.
+                    // We use a simplified coupling approximation.
 
-            return Clamp(sample, -1f, 1f);
+                    float G = _g;
+                    float G2 = G * G;
+                    float G3 = G2 * G;
+
+                    // Simplified estimate of the filter's "instantaneous response" (S)
+                    // for the delay-free loop resolution: x = (input - k*S) / (1 + k*gamma)
+                    // gamma is the feedback gain through the stages.
+                    float S = (G3 * G * _s1 + G3 * _s2 + G2 * _s3 + G * _s4) / (1.0f + G);
+                    float gamma = G3 * G / (1.0f + G);
+
+                    float input = sample;
+                    float x = (input - k * S) / (1.0f + k * gamma);
+
+                    // Stage 1
+                    float v1 = (FastTanh(x) - _s1) * _h;
+                    float y1 = v1 + _s1;
+                    _s1 = y1 + v1;
+
+                    // Stage 2
+                    float v2 = (y1 - _s2) * _h;
+                    float y2 = v2 + _s2;
+                    _s2 = y2 + v2;
+
+                    // Stage 3
+                    float v3 = (y2 - _s3) * _h;
+                    float y3 = v3 + _s3;
+                    _s3 = y3 + v3;
+
+                    // Stage 4
+                    float v4 = (y3 - _s4) * _h;
+                    float y4 = v4 + _s4;
+                    _s4 = y4 + v4;
+
+                    sample = y4;
+
+                    // Guard against state explosion
+                    if (float.IsNaN(sample) || float.IsInfinity(sample))
+                    {
+                        _s1 = _s2 = _s3 = _s4 = 0;
+                        sample = 0;
+                        break;
+                    }
+                }
+
+                buffer[frame] = Clamp(sample, -1f, 1f);
+            }
+           
         }
 
 

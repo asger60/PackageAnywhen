@@ -121,25 +121,30 @@ namespace Anywhen.Synth
         {
         }
 
-        public float Process(float sample, AnysongTrack anysongTrack)
+        public void Process(NativeArray<float> buffer, AnysongTrack anysongTrack)
         {
             UpdateSettings();
-            if (!_initialized) return sample;
+            if (!_initialized) return;
 
-            int channel = _channelCounter % 2;
-            _channelCounter++;
+            for (int frame = 0; frame < buffer.Length; frame++)
+            {
+                float sample = buffer[frame];
+                int channel = _channelCounter % 2;
+                _channelCounter++;
 
-            float wet = channel == 0
-                ? ProcessChannel(sample, channel,
-                    _combBuffersL, _combWritePosL,
-                    _allpassBuffersL, _allpassWritePosL,
-                    _combDelaysL, storeOffset: 0)
-                : ProcessChannel(sample, channel,
-                    _combBuffersR, _combWritePosR,
-                    _allpassBuffersR, _allpassWritePosR,
-                    _combDelaysR, storeOffset: NumCombs);
+                float wet = channel == 0
+                    ? ProcessChannel(sample, channel,
+                        _combBuffersL, _combWritePosL,
+                        _allpassBuffersL, _allpassWritePosL,
+                        _combDelaysL, storeOffset: 0)
+                    : ProcessChannel(sample, channel,
+                        _combBuffersR, _combWritePosR,
+                        _allpassBuffersR, _allpassWritePosR,
+                        _combDelaysR, storeOffset: NumCombs);
 
-            return (wet * _wet) + (sample * (1f - _wet));
+                buffer[frame] = (wet * _wet) + (sample * (1f - _wet));
+            }
+
         }
 
         // Processes one sample through comb bank → allpass chain for one channel.
