@@ -544,14 +544,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
         {
-            //InstrumentDatabase.GetLoadedInstrumentsUnmanaged(); // Ensure instruments are updated on managed side
             foreach (var element in pipe.GetAvailableData(context))
             {
                 if (element.TryGetData(out PlaybackStateData data))
                 {
                     if (data.IsPlaying)
                     {
-                        Debug.Log("Updating playback state for section: " + _currentSectionIndex);
                         _currentSectionBar = 0;
                         _currentSectionIndex = data.StartSectionIndex;
                         _sectionLocked = data.SectionLocked;
@@ -796,28 +794,9 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 for (int i = 0; i < _tracks.Length; i++)
                 {
                     var track = _tracks[i];
-                    //for (var frame = 0; frame < buffer.frameCount; frame++) // flyt denne løkke så kangt ind i funtionerne som jeg kan
-                    {
-                        track.Process(dspTime, invSampleRate, _mixBuffer, blockSize);
-
-                        //for (var channel = 0; channel < buffer.channelCount; channel++)
-                        //    buffer[channel, frame] += trackAmp;
-                    }
-
+                    track.Process(dspTime, invSampleRate, _mixBuffer, blockSize);
                     _tracks[i] = track;
                 }
-
-                // Capture samples for visualization
-                //_audioDataEvent.Channels = buffer.channelCount;
-                //_audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
-                //for (int i = 0; i < _audioDataEvent.SampleCount; i++)
-                //{
-                //    // For oscilloscope, we can just take the first channel or mix them
-                //    _audioDataEvent.Samples[i] = buffer[0, i];
-                //}
-//
-                //pipe.SendData(context, _audioDataEvent);
-                //pipe.SendData(context, _playbackIndicesEvent);
 
                 _seed = state;
                 for (int frame = 0; frame < blockSize; frame++)
@@ -826,6 +805,17 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 }
             }
 
+            // Capture samples for visualization
+            _audioDataEvent.Channels = buffer.channelCount;
+            _audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
+            for (int i = 0; i < _audioDataEvent.SampleCount; i++)
+            {
+                // For oscilloscope, we can just take the first channel or mix them
+                _audioDataEvent.Samples[i] = buffer[0, i];
+            }
+
+            pipe.SendData(context, _audioDataEvent);
+            pipe.SendData(context, _playbackIndicesEvent);
 
             return buffer.frameCount;
         }

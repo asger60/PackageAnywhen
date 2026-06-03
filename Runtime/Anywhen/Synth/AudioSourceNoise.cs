@@ -1,10 +1,10 @@
+using Unity.Collections;
 
 namespace Anywhen.Synth
 {
-    public struct AudioSourceNoise : IAudioSource
+    public struct AudioSourceNoise 
     {
         private AudioSourceSettings.NoiseSourceSettings.Unmanaged _settings;
-        private bool _gate;
         private float _volume;
 
         // Pink noise state (Paul Kellet's refined method)
@@ -18,7 +18,6 @@ namespace Anywhen.Synth
 
         public AudioSourceNoise(int sampleRate) : this()
         {
-            _gate = false;
             _volume = 1f;
             _b0 = _b1 = _b2 = _b3 = _b4 = _b5 = _b6 = 0f;
             _brownLast = 0f;
@@ -27,7 +26,6 @@ namespace Anywhen.Synth
 
         public void QueueNote(int noteIndex)
         {
-            _gate = true;
             _volume = _settings.SourceVolume;
         }
 
@@ -37,31 +35,27 @@ namespace Anywhen.Synth
             _volume = _settings.SourceVolume;
         }
 
-        public float Process(float sample, float pitchMultiplier = 1)
+        public void Process(NativeArray<float> pitchMultiplier, NativeArray<float> channelBuffer)
         {
-            if (!_gate) return 0;
-
-            float output = 0;
-
-            switch (_settings.NoiseType)
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
             {
-                case AudioSourceSettings.NoiseSourceSettings.NoiseType.White:
-                    output = NextWhite();
-                    break;
-                case AudioSourceSettings.NoiseSourceSettings.NoiseType.Pink:
-                    output = NextPink();
-                    break;
-                case AudioSourceSettings.NoiseSourceSettings.NoiseType.Brown:
-                    output = NextBrown();
-                    break;
+                float output = 0;
+
+                switch (_settings.NoiseType)
+                {
+                    case AudioSourceSettings.NoiseSourceSettings.NoiseType.White:
+                        output = NextWhite();
+                        break;
+                    case AudioSourceSettings.NoiseSourceSettings.NoiseType.Pink:
+                        output = NextPink();
+                        break;
+                    case AudioSourceSettings.NoiseSourceSettings.NoiseType.Brown:
+                        output = NextBrown();
+                        break;
+                }
+
+                channelBuffer[frame] += output * _volume * 0.5f; // -6dB offset to match sample volume
             }
-
-            return output * _volume * 0.5f; // -6dB offset to match sample volume
-        }
-
-        public void SetGate(bool gate)
-        {
-            _gate = gate;
         }
 
         /// <summary>

@@ -41,6 +41,8 @@ namespace Anywhen.Synth
         // Max buffer sizes (sized for 44100; scaled up if sample rate differs)
         private const int MaxCombLen = 2048;
         private const int MaxAllpassLen = 1024;
+        private NativeArray<float> combOut;
+
 
         public AudioProcessorReverb(int sampleRate)
         {
@@ -64,6 +66,7 @@ namespace Anywhen.Synth
             _combDelaysL = default;
             _combDelaysR = default;
             _allpassDelays = default;
+            combOut = new NativeArray<float>(64, Allocator.Persistent); //todo change to block size
         }
 
         void UpdateSettings()
@@ -82,13 +85,20 @@ namespace Anywhen.Synth
             if (_initialized) return;
 
             _combDelaysL = new NativeArray<int>(NumCombs, Allocator.Persistent);
-            _combDelaysL[0] = 1557; _combDelaysL[1] = 1617; _combDelaysL[2] = 1491; _combDelaysL[3] = 1422;
+            _combDelaysL[0] = 1557;
+            _combDelaysL[1] = 1617;
+            _combDelaysL[2] = 1491;
+            _combDelaysL[3] = 1422;
 
             _combDelaysR = new NativeArray<int>(NumCombs, Allocator.Persistent);
-            _combDelaysR[0] = 1617; _combDelaysR[1] = 1557; _combDelaysR[2] = 1422; _combDelaysR[3] = 1491;
+            _combDelaysR[0] = 1617;
+            _combDelaysR[1] = 1557;
+            _combDelaysR[2] = 1422;
+            _combDelaysR[3] = 1491;
 
             _allpassDelays = new NativeArray<int>(NumAllpass, Allocator.Persistent);
-            _allpassDelays[0] = 225; _allpassDelays[1] = 556;
+            _allpassDelays[0] = 225;
+            _allpassDelays[1] = 556;
 
             // Scale delay lengths from 44100 base rate
             float scale = _sampleRate / 44100f;
@@ -126,30 +136,33 @@ namespace Anywhen.Synth
             UpdateSettings();
             if (!_initialized) return;
 
+            ProcessChannel(buffer, 0, _combBuffersL, _combWritePosL, _allpassBuffersL, _allpassWritePosL, _combDelaysL, storeOffset: 0);
+
+
             for (int frame = 0; frame < buffer.Length; frame++)
             {
-                float sample = buffer[frame];
-                int channel = _channelCounter % 2;
-                _channelCounter++;
+                //float sample = buffer[frame];
+                //int channel = _channelCounter % 2;
+                //_channelCounter++;
 
-                float wet = channel == 0
-                    ? ProcessChannel(sample, channel,
-                        _combBuffersL, _combWritePosL,
-                        _allpassBuffersL, _allpassWritePosL,
-                        _combDelaysL, storeOffset: 0)
-                    : ProcessChannel(sample, channel,
-                        _combBuffersR, _combWritePosR,
-                        _allpassBuffersR, _allpassWritePosR,
-                        _combDelaysR, storeOffset: NumCombs);
+                //float wet = channel == 0
+                //    ? ProcessChannel(sample, channel,
+                //        _combBuffersL, _combWritePosL,
+                //        _allpassBuffersL, _allpassWritePosL,
+                //        _combDelaysL, storeOffset: 0)
+                //    : ProcessChannel(sample, channel,
+                //        _combBuffersR, _combWritePosR,
+                //        _allpassBuffersR, _allpassWritePosR,
+                //        _combDelaysR, storeOffset: NumCombs);
 
-                buffer[frame] = (wet * _wet) + (sample * (1f - _wet));
+
+                buffer[frame] = (combOut[frame] * 0.25f * _wet) + (buffer[frame] * (1f - _wet));
             }
-
         }
 
         // Processes one sample through comb bank → allpass chain for one channel.
-        private float ProcessChannel(
-            float input,
+        private void ProcessChannel(
+            NativeArray<float> input,
             int channel,
             NativeArray<float> combBuffers,
             NativeArray<int> combWritePos,
@@ -159,55 +172,65 @@ namespace Anywhen.Synth
             int storeOffset)
         {
             float scale = _sampleRate / 44100f;
-            float combOut = 0f;
+            for (int frame = 0; frame < combOut.Length; frame++)
+            {
+                combOut[frame] = 0;
+            }
 
             // --- 4 parallel comb filters (with damping low-pass) ---
             for (int i = 0; i < NumCombs; i++)
             {
-                int len = Mathf.Clamp(Mathf.RoundToInt(combDelays[i] * scale), 1, MaxCombLen);
-                int wPos = combWritePos[i];
-                int rPos = (wPos - len + MaxCombLen * 2) % len; // keep positive
+                for (int frame = 0; frame < combOut.Length; frame++)
+                {
+                    int len = Mathf.Clamp(Mathf.RoundToInt(combDelays[i] * scale), 1, MaxCombLen);
+                    int wPos = combWritePos[i];
+                    int rPos = (wPos - len + MaxCombLen * 2) % len; // keep positive
 
-                // Fix: read position within this comb's slice
-                int sliceBase = i * MaxCombLen;
-                float delayed = combBuffers[sliceBase + rPos];
+                    // Fix: read position within this comb's slice
+                    int sliceBase = i * MaxCombLen;
+                    float delayed = combBuffers[sliceBase + rPos];
 
-                // Damping: one-pole low-pass on the feedback signal
-                int storeIdx = storeOffset + i;
-                float store = _combFilterStore[storeIdx];
-                store = delayed * (1f - _damping) + store * _damping;
-                _combFilterStore[storeIdx] = store;
+                    // Damping: one-pole low-pass on the feedback signal
+                    int storeIdx = storeOffset + i;
+                    float store = _combFilterStore[storeIdx];
+                    store = delayed * (1f - _damping) + store * _damping;
+                    _combFilterStore[storeIdx] = store;
 
-                combBuffers[sliceBase + wPos] = input + store * _roomSize;
-                combWritePos[i] = (wPos + 1) % len;
+                    combBuffers[sliceBase + wPos] = input[frame] + store * _roomSize;
+                    combWritePos[i] = (wPos + 1) % len;
 
-                combOut += delayed;
+                    combOut[frame] += delayed;
+                }
             }
 
-            combOut *= 0.25f; // average the 4 combs
+            //combOut *= 0.25f; // average the 4 combs
 
             // --- 2 series allpass filters ---
             // Allpass: y[n] = -g*x[n] + x[n-D] + g*y[n-D]  (feedback coefficient g = 0.5)
             const float g = 0.5f;
-            float apIn = combOut;
+
 
             for (int i = 0; i < NumAllpass; i++)
             {
-                int len = Mathf.Clamp(Mathf.RoundToInt(_allpassDelays[i] * scale), 1, MaxAllpassLen);
-                int wPos = allpassWritePos[i];
-                int rPos = (wPos - len + MaxAllpassLen * 2) % len;
+                for (int frame = 0; frame < combOut.Length; frame++)
+                {
+                    float apIn = combOut[frame];
+                    int len = Mathf.Clamp(Mathf.RoundToInt(_allpassDelays[i] * scale), 1, MaxAllpassLen);
+                    int wPos = allpassWritePos[i];
+                    int rPos = (wPos - len + MaxAllpassLen * 2) % len;
 
-                int sliceBase = i * MaxAllpassLen;
-                float bufOut = allpassBuffers[sliceBase + rPos];
-                float bufIn = apIn + bufOut * g;
+                    int sliceBase = i * MaxAllpassLen;
+                    float bufOut = allpassBuffers[sliceBase + rPos];
+                    float bufIn = apIn + bufOut * g;
 
-                allpassBuffers[sliceBase + wPos] = bufIn;
-                allpassWritePos[i] = (wPos + 1) % len;
+                    allpassBuffers[sliceBase + wPos] = bufIn;
+                    allpassWritePos[i] = (wPos + 1) % len;
 
-                apIn = bufOut - g * bufIn; // allpass output
+                    combOut[frame] = bufOut - g * bufIn; // allpass output
+                }
             }
 
-            return apIn;
+            //return apIn;
         }
 
         public void Dispose()

@@ -28,6 +28,7 @@ public struct AnywhenAudioVoice
     NativeArray<float> _pitchModBuffer;
 
     NativeArray<float> _subMix;
+    private int _nextNote;
 
     public void Init(int sampleRate, int blockSize)
     {
@@ -81,16 +82,27 @@ public struct AnywhenAudioVoice
 
     internal void Process(double dspTime, double inverseSampleRate, in AnysongTrack anysongTrack, NativeArray<float> channelBuffer)
     {
-        if (_noteQueued && dspTime + (float)(_pitchModBuffer.Length * inverseSampleRate) >= _scheduledStartTime)
+        for (int frame = 0; frame < channelBuffer.Length; frame++)
         {
-            _isPlaying = true;
-            _noteQueued = false;
+            if (_noteQueued && dspTime + (float)(frame * inverseSampleRate) >= _scheduledStartTime)
+            {
+                _isPlaying = true;
+                _noteQueued = false;
+                _voiceEnvelope.SetGate(true);
+                if (_audioSources.IsCreated)
+                {
+                    for (int i = 0; i < _audioSources.Length; i++)
+                    {
+                        var audioSource = _audioSources[i];
+                        audioSource.UpdateSettings(_audioSourceSettings[i]);
+                        audioSource.QueueNote(_nextNote);
+                        _audioSources[i] = audioSource;
+                    }
+                }
+            }
         }
 
-        if (_isPlaying)
-        {
-            _voiceEnvelope.SetGate(true);
-        }
+ 
 
 
         if (_audioSources.IsCreated && _isPlaying)
@@ -123,7 +135,7 @@ public struct AnywhenAudioVoice
                 channelBuffer[frame] += _subMix[frame] * gain *
                                         _voiceEnvelope.Process((float)dspTime + (float)(frame * inverseSampleRate), anysongTrack);
 
-                
+
                 if (dspTime + (float)(frame * inverseSampleRate) >= _scheduledEndTime)
                 {
                     _voiceEnvelope.SetGate(false);
@@ -132,8 +144,6 @@ public struct AnywhenAudioVoice
                 }
             }
         }
-
-
     }
 
 
@@ -144,18 +154,7 @@ public struct AnywhenAudioVoice
         _noteQueued = true;
         _scheduledStartTime = playbackEvent.ScheduledPlayTime;
         _scheduledEndTime = playbackEvent.ScheduledEndTime;
-
-        if (_audioSources.IsCreated)
-        {
-            for (int i = 0; i < _audioSources.Length; i++)
-            {
-                var audioSource = _audioSources[i];
-                audioSource.UpdateSettings(_audioSourceSettings[i]);
-                audioSource.QueueNote(playbackEvent.Note.noteIndex);
-                _audioSources[i] = audioSource;
-            }
-        }
-
+        _nextNote = playbackEvent.Note.noteIndex;
         _isPlaying = false;
         _velocity = playbackEvent.Note.velocity;
     }

@@ -49,18 +49,14 @@ namespace Anywhen.Synth
 
                     break;
                 case AudioSourceSettings.AudioSourceTypes.Synth:
+                    _synthSource.Process(pitchMultiplier, channelBuffer);
                     break;
                 case AudioSourceSettings.AudioSourceTypes.Noise:
+                    _noiseSource.Process(pitchMultiplier, channelBuffer);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            //_settings.audioSourceType switch
-            //{
-            //    AudioSourceSettings.AudioSourceTypes.Synth => _synthSource.Process(sample, pitchMultiplier),
-            //    AudioSourceSettings.AudioSourceTypes.Noise => _noiseSource.Process(sample, pitchMultiplier),
-            //    _ => sample
-            //};
         }
 
 

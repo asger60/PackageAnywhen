@@ -6,7 +6,7 @@ namespace Anywhen.Synth
 {
     public struct AudioSourceSample
     {
-        private int _sampleRate;
+
         AudioSourceSettings.SampleSourceSettings.Unmanaged _settings;
 
         private AnywhenNoteClip.Unmanaged _clipData;
@@ -17,17 +17,13 @@ namespace Anywhen.Synth
         private bool _isPlaying;
         float _volume;
 
-        public bool IsPlaying => _isPlaying;
 
         public AudioSourceSample(int sampleRate) : this()
         {
-            _sampleRate = sampleRate;
             _trackPitch = 1;
         }
 
-        public void DoUpdate()
-        {
-        }
+
 
         public void QueueNote(int noteIndex)
         {
@@ -90,11 +86,6 @@ namespace Anywhen.Synth
                 }
             }
         }
-
-
-        private static float Clamp(float value, float min, float max)
-        {
-            return value < min ? min : value > max ? max : value;
-        }
+        
     }
 }

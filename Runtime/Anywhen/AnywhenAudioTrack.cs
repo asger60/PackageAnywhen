@@ -219,27 +219,9 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
     }
 
-    internal void Process(double dspTime, double inverseSampleRate, NativeArray<float> channelBuffer, int blockSize) // tilføj buffer som input
+    internal void Process(double dspTime, double inverseSampleRate, NativeArray<float> channelBuffer, int blockSize) 
     {
-        //if (IsMute) return 0;
-
-        bool trackActive = _trackEnvelope1.IsActive || _trackEnvelope2.IsActive;
-        bool anyVoiceActive = false;
-
-        if (_voices.IsCreated)
-        {
-            foreach (var voice in _voices)
-            {
-                if (voice.IsIdle) continue;
-                anyVoiceActive = true;
-                break;
-            }
-        }
-
-        //if (!trackActive && !anyVoiceActive && dspTime >= _nextEvent.ScheduledEndTime)
-        //{
-        //    return 0;
-        //}
+       
 
         if (_hasPendingTracksUpdate)
         {
@@ -260,13 +242,10 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
         }
 
 
-        //if (!_voices.IsCreated)
-        //    return 0;
 
 
         for (int frame = 0; frame < channelBuffer.Length; frame++)
         {
-            //channelBuffer[0, frame] *= _velocity * _voiceEnvelope.Process((float)dspTime, anysongTrack);
 
             double fTime = dspTime + (frame * inverseSampleRate);
             if (_settings.TrackAudioLFO1.enabled)
@@ -317,8 +296,6 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
             _voices[i] = voice;
         }
 
-        //clipAmplitude *= 1 + GetModSignal(_amplitudeMod);
-//
 
 
         if (_trackFilters.IsCreated)
@@ -333,9 +310,9 @@ public struct AnysongTrack : IEquatable<AnysongTrack>
 
         for (int frame = 0; frame < _subMixBuffer.Length; frame++)
         {
-            channelBuffer[frame] += _subMixBuffer[frame];
+            channelBuffer[frame] += _subMixBuffer[frame] * _trackVolume;
         }
-        // return clipAmplitude * _trackVolume;
+
     }
 
     public readonly void CalculateModSignal(NativeArray<ModRouting> modRoutingSettings, NativeArray<float> modBuffer)

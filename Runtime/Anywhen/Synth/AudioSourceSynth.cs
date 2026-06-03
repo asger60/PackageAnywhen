@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+﻿using Unity.Collections;
+using UnityEngine;
 
 namespace Anywhen.Synth
 {
-    public struct AudioSourceSynth : IAudioSource
+    public struct AudioSourceSynth
     {
         private int _sampleRate;
         private AudioSourceSettings.SynthSourceSettings.Unmanaged _settings;
         private uint _phase;
         private uint _phaseIncrement;
-        private bool _gate;
         private float _volume;
 
         private const uint PhaseMax = uint.MaxValue;
@@ -18,7 +18,6 @@ namespace Anywhen.Synth
             _sampleRate = sampleRate > 0 ? sampleRate : 44100;
             _phase = 0;
             _phaseIncrement = 0;
-            _gate = false;
             _volume = 1f;
         }
 
@@ -30,7 +29,6 @@ namespace Anywhen.Synth
             double freqPpsmp = freqHz / _sampleRate;
             _phaseIncrement = (uint)(freqPpsmp * PhaseMax);
             _phase = 0;
-            _gate = true;
             _volume = _settings.SourceVolume;
         }
 
@@ -45,34 +43,34 @@ namespace Anywhen.Synth
             _volume = _settings.SourceVolume;
         }
 
-        public float Process(float sample, float pitchMultiplier = 1)
+        public void Process(NativeArray<float> pitchMultiplier, NativeArray<float> channelBuffer)
         {
-            if (!_gate) return 0;
-            if (float.IsNaN(sample) || float.IsInfinity(sample)) sample = 0;
-
-            float output = 0;
-            float ph01 = (float)_phase / PhaseMax;
-            float dt = (_phaseIncrement * pitchMultiplier) / PhaseMax;
-
-            switch (_settings.SynthType)
+            for (int frame = 0; frame < channelBuffer.Length; frame++)
             {
-                case AudioSourceSettings.SynthSourceSettings.SynthType.Sine:
-                    output = Mathf.Sin(ph01 * Mathf.PI * 2f);
-                    break;
-                case AudioSourceSettings.SynthSourceSettings.SynthType.Saw:
-                    output = 2.0f * ph01 - 1.0f;
-                    output -= PolyBlep(ph01, dt);
-                    break;
-                case AudioSourceSettings.SynthSourceSettings.SynthType.Square:
-                    output = ph01 < 0.5f ? 1.0f : -1.0f;
-                    output += PolyBlep(ph01, dt);
-                    output -= PolyBlep((ph01 + 0.5f) % 1.0f, dt);
-                    break;
+                float output = 0;
+                float ph01 = (float)_phase / PhaseMax;
+                float dt = (_phaseIncrement * pitchMultiplier[frame]) / PhaseMax;
+
+                switch (_settings.SynthType)
+                {
+                    case AudioSourceSettings.SynthSourceSettings.SynthType.Sine:
+                        output = Mathf.Sin(ph01 * Mathf.PI * 2f);
+                        break;
+                    case AudioSourceSettings.SynthSourceSettings.SynthType.Saw:
+                        output = 2.0f * ph01 - 1.0f;
+                        output -= PolyBlep(ph01, dt);
+                        break;
+                    case AudioSourceSettings.SynthSourceSettings.SynthType.Square:
+                        output = ph01 < 0.5f ? 1.0f : -1.0f;
+                        output += PolyBlep(ph01, dt);
+                        output -= PolyBlep((ph01 + 0.5f) % 1.0f, dt);
+                        break;
+                }
+
+                _phase += (uint)(_phaseIncrement * pitchMultiplier[frame]);
+
+                channelBuffer[frame] += output * _volume * 0.5f; // -6dB offset to match sample volume
             }
-
-            _phase += (uint)(_phaseIncrement * pitchMultiplier);
-
-            return output * _volume * 0.5f; // -6dB offset to match sample volume
         }
 
         private float PolyBlep(float t, float dt)
@@ -91,11 +89,7 @@ namespace Anywhen.Synth
 
             return 0.0f;
         }
-
-        public void SetGate(bool gate)
-        {
-            _gate = gate;
-        }
+        
 
         private static float Clamp(float value, float min, float max)
         {
