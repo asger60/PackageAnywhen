@@ -169,7 +169,7 @@ namespace Anywhen.Composing
         {
             var filters = new NativeArray<AudioProcessorSettings.Unmanaged>(0, Allocator.Persistent);
 
-            if (TrackFilters != null)
+            if (TrackFilters != null && TrackFilters.Count > 0)
             {
                 filters = new NativeArray<AudioProcessorSettings.Unmanaged>(TrackFilters.Count, Allocator.Persistent);
                 for (int i = 0; i < TrackFilters.Count; i++)
@@ -179,7 +179,7 @@ namespace Anywhen.Composing
             }
 
             var sources = new NativeArray<AudioSourceSettings.Unmanaged>(0, Allocator.Persistent);
-            if (audioSources != null)
+            if (audioSources != null && audioSources.Count > 0)
             {
                 sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Count, Allocator.Persistent);
                 for (int i = 0; i < audioSources.Count; i++)
