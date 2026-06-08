@@ -167,17 +167,27 @@ namespace Anywhen.Composing
 
         public Unmanaged ToUnmanaged()
         {
-            var filters = new NativeArray<AudioProcessorSettings.Unmanaged>(TrackFilters.Count, Allocator.Persistent);
-            for (int i = 0; i < TrackFilters.Count; i++)
+            var filters = new NativeArray<AudioProcessorSettings.Unmanaged>(0, Allocator.Persistent);
+
+            if (TrackFilters != null)
             {
-                filters[i] = TrackFilters[i].ToUnmanaged();
+                filters = new NativeArray<AudioProcessorSettings.Unmanaged>(TrackFilters.Count, Allocator.Persistent);
+                for (int i = 0; i < TrackFilters.Count; i++)
+                {
+                    filters[i] = TrackFilters[i].ToUnmanaged();
+                }
             }
 
-            var sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Count, Allocator.Persistent);
-            for (int i = 0; i < audioSources.Count; i++)
+            var sources = new NativeArray<AudioSourceSettings.Unmanaged>(0, Allocator.Persistent);
+            if (audioSources != null)
             {
-                sources[i] = audioSources[i].ToUnmanaged();
+                sources = new NativeArray<AudioSourceSettings.Unmanaged>(audioSources.Count, Allocator.Persistent);
+                for (int i = 0; i < audioSources.Count; i++)
+                {
+                    sources[i] = audioSources[i].ToUnmanaged();
+                }
             }
+
 
             return new Unmanaged
             {
