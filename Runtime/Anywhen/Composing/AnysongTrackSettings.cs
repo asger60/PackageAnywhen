@@ -200,8 +200,8 @@ namespace Anywhen.Composing
                 voices = voices,
                 trackTypeIndex = trackTypeIndex,
                 trackFilters = filters,
-                AmplitudeMod = new NativeArray<ModRouting>(volumeMods, Allocator.Persistent),
-                PitchMod = new NativeArray<ModRouting>(pitchMods, Allocator.Persistent),
+                AmplitudeMod = new NativeArray<ModRouting>(volumeMods ?? Array.Empty<ModRouting>(), Allocator.Persistent),
+                PitchMod = new NativeArray<ModRouting>(pitchMods ?? Array.Empty<ModRouting>(), Allocator.Persistent),
                 audioSources = sources,
             };
         }
