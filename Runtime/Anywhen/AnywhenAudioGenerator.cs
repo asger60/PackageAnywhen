@@ -472,12 +472,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public unsafe fixed float Samples[MaxSamples];
     }
 
-    public struct MidiDataEvent
+    public readonly struct MidiDataEvent
     {
-        public int MidiNote;
-        public float Velocity;
-        public int TrackTypeIndex;
-        public float NoteDuration;
+        public readonly int MidiNote;
+        public readonly float Velocity;
+        public readonly int TrackTypeIndex;
+        public readonly float NoteDuration;
 
         public MidiDataEvent(int midiNote, float velocity, int trackTypeIndex, float noteDuration)
         {
@@ -749,7 +749,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             if (!_anysongSections.IsCreated) return buffer.frameCount;
 
             if (sampleRate <= 0) return buffer.frameCount;
-            int currentEventsCount = 0;
+            int currentMidiEventCount = 0;
             for (int i = 0; i < _midiDataEvents.Length; i++)
             {
                 _midiDataEvents[i] = default;
@@ -811,8 +811,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                             if (chancePass && intensityPass)
                             {
-                                _midiDataEvents[currentEventsCount] =
-                                    new MidiDataEvent(thisNote.noteIndex, thisNote.velocity, _tracks[trackIndex].TrackTypeIndex, thisNote.duration);
                                 var playbackTrack = _tracks[trackIndex];
                                 playbackTrack.HandlePlaybackEvent(
                                     new PlaybackEvent(
@@ -820,7 +818,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                                         _anysongSections[_currentSectionIndex].GetGrooveValue(currentSub16Count),
                                         dspTime)
                                 );
-
+                                _midiDataEvents[currentMidiEventCount] = new MidiDataEvent(
+                                    thisNote.noteIndex, 
+                                    thisNote.velocity,
+                                    playbackTrack.TrackTypeIndex, 
+                                    thisNote.duration);
+                                
+                                currentMidiEventCount++;
+                                
                                 _tracks[trackIndex] = playbackTrack;
                             }
                         }
