@@ -22,28 +22,21 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private void OnEnable()
     {
         OnAudioGeneratedStatic += HandleAudioGeneratedStatic;
+        OnMidiEventTriggeredStatic += HandleMidiEventTriggeredStatic;
         OnPlaybackIndicesChangedStatic += HandlePlaybackIndicesChangedStatic;
     }
 
     private void OnDisable()
     {
         OnAudioGeneratedStatic -= HandleAudioGeneratedStatic;
+        OnMidiEventTriggeredStatic -= HandleMidiEventTriggeredStatic;
         OnPlaybackIndicesChangedStatic -= HandlePlaybackIndicesChangedStatic;
     }
 
 
-    public void HandleSongMidiChanged(int sectionIndex, int trackIndex, int patternIndex)
+    public void HandleSongMidiChanged()
     {
-        if (ControlContext.builtIn.Exists(_generatorInstance))
-        {
-            var sectionData = new NativeArray<AnysongSection.Unmanaged>(song.Sections.Count, Allocator.Persistent);
-            for (int i = 0; i < song.Sections.Count; i++)
-            {
-                sectionData[i] = song.Sections[i].ToUnmanaged();
-            }
-
-            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerMidiReloadMsg(sectionData));
-        }
+        NotifySongMidiChanged();
     }
 
     public void HandleSongSectionsChanged()
@@ -58,10 +51,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public void HandleTrackRebuild(int trackIndex)
     {
+        NotifyTrackRebuild(trackIndex);
+    }
+
+    private void NotifyTrackRebuild(int trackIndex)
+    {
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance,
-                new TriggerTrackSettingsReload(song.Tracks[trackIndex].ToUnmanaged(), trackIndex));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new TriggerTrackSettingsReload(song.Tracks[trackIndex].ToUnmanaged(), trackIndex));
         }
     }
 
@@ -107,6 +104,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
     public delegate void PlaybackIndicesDelegate(int sectionIndex, int[] patternIndices, int[] stepIndices);
 
+    public event PlaybackIndicesDelegate OnPlaybackIndicesChanged;
     public static event PlaybackIndicesDelegate OnPlaybackIndicesChangedStatic;
 
     public delegate void AudioGeneratedDelegate(float[] samples, int channels);
@@ -114,9 +112,19 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     public event AudioGeneratedDelegate OnAudioGenerated;
     public static event AudioGeneratedDelegate OnAudioGeneratedStatic;
 
+    public delegate void MidiTriggeredDelegate(MidiDataEvent[] midiDataEvents);
+
+    public event MidiTriggeredDelegate OnMidiEventTriggered;
+    public static event MidiTriggeredDelegate OnMidiEventTriggeredStatic;
+
     private void HandleAudioGeneratedStatic(float[] samples, int channels)
     {
         OnAudioGenerated?.Invoke(samples, channels);
+    }
+
+    private void HandleMidiEventTriggeredStatic(MidiDataEvent[] midiDataEvents)
+    {
+        OnMidiEventTriggered?.Invoke(midiDataEvents);
     }
 
     private void HandlePlaybackIndicesChangedStatic(int sectionIndex, int[] patternIndices, int[] stepIndices)
@@ -127,6 +135,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _managedPatternIndices[i] = patternIndices[i];
             _managedStepIndices[i] = stepIndices[i];
         }
+
+        OnPlaybackIndicesChanged?.Invoke(sectionIndex, patternIndices, stepIndices);
     }
 
     public void SetPlay(bool state, int startSectionIndex, bool sectionLocked)
@@ -145,11 +155,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         }
     }
 
-    public void SetSectionLocked(bool sectionLocked)
+
+    public void SetSectionLocked(bool sectionLocked, int lockedSectionIndex = -1)
     {
         if (ControlContext.builtIn.Exists(_generatorInstance))
         {
-            ControlContext.builtIn.SendMessage(_generatorInstance, new ToggleSectionLockMsg(sectionLocked));
+            ControlContext.builtIn.SendMessage(_generatorInstance, new ToggleSectionLockMsg(sectionLocked, lockedSectionIndex));
         }
     }
 
@@ -392,10 +403,12 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private class ToggleSectionLockMsg
     {
         public readonly bool IsSectionLocked;
+        public int SectionLockedIndex;
 
-        public ToggleSectionLockMsg(bool isSectionLocked)
+        public ToggleSectionLockMsg(bool isSectionLocked, int sectionLockedIndex)
         {
             IsSectionLocked = isSectionLocked;
+            SectionLockedIndex = sectionLockedIndex;
         }
     }
 
@@ -459,6 +472,27 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         public unsafe fixed float Samples[MaxSamples];
     }
 
+    public struct MidiDataEvent
+    {
+        public int MidiNote;
+        public float Velocity;
+        public int TrackTypeIndex;
+        public float NoteDuration;
+
+        public MidiDataEvent(int midiNote, float velocity, int trackTypeIndex, float noteDuration)
+        {
+            MidiNote = midiNote;
+            Velocity = velocity;
+            TrackTypeIndex = trackTypeIndex;
+            NoteDuration = noteDuration;
+        }
+
+        public bool IsNull()
+        {
+            return MidiNote == 0 && Velocity == 0 && TrackTypeIndex == 0 && NoteDuration == 0;
+        }
+    }
+
     [BurstCompile(CompileSynchronously = true)]
     private struct Processor : GeneratorInstance.IRealtime
     {
@@ -466,6 +500,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
         NativeArray<AnysongSection.Unmanaged> _anysongSections;
         private int _sampleRate;
         private AudioDataEvent _audioDataEvent;
+        private NativeArray<MidiDataEvent> _midiDataEvents;
         private PlaybackIndicesEvent _playbackIndicesEvent;
         GeneratorInstance.Setup _setup;
         private GeneratorInstance _selfHandle;
@@ -508,7 +543,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             _sampleRate = sampleRate;
             _currentSectionBar = 0;
             _sectionLocked = false;
-            _audioDataEvent = new AudioDataEvent { Channels = 2 }; // Assuming stereo for now
+            _audioDataEvent = new AudioDataEvent { Channels = 1 }; // Assuming stereo for now
+            _midiDataEvents = new NativeArray<MidiDataEvent>(16, Allocator.Persistent);
             _playbackIndicesEvent = default;
             _mixBuffer = new NativeArray<float>(blockSize, Allocator.Persistent);
 
@@ -535,11 +571,18 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             }
         }
 
-        public void Dispose()
+        private void Dispose()
         {
+            for (int i = 0; i < _tracks.Length; i++)
+                _tracks[i].Dispose();
             _tracks.Dispose();
             _anysongSections.Dispose();
             _mixBuffer.Dispose();
+            _midiDataEvents.Dispose();
+            _playbackIndicesEvent = default;
+            _audioDataEvent = default;
+            _setup = default;
+            _selfHandle = default;
         }
 
         public void Update(ProcessorInstance.UpdatedDataContext context, ProcessorInstance.Pipe pipe)
@@ -618,7 +661,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 {
                     if (_anysongSections.Length != newMidiData.SectionData.Length)
                     {
-                        Debug.Log("sections amount updated");
                         if (_anysongSections.IsCreated) _anysongSections.Dispose();
 
                         _anysongSections =
@@ -679,6 +721,10 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (element.TryGetData(out SectionLockStateData sectionLockStateData))
                 {
                     _sectionLocked = sectionLockStateData.SectionLocked;
+                    if (sectionLockStateData.LockedSectionIndex != -1)
+                    {
+                        _currentSectionIndex = sectionLockStateData.LockedSectionIndex;
+                    }
                 }
             }
         }
@@ -703,14 +749,16 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             if (!_anysongSections.IsCreated) return buffer.frameCount;
 
             if (sampleRate <= 0) return buffer.frameCount;
+            int currentEventsCount = 0;
+            for (int i = 0; i < _midiDataEvents.Length; i++)
+            {
+                _midiDataEvents[i] = default;
+            }
 
             for (int blockOffset = 0; blockOffset < buffer.frameCount; blockOffset += blockSize)
             {
                 double dspTime = (context.dspTime + (ulong)blockOffset) * invSampleRate;
-
                 int currentSub16Count = AnywhenAudioMetronome.SharedSub16Count.Data;
-
-
                 var section = _anysongSections[_currentSectionIndex];
 
                 if (_isPlaying && currentSub16Count != _lastSub16Count)
@@ -763,6 +811,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
                             if (chancePass && intensityPass)
                             {
+                                _midiDataEvents[currentEventsCount] =
+                                    new MidiDataEvent(thisNote.noteIndex, thisNote.velocity, _tracks[trackIndex].TrackTypeIndex, thisNote.duration);
                                 var playbackTrack = _tracks[trackIndex];
                                 playbackTrack.HandlePlaybackEvent(
                                     new PlaybackEvent(
@@ -805,15 +855,14 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 }
             }
 
-            // Capture samples for visualization
             _audioDataEvent.Channels = buffer.channelCount;
             _audioDataEvent.SampleCount = Math.Min(buffer.frameCount, AudioDataEvent.MaxSamples);
             for (int i = 0; i < _audioDataEvent.SampleCount; i++)
             {
-                // For oscilloscope, we can just take the first channel or mix them
                 _audioDataEvent.Samples[i] = buffer[0, i];
             }
 
+            pipe.SendData(context, _midiDataEvents);
             pipe.SendData(context, _audioDataEvent);
             pipe.SendData(context, _playbackIndicesEvent);
 
@@ -836,12 +885,7 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
 
             public void Dispose(ControlContext context, ref Processor generator)
             {
-                if (generator._tracks.IsCreated)
-                {
-                    for (int i = 0; i < generator._tracks.Length; i++)
-                        generator._tracks[i].Dispose();
-                    generator._tracks.Dispose();
-                }
+                generator.Dispose();
 
                 if (generator._anysongSections.IsCreated)
                 {
@@ -861,6 +905,11 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
             {
                 foreach (var element in pipe.GetAvailableData(context))
                 {
+                    if (element.TryGetData(out NativeArray<MidiDataEvent> midiData))
+                    {
+                        OnMidiEventTriggeredStatic?.Invoke(midiData.ToArray());
+                    }
+
                     if (element.TryGetData(out AudioDataEvent data))
                     {
                         for (int i = 0; i < data.SampleCount; i++)
@@ -941,7 +990,8 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
                 if (message.Is<ToggleSectionLockMsg>())
                 {
                     var payload = message.Get<ToggleSectionLockMsg>();
-                    pipe.SendData(context, new SectionLockStateData() { SectionLocked = payload.IsSectionLocked });
+                    pipe.SendData(context,
+                        new SectionLockStateData() { SectionLocked = payload.IsSectionLocked, LockedSectionIndex = payload.SectionLockedIndex });
                     return ProcessorInstance.Response.Handled;
                 }
 
@@ -1015,5 +1065,6 @@ public class AnywhenAudioGenerator : ScriptableObject, IAudioGenerator
     private struct SectionLockStateData
     {
         public bool SectionLocked;
+        public int LockedSectionIndex;
     }
 }

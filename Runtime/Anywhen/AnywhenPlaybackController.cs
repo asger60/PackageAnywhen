@@ -1,3 +1,4 @@
+using System.Collections;
 using Anywhen.Composing;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,14 +10,14 @@ namespace Anywhen
         AnysongObject _currentSong;
         [SerializeField] private AnysongObject[] midis;
         [SerializeField] private AnysongObject[] sounds;
-        static AnywhenAudioGenerator _currentPlayer;
+        AnywhenAudioGenerator _currentPlayer;
 
         [SerializeField] [Range(0, 1f)] private float testIntensity;
         [SerializeField] [Range(0, 1f)] private float testSnapshot;
 
         [AnywhenTrackType] [SerializeField] private int overrideTrackTypeIndex;
 
-        void Start()
+        IEnumerator Start()
         {
             _currentSong = midis[0];
             var songSource = gameObject.AddComponent<AudioSource>();
@@ -24,10 +25,21 @@ namespace Anywhen
             _currentPlayer.SetSong(_currentSong);
             songSource.generator = _currentPlayer;
             songSource.Play();
-
+            yield return new WaitForSeconds(0.1f);
             AnywhenRuntime.SetTempo(100);
             AnywhenRuntime.Reset();
+            AnywhenRuntime.Metronome.Play();
             _currentPlayer.SetPlay(true, 0, false);
+            _currentPlayer.OnMidiEventTriggered += OnMidiEventTriggered;
+        }
+
+        private void OnMidiEventTriggered(AnywhenAudioGenerator.MidiDataEvent[] midiDataEvents)
+        {
+            foreach (var midiDataEvent in midiDataEvents)
+            {
+                if (midiDataEvent.IsNull()) continue;
+                Debug.Log("playing note: " + midiDataEvent.MidiNote + " " + midiDataEvent.TrackTypeIndex);
+            }
         }
 
         private void Update()

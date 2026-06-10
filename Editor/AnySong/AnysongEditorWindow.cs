@@ -803,7 +803,7 @@ namespace Anysong
 
         public static void UpdateMidi(int sectionIndex, int trackIndex, int patternIndex)
         {
-            _currentPlayer.HandleSongMidiChanged(sectionIndex, trackIndex, patternIndex);
+            _currentPlayer.HandleSongMidiChanged();
         }
 
         public static void UpdateSongSectionsSettings()
